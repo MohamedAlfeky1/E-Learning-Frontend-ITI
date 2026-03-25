@@ -310,21 +310,6 @@ All environment config and app-wide constants live here. This is the **only** fi
 
 ---
 
-## 🔁 Data Flow
-
-```
-layouts
-  └── pages
-        └── components
-              └── hooks
-                    ├── queries  ──→  services  ──→  API
-                    └── mutations ──→  services  ──→  API
-
-TanStack Query cache  (auth user, cart, server state — single source of truth)
-```
-
----
-
 ## 📦 Installed Packages
 
 | Purpose               | Package                 | Version   |
