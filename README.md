@@ -29,6 +29,43 @@ src/
 <br>
 
 <details>
+<summary>&nbsp;<b>📡 &nbsp;api/</b> &nbsp;—&nbsp; Axios instance & endpoint constants</summary>
+
+<br>
+
+Centralised API configuration. Contains the Axios base instance and all endpoint path constants. Every service file imports from here.
+
+**Put here:**
+
+| File               | Responsibility                                                       |
+| ------------------ | -------------------------------------------------------------------- |
+| `axiosInstance.js`  | Base Axios instance (`baseURL: http://localhost:3000/api`)           |
+| `endpoints.js`     | All API endpoint path constants (no `/api` prefix — baseURL has it) |
+
+> 💡 `axiosInstance` is pre-configured with the base URL — import it in every service instead of bare `axios`
+
+> ⚠️ Endpoint strings must **not** include the `/api` prefix since `axiosInstance` already sets `baseURL` to `http://localhost:3000/api`
+
+<br>
+
+</details>
+
+---
+
+<details>
+<summary>&nbsp;<b>🎨 &nbsp;assets/</b> &nbsp;—&nbsp; Static files and media</summary>
+
+<br>
+
+Contains images, SVGs, icons, fonts, and any raw assets imported directly into your React components.
+
+<br>
+
+</details>
+
+---
+
+<details>
 <summary>&nbsp;<b>🧩 &nbsp;components/ui/</b> &nbsp;—&nbsp; Generic design-system components</summary>
 
 <br>
@@ -57,7 +94,7 @@ Reusable building blocks with **zero business logic**. These components know not
 ---
 
 <details>
-<summary>&nbsp;<b>🎨 &nbsp;components/features/</b> &nbsp;—&nbsp; Domain-specific components</summary>
+<summary>&nbsp;<b>🎭 &nbsp;components/features/</b> &nbsp;—&nbsp; Domain-specific components</summary>
 
 <br>
 
@@ -224,30 +261,6 @@ All `useMutation` hooks, organised by data domain. Keeping these separate from `
 ---
 
 <details>
-<summary>&nbsp;<b>📡 &nbsp;api/</b> &nbsp;—&nbsp; Axios instance & endpoint constants</summary>
-
-<br>
-
-Centralised API configuration. Contains the Axios base instance and all endpoint path constants. Every service file imports from here.
-
-**Put here:**
-
-| File               | Responsibility                                                       |
-| ------------------ | -------------------------------------------------------------------- |
-| `axiosInstance.js`  | Base Axios instance (`baseURL: http://localhost:3000/api`)           |
-| `endpoints.js`     | All API endpoint path constants (no `/api` prefix — baseURL has it) |
-
-> 💡 `axiosInstance` is pre-configured with the base URL — import it in every service instead of bare `axios`
-
-> ⚠️ Endpoint strings must **not** include the `/api` prefix since `axiosInstance` already sets `baseURL` to `http://localhost:3000/api`
-
-<br>
-
-</details>
-
----
-
-<details>
 <summary>&nbsp;<b>🌐 &nbsp;services/</b> &nbsp;—&nbsp; Pure API layer</summary>
 
 <br>
@@ -264,6 +277,21 @@ Pure async functions that call your API. No React, no hooks — just data in, da
 | `attendanceService` | QR code scanning for sessions |
 
 > 💡 Services should always use `axiosInstance` from `api/` — never import bare `axios`
+
+<br>
+
+</details>
+
+---
+
+<details>
+<summary>&nbsp;<b>🗄️ &nbsp;store/</b> &nbsp;—&nbsp; Client-side global state</summary>
+
+<br>
+
+Used for UI-focused global state via tools like <b>Zustand</b> or <b>Redux</b>. 
+
+> ⚠️ Note that API or server-side state is handled entirely via `queries/` and `mutations/` using TanStack Query.
 
 <br>
 
@@ -294,39 +322,11 @@ Stateless helpers with no side effects and no React. Each function takes input a
 ---
 
 <details>
-<summary>&nbsp;<b>🎨 &nbsp;assets/</b> &nbsp;—&nbsp; Static files and media</summary>
-
-<br>
-
-Contains images, SVGs, icons, fonts, and any raw assets imported directly into your React components.
-
-<br>
-
-</details>
-
----
-
-<details>
 <summary>&nbsp;<b>📦 &nbsp;lib/</b> &nbsp;—&nbsp; Third-party bindings</summary>
 
 <br>
 
 Generally used for vendor utility files such as <code>utils.js</code> specifically generated for merging Tailwind classes natively used by <b>Shadcn UI</b> (<code>clsx</code>, <code>twMerge</code>).
-
-<br>
-
-</details>
-
----
-
-<details>
-<summary>&nbsp;<b>🗄️ &nbsp;store/</b> &nbsp;—&nbsp; Client-side global state</summary>
-
-<br>
-
-Used for UI-focused global state via tools like <b>Zustand</b> or <b>Redux</b>. 
-
-> ⚠️ Note that API or server-side state is handled entirely via `queries/` and `mutations/` using TanStack Query.
 
 <br>
 
