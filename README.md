@@ -2,8 +2,9 @@
 
 ```
 src/
+├── assets/                  ← Static images, graphics, and global SVGs
 ├── components/
-│   ├── ui/                  ← Generic design-system components
+│   ├── ui/                  ← Generic design-system components (e.g., Shadcn)
 │   └── features/            ← Domain-specific components
 ├── layouts/                 ← Page shell wrappers (navbar, sidebar, footer)
 ├── hooks/                   ← Custom React hooks
@@ -11,7 +12,9 @@ src/
 ├── queries/                 ← TanStack Query read hooks (useQuery)
 ├── mutations/               ← TanStack Query write hooks (useMutation)
 ├── services/                ← Pure async API functions
+├── store/                   ← Client-side global state slices
 ├── utils/                   ← Pure helper functions
+├── lib/                     ← Third-party utility bindings (e.g., Shadcn utils)
 ├── router/                  ← Route definitions & config
 ├── config/                  ← Env variables & app constants
 ├── App.jsx
@@ -259,6 +262,47 @@ Stateless helpers with no side effects and no React. Each function takes input a
 | `calculateProgressPercentage` | Compute video watch completion             |
 | `formatDate`                  | Format session and availability dates      |
 | `validators`                  | Validate passwords, emails, and file sizes |
+
+<br>
+
+</details>
+
+---
+
+<details>
+<summary>&nbsp;<b>🎨 &nbsp;assets/</b> &nbsp;—&nbsp; Static files and media</summary>
+
+<br>
+
+Contains images, SVGs, icons, fonts, and any raw assets imported directly into your React components.
+
+<br>
+
+</details>
+
+---
+
+<details>
+<summary>&nbsp;<b>📦 &nbsp;lib/</b> &nbsp;—&nbsp; Third-party bindings</summary>
+
+<br>
+
+Generally used for vendor utility files such as <code>utils.js</code> specifically generated for merging Tailwind classes natively used by <b>Shadcn UI</b> (<code>clsx</code>, <code>twMerge</code>).
+
+<br>
+
+</details>
+
+---
+
+<details>
+<summary>&nbsp;<b>🗄️ &nbsp;store/</b> &nbsp;—&nbsp; Client-side global state</summary>
+
+<br>
+
+Used for UI-focused global state via tools like <b>Zustand</b> or <b>Redux</b>. 
+
+> ⚠️ Note that API or server-side state is handled entirely via `queries/` and `mutations/` using TanStack Query.
 
 <br>
 
