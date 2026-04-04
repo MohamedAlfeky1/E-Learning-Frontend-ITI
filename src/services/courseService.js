@@ -1,10 +1,10 @@
-import axios from "axios";
-import { endpoints } from "./endpoints";
+import axiosInstance from "../api/axiosInstance";
+import { ENDPOINTS } from "../api/endpoints";
 
 // Find a specific course by its ID
 export const getCourseById = async (id) => {
   try {
-    const response = await axios.get(`/api/courses/${id}`);
+    const response = await axiosInstance.get(ENDPOINTS.COURSES_GET(id));
     return response.data;
   } catch (error) {
     console.error("Error fetching course:", error);
@@ -15,9 +15,10 @@ export const getCourseById = async (id) => {
 // Update/Submit course status (using POST)
 export const postCourseStatus = async (id, statusData) => {
   try {
-    // This utilizes the COURSES_STATUS function from endpoints.js
-    const url = endpoints.COURSES_STATUS(id);
-    const response = await axios.post(url, statusData);
+    const response = await axiosInstance.post(
+      ENDPOINTS.COURSES_STATUS(id),
+      statusData
+    );
     return response.data;
   } catch (error) {
     console.error("Error posting course status:", error);

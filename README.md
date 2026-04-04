@@ -2,6 +2,7 @@
 
 ```
 src/
+├── api/                     ← Axios instance & endpoint constants
 ├── assets/                  ← Static images, graphics, and global SVGs
 ├── components/
 │   ├── ui/                  ← Generic design-system components (e.g., Shadcn)
@@ -223,23 +224,46 @@ All `useMutation` hooks, organised by data domain. Keeping these separate from `
 ---
 
 <details>
+<summary>&nbsp;<b>📡 &nbsp;api/</b> &nbsp;—&nbsp; Axios instance & endpoint constants</summary>
+
+<br>
+
+Centralised API configuration. Contains the Axios base instance and all endpoint path constants. Every service file imports from here.
+
+**Put here:**
+
+| File               | Responsibility                                                       |
+| ------------------ | -------------------------------------------------------------------- |
+| `axiosInstance.js`  | Base Axios instance (`baseURL: http://localhost:3000/api`)           |
+| `endpoints.js`     | All API endpoint path constants (no `/api` prefix — baseURL has it) |
+
+> 💡 `axiosInstance` is pre-configured with the base URL — import it in every service instead of bare `axios`
+
+> ⚠️ Endpoint strings must **not** include the `/api` prefix since `axiosInstance` already sets `baseURL` to `http://localhost:3000/api`
+
+<br>
+
+</details>
+
+---
+
+<details>
 <summary>&nbsp;<b>🌐 &nbsp;services/</b> &nbsp;—&nbsp; Pure API layer</summary>
 
 <br>
 
-Pure async functions that call your API. No React, no hooks — just data in, data out. `queries/` and `mutations/` import from here.
+Pure async functions that call your API. No React, no hooks — just data in, data out. `queries/` and `mutations/` import from here. Each service imports `axiosInstance` and `ENDPOINTS` from `api/`.
 
 **Put here:**
 
-| Service             | Responsibility                           |
-| ------------------- | ---------------------------------------- |
-| `apiClient`         | Base Axios instance with JWT interceptor |
-| `authService`       | Login, register, refresh token           |
-| `courseService`     | Course and lesson CRUD                   |
-| `paymentService`    | Payment & voucher handling               |
-| `attendanceService` | QR code scanning for sessions            |
+| Service             | Responsibility                |
+| ------------------- | ----------------------------- |
+| `authService`       | Login, register, refresh token |
+| `courseService`     | Course and lesson CRUD        |
+| `paymentService`    | Payment & voucher handling    |
+| `attendanceService` | QR code scanning for sessions |
 
-> 💡 `apiClient` is your Axios base instance with interceptors — every other service imports and uses it
+> 💡 Services should always use `axiosInstance` from `api/` — never import bare `axios`
 
 <br>
 
