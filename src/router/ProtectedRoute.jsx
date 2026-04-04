@@ -2,7 +2,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import { getMe } from "@/services/authService";
-import Spinner from "@/components/ui/Spinner";
+import { Spinner } from "@/components/ui/spinner";
 
 /**
  * ProtectedRoute
