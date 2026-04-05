@@ -5,6 +5,8 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiAlertCircle, FiPhone } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { Spinner } from '../../../components/ui/spinner';
+import cubesBg from '../../../assets/cubes.png';
+
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -120,16 +122,14 @@ const RegisterPage = () => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans">
       <div className="bg-white rounded-3xl shadow-xl w-full max-w-6xl flex overflow-hidden border border-gray-100 transition-all duration-500">
         
-        {/* Left Side (Visuals) */}
         <div className="hidden lg:flex w-1/2 bg-purple-600 p-16 flex-col justify-center text-white relative">
-          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+          <div className="absolute inset-0 opacity-50 "style={{ backgroundImage: `url(${cubesBg})` }}></div>
           <div className="relative z-10">
             <h1 className="text-5xl font-extrabold leading-tight mb-6">Nexora.<br /><span className="text-purple-200">Learn. Grow.</span></h1>
             <p className="text-purple-100 text-lg opacity-80 italic">The professional way to start your coding journey.</p>
           </div>
         </div>
 
-        {/* Right Side (Form) */}
         <div className="w-full lg:w-1/2 p-8 md:p-12">
           <div className="max-w-md mx-auto w-full">
             <div className="flex justify-between items-end mb-6">

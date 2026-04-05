@@ -5,6 +5,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { FiMail, FiLock, FiStar, FiEye, FiEyeOff, FiAlertCircle } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc'; 
 import { Spinner } from '../../../components/ui/spinner'; 
+import cubesBg from '../../../assets/cubes.png';
 
 const LoginPage = () => {
   const loginMutation = useLoginMutation();
@@ -80,9 +81,8 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans">
       <div className="bg-white rounded-3xl shadow-xl w-full max-w-6xl flex overflow-hidden border border-gray-100 transition-all duration-500">
         
-        {/* Left Side (Purple Section) */}
         <div className="hidden lg:flex w-1/2 bg-purple-600 p-16 flex-col justify-between text-white relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+          <div className="absolute inset-0 opacity-50 "style={{ backgroundImage: `url(${cubesBg})` }}></div>
           
           <div className="relative z-10">
             <Link to="/" className="text-3xl font-black tracking-tighter text-white mb-10 block">NEXORA.</Link>
@@ -105,13 +105,11 @@ const LoginPage = () => {
           </div>
         </div>
 
-        {/* Right Side (Form Section) */}
         <div className="w-full lg:w-1/2 p-8 md:p-16 flex flex-col justify-center">
           <div className="max-w-md mx-auto w-full">
             <h2 className="text-4xl font-bold text-gray-900 mb-2">Sign In</h2>
             <p className="text-gray-500 mb-8">Enter your credentials to manage your dashboard.</p>
 
-            {/* Error Messages (General API Errors) */}
             {(errors.api || googleMutation.isError) && (
               <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 text-sm font-medium border-l-4 border-red-500 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
                 <FiAlertCircle className="text-xl flex-shrink-0" />
@@ -143,8 +141,6 @@ const LoginPage = () => {
                 </div>
                 {errors.email && <p className="text-xs text-red-600 font-medium mt-1.5 ml-1 flex items-center gap-1.5"><FiAlertCircle /> {errors.email}</p>}
               </div>
-
-              {/* Password Field */}
               <div className="group">
                 <div className="flex items-center justify-between mb-1.5">
                   <label className={`block text-sm font-semibold transition-colors ${errors.password ? 'text-red-600' : 'text-gray-700 group-focus-within:text-purple-600'}`}>
@@ -177,7 +173,6 @@ const LoginPage = () => {
                 {errors.password && <p className="text-xs text-red-600 font-medium mt-1.5 ml-1 flex items-center gap-1.5"><FiAlertCircle /> {errors.password}</p>}
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loginMutation.isPending || googleMutation.isPending}
@@ -189,7 +184,6 @@ const LoginPage = () => {
               </button>
             </form>
 
-            {/* Divider (Now below the form) */}
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-100"></div>
@@ -199,7 +193,6 @@ const LoginPage = () => {
               </div>
             </div>
 
-            {/* Google Login Button (Moved to bottom) */}
             <button
               type="button"
               onClick={() => handleGoogleLogin()}

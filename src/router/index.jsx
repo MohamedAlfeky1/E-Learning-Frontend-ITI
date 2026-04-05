@@ -25,8 +25,7 @@ import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
-import StudentRegisterPage from "@/pages/auth/StudentRegisterPage";
-import TeacherRegisterPage from "@/pages/auth/TeacherRegisterPage";
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STUDENT PAGES  (role: student)
