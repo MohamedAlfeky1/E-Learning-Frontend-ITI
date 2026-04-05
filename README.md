@@ -2,8 +2,10 @@
 
 ```
 src/
+├── api/                     ← Axios instance & endpoint constants
+├── assets/                  ← Static images, graphics, and global SVGs
 ├── components/
-│   ├── ui/                  ← Generic design-system components
+│   ├── ui/                  ← Generic design-system components (e.g., Shadcn)
 │   └── features/            ← Domain-specific components
 ├── layouts/                 ← Page shell wrappers (navbar, sidebar, footer)
 ├── hooks/                   ← Custom React hooks
@@ -11,7 +13,9 @@ src/
 ├── queries/                 ← TanStack Query read hooks (useQuery)
 ├── mutations/               ← TanStack Query write hooks (useMutation)
 ├── services/                ← Pure async API functions
+├── store/                   ← Client-side global state slices
 ├── utils/                   ← Pure helper functions
+├── lib/                     ← Third-party utility bindings (e.g., Shadcn utils)
 ├── router/                  ← Route definitions & config
 ├── config/                  ← Env variables & app constants
 ├── App.jsx
@@ -23,6 +27,43 @@ src/
 ## 📂 Folder Notes
 
 <br>
+
+<details>
+<summary>&nbsp;<b>📡 &nbsp;api/</b> &nbsp;—&nbsp; Axios instance & endpoint constants</summary>
+
+<br>
+
+Centralised API configuration. Contains the Axios base instance and all endpoint path constants. Every service file imports from here.
+
+**Put here:**
+
+| File               | Responsibility                                                       |
+| ------------------ | -------------------------------------------------------------------- |
+| `axiosInstance.js`  | Base Axios instance (`baseURL: http://localhost:3000/api`)           |
+| `endpoints.js`     | All API endpoint path constants (no `/api` prefix — baseURL has it) |
+
+> 💡 `axiosInstance` is pre-configured with the base URL — import it in every service instead of bare `axios`
+
+> ⚠️ Endpoint strings must **not** include the `/api` prefix since `axiosInstance` already sets `baseURL` to `http://localhost:3000/api`
+
+<br>
+
+</details>
+
+---
+
+<details>
+<summary>&nbsp;<b>🎨 &nbsp;assets/</b> &nbsp;—&nbsp; Static files and media</summary>
+
+<br>
+
+Contains images, SVGs, icons, fonts, and any raw assets imported directly into your React components.
+
+<br>
+
+</details>
+
+---
 
 <details>
 <summary>&nbsp;<b>🧩 &nbsp;components/ui/</b> &nbsp;—&nbsp; Generic design-system components</summary>
@@ -53,7 +94,7 @@ Reusable building blocks with **zero business logic**. These components know not
 ---
 
 <details>
-<summary>&nbsp;<b>🎨 &nbsp;components/features/</b> &nbsp;—&nbsp; Domain-specific components</summary>
+<summary>&nbsp;<b>🎭 &nbsp;components/features/</b> &nbsp;—&nbsp; Domain-specific components</summary>
 
 <br>
 
@@ -224,19 +265,33 @@ All `useMutation` hooks, organised by data domain. Keeping these separate from `
 
 <br>
 
-Pure async functions that call your API. No React, no hooks — just data in, data out. `queries/` and `mutations/` import from here.
+Pure async functions that call your API. No React, no hooks — just data in, data out. `queries/` and `mutations/` import from here. Each service imports `axiosInstance` and `ENDPOINTS` from `api/`.
 
 **Put here:**
 
-| Service             | Responsibility                           |
-| ------------------- | ---------------------------------------- |
-| `apiClient`         | Base Axios instance with JWT interceptor |
-| `authService`       | Login, register, refresh token           |
-| `courseService`     | Course and lesson CRUD                   |
-| `paymentService`    | Payment & voucher handling               |
-| `attendanceService` | QR code scanning for sessions            |
+| Service             | Responsibility                |
+| ------------------- | ----------------------------- |
+| `authService`       | Login, register, refresh token |
+| `courseService`     | Course and lesson CRUD        |
+| `paymentService`    | Payment & voucher handling    |
+| `attendanceService` | QR code scanning for sessions |
 
-> 💡 `apiClient` is your Axios base instance with interceptors — every other service imports and uses it
+> 💡 Services should always use `axiosInstance` from `api/` — never import bare `axios`
+
+<br>
+
+</details>
+
+---
+
+<details>
+<summary>&nbsp;<b>🗄️ &nbsp;store/</b> &nbsp;—&nbsp; Client-side global state</summary>
+
+<br>
+
+Used for UI-focused global state via tools like <b>Zustand</b> or <b>Redux</b>. 
+
+> ⚠️ Note that API or server-side state is handled entirely via `queries/` and `mutations/` using TanStack Query.
 
 <br>
 
@@ -259,6 +314,19 @@ Stateless helpers with no side effects and no React. Each function takes input a
 | `calculateProgressPercentage` | Compute video watch completion             |
 | `formatDate`                  | Format session and availability dates      |
 | `validators`                  | Validate passwords, emails, and file sizes |
+
+<br>
+
+</details>
+
+---
+
+<details>
+<summary>&nbsp;<b>📦 &nbsp;lib/</b> &nbsp;—&nbsp; Third-party bindings</summary>
+
+<br>
+
+Generally used for vendor utility files such as <code>utils.js</code> specifically generated for merging Tailwind classes natively used by <b>Shadcn UI</b> (<code>clsx</code>, <code>twMerge</code>).
 
 <br>
 
