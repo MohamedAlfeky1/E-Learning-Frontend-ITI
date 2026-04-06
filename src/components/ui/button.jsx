@@ -33,6 +33,10 @@ const buttonVariants = cva(
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
 
         link: "text-primary underline-offset-4 hover:underline",
+        purpleBtnXl:
+          "w-full bg-purple-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-purple-700 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:bg-purple-300 shadow-lg shadow-purple-200 mt-4",
+        whiteBtnMd:
+          "w-full bg-white border border-gray-200 text-gray-700 py-3.5 rounded-xl font-bold text-base hover:bg-gray-50 active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed",
       },
       size: {
         // Increased heights and horizontal padding to match the wide pill buttons
