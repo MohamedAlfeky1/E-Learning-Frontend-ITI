@@ -27,20 +27,31 @@ export const useLoginMutation = () => {
 
       if (token && userData) {
         localStorage.setItem("token", token);
-
         queryClient.setQueryData(["auth", "me"], userData);
 
-        const role = userData.role;
+        const { role, status } = userData; // استخراج الحالة والنوع
         toast.success(`Welcome back, ${userData.firstName}!`);
-        if (role === "admin") navigate("/admin/dashboard");
-        else if (role === "teacher") navigate("/teacher/dashboard");
-        else if (role === "student") navigate("/dashboard");
-        else navigate("/");
+
+        if (role === "admin") {
+          navigate("/admin/dashboard");
+        } 
+        else if (role === "teacher") {
+          // ✅ إذا كان المدرس غير مقبول بعد، وجهيه لصفحة التحقق
+          if (status !== "approved") {
+            navigate("/teacher/verification");
+          } else {
+            navigate("/teacher/dashboard");
+          }
+        } 
+        else if (role === "student") {
+          navigate("/dashboard");
+        } 
+        else {
+          navigate("/");
+        }
       }
     },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Login failed");
-    },
+    // ... باقي الكود
   });
 };
 
@@ -120,8 +131,7 @@ export const useResetPasswordMutation = () => {
 };
 /**
  * Handles Google Single Sign-On (SSO).
- * Stores credentials and user session data in caching and LocalStorage, 
- * then navigates users to their respective dashboards based on their role.
+ * Optimized to route teachers based on their verification status.
  */
 export const useGoogleMutation = () => {
   const queryClient = useQueryClient();
@@ -130,32 +140,47 @@ export const useGoogleMutation = () => {
   return useMutation({
     mutationFn: googleLogin,
     onSuccess: (response) => {
+      // Extract user data and token from common response structures
       const userData = response.data?.user || response.user;
       const token = response.data?.token || response.token;
 
       if (token && userData) {
+        // 1. Persist the session
         localStorage.setItem("token", token);
+        
+        // 2. Update the cache so the whole app knows the user is logged in
         queryClient.setQueryData(["auth", "me"], userData);
 
         toast.success(`Welcome, ${userData.firstName || "User"}!`);
 
-        const role = userData.role;
+        const { role, status } = userData;
 
+        // 3. Smart Routing Logic
         if (role === "admin") {
           navigate("/admin/dashboard");
-        } else if (role === "teacher") {
-          navigate("/teacher/verification");
-        } else if (role === "student") {
+        } 
+        else if (role === "teacher") {
+          // Check if the teacher is already approved by the admin
+          if (status === "approved") {
+            navigate("/teacher/dashboard");
+          } else {
+            // New or pending teachers must see the verification/pending status page
+            navigate("/teacher/verification");
+          }
+        } 
+        else if (role === "student") {
+          // Students usually go straight to their learning dashboard
           navigate("/dashboard");
-        } else {
+        } 
+        else {
+          // Fallback for any undefined roles
           navigate("/");
         }
       }
     },
     onError: (error) => {
-      toast.error(
-        error.response?.data?.message || "Google Authentication failed",
-      );
+      const errorMessage = error.response?.data?.message || "Google Authentication failed";
+      toast.error(errorMessage);
     },
   });
 };
