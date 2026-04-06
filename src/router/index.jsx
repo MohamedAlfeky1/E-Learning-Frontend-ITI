@@ -108,6 +108,8 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> }, // /
       { path: "about", element: <AboutPage /> }, // /about
       { path: "courses", element: <CoursesPage /> },
+      { path: "teacher/verification", element: <TeacherVerificationPage /> },
+
       // /courses
       {
         // /courses/:id
@@ -132,6 +134,8 @@ const router = createBrowserRouter([
       { path: "register", element: <RegisterPage /> }, // /register
       { path: "forgot-password", element: <ForgotPasswordForm /> },
       { path: "reset-password/:token", element: <ResetPasswordForm /> },
+      
+      
       // { path: "register/teacher", element: <TeacherRegisterPage /> }, // /register/teacher
     ],
   },
@@ -208,9 +212,9 @@ const router = createBrowserRouter([
   {
     path: "teacher",
     element: (
-      // <ProtectedRoute allowedRoles={["teacher"]}>
+      <ProtectedRoute allowedRoles={["teacher"]}>
       <TeacherLayout />
-      // </ProtectedRoute>
+      </ProtectedRoute>
     ),
     children: [
       // Index redirect
@@ -219,6 +223,7 @@ const router = createBrowserRouter([
       // Dashboard & profile
       { path: "dashboard", element: <TeacherDashboardPage /> }, // /teacher/dashboard
       { path: "profile", element: <TeacherProfilePage /> }, // /teacher/profile
+
 
       // Courses
       { path: "courses", element: <TeacherCoursesPage /> }, // /teacher/courses
@@ -269,14 +274,6 @@ const router = createBrowserRouter([
 
       // Verification
     ],
-  },
-  {
-    path: "teacher/verification",
-    element: (
-      <ProtectedRoute allowedRoles={["teacher"]}>
-        <TeacherVerificationPage />
-      </ProtectedRoute>
-    ),
   },
   // ───────────────────────────────────────────────────────────────────────────
   // ADMIN  — role guard + AdminLayout

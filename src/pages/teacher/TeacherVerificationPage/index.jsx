@@ -5,46 +5,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from "@/components/ui/progress"; 
-import { Plus, Trash2, BookOpen, Briefcase, FileCheck, Loader2, Clock, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Plus, Loader2, Clock, BookOpen, Briefcase, FileCheck } from 'lucide-react';
 import { toast } from "sonner";
 import { useQueryClient } from '@tanstack/react-query';
 
-// 1. مكون صفحة الانتظار
 const PendingView = () => (
-  <div className="min-h-[80vh] flex items-center justify-center p-6 animate-in fade-in duration-500">
-    <Card className="max-w-lg w-full border-none shadow-2xl shadow-purple-100/50 rounded-3xl overflow-hidden">
+  <div className="min-h-[80vh] flex items-center justify-center p-6">
+    <Card className="max-w-lg w-full rounded-3xl">
       <CardContent className="p-12 text-center space-y-6">
-        <div className="relative mx-auto w-24 h-24">
-          <div className="absolute inset-0 bg-yellow-100 rounded-full animate-ping opacity-25"></div>
-          <div className="relative flex items-center justify-center w-24 h-24 bg-yellow-50 text-yellow-600 rounded-full">
-            <Clock size={48} className="animate-pulse" />
+        <div className="flex justify-center">
+          <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center">
+            <Clock size={40} className="text-yellow-600" />
           </div>
         </div>
-
-        <div className="space-y-2">
-          <h2 className="text-3xl font-black text-gray-900 leading-tight">Application Received!</h2>
-          <p className="text-gray-500 font-medium px-4">
-            Your professional profile is now under review by our academic board.
-          </p>
-        </div>
-
-        <div className="bg-gray-50 rounded-2xl p-6 text-left space-y-4 border border-gray-100">
-          <div className="flex items-start gap-3">
-            <CheckCircle2 className="text-green-500 mt-1 flex-shrink-0" size={18} />
-            <p className="text-sm text-gray-600"><span className="font-bold">Status:</span> Pending Review</p>
-          </div>
-          <div className="flex items-start gap-3">
-            <CheckCircle2 className="text-green-500 mt-1 flex-shrink-0" size={18} />
-            <p className="text-sm text-gray-600"><span className="font-bold">Timeline:</span> 24-48 hours.</p>
-          </div>
-        </div>
-
-        <Button 
-          onClick={() => window.location.href = '/'} 
-          className="w-full bg-gray-900 hover:bg-black text-white h-14 rounded-2xl font-bold transition-all"
-        >
-          Back to Home
-        </Button>
+        <h2 className="text-2xl font-bold">Application Received</h2>
+        <p className="text-gray-500">Your request is under review (24-48 hours)</p>
+        <Button onClick={() => window.location.href = '/'}>Back Home</Button>
       </CardContent>
     </Card>
   </div>
@@ -52,31 +28,16 @@ const PendingView = () => (
 
 const TeacherVerificationPage = () => {
   const queryClient = useQueryClient();
-  const { data: user, isLoading: isUserLoading } = useUserQuery();
+  const { data: user, isLoading } = useUserQuery();
   const teacherId = user?._id || user?.id;
-  const { mutate, isPending: isSubmitting, isSuccess: mutationSuccess } = useSubmitVerification({
-    onSuccess: async () => {
-      toast.success("Verification Request Sent Successfully!");
-      await queryClient.refetchQueries({ queryKey: ['user'] });
-    },
-    onError: (error) => {
-      const errorMsg = error.response?.data?.message || "";
-      if (errorMsg.includes("duplicate") || error.response?.status === 400) {
-        toast.info("You already have a pending application.");
-        queryClient.refetchQueries({ queryKey: ['user'] });
-      } else {
-        toast.error("Something went wrong, please try again.");
-      }
-    }
-  });
-  
-  const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 3;
 
+  const { mutate, isPending, isSuccess } = useSubmitVerification();
+
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     targetCategories: "",
     experiences: [{ title: '', organization: '', from: '', to: '', description: '' }],
-    certificates: [{ title: '', fileUrl: '', issuedBy: '', year: '' }]
+    certificates: [{ file: null, issuedBy: '', year: '' }]
   });
 
   const handleArrayChange = (type, index, field, value) => {
@@ -85,135 +46,117 @@ const TeacherVerificationPage = () => {
     setFormData({ ...formData, [type]: updated });
   };
 
-  const nextStep = (e) => {
-    if(e) e.preventDefault();
-    if (currentStep === 1 && !formData.targetCategories.trim()) {
-        return toast.error("Please add at least one category");
+  const nextStep = () => {
+    if (step === 1 && !formData.targetCategories.trim()) {
+      return toast.error("Enter at least one category");
     }
-    setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+    // في الخطوة 2، ممكن تضيفي شرط لو عاوزه يتأكد إن فيه خبرة قبل ما ينقل لخطوة 3
+    setStep(prev => prev + 1);
   };
-  
-  const prevStep = (e) => {
-    if(e) e.preventDefault();
-    setCurrentStep(prev => Math.max(prev - 1, 1));
-  };
+
+  const prevStep = () => setStep(prev => prev - 1);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    
+    // أهم تعديل: لا تنفذ الـ Validation والـ Submit إلا لو في الخطوة 3
+    if (step !== 3) return; 
 
-    const payload = {
-      teacherId,
-      targetCategories: formData.targetCategories.split(',').map(s => s.trim()),
-      experiences: formData.experiences.map(exp => ({ ...exp, from: new Date(exp.from).toISOString(), to: new Date(exp.to).toISOString() })),
-      certificates: formData.certificates
-    };
+    try {
+      const payload = {
+        teacherId,
+        targetCategories: formData.targetCategories.split(',').map(s => s.trim()).filter(Boolean),
+        experiences: formData.experiences
+          .filter(exp => exp.title.trim() !== "" && exp.from !== "")
+          .map(exp => ({
+            ...exp,
+            from: new Date(exp.from).toISOString(),
+            to: exp.to ? new Date(exp.to).toISOString() : null
+          })),
+        certificates: formData.certificates.filter(c => c.file !== null)
+      };
 
-    mutate(payload);
+      // الـ Validation بيحصل هنا بس
+      if (payload.experiences.length === 0) {
+        return toast.error("Please add at least one complete experience");
+      }
+      if (payload.certificates.length === 0) {
+        return toast.error("Please upload at least one certificate file");
+      }
+
+      mutate(payload);
+    } catch {
+      toast.error("Invalid data format. Please check your inputs.");
+    }
   };
 
-  if (isUserLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-purple-600" />
-      </div>
-    );
-  }
-
-  if (mutationSuccess || user?.verificationStatus === 'pending') {
-    return <PendingView />;
-  }
+  if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin" /></div>;
+  if (isSuccess || user?.verificationStatus === 'pending') return <PendingView />;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 md:p-12 space-y-6 animate-in fade-in duration-700">
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <h1 className="text-3xl font-bold text-center">Teacher Verification</h1>
+      <Progress value={(step / 3) * 100} />
 
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-black text-gray-900 tracking-tight">
-          Verify Your <span className="text-purple-600">Mentor</span> Profile
-        </h1>
-        <div className="max-w-xs mx-auto pt-2">
-          <Progress value={(currentStep / totalSteps) * 100} className="h-2 bg-purple-100" />
-          <p className="text-[10px] text-gray-400 font-bold uppercase mt-2 tracking-widest text-center">Step {currentStep} of {totalSteps}</p>
-        </div>
-      </div>
-
-      <form onSubmit={onSubmit} className="space-y-6">
-        <Card className="border-none shadow-2xl shadow-purple-100/50 bg-white rounded-3xl overflow-hidden">
-          <CardContent className="p-8">
-            
-            {currentStep === 1 && (
-              <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-purple-100 text-purple-600 rounded-2xl"><BookOpen size={24}/></div>
-                  <h2 className="text-2xl font-bold">Target Categories</h2>
-                </div>
+      <form onSubmit={onSubmit} onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}>
+        <Card>
+          <CardContent className="p-6 space-y-6">
+            {step === 1 && (
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold flex items-center gap-2"><BookOpen /> Categories</h2>
                 <Input 
-                  placeholder="e.g. Programming, Graphic Design"
+                  placeholder="Programming, Design (comma separated)" 
                   value={formData.targetCategories}
                   onChange={(e) => setFormData({...formData, targetCategories: e.target.value})}
-                  className="h-14 rounded-2xl text-lg px-6"
                 />
-              </section>
+              </div>
             )}
 
-            {currentStep === 2 && (
-              <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-blue-100 text-blue-600 rounded-2xl"><Briefcase size={24}/></div>
-                    <h2 className="text-2xl font-bold">Work Experience</h2>
-                  </div>
-                  <Button type="button" variant="outline" className="rounded-xl" onClick={() => setFormData({...formData, experiences: [...formData.experiences, {title:'', organization:'', from:'', to:'', description:''}]})}>
-                    <Plus className="w-4 h-4 mr-1" /> Add
-                  </Button>
-                </div>
+            {step === 2 && (
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold flex items-center gap-2"><Briefcase /> Experience</h2>
                 {formData.experiences.map((exp, index) => (
-                  <div key={index} className="p-6 border border-gray-100 rounded-2xl space-y-4 bg-gray-50/30 relative">
-                    <Input placeholder="Job Title" value={exp.title} onChange={(e) => handleArrayChange('experiences', index, 'title', e.target.value)} className="rounded-xl" />
-                    <Input placeholder="Organization" value={exp.organization} onChange={(e) => handleArrayChange('experiences', index, 'organization', e.target.value)} className="rounded-xl" />
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input type="date" value={exp.from} onChange={(e) => handleArrayChange('experiences', index, 'from', e.target.value)} className="rounded-xl" />
-                      <Input type="date" value={exp.to} onChange={(e) => handleArrayChange('experiences', index, 'to', e.target.value)} className="rounded-xl" />
+                  <div key={index} className="border p-4 rounded space-y-2">
+                    <Input placeholder="Job Title" value={exp.title} onChange={(e) => handleArrayChange('experiences', index, 'title', e.target.value)} />
+                    <Input placeholder="Organization" value={exp.organization} onChange={(e) => handleArrayChange('experiences', index, 'organization', e.target.value)} />
+                    <div className="grid grid-cols-2 gap-2">
+                       <div><label className="text-xs">From</label><Input type="date" value={exp.from} onChange={(e) => handleArrayChange('experiences', index, 'from', e.target.value)} /></div>
+                       <div><label className="text-xs">To</label><Input type="date" value={exp.to} onChange={(e) => handleArrayChange('experiences', index, 'to', e.target.value)} /></div>
                     </div>
                   </div>
                 ))}
-              </section>
+                <Button type="button" variant="outline" onClick={() => setFormData({...formData, experiences: [...formData.experiences, { title: '', organization: '', from: '', to: '', description: '' }]})}>
+                  <Plus className="mr-2 h-4 w-4" /> Add Experience
+                </Button>
+              </div>
             )}
 
-            {currentStep === 3 && (
-              <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-green-100 text-green-600 rounded-2xl"><FileCheck size={24}/></div>
-                    <h2 className="text-2xl font-bold">Certificates</h2>
-                  </div>
-                  <Button type="button" variant="outline" className="rounded-xl" onClick={() => setFormData({...formData, certificates: [...formData.certificates, {title:'', fileUrl:'', issuedBy:'', year:''}]})}>
-                    <Plus className="w-4 h-4 mr-1" /> Add
-                  </Button>
-                </div>
+            {step === 3 && (
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold flex items-center gap-2"><FileCheck /> Certificates</h2>
                 {formData.certificates.map((cert, index) => (
-                  <div key={index} className="p-6 border border-gray-100 rounded-2xl space-y-4 bg-gray-50/30">
-                    <Input placeholder="Certificate Title" value={cert.title} onChange={(e) => handleArrayChange('certificates', index, 'title', e.target.value)} className="rounded-xl" />
-                    <Input placeholder="Credential URL" value={cert.fileUrl} onChange={(e) => handleArrayChange('certificates', index, 'fileUrl', e.target.value)} className="rounded-xl" />
+                  <div key={index} className="border p-4 rounded space-y-2">
+                    <Input type="file" onChange={(e) => handleArrayChange('certificates', index, 'file', e.target.files[0])} />
+                    <Input placeholder="Issued By" value={cert.issuedBy} onChange={(e) => handleArrayChange('certificates', index, 'issuedBy', e.target.value)} />
+                    <Input type="number" placeholder="Year" value={cert.year} onChange={(e) => handleArrayChange('certificates', index, 'year', e.target.value)} />
                   </div>
                 ))}
-              </section>
+                <Button type="button" variant="outline" onClick={() => setFormData({...formData, certificates: [...formData.certificates, { file: null, issuedBy: '', year: '' }]})}>
+                  <Plus className="mr-2 h-4 w-4" /> Add Certificate
+                </Button>
+              </div>
             )}
-
           </CardContent>
 
-          <div className="p-8 bg-gray-50/50 border-t border-gray-100 flex justify-between items-center">
-            <Button type="button" variant="ghost" onClick={prevStep} disabled={currentStep === 1} className="rounded-2xl px-8">Back</Button>
-
-            {currentStep < totalSteps ? (
-              <Button type="button" onClick={nextStep} className="bg-purple-600 hover:bg-purple-700 text-white rounded-2xl px-10 py-6 font-bold shadow-lg shadow-purple-200">Continue</Button>
+          <div className="p-6 flex justify-between border-t">
+            {/* الأزرار هنا واخدة type="button" عشان متعملش سابميت غلط */}
+            <Button type="button" variant="ghost" onClick={prevStep} disabled={step === 1}>Back</Button>
+            
+            {step < 3 ? (
+              <Button type="button" onClick={nextStep}>Next</Button>
             ) : (
-              <Button 
-                type="submit" 
-                disabled={isSubmitting} 
-                className="bg-green-600 hover:bg-green-700 text-white rounded-2xl px-12 py-6 font-bold min-w-[180px] shadow-lg shadow-green-200"
-              >
-                {isSubmitting ? <Loader2 className="animate-spin mr-2" /> : "Finish & Submit"}
+              <Button type="submit" disabled={isPending}>
+                {isPending ? <Loader2 className="animate-spin mr-2" /> : "Submit Application"}
               </Button>
             )}
           </div>
