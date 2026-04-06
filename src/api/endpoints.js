@@ -57,12 +57,14 @@ export const ENDPOINTS = {
 
   // ─── Quizzes ──────────────────────────────────────────────────────────────────
   QUIZZES_LIST: (courseId) => `/courses/${courseId}/quizzes`,
-  QUIZZES_CREATE: (courseId) => `/courses/${courseId}/quizzes`,
+  QUIZZES_GET: (id) => `/quizzes/${id}`,
+  QUIZZES_CREATE: "/quizzes",
   QUIZZES_UPDATE: (id) => `/quizzes/${id}`,
   QUIZZES_DELETE: (id) => `/quizzes/${id}`,
   QUIZZES_START: (id) => `/quizzes/${id}/start`,
   QUIZZES_SUBMIT: (id) => `/quizzes/${id}/submit`,
   QUIZZES_RESULT: (id) => `/quizzes/${id}/result`,
+  QUIZZES_GENERATE_AI: "/quizzes/generate-ai",
 
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",

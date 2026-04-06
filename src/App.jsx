@@ -1,7 +1,8 @@
 import "./App.css";
+import CreateQuizPage from "./pages/teacher/CreateQuizPage";
 
 function App() {
-  return <h1 className="text-green-500 text-4xl">Hello World</h1>;
+     return <CreateQuizPage />;
 }
 
 export default App;
