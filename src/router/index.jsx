@@ -5,6 +5,7 @@ import MainLayout from "@/layouts/MainLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import AdminLayout from "@/layouts/AdminLayout";
+import TeacherLayout from "@/layouts/TeacherLayout";
 
 // ─── Route Guards ────────────────────────────────────────────────────────────
 import ProtectedRoute from "@/router/ProtectedRoute";
@@ -25,7 +26,6 @@ import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STUDENT PAGES  (role: student)
@@ -108,7 +108,7 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> }, // /
       { path: "about", element: <AboutPage /> }, // /about
       { path: "courses", element: <CoursesPage /> },
-       // /courses
+      // /courses
       {
         // /courses/:id
         path: "courses/:id",
@@ -130,7 +130,7 @@ const router = createBrowserRouter([
     children: [
       { path: "login", element: <LoginPage /> }, // /login
       { path: "register", element: <RegisterPage /> }, // /register
-      { path: "forgot-password", element: <ForgotPasswordForm /> }, 
+      { path: "forgot-password", element: <ForgotPasswordForm /> },
       { path: "reset-password/:token", element: <ResetPasswordForm /> },
       // { path: "register/teacher", element: <TeacherRegisterPage /> }, // /register/teacher
     ],
@@ -203,14 +203,14 @@ const router = createBrowserRouter([
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // TEACHER  — role guard + DashboardLayout
+  // TEACHER  — role guard + TeacherLayout
   // ───────────────────────────────────────────────────────────────────────────
   {
     path: "teacher",
     element: (
-      <ProtectedRoute allowedRoles={["teacher"]}>
-        <DashboardLayout />
-      </ProtectedRoute>
+      // <ProtectedRoute allowedRoles={["teacher"]}>
+      <TeacherLayout />
+      // </ProtectedRoute>
     ),
     children: [
       // Index redirect
@@ -268,17 +268,16 @@ const router = createBrowserRouter([
       { path: "sessions", element: <TeacherSessionsPage /> }, // /teacher/sessions
 
       // Verification
-      
     ],
   },
-{
+  {
     path: "teacher/verification",
     element: (
       <ProtectedRoute allowedRoles={["teacher"]}>
         <TeacherVerificationPage />
       </ProtectedRoute>
     ),
-  },  
+  },
   // ───────────────────────────────────────────────────────────────────────────
   // ADMIN  — role guard + AdminLayout
   // ───────────────────────────────────────────────────────────────────────────
