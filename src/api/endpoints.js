@@ -3,6 +3,9 @@ export const ENDPOINTS = {
   AUTH_REGISTER: "/auth/register",
   AUTH_LOGIN: "/auth/login",
   AUTH_REFRESH: "/auth/refresh",
+  AUTH_FORGOT_PASSWORD: "/auth/forgot-password", 
+  AUTH_RESET_PASSWORD: (token) => `/auth/reset-password/${token}`,
+  AUTH_GOOGLE: "/auth/google",
 
   // ─── Profile ────────────────────────────────────────────────────────────────
   PROFILE_GET: "/profile",
