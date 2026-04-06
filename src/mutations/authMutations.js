@@ -29,14 +29,14 @@ export const useLoginMutation = () => {
         localStorage.setItem("token", token);
         queryClient.setQueryData(["auth", "me"], userData);
 
-        const { role, status } = userData; // استخراج الحالة والنوع
+        const { role, status } = userData; 
         toast.success(`Welcome back, ${userData.firstName}!`);
 
         if (role === "admin") {
           navigate("/admin/dashboard");
         } 
         else if (role === "teacher") {
-          // ✅ إذا كان المدرس غير مقبول بعد، وجهيه لصفحة التحقق
+          
           if (status !== "approved") {
             navigate("/teacher/verification");
           } else {
@@ -51,7 +51,11 @@ export const useLoginMutation = () => {
         }
       }
     },
-    // ... باقي الكود
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
+            toast.error(errorMessage);
+            localStorage.removeItem("token");
+    },
   });
 };
 
@@ -140,40 +144,30 @@ export const useGoogleMutation = () => {
   return useMutation({
     mutationFn: googleLogin,
     onSuccess: (response) => {
-      // Extract user data and token from common response structures
       const userData = response.data?.user || response.user;
       const token = response.data?.token || response.token;
 
       if (token && userData) {
-        // 1. Persist the session
-        localStorage.setItem("token", token);
-        
-        // 2. Update the cache so the whole app knows the user is logged in
+        localStorage.setItem("token", token);        
         queryClient.setQueryData(["auth", "me"], userData);
 
         toast.success(`Welcome, ${userData.firstName || "User"}!`);
 
         const { role, status } = userData;
-
-        // 3. Smart Routing Logic
         if (role === "admin") {
           navigate("/admin/dashboard");
         } 
         else if (role === "teacher") {
-          // Check if the teacher is already approved by the admin
           if (status === "approved") {
             navigate("/teacher/dashboard");
           } else {
-            // New or pending teachers must see the verification/pending status page
             navigate("/teacher/verification");
           }
         } 
         else if (role === "student") {
-          // Students usually go straight to their learning dashboard
           navigate("/dashboard");
         } 
         else {
-          // Fallback for any undefined roles
           navigate("/");
         }
       }

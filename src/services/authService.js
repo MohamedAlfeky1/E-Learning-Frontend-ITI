@@ -16,14 +16,13 @@ return response.data;
 
 /** Fetches current authenticated user profile */
 export const getMe = async () => {
-  console.log("Fetching user profile...");
 const response = await axiosInstance.get(ENDPOINTS.PROFILE_GET);
   return response.data.data; 
 };
 /** Requests a password reset email */
 export const forgotPassword = async (emailData) => {
 const response = await axiosInstance.post(ENDPOINTS.AUTH_FORGOT_PASSWORD, emailData);
- return response.data;
+  return response.data;
 };
 /** Resets password using an email token */
 export const resetPassword = async (token, password) => {
