@@ -16,6 +16,7 @@ return response.data;
 
 /** Fetches current authenticated user profile */
 export const getMe = async () => {
+  console.log("Fetching user profile...");
 const response = await axiosInstance.get(ENDPOINTS.PROFILE_GET);
   return response.data.data; 
 };
