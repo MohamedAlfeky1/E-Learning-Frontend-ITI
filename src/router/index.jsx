@@ -108,7 +108,6 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> }, // /
       { path: "about", element: <AboutPage /> }, // /about
       { path: "courses", element: <CoursesPage /> },
-      { path: "teacher/verification", element: <TeacherVerificationPage /> },
 
       // /courses
       {
@@ -275,6 +274,14 @@ const router = createBrowserRouter([
       // Verification
     ],
   },
+  {
+    path: "teacher/verification",
+    element: (
+      <ProtectedRoute allowedRoles={["teacher"]}>
+        <TeacherVerificationPage />
+      </ProtectedRoute>
+    ),
+  },  
   // ───────────────────────────────────────────────────────────────────────────
   // ADMIN  — role guard + AdminLayout
   // ───────────────────────────────────────────────────────────────────────────
