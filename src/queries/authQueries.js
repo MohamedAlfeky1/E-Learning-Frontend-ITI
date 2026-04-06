@@ -5,7 +5,7 @@ export const useUserQuery = () => {
   const token = localStorage.getItem("token");
 
   return useQuery({
-    queryKey: ["user"],
+    queryKey: ["auth", "me"],
     queryFn: getMe,
     enabled: !!token, 
     retry: false,   
