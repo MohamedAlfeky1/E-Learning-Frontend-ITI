@@ -67,7 +67,7 @@ const TeacherEarnings = () => {
     withdrawMutation.mutate(payload, {
       onSuccess: () => {
         setFormData({ amount: "", method: "vodafone_cash", holderName: "", accountNumber: "", bankName: "" });
-        setIsDialogOpen(false); // إغلاق المودال بعد النجاح
+        setIsDialogOpen(false); 
         toast.success("Withdrawal request submitted!");
       }
     });
@@ -238,6 +238,7 @@ const TeacherEarnings = () => {
                   <TableCell colSpan={4} className="text-center py-20 text-slate-400 opacity-60 italic">
                     No transactions recorded yet.
                   </TableCell>
+                  <landmark size={48} className="mx-auto mt-4 text-slate-300 opacity-50" />
                 </TableRow>
               )}
             </TableBody>
