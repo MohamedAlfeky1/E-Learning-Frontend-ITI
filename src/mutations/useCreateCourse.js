@@ -1,7 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createCourse } from '../services/courseService';
 
-// Example TanStack Mutation hook for creating a course
+/**
+ * Hook for creating a new course.
+ * On success, invalidates the 'courses' query to automatically re-fetch the updated list.
+ */
 export const useCreateCourse = () => {
   const queryClient = useQueryClient();
 

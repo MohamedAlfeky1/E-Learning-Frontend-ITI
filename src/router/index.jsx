@@ -22,8 +22,10 @@ import TeacherPublicProfilePage from "@/pages/TeacherPublicProfilePage";
 // AUTH PAGES
 // ─────────────────────────────────────────────────────────────────────────────
 import LoginPage from "@/pages/auth/LoginPage";
-import StudentRegisterPage from "@/pages/auth/StudentRegisterPage";
-import TeacherRegisterPage from "@/pages/auth/TeacherRegisterPage";
+import RegisterPage from "@/pages/auth/RegisterPage";
+import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
+import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STUDENT PAGES  (role: student)
@@ -105,7 +107,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> }, // /
       { path: "about", element: <AboutPage /> }, // /about
-      { path: "courses", element: <CoursesPage /> }, // /courses
+      { path: "courses", element: <CoursesPage /> },
+       // /courses
       {
         // /courses/:id
         path: "courses/:id",
@@ -126,8 +129,10 @@ const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { path: "login", element: <LoginPage /> }, // /login
-      { path: "register", element: <StudentRegisterPage /> }, // /register
-      { path: "register/teacher", element: <TeacherRegisterPage /> }, // /register/teacher
+      { path: "register", element: <RegisterPage /> }, // /register
+      { path: "forgot-password", element: <ForgotPasswordForm /> }, 
+      { path: "reset-password/:token", element: <ResetPasswordForm /> },
+      // { path: "register/teacher", element: <TeacherRegisterPage /> }, // /register/teacher
     ],
   },
 
@@ -210,7 +215,7 @@ const router = createBrowserRouter([
     children: [
       // Index redirect
       { index: true, element: <Navigate to="dashboard" replace /> },
-
+      // { path: "verification", element: <TeacherVerificationPage /> }, // /teacher/verification
       // Dashboard & profile
       { path: "dashboard", element: <TeacherDashboardPage /> }, // /teacher/dashboard
       { path: "profile", element: <TeacherProfilePage /> }, // /teacher/profile
@@ -263,10 +268,17 @@ const router = createBrowserRouter([
       { path: "sessions", element: <TeacherSessionsPage /> }, // /teacher/sessions
 
       // Verification
-      { path: "verification", element: <TeacherVerificationPage /> }, // /teacher/verification
+      
     ],
   },
-
+{
+    path: "teacher/verification",
+    element: (
+      <ProtectedRoute allowedRoles={["teacher"]}>
+        <TeacherVerificationPage />
+      </ProtectedRoute>
+    ),
+  },  
   // ───────────────────────────────────────────────────────────────────────────
   // ADMIN  — role guard + AdminLayout
   // ───────────────────────────────────────────────────────────────────────────

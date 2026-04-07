@@ -78,7 +78,7 @@ export default function QuizForm({ courseId, initialData, isEdit, onSuccess }) {
     setSaving(true);
     try {
       const payload = {
-        courseId,
+        courseId:"69cab49a79558b5ca2441532",
         title: formData.title,
         description: formData.description,
         duration: parseInt(formData.duration),

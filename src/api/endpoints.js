@@ -3,6 +3,9 @@ export const ENDPOINTS = {
   AUTH_REGISTER: "/auth/register",
   AUTH_LOGIN: "/auth/login",
   AUTH_REFRESH: "/auth/refresh",
+  AUTH_FORGOT_PASSWORD: "/auth/forgot-password", 
+  AUTH_RESET_PASSWORD: (token) => `/auth/reset-password/${token}`,
+  AUTH_GOOGLE: "/auth/google",
 
   // ─── Profile ────────────────────────────────────────────────────────────────
   PROFILE_GET: "/profile",
@@ -56,7 +59,7 @@ export const ENDPOINTS = {
   ASSIGNMENTS_GRADE: (id, sid) => `/assignments/${id}/submissions/${sid}`,
 
   // ─── Quizzes ──────────────────────────────────────────────────────────────────
-  QUIZZES_LIST: (courseId) => `/courses/${courseId}/quizzes`,
+  QUIZZES_LIST: (courseId) => `/quizzes/course/${courseId}`,
   QUIZZES_GET: (id) => `/quizzes/${id}`,
   QUIZZES_CREATE: "/quizzes",
   QUIZZES_UPDATE: (id) => `/quizzes/${id}`,

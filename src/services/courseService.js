@@ -1,7 +1,10 @@
 import axiosInstance from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
 
-// Find a specific course by its ID
+/**
+ * Fetch a specific course by its unique ID.
+ * @param {string} id - The course ID
+ */
 export const getCourseById = async (id) => {
   try {
     const response = await axiosInstance.get(ENDPOINTS.COURSES_GET(id));
@@ -12,7 +15,11 @@ export const getCourseById = async (id) => {
   }
 };
 
-// Update/Submit course status (using POST)
+/**
+ * Submit or update a course's status.
+ * @param {string} id - The course ID
+ * @param {Object} statusData - Course status payload
+ */
 export const postCourseStatus = async (id, statusData) => {
   try {
     const response = await axiosInstance.post(

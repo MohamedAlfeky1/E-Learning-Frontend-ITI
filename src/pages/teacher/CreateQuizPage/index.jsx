@@ -24,6 +24,7 @@ export default function QuizManagementPage({ courseId, teacherId }) {
   const [activeTab, setActiveTab] = useState("list");
   const [quizzes, setQuizzes] = useState([]);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const [draftQuiz, setDraftQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
@@ -34,8 +35,12 @@ export default function QuizManagementPage({ courseId, teacherId }) {
   const fetchQuizzes = async () => {
     setLoading(true);
     try {
-      const { data } = await quizApi.getAll(courseId);
-      setQuizzes(data.data || []);
+      const { data } = await quizApi.getAll(courseId || "69cab49a79558b5ca2441532");
+      let fetchedQuizzes = [];
+      if (Array.isArray(data?.data)) fetchedQuizzes = data.data;
+      else if (Array.isArray(data)) fetchedQuizzes = data;
+      else if (data?.data?.quizzes && Array.isArray(data.data.quizzes)) fetchedQuizzes = data.data.quizzes;
+      setQuizzes(fetchedQuizzes);
     } catch (error) {
       console.error("Failed to fetch quizzes:", error);
     } finally {
@@ -66,6 +71,7 @@ export default function QuizManagementPage({ courseId, teacherId }) {
             className="rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200"
             onClick={() => {
               setSelectedQuiz(null);
+              setDraftQuiz(null);
               setActiveTab("create");
             }}
           >
@@ -78,14 +84,14 @@ export default function QuizManagementPage({ courseId, teacherId }) {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
         <StatCard 
           title="Total Quizzes" 
-          value={quizzes.length.toString()} 
+          value={(quizzes?.length || 0).toString()} 
           trend="this month"
           icon={<FileText className="w-5 h-5" />}
           color="blue" 
         />
         <StatCard 
           title="Active Quizzes" 
-          value={quizzes.filter(q => q.status === "published").length.toString()} 
+          value={(quizzes?.filter?.(q => q.status === "published")?.length || 0).toString()} 
           trend="published"
           icon={<CheckCircle className="w-5 h-5" />}
           color="green" 
@@ -177,8 +183,12 @@ export default function QuizManagementPage({ courseId, teacherId }) {
         {/* Create Quiz Tab */}
         <TabsContent value="create">
           <QuizForm 
+            key={draftQuiz ? "draft" : "new"}
             courseId={courseId}
+            initialData={draftQuiz}
+            isEdit={false}
             onSuccess={() => {
+              setDraftQuiz(null);
               fetchQuizzes();
               setActiveTab("list");
             }}
@@ -192,6 +202,10 @@ export default function QuizManagementPage({ courseId, teacherId }) {
             onSuccess={(quiz) => {
               fetchQuizzes();
               setActiveTab("list");
+            }}
+            onReview={(quiz) => {
+              setDraftQuiz(quiz);
+              setActiveTab("create");
             }}
             generating={generating}
             setGenerating={setGenerating}

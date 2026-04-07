@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Brain, Sparkles, Loader2, Save } from "lucide-react";
+import { Brain, Sparkles, Loader2, Save, Edit3 } from "lucide-react";
 import { quizApi } from "../../../../api/quizApi";
 
-export default function AIGenerator({ courseId, onSuccess, generating, setGenerating }) {
+export default function AIGenerator({ courseId, onSuccess, onReview, generating, setGenerating }) {
   const [prompt, setPrompt] = useState({
     topic: "",
     level: "intermediate",
@@ -24,7 +24,7 @@ export default function AIGenerator({ courseId, onSuccess, generating, setGenera
     setGenerating(true);
     try {
       const { data } = await quizApi.generateAI({
-        courseId,
+        courseId:"69cab49a79558b5ca2441532",
         title: `${prompt.topic} Quiz (AI Generated)`,
         description: `AI-generated quiz about ${prompt.topic}`,
         aiPrompt: prompt,
@@ -43,7 +43,7 @@ export default function AIGenerator({ courseId, onSuccess, generating, setGenera
     setGenerating(true);
     try {
       await quizApi.create({
-        courseId,
+        courseId:"69cab49a79558b5ca2441532",
         title: generatedQuiz.title,
         description: generatedQuiz.description,
         duration: generatedQuiz.duration,
@@ -85,9 +85,9 @@ export default function AIGenerator({ courseId, onSuccess, generating, setGenera
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="beginner">Beginner</SelectItem>
-                <SelectItem value="intermediate">Intermediate</SelectItem>
-                <SelectItem value="advanced">Advanced</SelectItem>
+                <SelectItem value="Beginner">Beginner</SelectItem>
+                <SelectItem value="Intermediate">Intermediate</SelectItem>
+                <SelectItem value="Advanced">Advanced</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -115,17 +115,47 @@ export default function AIGenerator({ courseId, onSuccess, generating, setGenera
         </Button>
 
         {generatedQuiz && (
-          <div className="mt-6 p-4 bg-green-50 rounded-xl border border-green-200">
-            <div className="flex justify-between items-start">
-              <div>
-                <h4 className="font-bold text-green-800">Quiz Generated Successfully!</h4>
-                <p className="text-sm text-green-600 mt-1">
-                  {generatedQuiz.questions?.length || 0} questions created
-                </p>
+          <div className="mt-6 space-y-4">
+            <div className="p-4 bg-green-50 rounded-xl border border-green-200">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="font-bold text-green-800">Quiz Generated Successfully!</h4>
+                  <p className="text-sm text-green-600 mt-1">
+                    {generatedQuiz.questions?.length || 0} questions created
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={() => onReview && onReview(generatedQuiz)} variant="outline" className="border-green-300 text-green-700 hover:bg-green-100">
+                    <Edit3 className="w-4 h-4 mr-2" /> Review & Edit
+                  </Button>
+                  <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
+                    <Save className="w-4 h-4 mr-2" /> Save to Course
+                  </Button>
+                </div>
               </div>
-              <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
-                <Save className="w-4 h-4 mr-2" /> Save to Course
-              </Button>
+            </div>
+
+            {/* Quick Preview */}
+            <div className="max-h-[400px] overflow-y-auto space-y-3 pr-2 mt-4">
+              {generatedQuiz.questions?.map((q, idx) => (
+                <div key={idx} className="p-4 border rounded-xl bg-white shadow-sm">
+                  <p className="font-semibold text-slate-800 mb-3">{idx + 1}. {q.question}</p>
+                  <div className="grid grid-cols-1 gap-2">
+                    {q.options?.map((opt, oIdx) => (
+                      <div 
+                        key={oIdx} 
+                        className={`p-2 rounded-lg text-sm border ${
+                          opt.isCorrect 
+                            ? "bg-green-50 border-green-200 text-green-700 font-medium" 
+                            : "bg-slate-50 border-slate-100 text-slate-600"
+                        }`}
+                      >
+                        {opt.isCorrect ? "✓" : "○"} {opt.text}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
