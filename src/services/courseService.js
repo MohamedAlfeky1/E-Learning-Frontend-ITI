@@ -25,3 +25,25 @@ export const postCourseStatus = async (id, statusData) => {
     throw error;
   }
 };
+
+//list all courses (using GET)
+export const getAllCourses = async () => {
+  try {
+    const response = await axiosInstance.get(ENDPOINTS.COURSES_LIST)
+    return response.data;
+  } catch {
+    console.error("Error get all courses data:", error);
+    throw error;
+  }
+}
+
+//browse & search courses
+export const browseCourses = async ()=>{
+   try {
+    const response = await axiosInstance.post(ENDPOINTS.COURSES_SEARCH)
+    return response.data;
+  } catch(error) {
+    console.error("Error browse courses :", error);
+    throw error;
+  }
+}

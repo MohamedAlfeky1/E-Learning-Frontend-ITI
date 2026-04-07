@@ -1,5 +1,5 @@
+import { getAllVerifications } from '@/services/verificationService';
 import { useQuery } from '@tanstack/react-query';
-import { getAllVerifications } from '@/services/adminVerificationService';
 
 // Example TanStack Query hook for fetching courses
 export const useTeacherVerification = () => {

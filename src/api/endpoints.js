@@ -25,7 +25,7 @@ export const ENDPOINTS = {
 
   // ─── Courses ─────────────────────────────────────────────────────────────────
   COURSES_LIST: "/courses",
-  COURSES_SEARCH: "/courses/search",
+  COURSES_SEARCH: "/courses/browserCourses",
   COURSES_MY: "/courses/my-courses",
   COURSES_GET: (id) => `/courses/${id}`,
   COURSES_CREATE: "/courses",
