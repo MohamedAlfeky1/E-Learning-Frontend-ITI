@@ -1,0 +1,22 @@
+.courses-heading-title {
+  color: #141b2b;
+  font-family: "Plus Jakarta Sans";
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 40px;
+}
+
+.pagination-link {
+    background-color: #C7C4D84D;
+    width: 8px;
+    height: 8px;
+}
+
+.pagination-link:hover {
+    border: 1px solid #3525CD;
+}
+
+.pagination-link.active {
+    background-color: #3525CD;
+    width: 32px;
+}
