@@ -19,14 +19,12 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    {/* <App/> */}
-
-
     <GoogleOAuthProvider clientId="136478097339-2bi830r415h06g5jp67hn3bht90s8t1s.apps.googleusercontent.com">
       <QueryClientProvider client={queryClient}>
         <Toaster position="top-right" richColors closeButton />
         <RouterProvider router={router} />
+        <App />
       </QueryClientProvider>
     </GoogleOAuthProvider>
-  </StrictMode>
+  </StrictMode>,
 );

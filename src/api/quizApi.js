@@ -34,4 +34,8 @@ export const quizApi = {
   // Generate quiz using AI
   generateAI: (data) => 
     axiosInstance.post(ENDPOINTS.QUIZZES_GENERATE_AI, data),
+
+  // Get all quizzes for a course (student view)
+  getForStudent: (courseId) =>
+    axiosInstance.get(ENDPOINTS.QUIZZES_LIST_FOR_STUDENT(courseId)),
 };
