@@ -8,7 +8,7 @@ export const ENDPOINTS = {
   AUTH_GOOGLE: "/auth/google",
 
   // ─── Profile ────────────────────────────────────────────────────────────────
-  PROFILE_GET: "/profile",
+  PROFILE_GET: "/auth/me",
   PROFILE_UPDATE: "/profile",
   PROFILE_AVATAR: "/profile/avatar",
   PROFILE_CHANGE_PASSWORD: "/profile/password",
@@ -82,7 +82,7 @@ export const ENDPOINTS = {
   ADMIN_VOUCHERS_DELETE: (id) => `/admin/vouchers/${id}`,
 
   // ─── Payments ─────────────────────────────────────────────────────────────────
-  PAYMENTS_CREATE_INTENT: "/payments/create-intent",
+  PAYMENTS_CREATE_INTENT: "/payments/checkout",
   PAYMENTS_WEBHOOK: "/payments/webhook",
   PAYMENTS_MY: "/payments/my",
 
