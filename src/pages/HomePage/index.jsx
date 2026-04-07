@@ -1,8 +1,10 @@
+import Hero from "../../components/homepage/hero";
+
 const HomePage = () => {
   return (
-    <div>
-      <h1>HomePage</h1>
-    </div>
+    <main className="px-[24px]" style={{ backgroundColor: "#F9F9FF" }}>
+      <Hero />
+    </main>
   );
 };
 
