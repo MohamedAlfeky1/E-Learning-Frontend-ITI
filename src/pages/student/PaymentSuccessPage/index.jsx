@@ -43,7 +43,6 @@ const PaymentSuccessPage = () => {
             </p>
           </div>
 
-          {/* Info Box */}
           <div className="bg-slate-50 rounded-2xl p-3 sm:p-4 border border-slate-100 flex justify-between sm:justify-around items-center">
             
             <div className="text-center">

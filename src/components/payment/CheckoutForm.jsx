@@ -3,7 +3,6 @@ import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ShieldCheck, Loader2 } from "lucide-react";
-
 const CheckoutForm = ({ amount, clientSecret }) => {
   const stripe = useStripe();
   const elements = useElements();

@@ -21,7 +21,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 const PaymentHistoryPage = () => {
-  const { data: payments, isLoading,} = usePaymentHistory();
+  const { data: payments, isLoading} = usePaymentHistory();
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center py-40 space-y-4">
@@ -38,7 +38,6 @@ const PaymentHistoryPage = () => {
   return (
     <div className="min-h-screen bg-[radial-gradient(at_top_right,_var(--tw-gradient-stops))] from-indigo-50 via-white to-white p-4 md:p-10 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
       
-      {/* Header Area */}
       <div className="relative flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-2">
           <div className="inline-flex items-center space-x-2 bg-indigo-600/10 text-indigo-600 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase">
@@ -61,7 +60,6 @@ const PaymentHistoryPage = () => {
         </div>
       </div>
 
-      {/* Desktop Table View */}
       <div className="hidden md:block overflow-hidden rounded-[2rem] border border-white/50 bg-white/70 backdrop-blur-xl shadow-2xl shadow-indigo-100/50">
         <Table>
           <TableHeader className="bg-slate-50/50">
@@ -121,7 +119,6 @@ const PaymentHistoryPage = () => {
         </Table>
       </div>
 
-      {/* Mobile Experience */}
       <div className="md:hidden grid gap-4">
         {payments?.map((payment) => (
           <Card key={payment._id} className="border-none bg-white shadow-lg shadow-indigo-100/50 rounded-3xl overflow-hidden">
@@ -155,7 +152,6 @@ const PaymentHistoryPage = () => {
         ))}
       </div>
 
-      {/* Empty State */}
       {payments?.length === 0 && (
         <div className="flex flex-col items-center justify-center py-32 bg-white/50 rounded-[2rem] border border-dashed border-slate-200">
            <div className="p-6 bg-slate-50 rounded-full mb-4">

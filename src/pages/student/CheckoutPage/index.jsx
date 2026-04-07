@@ -7,7 +7,6 @@ import PaymentSummary from "@/components/payment/PaymentSummary";
 import VoucherSection from "@/components/payment/VoucherSection";
 import visa from '../../../assets/visa.png'
 import mastercard from '../../../assets/mastercard.png'
-
 import { 
   Card, 
   CardContent, 
@@ -91,10 +90,8 @@ const CheckoutPage = () => {
           </div>
         </div>
 
-        {/* Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
           
-          {/* Sidebar (يظهر الأول على الموبايل) */}
           <div className="order-1 lg:order-2 lg:col-span-5 lg:sticky lg:top-8">
             <Card className="shadow-2xl shadow-indigo-100/50 border-none rounded-[2rem] overflow-hidden bg-white">
               <CardHeader className="pb-4 border-b border-slate-50 pt-6 sm:pt-8 px-4 sm:px-6 md:px-8">
