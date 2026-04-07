@@ -300,7 +300,7 @@ const TeacherProfilePage = () => {
               <Badge variant="lightPruple" className='rounded-full py-2'><MdOutlineStarOutline size={13} color="white" /></Badge>
               <h3 className="text-white text-md font-light">Total Review</h3>
             </div>
-            <p className="ms-10 text-white font-cold">{myCourses.IoPeople || 0}/{myCourses.totalStudents || 0}</p>
+            <p className="ms-10 text-white font-cold">{myCourses.totalReview || 0}/{myCourses.totalStudents || 0}</p>
           </div>
 
           <div className="bg-[#d6bdfe] gap-2 rounded-md w-full p-2 shadow-lg shadow-gray-500/50">
