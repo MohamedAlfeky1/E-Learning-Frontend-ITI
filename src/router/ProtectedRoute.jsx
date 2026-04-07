@@ -53,7 +53,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   // If teacher is NOT approved, they can ONLY access the verification page.
   if (
     user.role === "teacher" && 
-    user.status !== "approved" && 
+    user.status !== "active" && 
     location.pathname !== "/teacher/verification"
   ) {
     return <Navigate to="/teacher/verification" replace />;
@@ -62,7 +62,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   // If approved teacher tries to go back to verification page, send them to dashboard.
   if (
     user.role === "teacher" && 
-    user.status === "approved" && 
+    user.status === "active" && 
     location.pathname === "/teacher/verification"
   ) {
     return <Navigate to="/teacher/dashboard" replace />;
