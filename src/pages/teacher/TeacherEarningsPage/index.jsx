@@ -29,7 +29,7 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, ArrowUpRight, History, Loader2, CreditCard, Landmark, Plus } from "lucide-react";
+import { Wallet, ArrowUpRight, History, Loader2, CreditCard, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 const TeacherEarnings = () => {
@@ -74,41 +74,49 @@ const TeacherEarnings = () => {
   };
 
   if (isBalanceLoading || isHistoryLoading) {
-    return <div className="flex h-[80vh] items-center justify-center"><Loader2 className="animate-spin text-primary" size={48} /></div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="animate-spin text-primary" size={40} />
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 space-y-8 max-w-6xl mx-auto animate-in fade-in duration-500">
-      
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="px-3 sm:px-6 py-6 space-y-6 sm:space-y-8 max-w-6xl mx-auto">
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Financial Overview</h1>
-          <p className="text-slate-500">Manage your earnings and withdrawal requests</p>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-800">
+            Financial Overview
+          </h1>
+          <p className="text-sm sm:text-base text-slate-500">
+            Manage your earnings and withdrawal requests
+          </p>
         </div>
 
-        {/* Withdrawal Dialog Button */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="rounded-xl px-6 py-6 shadow-lg shadow-primary/20 gap-2 text-md font-bold">
-              <Plus size={20} /> Request Withdrawal
+            <Button className="w-full sm:w-auto rounded-xl px-4 sm:px-6 py-4 sm:py-6 shadow-lg gap-2 text-sm sm:text-md font-bold">
+              <Plus size={18} /> Request Withdrawal
             </Button>
           </DialogTrigger>
           
-          <DialogContent className="sm:max-w-[500px] rounded-2xl">
+          <DialogContent className="w-[95%] sm:max-w-[500px] rounded-2xl">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+              <DialogTitle className="text-lg sm:text-2xl font-bold flex items-center gap-2">
                 <CreditCard className="text-primary" /> Withdrawal Details
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="text-sm">
                 Enter your payment information to process the withdrawal.
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={handleWithdraw} className="space-y-5 pt-4">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleWithdraw} className="space-y-4 sm:space-y-5 pt-4">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-600">Method</label>
+                  <label className="text-xs sm:text-sm font-bold text-slate-600">Method</label>
                   <select 
                     className="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-primary"
                     value={formData.method}
@@ -120,8 +128,9 @@ const TeacherEarnings = () => {
                     <option value="paypal">PayPal</option>
                   </select>
                 </div>
+
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-600">Amount ($)</label>
+                  <label className="text-xs sm:text-sm font-bold text-slate-600">Amount ($)</label>
                   <Input 
                     type="number" 
                     placeholder="0.00" 
@@ -133,7 +142,7 @@ const TeacherEarnings = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-600">Account Holder Name</label>
+                <label className="text-xs sm:text-sm font-bold text-slate-600">Account Holder Name</label>
                 <Input 
                   placeholder="Full name" 
                   value={formData.holderName}
@@ -143,7 +152,7 @@ const TeacherEarnings = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-600">Account / Wallet Number</label>
+                <label className="text-xs sm:text-sm font-bold text-slate-600">Account / Wallet Number</label>
                 <Input 
                   placeholder="e.g. 010xxxxxxxx" 
                   value={formData.accountNumber}
@@ -153,8 +162,8 @@ const TeacherEarnings = () => {
               </div>
 
               {formData.method !== 'vodafone_cash' && (
-                <div className="space-y-2 animate-in slide-in-from-top duration-300">
-                  <label className="text-sm font-bold text-slate-600">Bank Name / Provider</label>
+                <div className="space-y-2">
+                  <label className="text-xs sm:text-sm font-bold text-slate-600">Bank Name / Provider</label>
                   <Input 
                     placeholder="e.g. CIB, QNB, PayPal" 
                     value={formData.bankName}
@@ -166,7 +175,7 @@ const TeacherEarnings = () => {
 
               <Button 
                 type="submit"
-                className="w-full py-6 rounded-xl font-bold text-lg" 
+                className="w-full py-4 sm:py-6 rounded-xl font-bold text-sm sm:text-lg" 
                 disabled={withdrawMutation.isPending}
               >
                 {withdrawMutation.isPending ? <Loader2 className="animate-spin mr-2" /> : "Confirm & Request"}
@@ -176,75 +185,71 @@ const TeacherEarnings = () => {
         </Dialog>
       </div>
 
-      {/* 1. Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <Card className="bg-primary text-white border-none shadow-xl overflow-hidden relative">
-          <div className="absolute right-[-5%] top-[-10%] opacity-10"><Wallet size={140} /></div>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium opacity-80 uppercase tracking-widest">Available Balance</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-5xl font-black">${balance?.currentBalance || 0}</div>
+          <CardContent className="p-4 sm:p-6">
+            <p className="text-xs uppercase opacity-70">Available Balance</p>
+            <div className="text-3xl sm:text-5xl font-black">${balance?.currentBalance || 0}</div>
           </CardContent>
         </Card>
 
         <Card className="shadow-sm border-none bg-white">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 text-slate-500">
-            <CardTitle className="text-sm font-medium uppercase tracking-widest">Total Earnings</CardTitle>
-            <ArrowUpRight size={24} className="text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-5xl font-black text-slate-800">${balance?.totalEarnings || 0}</div>
+          <CardContent className="p-4 sm:p-6">
+            <p className="text-xs uppercase text-slate-500">Total Earnings</p>
+            <div className="text-3xl sm:text-5xl font-black text-slate-800">
+              ${balance?.totalEarnings || 0}
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* 2. Withdrawal History Table */}
+      {/* Table */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 text-2xl font-bold text-slate-800">
-          <History size={28} className="text-primary" />
-          <h2>Transaction History</h2>
-        </div>
-        
-        <Card className="border-none shadow-md overflow-hidden bg-white">
-          <Table>
-            <TableHeader className="bg-slate-50">
-              <TableRow>
-                <TableHead className="font-bold">Date</TableHead>
-                <TableHead className="font-bold">Amount</TableHead>
-                <TableHead className="font-bold">Method</TableHead>
-                <TableHead className="font-bold">Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {history?.length > 0 ? (
-                history.map((req) => (
-                  <TableRow key={req._id} className="hover:bg-slate-50/50 transition-colors">
-                    <TableCell className="font-medium">{new Date(req.createdAt).toLocaleDateString()}</TableCell>
-                    <TableCell className="font-black text-slate-800 font-mono">${req.amount.toFixed(2)}</TableCell>
-                    <TableCell className="capitalize text-slate-500">{req.method.replace('_', ' ')}</TableCell>
-                    <TableCell>
-                      <Badge className="rounded-full px-3 py-1 uppercase text-[10px]" variant={
-                        req.status === 'approved' || req.status === 'paid' ? 'success' : 
-                        req.status === 'pending' ? 'warning' : 'destructive'
-                      }>
-                        {req.status}
-                      </Badge>
+        <h2 className="text-lg sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
+          <History size={20} /> Transaction History
+        </h2>
+
+        <Card className="border-none shadow-md bg-white">
+          <div className="overflow-x-auto">
+            <Table className="min-w-[500px]">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Method</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {history?.length > 0 ? (
+                  history.map((req) => (
+                    <TableRow key={req._id}>
+                      <TableCell>{new Date(req.createdAt).toLocaleDateString()}</TableCell>
+                      <TableCell className="font-bold">${req.amount.toFixed(2)}</TableCell>
+                      <TableCell className="capitalize">{req.method.replace('_', ' ')}</TableCell>
+                      <TableCell>
+                        <Badge>
+                          {req.status}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center py-10 text-slate-400">
+                      No transactions yet
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-20 text-slate-400 opacity-60 italic">
-                    No transactions recorded yet.
-                  </TableCell>
-                  <landmark size={48} className="mx-auto mt-4 text-slate-300 opacity-50" />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+
+            </Table>
+          </div>
         </Card>
       </div>
+
     </div>
   );
 };
