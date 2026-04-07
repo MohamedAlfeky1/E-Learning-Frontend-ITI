@@ -1,4 +1,4 @@
-// mutations/useTeacherFinanceMutations.js
+// mutations/teacherFinanceMutations.js
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { requestWithdrawal } from "../services/teacherFinanceService";
 import { toast } from "sonner";
