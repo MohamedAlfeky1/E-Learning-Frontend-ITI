@@ -37,7 +37,7 @@ export const useLoginMutation = () => {
         } 
         else if (role === "teacher") {
           
-          if (status !== "approved") {
+          if (status !== "active") {
             navigate("/teacher/verification");
           } else {
             navigate("/teacher/dashboard");
@@ -158,7 +158,7 @@ export const useGoogleMutation = () => {
           navigate("/admin/dashboard");
         } 
         else if (role === "teacher") {
-          if (status === "approved") {
+          if (status === "active") {
             navigate("/teacher/dashboard");
           } else {
             navigate("/teacher/verification");
