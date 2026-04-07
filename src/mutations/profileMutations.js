@@ -8,7 +8,6 @@ import { toast } from "sonner";
 
 
 export const useUpdateProfileMutation = () =>{
-
     return useMutation({
         mutationFn : updateProfile,
         onSuccess :(response)=>{

@@ -22,3 +22,13 @@ export const submitVerification = async (payload) => {
 
   return response.data;
 };
+
+export const getAllVerifications = async ()=>{
+    try{
+    const response = await axiosInstance.get(ENDPOINTS.ADMIN_VERIFICATIONS_LIST);
+    return response.data
+    }catch(error){
+        console.error("Error get all password :", error);
+        throw error;
+    }
+}
