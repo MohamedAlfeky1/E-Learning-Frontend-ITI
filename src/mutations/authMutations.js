@@ -27,19 +27,34 @@ export const useLoginMutation = () => {
 
       if (token && userData) {
         localStorage.setItem("token", token);
-
         queryClient.setQueryData(["auth", "me"], userData);
 
-        const role = userData.role;
+        const { role, status } = userData; 
         toast.success(`Welcome back, ${userData.firstName}!`);
-        if (role === "admin") navigate("/admin/dashboard");
-        else if (role === "teacher") navigate("/teacher/dashboard");
-        else if (role === "student") navigate("/dashboard");
-        else navigate("/");
+
+        if (role === "admin") {
+          navigate("/admin/dashboard");
+        } 
+        else if (role === "teacher") {
+          
+          if (status !== "approved") {
+            navigate("/teacher/verification");
+          } else {
+            navigate("/teacher/dashboard");
+          }
+        } 
+        else if (role === "student") {
+          navigate("/dashboard");
+        } 
+        else {
+          navigate("/");
+        }
       }
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "Login failed");
+      const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
+            toast.error(errorMessage);
+            localStorage.removeItem("token");
     },
   });
 };
@@ -120,8 +135,7 @@ export const useResetPasswordMutation = () => {
 };
 /**
  * Handles Google Single Sign-On (SSO).
- * Stores credentials and user session data in caching and LocalStorage, 
- * then navigates users to their respective dashboards based on their role.
+ * Optimized to route teachers based on their verification status.
  */
 export const useGoogleMutation = () => {
   const queryClient = useQueryClient();
@@ -134,28 +148,33 @@ export const useGoogleMutation = () => {
       const token = response.data?.token || response.token;
 
       if (token && userData) {
-        localStorage.setItem("token", token);
+        localStorage.setItem("token", token);        
         queryClient.setQueryData(["auth", "me"], userData);
 
         toast.success(`Welcome, ${userData.firstName || "User"}!`);
 
-        const role = userData.role;
-
+        const { role, status } = userData;
         if (role === "admin") {
           navigate("/admin/dashboard");
-        } else if (role === "teacher") {
-          navigate("/teacher/verification");
-        } else if (role === "student") {
+        } 
+        else if (role === "teacher") {
+          if (status === "approved") {
+            navigate("/teacher/dashboard");
+          } else {
+            navigate("/teacher/verification");
+          }
+        } 
+        else if (role === "student") {
           navigate("/dashboard");
-        } else {
+        } 
+        else {
           navigate("/");
         }
       }
     },
     onError: (error) => {
-      toast.error(
-        error.response?.data?.message || "Google Authentication failed",
-      );
+      const errorMessage = error.response?.data?.message || "Google Authentication failed";
+      toast.error(errorMessage);
     },
   });
 };

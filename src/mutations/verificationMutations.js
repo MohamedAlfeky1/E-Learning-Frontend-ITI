@@ -20,6 +20,7 @@ export const useSubmitVerification = () => {
       });
 
       queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+      queryClient.refetchQueries({ queryKey: ["auth", "me"] });
 
       
     },

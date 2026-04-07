@@ -131,7 +131,7 @@ export const ENDPOINTS = {
   ADMIN_SLIDERS_REORDER: "/admin/sliders/reorder",
 
   // ─── Teacher Verification ─────────────────────────────────────────────────────
-  TEACHER_VERIFICATION_SUBMIT: "/teacher/verification",
+  TEACHER_VERIFICATION_SUBMIT: (id) => `/teacher/verification/${id}`,
   TEACHER_VERIFICATION_STATUS: "/teacher/verification",
   ADMIN_VERIFICATIONS_LIST: "/admin/verifications",
   ADMIN_VERIFICATIONS_PROCESS: (id) => `/admin/verifications/${id}`,

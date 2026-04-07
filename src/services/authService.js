@@ -22,7 +22,7 @@ const response = await axiosInstance.get(ENDPOINTS.PROFILE_GET);
 /** Requests a password reset email */
 export const forgotPassword = async (emailData) => {
 const response = await axiosInstance.post(ENDPOINTS.AUTH_FORGOT_PASSWORD, emailData);
- return response.data;
+  return response.data;
 };
 /** Resets password using an email token */
 export const resetPassword = async (token, password) => {
