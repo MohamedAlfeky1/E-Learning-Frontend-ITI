@@ -8,10 +8,10 @@ export const ENDPOINTS = {
   AUTH_GOOGLE: "/auth/google",
 
   // ─── Profile ────────────────────────────────────────────────────────────────
-  PROFILE_GET: "/profile",
-  PROFILE_UPDATE: "/profile",
+  PROFILE_GET: "/auth/me",
+  PROFILE_UPDATE: "/auth/me",
   PROFILE_AVATAR: "/profile/avatar",
-  PROFILE_CHANGE_PASSWORD: "/profile/password",
+  PROFILE_CHANGE_PASSWORD: "/auth/change-password",
 
   // ─── Admin — Users ──────────────────────────────────────────────────────────
   ADMIN_USERS_LIST: "/admin/users",
@@ -26,7 +26,7 @@ export const ENDPOINTS = {
   // ─── Courses ─────────────────────────────────────────────────────────────────
   COURSES_LIST: "/courses",
   COURSES_SEARCH: "/courses/search",
-  COURSES_MY: "/courses/my",
+  COURSES_MY: "/courses/my-courses",
   COURSES_GET: (id) => `/courses/${id}`,
   COURSES_CREATE: "/courses",
   COURSES_STATUS: (id) => `/courses/${id}/status`,

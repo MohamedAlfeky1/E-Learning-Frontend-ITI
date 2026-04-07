@@ -10,7 +10,7 @@ const TeacherSidebar = () => {
       <div>
         <div className="px-6 mb-8">
           <NavLink to="/" className="flex flex-col">
-            <span className="text-2xl font-bold text-indigo-600">EduPrism</span>
+            <span className="text-2xl font-bold text-indigo-600">Nexora</span>
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Teacher Portal</span>
           </NavLink>
         </div>
