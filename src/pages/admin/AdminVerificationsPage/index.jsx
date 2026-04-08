@@ -1,16 +1,12 @@
-import { Badge } from "@/components/ui/badge";
 import { Table } from "@/components/ui/table";
 import { useTeacherVerification } from "@/queries/adminVerificationQueries";
 import { useUserQuery } from "@/queries/authQueries";
-import { LuClock4 } from "react-icons/lu";
-import { BiCheckShield } from "react-icons/bi";
-import { BsGraphUpArrow } from "react-icons/bs";
 
 const AdminVerificationsPage = () => {
 
-  const { data: teacherData, isLoading: teacherDataLoading, error: teacherDataError } = useUserQuery();
+  const { data:teacherData, isLoading:teacherDataLoading, error:teacherDataError } = useUserQuery();
   const { data, isLoading, error } = useTeacherVerification()
-  const pendingCount = data.requests.filter(req => req.status === 'pending').length;
+  const pendingCount = data.requests.filter(req => resizeBy.status === 'pending').length;
 
   console.log(data);
 
@@ -83,22 +79,25 @@ const AdminVerificationsPage = () => {
                       className="w-10 h-10 rounded-full object-cover"
                     />
                     <div>
-                      <p className="font-semibold text-gray-900">{teacherData.firstName + " " + teacherData.lastName}</p>
-                      <p className="text-sm text-gray-400">{applicant.bio.substring(0, 10)}</p>
+                      <p className="font-semibold text-gray-900">{teacherData.firstName}</p>
+                      <p className="text-sm text-gray-400">{applicant.title}</p>
                     </div>
                   </div>
                 </TableCell>
 
                 {/* Expertise */}
                 <TableCell>
-                  <Badge>
-                    {applicant.targetCategories}
-                  </Badge>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${expertiseColors[applicant.expertise] ?? "bg-gray-100 text-gray-600"
+                      }`}
+                  >
+                    {applicant.expertise}
+                  </span>
                 </TableCell>
 
                 {/* Date Applied */}
                 <TableCell className="text-gray-500 text-sm">
-                  {new Date(applicant.submittedAt).toLocaleDateString("en-US", {
+                  {new Date(applicant.appliedAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
@@ -140,8 +139,8 @@ const AdminVerificationsPage = () => {
               <button
                 key={page}
                 className={`w-8 h-8 rounded-lg text-sm font-medium ${page === 1
-                  ? "bg-[#4338CA] text-white"
-                  : "hover:bg-gray-100 text-gray-500"
+                    ? "bg-[#4338CA] text-white"
+                    : "hover:bg-gray-100 text-gray-500"
                   }`}
               >
                 {page}
@@ -149,54 +148,6 @@ const AdminVerificationsPage = () => {
             ))}
             <button className="p-2 rounded-lg hover:bg-gray-100">&#8250;</button>
           </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-3">
-
-        <div className="col-span-1 flex flex-col gap-3 bg-[#EEF2FF] border border-[#E0E7FF] p-3">
-          <Badge variant="lightPruple" className='rounded-full py-2'>
-            <LuClock4 size={13} color="white" />
-          </Badge>
-          <h2 className="font-bold text-2xl">Review Speed</h2>
-
-        </div>
-
-        <div className="col-span-1 flex flex-col gap-3 bg-[#DCFCE7] border border-[#22C55E] p-3">
-          <Badge variant="lightPruple" className='rounded-full py-2'>
-            <BiCheckShield size={13} color="#22C55E" />
-          </Badge>
-          <h2 className="font-bold text-2xl">Verified Experts</h2>
-
-        </div>
-
-        <div className="col-span-1 flex flex-col gap-3 bg-[#E5E7EB] border border-[#4B5563] p-3">
-          <Badge variant="lightPruple" className='rounded-full py-2'>
-            <BsGraphUpArrow size={13} color="#4B5563" />
-          </Badge>
-          <h2 className="font-bold text-2xl">Applicant Growth</h2>
-          <div className="col-span-1 flex flex-col gap-3 bg-[#E5E7EB] border border-[#4B5563] p-4 rounded-xl relative overflow-hidden">
-
-            {/* Icon Badge */}
-            <div className="bg-white w-9 h-9 rounded-lg flex items-center justify-center">
-              <BsGraphUpArrow size={16} color="#4B5563" />
-            </div>
-
-            {/* Text */}
-            <h2 className="font-bold text-2xl text-[#111827]">Applicant Growth</h2>
-            <p className="text-sm text-[#6B7280]">
-              Applications are up by <span className="font-bold text-[#111827]">18%</span> compared to last month.
-            </p>
-
-            {/* Decorative bars — bottom right corner */}
-            <div className="absolute bottom-3 right-4 flex items-end gap-1">
-              <div className="w-3 bg-[#9CA3AF] rounded-sm h-5 opacity-60" />
-              <div className="w-3 bg-[#6B7280] rounded-sm h-8 opacity-80" />
-              <div className="w-3 bg-[#4B5563] rounded-sm h-12" />
-            </div>
-
-          </div>
-
         </div>
       </div>
 
