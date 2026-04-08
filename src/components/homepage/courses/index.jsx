@@ -34,7 +34,7 @@ const Courses = () => {
   }, [api]);
 
   return (
-    <section>
+    <section className="courses-section px-6 py-16 rounded-t-4xl">
       <Carousel setApi={setApi} className="flex flex-col gap-10">
         <div className="courses-heading flex justify-between">
           <h2 className="courses-heading-title text-[28px] sm:text-[36px]">
@@ -47,9 +47,6 @@ const Courses = () => {
         </div>
 
         <CarouselContent>
-          <CarouselItem className="lg:basis-2/5 xl:basis-1/3">
-            <CourseCard />
-          </CarouselItem>
           <CarouselItem className="lg:basis-2/5 xl:basis-1/3">
             <CourseCard />
           </CarouselItem>
