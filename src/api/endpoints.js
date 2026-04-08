@@ -9,7 +9,7 @@ export const ENDPOINTS = {
 
   // ─── Profile ────────────────────────────────────────────────────────────────
   PROFILE_GET: "/auth/me",
-  PROFILE_UPDATE: "/profile",
+  PROFILE_UPDATE: "/auth/me",
   PROFILE_AVATAR: "/profile/avatar",
   PROFILE_CHANGE_PASSWORD: "/auth/change-password",
 
@@ -25,7 +25,7 @@ export const ENDPOINTS = {
 
   // ─── Courses ─────────────────────────────────────────────────────────────────
   COURSES_LIST: "/courses",
-  COURSES_SEARCH: "/courses/search",
+  COURSES_SEARCH: "/courses/browserCourses",
   COURSES_MY: "/courses/my-courses",
   COURSES_GET: (id) => `/courses/${id}`,
   COURSES_CREATE: "/courses",
@@ -82,7 +82,7 @@ export const ENDPOINTS = {
   ADMIN_VOUCHERS_DELETE: (id) => `/admin/vouchers/${id}`,
 
   // ─── Payments ─────────────────────────────────────────────────────────────────
-  PAYMENTS_CREATE_INTENT: "/payments/checkout",
+  PAYMENTS_CREATE_INTENT: "/payments/create-intent",
   PAYMENTS_WEBHOOK: "/payments/webhook",
   PAYMENTS_MY: "/payments/my",
 
@@ -109,12 +109,12 @@ export const ENDPOINTS = {
   // ─── Revenue & Earnings ───────────────────────────────────────────────────────
   ADMIN_REVENUE_CONFIG_GET: "/admin/revenue-config",
   ADMIN_REVENUE_CONFIG_UPDATE: "/admin/revenue-config",
-  TEACHER_EARNINGS: "/finance/teacher/balance",
+  TEACHER_EARNINGS: "/teacher/earnings",
   ADMIN_EARNINGS: "/admin/earnings",
 
   // ─── Withdrawals ──────────────────────────────────────────────────────────────
-  TEACHER_WITHDRAWALS_CREATE: "/finance/teacher/withdraw",
-  TEACHER_WITHDRAWALS_LIST: "/finance/teacher/withdrawals",
+  TEACHER_WITHDRAWALS_CREATE: "/teacher/withdrawals",
+  TEACHER_WITHDRAWALS_LIST: "/teacher/withdrawals",
   ADMIN_WITHDRAWALS_LIST: "/admin/withdrawals",
   ADMIN_WITHDRAWALS_PROCESS: (id) => `/admin/withdrawals/${id}`,
 
@@ -131,7 +131,7 @@ export const ENDPOINTS = {
   ADMIN_SLIDERS_REORDER: "/admin/sliders/reorder",
 
   // ─── Teacher Verification ─────────────────────────────────────────────────────
-  TEACHER_VERIFICATION_SUBMIT: (id) => `/teacher/verification/${id}`,
+  TEACHER_VERIFICATION_SUBMIT: "/teacher/verification",
   TEACHER_VERIFICATION_STATUS: "/teacher/verification",
   ADMIN_VERIFICATIONS_LIST: "/admin/verifications",
   ADMIN_VERIFICATIONS_PROCESS: (id) => `/admin/verifications/${id}`,
