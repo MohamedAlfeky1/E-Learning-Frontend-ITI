@@ -8,10 +8,10 @@ const Categories = () => {
     <section className="flex flex-col gap-10">
       <div className="heading flex justify-between">
         <div className="category-heading-title">
-          <p>DISCOVER DISCIPLINES</p>
-          <h2>Curated Study Domains</h2>
+          <p className="text-[10px] sm:text-[12px]">DISCOVER DISCIPLINES</p>
+          <h2 className="text-[28px] sm:text-[36px]">Curated Study Domains</h2>
         </div>
-        <div className="view-all-categories self-end flex items-center">
+        <div className="view-all-categories self-end flex items-center text-[12px] sm:text-[16px]">
           View All Categories <ArrowRight size={16} />{" "}
         </div>
       </div>
