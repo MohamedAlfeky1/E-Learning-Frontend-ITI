@@ -57,8 +57,8 @@ const AdminVerificationsPage = () => {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
-  console.log("paginatedRequests",paginatedRequests);
-  
+  console.log("paginatedRequests", paginatedRequests);
+
 
 
 
@@ -247,26 +247,47 @@ const AdminVerificationsPage = () => {
 
                         {/* Status */}
                         <div className="flex items-center gap-2">
+                          {/* Categories */}
+                          <div>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Categories</p>
+                            <div className="flex flex-wrap">
+                              {applicant?.targetCategories?.length > 0 ? (
+                                applicant.targetCategories?.map((cateId) => (
+                                  <div key={cateId}>
+                                    <CategoryBadge categoryId={cateId} />
+                                  </div>
+                                ))
+                              ) : (
+                                <Badge variant="destructive">No Categories Listed</Badge>
+                              )}
 
-                        </div>
-
-                        {/* Categories */}
-                        <div>
-                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Categories</p>
-                          <div className="flex flex-wrap">
-                            {applicant?.targetCategories?.length > 0 ? (
-                              applicant.targetCategories?.map((cateId) => (
-                                <div key={cateId}>
-                                  <CategoryBadge categoryId={cateId} />
-                                </div>
-                              ))
-                            ) : (
-                              <Badge variant="destructive">No Expertise Listed</Badge>
-                            )}
-
+                            </div>
                           </div>
+
+                          {/* Experience */}
+                          <div>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Expertise</p>
+                            <div className="flex flex-wrap">
+                              {applicant.experiences.map((expo, index) => {
+                                return <div key={index} className="flex items-center gap-2">
+                                  <Badge variant="ghost"><GrUserExpert /></Badge>
+                                  <div className="text-sm text-gray-700">
+                                    <p className="font-medium">{expo.title} at {expo.organization}</p>
+                                    <p className="font-light text-sm text-gray-500">{expo.description}</p>
+                                    <p className="text-xs text-blue-500">{new Date(expo.from).getFullYear()} - {new Date(expo.to).getFullYear()}</p>
+
+                                  </div>
+                                </div>
+                              })
+                              }
+                            </div>
+                          </div>
+
                         </div>
 
+
+
+                        <div className="flex gap-2"></div>
                         {/* Certificates */}
                         <div>
                           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Certificates</p>
@@ -282,24 +303,7 @@ const AdminVerificationsPage = () => {
                           </div>
                         </div>
 
-                        {/* Experience */}
-                        <div>
-                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Expertise</p>
-                          <div className="flex flex-wrap">
-                            {applicant.experiences.map((expo, index) => {
-                              return <div key={index} className="flex items-center gap-2">
-                                <Badge variant="ghost"><GrUserExpert /></Badge>
-                                <div className="text-sm text-gray-700">
-                                  <p className="font-medium">{expo.title} at {expo.organization}</p>
-                                  <p className="font-light text-sm text-gray-500">{expo.description}</p>
-                                  <p className="text-xs text-blue-500">{new Date(expo.from).getFullYear()} - {new Date(expo.to).getFullYear()}</p>
 
-                                </div>
-                              </div>
-                            })
-                            }
-                          </div>
-                        </div>
 
                         {/* Bio (if available) */}
                         {applicant.bio && (
@@ -325,7 +329,7 @@ const AdminVerificationsPage = () => {
         </Table>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-4 text-sm text-gray-400">
+        <div className="flex items-center justify-between px-6  text-sm text-gray-400">
           <span>
             Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
             {Math.min(currentPage * ITEMS_PER_PAGE, allRequests.length)} of{" "}
