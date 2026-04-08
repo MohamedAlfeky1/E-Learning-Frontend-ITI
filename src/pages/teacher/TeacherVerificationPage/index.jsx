@@ -9,7 +9,6 @@ import { Plus, Trash2, BookOpen, Briefcase, FileCheck, Loader2, Clock, CheckCirc
 import { toast } from "sonner";
 import { useQueryClient } from '@tanstack/react-query';
 
-// 1. مكون صفحة الانتظار
 const PendingView = () => (
   <div className="min-h-[80vh] flex items-center justify-center p-6 animate-in fade-in duration-500">
     <Card className="max-w-lg w-full border-none shadow-2xl shadow-purple-100/50 rounded-3xl overflow-hidden">
