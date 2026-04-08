@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUserQuery } from '@/queries/authQueries';
 import { useSubmitVerification } from '@/mutations/verificationMutations';
 import { Button } from '@/components/ui/button';
@@ -46,7 +47,8 @@ const PendingView = () => {
 
 const TeacherVerificationPage = () => {
   const { data: user, isLoading } = useUserQuery();
-  const { mutate, isPending, isSuccess } = useSubmitVerification();
+  const { mutate, isPending } = useSubmitVerification();
+  const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -55,16 +57,22 @@ const TeacherVerificationPage = () => {
     certificates: [{ file: null, issuedBy: '', year: '' }]
   });
 
-  if (isSuccess || (user?.status === 'pending' && user?.status !== 'new')) {
-    return <PendingView />;
-  }
+  useEffect(() => {
+    if (user?.role === 'teacher' && user?.status === 'active') {
+      navigate('/teacher/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
 
+  // 2. Loading State
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="animate-spin text-primary" size={48} />
       </div>
     );
+  }
+  if (user?.status === 'pending') {
+    return <PendingView />;
   }
 
   const handleArrayChange = (type, index, field, value) => {
@@ -79,7 +87,6 @@ const TeacherVerificationPage = () => {
         return toast.error("Please enter at least one category");
       }
     }
-
     if (step === 2) {
       const hasInvalidExp = formData.experiences.some(
         exp => !exp.title.trim() || !exp.organization.trim() || !exp.from
@@ -88,14 +95,12 @@ const TeacherVerificationPage = () => {
         return toast.error("Please fill in Job Title, Organization, and Start Date.");
       }
     }
-
     if (step === 3) {
       const hasFile = formData.certificates.some(cert => cert.file !== null);
       if (!hasFile) {
         return toast.error("Please upload at least one certificate file.");
       }
     }
-
     setStep(prev => prev + 1);
   };
   
@@ -103,20 +108,13 @@ const TeacherVerificationPage = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    
     const cleanedExperiences = formData.experiences.filter(
       exp => exp.title.trim() !== "" && exp.organization.trim() !== "" && exp.from !== ""
     );
-
     const validCertificates = formData.certificates.filter(cert => cert.file !== null);
 
-    if (cleanedExperiences.length === 0) {
-      return toast.error("Please add at least one complete experience.");
-    }
-
-    if (validCertificates.length === 0) {
-      return toast.error("Please upload at least one certificate.");
-    }
+    if (cleanedExperiences.length === 0) return toast.error("Please add at least one experience.");
+    if (validCertificates.length === 0) return toast.error("Please upload at least one certificate.");
 
     mutate({
       teacherId: user?.id || user?._id,
@@ -140,7 +138,6 @@ const TeacherVerificationPage = () => {
       <form onSubmit={onSubmit}>
         <Card className="shadow-lg rounded-2xl overflow-hidden border-none bg-white/50 backdrop-blur-sm">
           <CardContent className="p-8 space-y-6">
-
             {/* STEP 1: Categories */}
             {step === 1 && (
               <div className="space-y-4 animate-in slide-in-from-right-4 duration-300">
@@ -198,7 +195,7 @@ const TeacherVerificationPage = () => {
                 {formData.certificates.map((cert, index) => (
                   <div key={index} className="border p-4 rounded-xl space-y-3 bg-gray-50">
                     <div className="bg-white p-4 rounded-lg border-2 border-dashed text-center hover:border-primary transition-colors">
-                        <Input 
+                      <Input 
                         type="file" 
                         accept=".pdf,.jpg,.jpeg,.png"
                         className="cursor-pointer"
@@ -206,7 +203,7 @@ const TeacherVerificationPage = () => {
                       />
                       {cert.file && <p className="text-xs text-green-600 mt-2 font-medium">Selected: {cert.file.name}</p>}
                     </div>
-                    <Input placeholder="Issued By (e.g. Google, University)" value={cert.issuedBy} onChange={(e) => handleArrayChange('certificates', index, 'issuedBy', e.target.value)} />
+                    <Input placeholder="Issued By" value={cert.issuedBy} onChange={(e) => handleArrayChange('certificates', index, 'issuedBy', e.target.value)} />
                     <Input type="number" placeholder="Year" value={cert.year} onChange={(e) => handleArrayChange('certificates', index, 'year', e.target.value)} />
                   </div>
                 ))}
@@ -220,10 +217,8 @@ const TeacherVerificationPage = () => {
                 </Button>
               </div>
             )}
-
           </CardContent>
 
-          {/* Footer Navigation */}
           <div className="p-6 flex justify-between bg-gray-50 border-t">
             <Button type="button" onClick={prevStep} disabled={step === 1} variant="ghost">Back</Button>
             {step < 3 ? (
