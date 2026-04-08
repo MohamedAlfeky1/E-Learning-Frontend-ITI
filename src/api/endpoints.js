@@ -135,7 +135,7 @@ export const ENDPOINTS = {
   TEACHER_VERIFICATION_SUBMIT: "/teacher/verification",
   TEACHER_VERIFICATION_STATUS: "/teacher/verification",
   ADMIN_VERIFICATIONS_LIST: "/admin/verifications",
-  ADMIN_VERIFICATIONS_PROCESS: (id) => `/admin/verifications/${id}`,
+  ADMIN_VERIFICATIONS_PROCESS: (id) => `/admin/verification/${id}`,
 
   // ─── Teacher Availability ─────────────────────────────────────────────────────
   TEACHER_AVAILABILITY_CREATE: "/teacher/availability",
