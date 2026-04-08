@@ -14,9 +14,10 @@ import { SlidersHorizontal, ChevronDown } from "lucide-react"
 import { useCallback, useEffect, useState } from "react";
 import { useGetGategories } from "@/queries/categoryQueries";
 import { useSearchCourses } from "@/mutations/useSearchMutations";
-import NewCourseCard from "./NewCourseCard";
 import Loader from "@/components/ui/loader";
-import CourseCard from "./CourseCard";
+import NewCourseCard from "@/components/course/NewCourseCard";
+import CourseCard from "@/components/course/CourseCard";
+ 
 
 const FilterDropdown = ({ label, children }) => (
   <DropdownMenu>
@@ -54,7 +55,7 @@ const CoursesPage = () => {
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
-    keyword: "node",
+    keyword: "",
     categoryId: null,
     level: null,
     type: null,
@@ -68,18 +69,21 @@ const CoursesPage = () => {
     setPage(1);
   }, []);
 
+
+
+  const categories = resultsGategories?.data ?? [];
+  const hasFilters = Object.values(filters).some(v => v !== null && v !== "" && v !== undefined);
+  const coursesToShow = hasFilters ? results?.data?.courses : data?.data;
+  const loading = hasFilters ? isPending : isLoading;
+
   useEffect(() => {
+    if (!hasFilters) return;
     searchCourses({ filters, sort, page });
   }, [filters, sort, page])
 
 
-  const categories = resultsGategories?.data ?? [];
-  const hasFilters = Object.values(filters).some(v => v !== "");
-  const coursesToShow = hasFilters ? results?.data?.courses : data?.data;
-  const loading = hasFilters ? isPending : isLoading;
-
   return (
-    <div>
+    <div className="p-6">
       <div className="flex flex-col gap-3">
         <p className="font-semibold text-xs text-[#3525CD]">Course Catalog</p>
         <h1 className="text-5xl font-extrabold">Master New <span className="text-[#3525CD]">Dimensions</span></h1>
@@ -110,8 +114,13 @@ const CoursesPage = () => {
           <div className="flex flex-col md:flex-row items-center w-full gap-2 text-[#3525CD] text-md font-semibold">
 
             {/**category */}
-            <FilterDropdown label={filters.categoryId || "Category"}>
-              <DropdownMenuLabel>Price</DropdownMenuLabel>
+            <FilterDropdown
+              label={
+                filters.categoryId
+                  ? categories.find(cat => cat._id === filters.categoryId)?.name || "Category"
+                  : "Category"
+              }
+            >              <DropdownMenuLabel>Price</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup
                 value={filters.categoryId}
@@ -180,20 +189,20 @@ const CoursesPage = () => {
             }>
               <DropdownMenuLabel>Price range</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <div className="flex gap-2 ">
+              <div className="flex justify-between gap-2">
                 <Input
                   type="number"
                   placeholder="Min"
                   value={filters.minPrice}
                   onChange={(e) => handleFilters("minPrice", e.target.value ? Number(e.target.value) : null)}
-                  className="w-10"
+                  className="w-60 rounded-md px-2"
                 />
                 <Input
                   type="number"
                   placeholder="Max"
                   value={filters.maxPrice}
                   onChange={(e) => handleFilters("maxPrice", e.target.value ? Number(e.target.value) : null)}
-                  className="w-10"
+                  className="w-60 rounded-md px-2"
                 />
               </div>
             </FilterDropdown>
@@ -212,26 +221,37 @@ const CoursesPage = () => {
           <div className="col-span-4 flex justify-center items-center min-h-40">
             <Loader />
           </div>
-
         ) : coursesToShow?.length > 0 ? (
           <>
-            <div key={coursesToShow[0]._id} className="col-span-2">
-              <NewCourseCard course={coursesToShow[0]} />
-            </div>
-            {coursesToShow.slice(1).map((course) => (
-              <div key={course._id} className="col-span-1">
-                <CourseCard course={course} />
-              </div>
-            ))}
+            {hasFilters ? (
+              // لو فيه فلتر أو سيرش، كل الكورسات CourseCard
+              coursesToShow.map((course) => (
+                <div key={course._id} className="col-span-1">
+                  <CourseCard course={course} />
+                </div>
+              ))
+            ) : (
+              // لو مفيش فلتر أو سيرش، الأول NewCourseCard والباقي CourseCard
+              <>
+                <div key={coursesToShow[0]._id} className="col-span-2">
+                  <NewCourseCard course={coursesToShow[0]} />
+                </div>
+                {coursesToShow.slice(1).map((course) => (
+                  <div key={course._id} className="col-span-1">
+                    <CourseCard course={course} />
+                  </div>
+                ))}
+              </>
+            )}
           </>
-
-
         ) : (
           <div className="col-span-4 text-center text-gray-400 py-10">
             No courses found.
           </div>
         )}
       </div>
+
+
       {hasFilters && results?.data?.totalPages > 1 && (
         <div className="flex gap-2 justify-center mt-4">
           {Array.from({ length: results.data.totalPages }, (_, i) => (
