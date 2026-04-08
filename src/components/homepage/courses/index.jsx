@@ -11,6 +11,7 @@ import {
   PaginationItem,
   PaginationLink,
 } from "@/components/ui/pagination";
+import Autoplay from "embla-carousel-autoplay";
 import { useState, useEffect } from "react";
 import "./style.css";
 import CourseCard from "./CourseCard";
@@ -35,7 +36,7 @@ const Courses = () => {
 
   return (
     <section className="courses-section px-6 py-16 rounded-t-4xl">
-      <Carousel setApi={setApi} className="flex flex-col gap-10">
+      <Carousel setApi={setApi} className="flex flex-col gap-10" plugins={[ Autoplay({ delay: 3000 }) ]}>
         <div className="courses-heading flex justify-between">
           <h2 className="courses-heading-title text-[28px] sm:text-[36px]">
             Top Rated Courses
