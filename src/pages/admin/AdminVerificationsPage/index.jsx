@@ -15,11 +15,23 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer";
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,DialogClose } from "@/components/ui/dialog";
-import Input from "@/components/common/Input";
-import Button from "../../../components/common/Button";
+
 import Loader from "@/components/ui/loader";
+import VerificationDecisionForm from "./VerificationDecisionForm";
+import { TbCertificate } from "react-icons/tb";
+import { GrUserExpert } from "react-icons/gr";
+
 
 const CategoryBadge = ({ categoryId }) => {
   const { data: categoryData, isLoading } = useGetGategoryById(categoryId);
@@ -45,13 +57,17 @@ const AdminVerificationsPage = () => {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
+  console.log("paginatedRequests",paginatedRequests);
+  
+
+
 
 
   useEffect(() => {
     setCurrentPage(1);
   }, [data]);
 
-    if (teacherDataLoading || !teacherData) {
+  if (teacherDataLoading || !teacherData) {
     return <div className="min-h-full min-w-full flex justify-center items-center"><Loader /></div>
   }
 
@@ -124,20 +140,21 @@ const AdminVerificationsPage = () => {
                 {/* Applicant */}
                 <TableCell className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    {teacherData.avatar ?
+                    {applicant.avatar ?
                       (<img
-                        src={teacherData.avatar}
-                        alt={teacherData.firstName}
+                        src={applicant.avatar}
+                        alt={applicant?.teacherId?.firstName}
                         className="w-10 h-10 rounded-full object-cover"
                       />) : (
                         <span className="text-gray-400 bg-gray-200 rounded-full p-1">
-                          {`${teacherData.firstName?.[0] || ""}${teacherData.lastName?.[0] || ""}`}
+                          {`${applicant?.teacherId?.firstName?.[0] || ""}${applicant.teacherId?.lastName?.[0] || ""}`}
                         </span>)
                     }
 
                     <div>
-                      <p className="font-semibold text-gray-900">{teacherData.firstName + " " + teacherData.lastName}</p>
-                      {/* <p className="text-sm text-gray-400">{applicant.bio.substring(0, 10)}</p> */}
+                      <p className="font-semibold text-gray-900">{applicant?.teacherId?.firstName + " " + applicant.teacherId?.lastName}</p>
+                      <p className="font-normal text-blue-500">{applicant?.teacherId?.email}</p>
+
                     </div>
                   </div>
                 </TableCell>
@@ -145,9 +162,11 @@ const AdminVerificationsPage = () => {
                 {/* Expertise */}
                 <TableCell>
                   {applicant?.targetCategories?.length > 0 ? (
-                    applicant.targetCategories?.map((cateId) => {
-                      return <div> <CategoryBadge key={cateId} categoryId={cateId} /></div>
-                    })
+                    applicant.targetCategories?.map((cateId) => (
+                      <div key={cateId}>
+                        <CategoryBadge categoryId={cateId} />
+                      </div>
+                    ))
                   ) : (
                     <Badge variant="destructive">No Expertise Listed</Badge>
                   )}
@@ -168,6 +187,7 @@ const AdminVerificationsPage = () => {
                   <div className="flex items-center gap-2">
                     {applicant.status === "pending" && <span className="w-2 h-2 rounded-full bg-yellow-400 inline-block" />}
                     {applicant.status === "approved" && <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />}
+                    {applicant.status === "rejected" && <span className="w-2 h-2 rounded-full bg-red-400 inline-block" />}
 
                     <span className="text-sm font-medium text-gray-700 capitalize">
                       {applicant.status}
@@ -177,40 +197,127 @@ const AdminVerificationsPage = () => {
 
                 {/* Actions */}
                 <TableCell className="text-right px-6">
-                  <Dialog >
-                    <DialogTrigger asChilds>
-                      <button
-                        // onClick={() => console.log("Review", applicant.id)}
-                        className="bg-[#4338CA] hover:bg-[#3730A3] text-white text-sm font-medium px-5 py-2 rounded-xl transition-colors"
-                      >
+                  <Drawer direction="right">
+                    <DrawerTrigger asChild>
+                      <button className="bg-[#4338CA] hover:bg-[#3730A3] text-white text-sm font-medium px-5 py-2 rounded-xl transition-colors">
                         Review
                       </button>
-                    </DialogTrigger>
+                    </DrawerTrigger>
 
-                    <DialogContent className='p-6'>
-                      <DialogHeader>
-                        <DialogTitle className='font-semibold'>Update Your Profile Data</DialogTitle>
+                    <DrawerContent>
+                      <DrawerHeader>
+                        <DrawerTitle>Review Application</DrawerTitle>
+                        <DrawerDescription>
+                          Submitted on{" "}
+                          {new Date(applicant.submittedAt).toLocaleDateString("en-US", {
+                            month: "short", day: "numeric", year: "numeric",
+                          })}
+                        </DrawerDescription>
+                      </DrawerHeader>
 
-                      </DialogHeader>
+                      {/* Applicant details */}
+                      <div className="px-4 flex flex-col gap-2">
 
-                      {/* الفورم هنا */}
-                      <form className="flex flex-col gap-2 mt-2">
-                        <div className="flex flex-row gap-3">
+                        {/* Name & avatar */}
+                        <div className="flex items-center gap-3">
+                          {applicant.avatar ? (
+                            <img src={applicant.avatar} className="w-12 h-12 rounded-full object-cover" />
+                          ) : (
+                            <span className="bg-gray-200 text-gray-500 rounded-full w-12 h-12 flex items-center justify-center font-bold">
+                              {`${applicant?.teacherId?.firstName?.[0] ?? ""}${applicant.teacherId?.lastName?.[0] ?? ""}`}
+                            </span>
+                          )}
+                          <div>
+                            <div className="font-semibold text-gray-900 flex justify-between items-start w-full">
+                              <div className="flex flex-col gap-2">
+                                <p>{applicant?.teacherId?.firstName} {applicant.teacherId?.lastName}</p>
+                                <p className="text-sm font-light text-gray-400">ID: {applicant.teacherId?._id}</p>
+                              </div>
+                              <div className="flex items-center justify-start gap-2">
+                                {applicant.status === "pending" && <span className="w-2 h-2 rounded-full bg-yellow-400" />}
+                                {applicant.status === "rejected" && <span className="w-2 h-2 rounded-full bg-red-400" />}
+                                {applicant.status === "approved" && <span className="w-2 h-2 rounded-full bg-green-400" />}
+                                <span className="text-sm font-medium text-gray-700 capitalize">{applicant.status}</span>
+                              </div>
 
-                        <Button type="submit" >
-                          Save
-                        </Button>
+                            </div>
+
+                          </div>
                         </div>
-                      </form>
 
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                        {/* Status */}
+                        <div className="flex items-center gap-2">
 
+                        </div>
+
+                        {/* Categories */}
+                        <div>
+                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Categories</p>
+                          <div className="flex flex-wrap">
+                            {applicant?.targetCategories?.length > 0 ? (
+                              applicant.targetCategories?.map((cateId) => (
+                                <div key={cateId}>
+                                  <CategoryBadge categoryId={cateId} />
+                                </div>
+                              ))
+                            ) : (
+                              <Badge variant="destructive">No Expertise Listed</Badge>
+                            )}
+
+                          </div>
+                        </div>
+
+                        {/* Certificates */}
+                        <div>
+                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Certificates</p>
+                          <div className="flex flex-wrap">
+                            {applicant.certificates.map((cert, index) => {
+                              return <div key={index} className="flex items-center gap-2">
+                                <Badge variant="ghost" ><TbCertificate /></Badge>
+                                <a href={cert.fileUrl} target="_blank" className="text-sm text-blue-600 hover:underline">{cert.title}</a>
+
+                              </div>
+                            })
+                            }
+                          </div>
+                        </div>
+
+                        {/* Experience */}
+                        <div>
+                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Expertise</p>
+                          <div className="flex flex-wrap">
+                            {applicant.experiences.map((expo, index) => {
+                              return <div key={index} className="flex items-center gap-2">
+                                <Badge variant="ghost"><GrUserExpert /></Badge>
+                                <div className="text-sm text-gray-700">
+                                  <p className="font-medium">{expo.title} at {expo.organization}</p>
+                                  <p className="font-light text-sm text-gray-500">{expo.description}</p>
+                                  <p className="text-xs text-blue-500">{new Date(expo.from).getFullYear()} - {new Date(expo.to).getFullYear()}</p>
+
+                                </div>
+                              </div>
+                            })
+                            }
+                          </div>
+                        </div>
+
+                        {/* Bio (if available) */}
+                        {applicant.bio && (
+                          <div>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Bio</p>
+                            <p className="text-sm text-gray-600">{applicant.bio}</p>
+                          </div>
+                        )}
+
+                        {/* Decision form */}
+                        <div className="flex flex-col gap-3 border-t pt-4 mt-2">
+                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Verification Decision</p>
+
+                          <VerificationDecisionForm applicant={applicant} />
+                        </div>
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
                 </TableCell>
               </TableRow>
             ))}
