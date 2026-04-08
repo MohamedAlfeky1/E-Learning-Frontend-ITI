@@ -1,7 +1,8 @@
 import { browseCourses } from "@/services/courseService";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-export const useSearchCourses=async()=>{
+export const useSearchCourses=()=>{
      return useMutation({
         mutationFn : browseCourses,
         onSuccess :(response)=>{
