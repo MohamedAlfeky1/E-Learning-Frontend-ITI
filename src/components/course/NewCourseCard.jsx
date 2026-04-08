@@ -1,11 +1,13 @@
 import { Badge } from '@/components/ui/badge'
 import React from 'react'
 import { FaStar } from "react-icons/fa6";
+import { FaRegEye } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 
 
 function NewCourseCard({ course }) {
     return (
-        <div className="flex flex-col md:flex-row overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
+        <div className="relative h-80 flex flex-col md:flex-row overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
 
             {/* Thumbnail */}
             <div className="w-2/5 h-48 md:h-auto overflow-hidden">
@@ -14,6 +16,9 @@ function NewCourseCard({ course }) {
                     alt="Course Thumbnail"
                     className="w-full h-full object-cover"
                 />
+                <Link to={`/courses/${course._id}`} className="absolute top-3 right-3 bg-gray-200 text-gray-200 p-1 rounded-full">
+                    <FaRegEye color='#3525CD' />
+                </Link>
             </div>
 
             {/* Content */}
