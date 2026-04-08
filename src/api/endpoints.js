@@ -19,6 +19,7 @@ export const ENDPOINTS = {
 
   // ─── Categories ─────────────────────────────────────────────────────────────
   CATEGORIES_LIST: "/categories",
+  CATEGORY_BY_ID: (id) => `categories/id/${id}`,
   CATEGORIES_CREATE: "/categories",
   CATEGORIES_UPDATE: (id) => `/categories/${id}`,
   CATEGORIES_DELETE: (id) => `/categories/${id}`,
