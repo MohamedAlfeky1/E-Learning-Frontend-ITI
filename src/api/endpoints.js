@@ -82,7 +82,7 @@ export const ENDPOINTS = {
   ADMIN_VOUCHERS_DELETE: (id) => `/admin/vouchers/${id}`,
 
   // ─── Payments ─────────────────────────────────────────────────────────────────
-  PAYMENTS_CREATE_INTENT: "/payments/create-intent",
+  PAYMENTS_CREATE_INTENT: "/payments/checkout",
   PAYMENTS_WEBHOOK: "/payments/webhook",
   PAYMENTS_MY: "/payments/my",
 
