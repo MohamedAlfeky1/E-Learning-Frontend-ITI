@@ -5,7 +5,7 @@ import CategoryCard from "./CategoryCard";
 
 const Categories = () => {
   return (
-    <section className="flex flex-col gap-10">
+    <section className="mx-6 flex flex-col gap-10">
       <div className="heading flex justify-between">
         <div className="category-heading-title">
           <p className="text-[10px] sm:text-[12px]">DISCOVER DISCIPLINES</p>
