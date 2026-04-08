@@ -35,6 +35,8 @@ import StudentProfilePage from "@/pages/student/StudentProfilePage";
 import MyCoursesPage from "@/pages/student/MyCoursesPage";
 import CoursePlayerPage from "@/pages/student/CoursePlayerPage";
 import CheckoutPage from "@/pages/student/CheckoutPage";
+import PaymentSuccessPage from "@/pages/student/PaymentSuccessPage";
+import PaymentHistoryPage from "@/pages/student/PaymentHistoryPage";
 import CartPage from "@/pages/student/CartPage";
 import FavoritesPage from "@/pages/student/FavoritesPage";
 import StudentAssignmentsPage from "@/pages/student/StudentAssignmentsPage";
@@ -108,6 +110,7 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> }, // /
       { path: "about", element: <AboutPage /> }, // /about
       { path: "courses", element: <CoursesPage /> },
+
       // /courses
       {
         // /courses/:id
@@ -132,6 +135,8 @@ const router = createBrowserRouter([
       { path: "register", element: <RegisterPage /> }, // /register
       { path: "forgot-password", element: <ForgotPasswordForm /> },
       { path: "reset-password/:token", element: <ResetPasswordForm /> },
+      
+      
       // { path: "register/teacher", element: <TeacherRegisterPage /> }, // /register/teacher
     ],
   },
@@ -139,6 +144,23 @@ const router = createBrowserRouter([
   // ───────────────────────────────────────────────────────────────────────────
   // STUDENT  — role guard + DashboardLayout
   // ───────────────────────────────────────────────────────────────────────────
+  {
+    path: "checkout-page",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        {/* You can wrap it in a minimal layout here if needed */}
+        <CheckoutPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "payment-success",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <PaymentSuccessPage />
+      </ProtectedRoute>
+    ),
+  },
   {
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
@@ -156,7 +178,7 @@ const router = createBrowserRouter([
 
       // Cart & Checkout
       { path: "cart", element: <CartPage /> }, // /cart
-      { path: "checkout", element: <CheckoutPage /> }, // /checkout
+      { path: "payment-history", element: <PaymentHistoryPage /> }, // /payment-history
 
       // Favorites
       { path: "favorites", element: <FavoritesPage /> }, // /favorites
@@ -208,9 +230,9 @@ const router = createBrowserRouter([
   {
     path: "teacher",
     element: (
-      // <ProtectedRoute allowedRoles={["teacher"]}>
+      <ProtectedRoute allowedRoles={["teacher"]}>
       <TeacherLayout />
-      // </ProtectedRoute>
+      </ProtectedRoute>
     ),
     children: [
       // Index redirect
@@ -219,6 +241,7 @@ const router = createBrowserRouter([
       // Dashboard & profile
       { path: "dashboard", element: <TeacherDashboardPage /> }, // /teacher/dashboard
       { path: "profile", element: <TeacherProfilePage /> }, // /teacher/profile
+
 
       // Courses
       { path: "courses", element: <TeacherCoursesPage /> }, // /teacher/courses
@@ -277,7 +300,7 @@ const router = createBrowserRouter([
         <TeacherVerificationPage />
       </ProtectedRoute>
     ),
-  },
+  },  
   // ───────────────────────────────────────────────────────────────────────────
   // ADMIN  — role guard + AdminLayout
   // ───────────────────────────────────────────────────────────────────────────
