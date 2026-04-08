@@ -9,10 +9,8 @@
 }
 
 .hero-heading {
-  font-size: 72px;
   font-weight: 800;
   font-family: "Plus Jakarta Sans";
-  line-height: 72px;
 }
 
 .hero-description {
@@ -24,7 +22,6 @@
 
 .hero-btn {
   padding: 16px 32px;
-  font-size: 18px;
   font-weight: 700;
   font-family: "Plus Jakarta Sans";
 }

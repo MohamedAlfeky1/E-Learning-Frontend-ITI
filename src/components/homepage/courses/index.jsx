@@ -31,7 +31,7 @@ const Courses = () => {
     <section>
       <Carousel setApi={setApi} className="flex flex-col gap-10">
         <div className="courses-heading flex justify-between">
-          <h2 className="courses-heading-title">Top Rated Courses</h2>
+          <h2 className="courses-heading-title text-[28px] sm:text-[36px]">Top Rated Courses</h2>
           <div className="arrows-container flex gap-2">
             <CarouselPrevious className="static translate-y-0" />
             <CarouselNext className="static translate-y-0" />
