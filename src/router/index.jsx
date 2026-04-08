@@ -35,6 +35,8 @@ import StudentProfilePage from "@/pages/student/StudentProfilePage";
 import MyCoursesPage from "@/pages/student/MyCoursesPage";
 import CoursePlayerPage from "@/pages/student/CoursePlayerPage";
 import CheckoutPage from "@/pages/student/CheckoutPage";
+import PaymentSuccessPage from "@/pages/student/PaymentSuccessPage";
+import PaymentHistoryPage from "@/pages/student/PaymentHistoryPage";
 import CartPage from "@/pages/student/CartPage";
 import FavoritesPage from "@/pages/student/FavoritesPage";
 import StudentAssignmentsPage from "@/pages/student/StudentAssignmentsPage";
@@ -143,6 +145,23 @@ const router = createBrowserRouter([
   // STUDENT  — role guard + DashboardLayout
   // ───────────────────────────────────────────────────────────────────────────
   {
+    path: "checkout-page",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        {/* You can wrap it in a minimal layout here if needed */}
+        <CheckoutPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "payment-success",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <PaymentSuccessPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
         <DashboardLayout />
@@ -159,7 +178,7 @@ const router = createBrowserRouter([
 
       // Cart & Checkout
       { path: "cart", element: <CartPage /> }, // /cart
-      { path: "checkout", element: <CheckoutPage /> }, // /checkout
+      { path: "payment-history", element: <PaymentHistoryPage /> }, // /payment-history
 
       // Favorites
       { path: "favorites", element: <FavoritesPage /> }, // /favorites

@@ -11,7 +11,7 @@ export const ENDPOINTS = {
   PROFILE_GET: "/auth/me",
   PROFILE_UPDATE: "/profile",
   PROFILE_AVATAR: "/profile/avatar",
-  PROFILE_CHANGE_PASSWORD: "/profile/password",
+  PROFILE_CHANGE_PASSWORD: "/auth/change-password",
 
   // ─── Admin — Users ──────────────────────────────────────────────────────────
   ADMIN_USERS_LIST: "/admin/users",
@@ -26,7 +26,7 @@ export const ENDPOINTS = {
   // ─── Courses ─────────────────────────────────────────────────────────────────
   COURSES_LIST: "/courses",
   COURSES_SEARCH: "/courses/search",
-  COURSES_MY: "/courses/my",
+  COURSES_MY: "/courses/my-courses",
   COURSES_GET: (id) => `/courses/${id}`,
   COURSES_CREATE: "/courses",
   COURSES_STATUS: (id) => `/courses/${id}/status`,
@@ -82,7 +82,7 @@ export const ENDPOINTS = {
   ADMIN_VOUCHERS_DELETE: (id) => `/admin/vouchers/${id}`,
 
   // ─── Payments ─────────────────────────────────────────────────────────────────
-  PAYMENTS_CREATE_INTENT: "/payments/create-intent",
+  PAYMENTS_CREATE_INTENT: "/payments/checkout",
   PAYMENTS_WEBHOOK: "/payments/webhook",
   PAYMENTS_MY: "/payments/my",
 
@@ -109,12 +109,12 @@ export const ENDPOINTS = {
   // ─── Revenue & Earnings ───────────────────────────────────────────────────────
   ADMIN_REVENUE_CONFIG_GET: "/admin/revenue-config",
   ADMIN_REVENUE_CONFIG_UPDATE: "/admin/revenue-config",
-  TEACHER_EARNINGS: "/teacher/earnings",
+  TEACHER_EARNINGS: "/finance/teacher/balance",
   ADMIN_EARNINGS: "/admin/earnings",
 
   // ─── Withdrawals ──────────────────────────────────────────────────────────────
-  TEACHER_WITHDRAWALS_CREATE: "/teacher/withdrawals",
-  TEACHER_WITHDRAWALS_LIST: "/teacher/withdrawals",
+  TEACHER_WITHDRAWALS_CREATE: "/finance/teacher/withdraw",
+  TEACHER_WITHDRAWALS_LIST: "/finance/teacher/withdrawals",
   ADMIN_WITHDRAWALS_LIST: "/admin/withdrawals",
   ADMIN_WITHDRAWALS_PROCESS: (id) => `/admin/withdrawals/${id}`,
 
