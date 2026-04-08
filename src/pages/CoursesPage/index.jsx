@@ -11,21 +11,18 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
 import { SlidersHorizontal, ChevronDown } from "lucide-react"
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useGetGategories } from "@/queries/categoryQueries";
 import { useSearchCourses } from "@/mutations/useSearchMutations";
-
-const PRICE_RANGES = [
-  { label: "All",       min: undefined, max: undefined },
-  { label: "Free",      min: 0,         max: 0         },
-  { label: "Under $50", min: 1,         max: 50        },
-  { label: "$50–$100",  min: 50,        max: 100       },
-  { label: "Over $100", min: 100,       max: undefined },
-]
+import NewCourseCard from "./NewCourseCard";
+import Loader from "@/components/ui/loader";
+import CourseCard from "./CourseCard";
 
 const FilterDropdown = ({ label, children }) => (
   <DropdownMenu>
-    <DropdownMenuTrigger className="flex items-center gap-1.5 px-4 py-2 bg-white rounded-lg text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors outline-none">
+    <DropdownMenuTrigger
+      className="flex items-center gap-1.5 px-4 py-2 bg-white rounded-lg text-sm font-medium 
+  text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors outline-none">
       {label}
       <ChevronDown className="w-4 h-4 text-gray-400" />
     </DropdownMenuTrigger>
@@ -33,130 +30,223 @@ const FilterDropdown = ({ label, children }) => (
       {children}
     </DropdownMenuContent>
   </DropdownMenu>
+
 )
 
+const LEVELS = ["beginner", "intermediate", "advanced"];
+const TYPES = ["free", "paid"];
+const SORT_OPTIONS = [
+  { value: "newest", label: "Newest" },
+  { value: "popular", label: "Most popular" },
+  { value: "rating", label: "Top rated" },
+];
 
 const CoursesPage = () => {
 
   const { data, isLoading, error } = useGetAllCourses()
-const { mutate: searchCourses, data: results, isPending } = useSearchCourses()
-  const { data:resultsGategories, isLoading :loadingGategories, error:errorGategories } = useGetGategories()
-  console.log(resultsCourses);
-  
-
-    const [filters, setFilters] = useState({
-    categoryId: "",
-    level: "",
-    type: "",
-    minPrice: undefined,
-    maxPrice: undefined,
-    keyword: "",
-  })
-  const [sort, setSort] = useState("")
-  const [page, setPage] = useState(1)
-
+  const { data: resultsGategories, isLoading: loadingGategories, error: errorGategories } = useGetGategories()
+  const { mutate: searchCourses, data: results, isPending } = useSearchCourses()
+  console.log(resultsGategories?.data);
   console.log(data);
 
-    
+
+  /*States */
+  const [sort, setSort] = useState("newest");
+  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({
+    keyword: "node",
+    categoryId: null,
+    level: null,
+    type: null,
+    minPrice: null,
+    maxPrice: null
+  })
+
+  {/**functions */ }
+  const handleFilters = useCallback((key, value) => {
+    setFilters(prev => ({ ...prev, [key]: value === "" ? null : value }));
+    setPage(1);
+  }, []);
+
+  useEffect(() => {
+    searchCourses({ filters, sort, page });
+  }, [filters, sort, page])
 
 
+  const categories = resultsGategories?.data ?? [];
+  const hasFilters = Object.values(filters).some(v => v !== "");
+  const coursesToShow = hasFilters ? results?.data?.courses : data?.data;
+  const loading = hasFilters ? isPending : isLoading;
 
   return (
     <div>
       <div className="flex flex-col gap-3">
         <p className="font-semibold text-xs text-[#3525CD]">Course Catalog</p>
-        <h1 className="text-6xl font-extrabold">Master New <span className="text-[#3525CD]">Dimensions</span></h1>
+        <h1 className="text-5xl font-extrabold">Master New <span className="text-[#3525CD]">Dimensions</span></h1>
         <p className="font-normal text-md text-[#464555]">Unlock your potential with our world-class curricula designed by industry
           experts and academic pioneers.</p>
       </div>
 
       {/*Search bar */}
-
-      <div className="bg-[#F1F3FF] rounded-md py-2 px-4 flex flex-col md:flex-row justify-between items-center">
-        <div className='relative'>
+      <div className="bg-[#F1F3FF] rounded-md py-2 px-4 w-full flex flex-col md:flex-row gap-3 items-center justify-between ">
+        <div className="relative w-4/12">
           <IoSearchSharp className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-300 pointer-events-none z-10" />
+
           <Input
             variant='white'
-            className='pl-9'
-            placeholder='Search for courses, subjects, or skills...'
-          />
+            type='search'
+            className='pl-9 text-black'
+            placeholder="Search for courses, subjects, or skills..."
+            onChange={(e) => handleFilters("keyword", e.target.value)} />
+
         </div>
-      <div className="bg-[#F1F3FF] rounded-md py-3 px-4 flex flex-col md:flex-row justify-between items-center gap-3">  
+        <div className="flex flex-col md:flex-row gap-3 items-center">
+          {/**DropDown filters [level: 'beginner', 'intermediate', 'advanced'] 
+           * [category]
+           * [type:'free', 'paid']
+           * minPrice , maxPrice
+           * sort by popular , rating
+          */}
+          <div className="flex flex-col md:flex-row items-center w-full gap-2 text-[#3525CD] text-md font-semibold">
 
-        {/* Filter Dropdowns */}
-        <div className="flex items-center gap-2 flex-wrap">
+            {/**category */}
+            <FilterDropdown label={filters.categoryId || "Category"}>
+              <DropdownMenuLabel>Price</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={filters.categoryId}
+                onValueChange={(val) => handleFilters("categoryId", val === "all" ? "" : val)} >
+                <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                {categories.map((category) => (
+                  <DropdownMenuRadioItem key={category._id} value={category._id}>
+                    {category.name}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </FilterDropdown>
 
-          {/* Category */}
-          <FilterDropdown label={filters.categoryId || "Category"}>
-            <DropdownMenuLabel>Category</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioGroup
-              value={filters.categoryId}
-              onValueChange={(val) => updateFilter("categoryId", val === "all" ? "" : val)}
-            >
-              <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="development">Development</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="design">Design</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="business">Business</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="marketing">Marketing</DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
-          </FilterDropdown>
+            {/**level */}
+            <FilterDropdown label={filters.level || "Level"}>
+              <DropdownMenuLabel>Level</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={filters.level}
+                onValueChange={(val) => handleFilters("level", val === "all" ? "" : val)} >
+                <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                {LEVELS.map((lvl) => {
+                  return (
+                    <DropdownMenuRadioItem key={lvl} value={lvl}>{lvl.charAt(0).toUpperCase() + lvl.slice(1)}</DropdownMenuRadioItem>
+                  )
+                })}
+              </DropdownMenuRadioGroup>
+            </FilterDropdown>
 
-          {/* Price Range */}
-          <FilterDropdown label={priceLabel}>
-            <DropdownMenuLabel>Price Range</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioGroup
-              value={`${filters.minPrice ?? ""}-${filters.maxPrice ?? ""}`}
-              onValueChange={(val) => {
-                const range = PRICE_RANGES.find(
-                  (r) => `${r.min ?? ""}-${r.max ?? ""}` === val
-                )
-                if (range) {
-                  setFilters((prev) => ({
-                    ...prev,
-                    minPrice: range.min,
-                    maxPrice: range.max,
-                  }))
-                  setPage(1)
-                }
-              }}
-            >
-              {PRICE_RANGES.map((r) => (
-                <DropdownMenuRadioItem
-                  key={r.label}
-                  value={`${r.min ?? ""}-${r.max ?? ""}`}
-                >
-                  {r.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </FilterDropdown>
+            {/* ✅ Type (free / paid) */}
+            <FilterDropdown label={filters.type || "Type"}>
+              <DropdownMenuLabel>Type</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={filters.type}
+                onValueChange={(val) => handleFilters("type", val === "all" ? "" : val)} >
+                <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                {TYPES.map((type) => {
+                  return (
+                    <DropdownMenuRadioItem key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</DropdownMenuRadioItem>
+                  )
+                })}
+              </DropdownMenuRadioGroup>
+            </FilterDropdown>
 
-          {/* Rating (maps to sort=rating) */}
-          <FilterDropdown label="Rating">
-            <DropdownMenuLabel>Sort by Rating</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioGroup
-              value={sort}
-              onValueChange={(val) => { setSort(val); setPage(1) }}
-            >
-              <DropdownMenuRadioItem value="">Newest</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="rating">Highest Rated</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="popular">Most Popular</DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
-          </FilterDropdown>
+            {/* ✅ Sort */}
+            <FilterDropdown label={SORT_OPTIONS.find(opt => opt.value === sort)?.label || "Sort by"}>
+              <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={sort}
+                onValueChange={setSort} >
+                {SORT_OPTIONS.map((option) => {
+                  return (
+                    <DropdownMenuRadioItem key={option.value} value={option.value}>{option.label}</DropdownMenuRadioItem>
+                  )
+                })}
+              </DropdownMenuRadioGroup>
+            </FilterDropdown>
 
-          {/* All Filters */}
-          <button className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#3525CD] hover:bg-[#3525CD]/10 rounded-lg transition-colors">
-            <SlidersHorizontal className="w-4 h-4" />
-            All Filters
-          </button>
+            {/**Price range — two controlled inputs */}
+            <FilterDropdown label={
+              filters.minPrice || filters.maxPrice
+                ? `$${filters.minPrice || 0} – $${filters.maxPrice || "∞"}`
+                : "Price"
+            }>
+              <DropdownMenuLabel>Price range</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <div className="flex gap-2 ">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={filters.minPrice}
+                  onChange={(e) => handleFilters("minPrice", e.target.value ? Number(e.target.value) : null)}
+                  className="w-10"
+                />
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={filters.maxPrice}
+                  onChange={(e) => handleFilters("maxPrice", e.target.value ? Number(e.target.value) : null)}
+                  className="w-10"
+                />
+              </div>
+            </FilterDropdown>
+
+            <div className="flex items-center gap-1.5 px-4 py-2  rounded-lg text-sm font-medium">
+              <SlidersHorizontal color="#3525CD" />
+              <p>All Filters</p>
+            </div>
+          </div>
         </div>
+
       </div>
 
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
+        {loading ? (
+          <div className="col-span-4 flex justify-center items-center min-h-40">
+            <Loader />
+          </div>
 
+        ) : coursesToShow?.length > 0 ? (
+          <>
+            <div key={coursesToShow[0]._id} className="col-span-2">
+              <NewCourseCard course={coursesToShow[0]} />
+            </div>
+            {coursesToShow.slice(1).map((course) => (
+              <div key={course._id} className="col-span-1">
+                <CourseCard course={course} />
+              </div>
+            ))}
+          </>
+
+
+        ) : (
+          <div className="col-span-4 text-center text-gray-400 py-10">
+            No courses found.
+          </div>
+        )}
       </div>
+      {hasFilters && results?.data?.totalPages > 1 && (
+        <div className="flex gap-2 justify-center mt-4">
+          {Array.from({ length: results.data.totalPages }, (_, i) => (
+            <button
+              key={i}
+              onClick={() => setPage(i + 1)}
+              className={`px-3 py-1 rounded border ${page === i + 1 ? "bg-[#3525CD] text-white" : "bg-white"
+                }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
+      )}
+
     </div>
   );
 };
