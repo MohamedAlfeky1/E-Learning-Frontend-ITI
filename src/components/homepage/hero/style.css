@@ -1,0 +1,42 @@
+.hero-welcome-badge {
+  padding: 6px 16px;
+  background-color: #e2dfff;
+  color: #3323cc;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: "Inter";
+  letter-spacing: 1.1px;
+}
+
+.hero-heading {
+  font-size: 72px;
+  font-weight: 800;
+  font-family: "Plus Jakarta Sans";
+  line-height: 72px;
+}
+
+.hero-description {
+  font-size: 20px;
+  font-weight: 400;
+  color: #464555;
+  font-family: "Inter";
+}
+
+.hero-btn {
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: "Plus Jakarta Sans";
+}
+
+.explore-btn {
+  background: linear-gradient(to right, #3525cd, #712ae2);
+  box-shadow:
+    0 8 10 -6 #3525cd33,
+    0 20 25 -5 #3525cd33;
+}
+
+.demo-btn {
+  background-color: white;
+  color: #3525cd;
+}
