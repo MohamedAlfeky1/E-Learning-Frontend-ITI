@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 const CategoryCard = () => {
   return (
     <div
-      className="category-card grow p-8 rounded-2xl text-wrap flex flex-col gap-4 justify-between cursor-pointer hover:scale-102 duration-150"
+      className="category-card grow p-8 rounded-2xl text-wrap flex flex-col gap-4 justify-between cursor-pointer hover:scale-101 duration-150"
       style={{ backgroundColor: "#F1F3FF" }}
     >
       <div className="flex justify-between">
