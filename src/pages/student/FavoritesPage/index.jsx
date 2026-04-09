@@ -2,48 +2,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Heart,
-  Share2,
-  FileText,
-  Zap,
-  Ruler,
-} from "lucide-react";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Heart, Share2, FileText, Zap, Ruler } from "lucide-react";
 import "./style.css";
+import CourseCard from "./CourseCard";
+import CourseImg from "../../../assets/favorites/favorite-card-thumb.jpg";
 
 export default function FavoritesPage() {
   return (
-    <div
-      className="min-h-screen text-white p-6 md:p-12 font-sans favorites-page-bg"
-    >
+    <div className="min-h-screen text-white p-6 md:p-12 font-sans favorites-page-bg">
       {/* Header */}
       <header className="mb-8 flex justify-between items-end">
         <div>
-          <p
-            className="tracking-widest uppercase mb-2 text-primary text-size-xs font-weight-700 font-inter"
-          >
+          <p className="tracking-widest uppercase mb-2 text-primary text-size-xs font-weight-700 font-inter">
             Saved Content
           </p>
-          <h1
-            className="mb-2 text-dark text-size-3xl font-weight-800 font-plus-jakarta"
-          >
+          <h1 className="mb-2 text-dark text-size-3xl font-weight-800 font-plus-jakarta">
             Favorites
           </h1>
-          <p
-            className="text-muted-foreground max-w-md text-secondary text-size-base font-weight-400 font-inter"
-          >
+          <p className="text-muted-foreground max-w-md text-secondary text-size-base font-weight-400 font-inter">
             Your curated collection of premium courses and study guides.
           </p>
         </div>
         <div className="text-right">
-          <span
-            className="text-primary text-size-xl font-weight-700 font-inter"
-          >
+          <span className="text-primary text-size-xl font-weight-700 font-inter">
             12
           </span>
-          <p
-            className="uppercase text-secondary text-size-xs font-weight-700 font-inter"
-          >
+          <p className="uppercase text-secondary text-size-xs font-weight-700 font-inter">
             Total Items
           </p>
         </div>
@@ -51,9 +36,7 @@ export default function FavoritesPage() {
 
       {/* Tabs Section */}
       <Tabs defaultValue="all" className="mb-10">
-        <TabsList
-          className="border-zinc-800 flex gap-2 tabs-list-bg font-weight-600"
-        >
+        <TabsList className="border-zinc-800 flex gap-2 tabs-list-bg font-weight-600">
           <TabsTrigger
             value="all"
             className="data-[state=active]:bg-[#3525CD] data-[state=active]:text-white px-5 py-4 rounded-full font-inter font-weight-600"
@@ -84,13 +67,8 @@ export default function FavoritesPage() {
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Featured Card */}
-        <Card className="lg:col-span-2 border-none ring-0 overflow-hidden bg-white text-black flex flex-col md:flex-row h-[400px]">
-          <div className="md:w-1/2 bg-zinc-900 flex items-center justify-center p-8">
-            {/* Visual Placeholder */}
-            <div className="relative w-32 h-32 border-8 border-zinc-800 rounded-full flex items-center justify-center">
-              <div className="w-16 h-16 bg-zinc-700 rotate-45" />
-            </div>
-          </div>
+        <Card className="lg:col-span-2 p-0 border-none ring-0 overflow-hidden bg-white text-black flex flex-col md:flex-row h-[400px]">
+          <img src={CourseImg} className="featured-img" />
           <CardContent className="md:w-1/2 p-8 flex flex-col justify-between relative">
             <Button
               variant="ghost"
@@ -107,26 +85,18 @@ export default function FavoritesPage() {
                 >
                   ADVANCED LEVEL
                 </Badge>
-                <span className="text-secondary">
-                  🕒 12h 45m
-                </span>
+                <span className="text-secondary">🕒 12h 45m</span>
               </div>
-              <h2
-                className="leading-tight mb-4 text-dark text-size-2xl font-weight-800 font-plus-jakarta"
-              >
+              <h2 className="leading-tight mb-4 text-dark text-size-2xl font-weight-800 font-plus-jakarta">
                 Quantum Physics: Beyond the Standard Model
               </h2>
-              <p
-                className="text-secondary text-size-base font-weight-400 font-inter"
-              >
+              <p className="text-secondary text-size-base font-weight-400 font-inter">
                 Dive deep into the mysteries of particle physics and wave
                 functions.
               </p>
             </div>
             <div className="flex gap-3">
-              <Button
-                className="flex-grow continue-btn font-inter font-weight-700"
-              >
+              <Button className="flex-grow continue-btn font-inter font-weight-700">
                 Continue Learning
               </Button>
               <Button variant="secondary" size="icon">
@@ -150,22 +120,14 @@ export default function FavoritesPage() {
 
           <Card className="flex-grow border-none ring-0 p-8 flex flex-col justify-between">
             <div className="flex justify-between">
-              <Badge
-                className="math-badge badge-base"
-              >
-                MATHEMATICS
-              </Badge>
+              <Badge className="math-badge badge-base">MATHEMATICS</Badge>
               <Heart className="text-red-500 w-5 h-5" />
             </div>
             <CardHeader className="p-0 mt-4">
-              <CardTitle
-                className="sidebar-title font-inter font-weight-600 text-size-lg"
-              >
+              <CardTitle className="sidebar-title font-inter font-weight-600 text-size-lg">
                 Multivariable Calculus Mastery
               </CardTitle>
-              <p
-                className="text-zinc-500 font-inter font-weight-400 text-size-sm"
-              >
+              <p className="text-zinc-500 font-inter font-weight-400 text-size-sm">
                 Master 3D graphing and partial derivatives.
               </p>
             </CardHeader>
@@ -178,6 +140,18 @@ export default function FavoritesPage() {
           </Card>
         </div>
       </div>
+
+      {/* Remaining Favorites */}
+      <ScrollArea className="whitespace-nowrap mb-8">
+        <div className="flex gap-4 py-4">
+          <CourseCard className="" />
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
 
       {/* Recommended Section */}
       <Card className="bg-indigo-50 border-none ring-0 p-10 text-black recommended-section">
@@ -195,7 +169,9 @@ export default function FavoritesPage() {
             <p className="text-zinc-500 mb-6 favorites-description">
               Based on your saved courses in Physics and Math.
             </p>
-            <Button className="bg-zinc-900 text-white rounded-lg">View Recommended</Button>
+            <Button className="bg-zinc-900 text-white rounded-lg">
+              View Recommended
+            </Button>
           </div>
           <div className="flex gap-4">
             {[
