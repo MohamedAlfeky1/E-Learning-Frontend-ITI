@@ -35,7 +35,7 @@ function CourseCard({ course }) {
                         <div className='flex items-center gap-1 text-sm font-medium text-gray-700'>
                             <FaStar color='#005523' />
                             {course.totalReviews ?? "4.9"}
-                            <span className="text-[#005523] font-normal">({course.ratingCount ?? "2.1k"})</span>
+                            <span className="text-[#005523] font-normal">({course.ratingCount ?? course.totalReviews})</span>
                         </div>
                     </div>
 
@@ -54,7 +54,7 @@ function CourseCard({ course }) {
                     {/* Price + Enroll */}
                     <div className="flex flex-col md:flex-row items-center gap-5 mt-auto pt-2">
                         {course.type === 'paid' ?
-                            <div className='flex flex-col md:flex-row items-center justify-between gap-3 w-full'>
+                            <div className='flex flex-row items-center justify-between gap-3 w-full'>
                                 <p className="text-2xl font-bold text-[#3525CD]">
                                     ${course.price}
                                 </p>
