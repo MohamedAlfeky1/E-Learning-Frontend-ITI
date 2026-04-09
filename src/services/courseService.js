@@ -21,6 +21,18 @@ export const createCourse = async (courseData) => {
 };
 
 /**
+ * Update an existing course.
+ * @param {string} id - The course ID
+ * @param {FormData} courseData - Updated course payload (supports file uploads)
+ */
+export const updateCourse = async (id, courseData) => {
+  const response = await axiosInstance.put(ENDPOINTS.COURSES_UPDATE(id), courseData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+};
+
+/**
  * Fetch a specific course by its unique ID.
  * @param {string} id - The course ID
  */
