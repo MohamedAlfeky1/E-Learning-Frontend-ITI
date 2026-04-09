@@ -150,6 +150,10 @@
   font-weight: var(--font-weight-medium);
 }
 
+.featured-img {
+    border-radius: 0;
+}
+
 .advanced-badge {
   background-color: #6bff8f;
   color: #002109;
