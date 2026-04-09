@@ -9,7 +9,7 @@ const CourseCard = () => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
-    <div className="course-card w-full lg:w-[300px] p-4 bg-white rounded-4xl flex flex-col gap-6 relative hover:scale-102 transition-transform duration-300 cursor-pointer">
+    <div className="course-card w-[200px] md:w-[300px] p-4 bg-white rounded-4xl flex flex-col gap-6 relative hover:scale-102 transition-transform duration-300 cursor-pointer">
       <Button
         variant="primary"
         size="icon"
@@ -41,8 +41,8 @@ const CourseCard = () => {
         <p className="course-description truncate">
           Exploring the intersection of traditional painting and digital media.
         </p>
-        <div className="price-details pt-4 flex justify-between items-end">
-          <p className="price">$49.99</p>
+        <div className="price-details pt-4 flex flex-col gap-3 md:flex-row md:justify-between md:items-end">
+          <p className="price text-center">$49.99</p>
           <Button className="details-btn px-4 py-2">Details</Button>
         </div>
       </div>
