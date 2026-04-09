@@ -8,7 +8,7 @@ import "./style.css";
 import CourseCard from "./CourseCard";
 import CourseImg from "../../../assets/favorites/favorite-card-thumb.jpg";
 
-export default function FavoritesPage() {
+const FavoritesPage = () => {
   return (
     <div className="min-h-screen text-white p-6 md:p-12 font-sans favorites-page-bg">
       {/* Header */}
@@ -35,8 +35,8 @@ export default function FavoritesPage() {
       </header>
 
       {/* Tabs Section */}
-      <Tabs defaultValue="all" className="mb-10">
-        <TabsList className="border-zinc-800 flex gap-2 tabs-list-bg font-weight-600">
+      <Tabs defaultValue="all" className="mb-10 pb-8">
+        <TabsList className="border-zinc-800 flex flex-wrap gap-2 tabs-list-bg font-weight-600">
           <TabsTrigger
             value="all"
             className="data-[state=active]:bg-[#3525CD] data-[state=active]:text-white px-5 py-4 rounded-full font-inter font-weight-600"
@@ -67,9 +67,9 @@ export default function FavoritesPage() {
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Featured Card */}
-        <Card className="lg:col-span-2 p-0 border-none ring-0 overflow-hidden bg-white text-black flex flex-col md:flex-row h-[400px]">
+        <Card className="lg:col-span-2 p-0 border-none ring-0 overflow-hidden bg-white flex flex-col md:flex-row relative">
           <img src={CourseImg} className="featured-img" />
-          <CardContent className="md:w-1/2 p-8 flex flex-col justify-between relative">
+          <CardContent className="md:w-1/2 p-8 flex flex-col gap-4 justify-between md:relative">
             <Button
               variant="ghost"
               size="icon"
@@ -194,3 +194,5 @@ export default function FavoritesPage() {
     </div>
   );
 }
+
+export default FavoritesPage;
