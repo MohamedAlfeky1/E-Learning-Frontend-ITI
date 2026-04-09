@@ -308,7 +308,9 @@ const CourseDetailsPage = () => {
                 <Button variant="secondary" className='rounded-md text-[#3525CD] flex-1 py-2'>
                   Book Appointment
                 </Button>
-                <Button variant="outline" className='rounded-md text-[#464555] flex-1 py-2'>
+                <Button variant="outline" className='rounded-md text-[#464555] flex-1 py-2'
+                // onClick={()=>{navigate('./')}}
+                >
                   Profile
                 </Button>
               </div>

@@ -17,22 +17,10 @@ import { useSearchCourses } from "@/mutations/useSearchMutations";
 import Loader from "@/components/ui/loader";
 import NewCourseCard from "@/components/course/NewCourseCard";
 import CourseCard from "@/components/course/CourseCard";
+import FilterDropdown from "@/components/course/FilterDropdown";
 
 
-const FilterDropdown = ({ label, children }) => (
-  <DropdownMenu>
-    <DropdownMenuTrigger
-      className="flex items-center gap-1.5 px-4 py-2 bg-white rounded-lg text-sm font-medium 
-  text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors outline-none">
-      {label}
-      <ChevronDown className="w-4 h-4 text-gray-400" />
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="start" className="min-w-[160px]">
-      {children}
-    </DropdownMenuContent>
-  </DropdownMenu>
 
-)
 
 const LEVELS = ["beginner", "intermediate", "advanced"];
 const TYPES = ["free", "paid"];
@@ -226,14 +214,12 @@ const CoursesPage = () => {
         ) : coursesToShow?.length > 0 ? (
           <>
             {hasFilters ? (
-              // لو فيه فلتر أو سيرش، كل الكورسات CourseCard
               coursesToShow.map((course) => (
                 <div key={course._id} className="col-span-1">
                   <CourseCard course={course} />
                 </div>
               ))
             ) : (
-              // لو مفيش فلتر أو سيرش، الأول NewCourseCard والباقي CourseCard
               <>
                 <div key={coursesToShow[0]._id} className="col-span-2">
                   <NewCourseCard course={coursesToShow[0]} />
