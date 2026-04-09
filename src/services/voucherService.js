@@ -1,5 +1,8 @@
 import axiosInstance from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints"; 
+/**
+ * Service object for handling Voucher-related API requests.
+ */
 
 export const voucherService = {
   getAllVouchers: async () => {
