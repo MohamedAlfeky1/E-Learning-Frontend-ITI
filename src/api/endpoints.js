@@ -42,12 +42,11 @@ export const ENDPOINTS = {
 
   // ─── Enrollments ─────────────────────────────────────────────────────────────
   ENROLLMENTS_CREATE: "/enrollments",
-  ENROLLMENTS_MY: "/enrollments/my",
+  ENROLLMENTS_MY: "/enrollments/my-courses",
   ENROLLMENTS_GET: (courseId) => `/enrollments/${courseId}`,
-  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) =>
-    `/enrollments/${courseId}/videos/${videoId}/complete`,
+  ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) => `/enrollments/update-progress/${enrollmentId}`,
+  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) => `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_PROGRESS: (courseId) => `/enrollments/${courseId}/progress`,
-
   // ─── Assignments ─────────────────────────────────────────────────────────────
   ASSIGNMENTS_LIST: (courseId) => `/courses/${courseId}/assignments`,
   ASSIGNMENTS_CREATE: (courseId) => `/courses/${courseId}/assignments`,
