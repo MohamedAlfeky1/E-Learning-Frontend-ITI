@@ -95,6 +95,12 @@
   color: #94A3B8;
   border: 2px dashed #C7C4D84D;
   border-radius: 32px;
+  cursor: pointer;
+}
+
+.new-hub:hover {
+  color: rgb(96, 105, 120);
+  border-color: #c7c4d8;
 }
 
 .new-hub-icon-bg {
