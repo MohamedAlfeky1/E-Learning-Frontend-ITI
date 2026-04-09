@@ -175,6 +175,7 @@ const router = createBrowserRouter([
       // Courses
       { path: "my-courses", element: <MyCoursesPage /> }, // /my-courses
       { path: "my-courses/:courseId/learn", element: <CoursePlayerPage /> }, // /my-courses/:courseId/learn
+      // {path: "course-viewer/:courseId", element: <CourseViewerPage /> }, // /my-courses/:courseId/view
 
       // Cart & Checkout
       { path: "cart", element: <CartPage /> }, // /cart
