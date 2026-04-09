@@ -3,23 +3,30 @@ import Loader from "@/components/ui/loader";
 import { useGetGategories } from "@/queries/categoryQueries";
 import { useGetCoursesById } from "@/queries/useCourses";
 import { FaStar } from "react-icons/fa6";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IoMdPeople } from "react-icons/io";
 import { IoPricetags, IoInfinite, IoFileTrayFullSharp } from "react-icons/io5";
 import { MdPlayLesson, MdOutlineStarBorder } from "react-icons/md";
 import { MdOutlineAddShoppingCart, MdOutlineVerified, MdOndemandVideo } from "react-icons/md";
 import { Button } from "../../components/ui/button";
 import { useGetCourseReview } from "@/queries/useReviewQueries";
+import { useUserQuery } from "@/queries/authQueries";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useState } from "react";
 
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
   console.log(id);
 
+  const { data: userData, isLoading: useLoading, error: useError } = useUserQuery(id);
   const { data, isLoading, error } = useGetCoursesById(id);
   const { data: resultsGategories, isLoading: loadingGategories, error: errorGategories } = useGetGategories()
   const { data: reviewsData, isLoading: loadingReviews, error: errorReviews } = useGetCourseReview(id);
+  const [openPopover, setOpenPopover] = useState(false);
 
+  const navigate = useNavigate()
+  const isLoggedIn = !!userData;
   const course = data?.data;
   const categoryName = resultsGategories?.data?.find(cat => cat._id === course?.categoryId)?.name || "Category";
   const totalVideos = course?.lessons.reduce((total, lesson) => total + lesson.videos.length, 0) || 0;
@@ -32,6 +39,17 @@ const CourseDetailsPage = () => {
   console.log("loadingReviews:", loadingReviews);
   console.log("errorReviews:", errorReviews);
 
+  const handleEnroll = () => {
+    if (!isLoggedIn) {
+      console.log("User not logged in. Redirecting to login page...");
+      setOpenPopover(true); // 
+      return;
+     
+    }
+
+    // continue enroll logic
+    console.log("Enroll user...");
+  }
 
   if (isLoading) {
     return (
@@ -226,10 +244,26 @@ const CourseDetailsPage = () => {
             )}
             <p>{course.updatedAt}</p>
 
-            <Button variant="success">
-              <MdOutlineAddShoppingCart color='white' />
-              Enroll Now
-            </Button>
+            <Popover open={openPopover} onOpenChange={setOpenPopover}>
+              <PopoverTrigger asChild>
+                <Button variant="success" onClick={handleEnroll}>
+                  <MdOutlineAddShoppingCart color='white' />
+                  Enroll Now
+                </Button>
+              </PopoverTrigger>
+
+              <PopoverContent>
+                <p>Please log in to enroll in this course.</p>
+
+                <Button
+                  variant="purpleBtnDefault"
+                  className="mt-2 w-full"
+                  onClick={() => navigate("/login")}
+                >
+                  Go to Login
+                </Button>
+              </PopoverContent>
+            </Popover>
 
             <Button variant="secondary" className='text-[#3525CD]'>
               Try Free Preview
