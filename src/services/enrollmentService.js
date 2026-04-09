@@ -1,5 +1,9 @@
 import axiosInstance from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
+/**
+ * Service for handling course enrollments and progress updates.
+ * @namespace enrollmentService
+ */
 
 export const enrollmentService = {
   getMyCourses: async () => {
@@ -12,7 +16,7 @@ export const enrollmentService = {
     return data.data;
   },
 
- updateProgress: async (enrollmentId, videoId) => {
+  updateProgress: async (enrollmentId, videoId) => {
   const { data } = await axiosInstance.patch(
     ENDPOINTS.ENROLLMENTS_UPDATE_PROGRESS(enrollmentId), 
     { videoId }
