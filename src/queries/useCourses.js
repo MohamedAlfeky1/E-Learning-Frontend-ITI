@@ -12,6 +12,15 @@ import { getAllCourses, getCourseById } from '../services/courseService';
 //   });
 // };
 
+
+/**
+ * Fetch a single course by ID using React Query.
+ *
+ * @function useGetCoursesById
+ * @param {string} id - Course ID
+ * @returns {import('@tanstack/react-query').UseQueryResult}
+ * React Query result with course data, loading, and error states.
+ */
 export const useGetCoursesById = (id) =>{
   return useQuery({
     queryKey:['course', id],
@@ -19,7 +28,13 @@ export const useGetCoursesById = (id) =>{
   })
 }
 
-
+/**
+ * Fetch all courses using React Query.
+ *
+ * @function useGetAllCourses
+ * @returns {import('@tanstack/react-query').UseQueryResult}
+ * React Query result with courses data, loading, and error states.
+ */
 export const useGetAllCourses = () =>{
   return useQuery({
     queryKey:['allCourses'],

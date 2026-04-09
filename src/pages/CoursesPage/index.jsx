@@ -18,17 +18,12 @@ import Loader from "@/components/ui/loader";
 import NewCourseCard from "@/components/course/NewCourseCard";
 import CourseCard from "@/components/course/CourseCard";
 import FilterDropdown from "@/components/course/FilterDropdown";
+import { LEVELS, SORT_OPTIONS, TYPES } from "@/data/courseFilters";
 
 
 
 
-const LEVELS = ["beginner", "intermediate", "advanced"];
-const TYPES = ["free", "paid"];
-const SORT_OPTIONS = [
-  { value: "newest", label: "Newest" },
-  { value: "popular", label: "Most popular" },
-  { value: "rating", label: "Top rated" },
-];
+
 
 const CoursesPage = () => {
 
