@@ -12,72 +12,40 @@ import {
   Zap,
   Ruler,
 } from "lucide-react";
+import "./style.css";
 
 export default function FavoritesPage() {
   return (
     <div
-      className="min-h-screen text-white p-6 md:p-12 font-sans"
-      style={{
-        backgroundColor: "#F9F9FF",
-      }}
+      className="min-h-screen text-white p-6 md:p-12 font-sans favorites-page-bg"
     >
       {/* Header */}
       <header className="mb-8 flex justify-between items-end">
         <div>
           <p
-            className="text-indigo-500 text-xs font-bold tracking-widest uppercase mb-2"
-            style={{
-              color: "#3525CD",
-              fontSize: "10px",
-              fontWeight: 700,
-              fontFamily: "Inter",
-            }}
+            className="tracking-widest uppercase mb-2 text-primary text-size-xs font-weight-700 font-inter"
           >
             Saved Content
           </p>
           <h1
-            className="text-4xl font-bold mb-2"
-            style={{
-              color: "#141B2B",
-              fontFamily: "Plus Jakarta Sans",
-              fontWeight: 800,
-              fontSize: "48px",
-            }}
+            className="mb-2 text-dark text-size-3xl font-weight-800 font-plus-jakarta"
           >
             Favorites
           </h1>
           <p
-            className="text-muted-foreground max-w-md"
-            style={{
-              color: "#464555",
-              fontFamily: "Inter",
-              fontSize: "16px",
-              fontWeight: 400,
-            }}
+            className="text-muted-foreground max-w-md text-secondary text-size-base font-weight-400 font-inter"
           >
             Your curated collection of premium courses and study guides.
           </p>
         </div>
         <div className="text-right">
           <span
-            className="text-3xl font-bold"
-            style={{
-              color: "#3525CD",
-              fontFamily: "Inter",
-              fontWeight: 700,
-              fontSize: "24px",
-            }}
+            className="text-primary text-size-xl font-weight-700 font-inter"
           >
             12
           </span>
           <p
-            className="text-xs uppercase"
-            style={{
-              color: "#464555",
-              fontFamily: "Inter",
-              fontWeight: 700,
-              fontSize: "10px",
-            }}
+            className="uppercase text-secondary text-size-xs font-weight-700 font-inter"
           >
             Total Items
           </p>
@@ -87,52 +55,29 @@ export default function FavoritesPage() {
       {/* Tabs Section */}
       <Tabs defaultValue="all" className="mb-10">
         <TabsList
-          className="border-zinc-800 flex gap-2"
-          style={{
-            backgroundColor: "#F9F9FF",
-            fontWeight: 600,
-          }}
+          className="border-zinc-800 flex gap-2 tabs-list-bg font-weight-600"
         >
           <TabsTrigger
             value="all"
-            className="data-[state=active]:bg-[#3525CD] data-[state=active]:text-white px-5 py-4 rounded-full"
-            style={{
-              fontFamily: "Inter",
-              fontWeight: 600,
-            }}
+            className="data-[state=active]:bg-[#3525CD] data-[state=active]:text-white px-5 py-4 rounded-full font-inter font-weight-600"
           >
             All Favorites
           </TabsTrigger>
           <TabsTrigger
             value="courses"
-            className="data-[state=active]:bg-[#3525CD] data-[state=active]:text-white px-5 py-4 rounded-full"
-            style={{
-              backgroundColor: "#F1F3FF",
-              color: "#464555",
-              fontWeight: 600,
-            }}
+            className="data-[state=active]:bg-[#3525CD] data-[state=active]:text-white px-5 py-4 rounded-full inactive-tab-bg font-weight-600"
           >
             Courses
           </TabsTrigger>
           <TabsTrigger
             value="lessons"
-            className="data-[state=active]:bg-[#3525CD] data-[state=active]:text-white px-5 py-4 rounded-full"
-            style={{
-              backgroundColor: "#F1F3FF",
-              color: "#464555",
-              fontWeight: 600,
-            }}
+            className="data-[state=active]:bg-[#3525CD] data-[state=active]:text-white px-5 py-4 rounded-full inactive-tab-bg font-weight-600"
           >
             Lessons
           </TabsTrigger>
           <TabsTrigger
             value="resources"
-            className="data-[state=active]:bg-[#3525CD] data-[state=active]:text-white px-5 py-4 rounded-full"
-            style={{
-              backgroundColor: "#F1F3FF",
-              color: "#464555",
-              fontWeight: 600,
-            }}
+            className="data-[state=active]:bg-[#3525CD] data-[state=active]:text-white px-5 py-4 rounded-full inactive-tab-bg font-weight-600"
           >
             Resources
           </TabsTrigger>
@@ -161,39 +106,21 @@ export default function FavoritesPage() {
               <div className="flex items-center gap-2 mb-4">
                 <Badge
                   variant="secondary"
-                  className="px-3 py-1"
-                  style={{
-                    backgroundColor: "#6BFF8F",
-                    color: "#002109",
-                    fontFamily: "Inter",
-                    fontSize: "10px",
-                    fontWeight: 700,
-                  }}
+                  className="px-3 py-1 advanced-badge badge-base"
                 >
                   ADVANCED LEVEL
                 </Badge>
-                <span className="text-xs" style={{ color: "#464555" }}>
+                <span className="text-secondary">
                   🕒 12h 45m
                 </span>
               </div>
               <h2
-                className="text-3xl font-extrabold leading-tight mb-4"
-                style={{
-                  color: "#141B2B",
-                  fontFamily: "Plus Jakarta Sans",
-                  fontSize: "30px",
-                  fontWeight: 800,
-                }}
+                className="leading-tight mb-4 text-dark text-size-2xl font-weight-800 font-plus-jakarta"
               >
                 Quantum Physics: Beyond the Standard Model
               </h2>
               <p
-                style={{
-                  color: "#464555",
-                  fontFamily: "Inter",
-                  fontSize: "16px",
-                  fontWeight: 400,
-                }}
+                className="text-secondary text-size-base font-weight-400 font-inter"
               >
                 Dive deep into the mysteries of particle physics and wave
                 functions.
@@ -201,13 +128,7 @@ export default function FavoritesPage() {
             </div>
             <div className="flex gap-3">
               <Button
-                className="flex-grow"
-                style={{
-                  background: "linear-gradient(to right, #3525CD, #712AE2)",
-                  fontFamily: "Inter",
-                  fontSize: "14px",
-                  fontWeight: 700,
-                }}
+                className="flex-grow continue-btn font-inter font-weight-700"
               >
                 Continue Learning
               </Button>
@@ -233,14 +154,7 @@ export default function FavoritesPage() {
           <Card className="flex-grow border-none p-8 flex flex-col justify-between">
             <div className="flex justify-between">
               <Badge
-                className=""
-                style={{
-                  backgroundColor: "#EADDFF",
-                  color: "#25005A",
-                  fontFamily: "Inter",
-                  fontWeight: 700,
-                  fontSize: "10px",
-                }}
+                className="math-badge badge-base"
               >
                 MATHEMATICS
               </Badge>
@@ -248,35 +162,19 @@ export default function FavoritesPage() {
             </div>
             <CardHeader className="p-0 mt-4">
               <CardTitle
-                className="text-2xl"
-                style={{
-                  fontFamily: "Inter",
-                  fontWeight: 600,
-                  fontSize: "20px",
-                }}
+                className="sidebar-title font-inter font-weight-600 text-size-lg"
               >
                 Multivariable Calculus Mastery
               </CardTitle>
               <p
-                className="text-sm text-zinc-500"
-                style={{
-                  fontFamily: "Inter",
-                  fontWeight: 400,
-                  fontSize: "12px",
-                }}
+                className="text-zinc-500 font-inter font-weight-400 text-size-sm"
               >
                 Master 3D graphing and partial derivatives.
               </p>
             </CardHeader>
             <Button
               variant="outline"
-              className="w-full mt-6 border-2 border-indigo-100 rounded-md bg-white"
-              style={{
-                color: "#3525CD",
-                fontFamily: "Inter",
-                fontWeight: 700,
-                fontSize: "12px",
-              }}
+              className="w-full mt-6 border-2 border-indigo-100 rounded-md bg-white text-primary font-inter font-weight-700 text-size-sm"
             >
               Add to Cart • $49.00
             </Button>
