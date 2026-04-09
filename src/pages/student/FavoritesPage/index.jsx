@@ -5,9 +5,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Heart,
   Share2,
-  // ShoppingCart,
-  // Play,
-  // Plus,
   FileText,
   Zap,
   Ruler,
@@ -87,7 +84,7 @@ export default function FavoritesPage() {
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Featured Card */}
-        <Card className="lg:col-span-2 border-none overflow-hidden bg-white text-black flex flex-col md:flex-row h-[400px]">
+        <Card className="lg:col-span-2 border-none ring-0 overflow-hidden bg-white text-black flex flex-col md:flex-row h-[400px]">
           <div className="md:w-1/2 bg-zinc-900 flex items-center justify-center p-8">
             {/* Visual Placeholder */}
             <div className="relative w-32 h-32 border-8 border-zinc-800 rounded-full flex items-center justify-center">
@@ -141,7 +138,7 @@ export default function FavoritesPage() {
 
         {/* Sidebar Stack */}
         <div className="flex flex-col gap-6">
-          <Card className="bg-indigo-50 border-none p-4 flex flex-row items-center gap-4">
+          <Card className="bg-indigo-50 border-none ring-0 p-4 flex flex-row items-center gap-4">
             <div className="bg-white p-3 rounded-lg shadow-sm">
               <FileText color="#712AE2" />
             </div>
@@ -151,7 +148,7 @@ export default function FavoritesPage() {
             </div>
           </Card>
 
-          <Card className="flex-grow border-none p-8 flex flex-col justify-between">
+          <Card className="flex-grow border-none ring-0 p-8 flex flex-col justify-between">
             <div className="flex justify-between">
               <Badge
                 className="math-badge badge-base"
@@ -183,29 +180,29 @@ export default function FavoritesPage() {
       </div>
 
       {/* Recommended Section */}
-      <Card className="bg-indigo-50 border-none p-10 text-black">
+      <Card className="bg-indigo-50 border-none ring-0 p-10 text-black recommended-section">
         <div className="flex flex-col lg:flex-row justify-between gap-8">
           <div className="max-w-md">
             <Badge
               variant="outline"
-              className="text-indigo-500 border-indigo-200 mb-4"
+              className="text-indigo-500 border-indigo-200 mb-4 recommended-badge"
             >
               RECOMMENDED FOR YOU
             </Badge>
-            <h2 className="text-3xl font-bold mb-4">
+            <h2 className="text-3xl font-bold mb-4 recommended-title">
               Similar to your favorites
             </h2>
-            <p className="text-zinc-500 mb-6">
+            <p className="text-zinc-500 mb-6 favorites-description">
               Based on your saved courses in Physics and Math.
             </p>
-            <Button className="bg-zinc-900 text-white">View Recommended</Button>
+            <Button className="bg-zinc-900 text-white rounded-lg">View Recommended</Button>
           </div>
           <div className="flex gap-4">
             {[
               { title: "Relativity Intro", icon: <Zap />, meta: "4.8 Rating" },
               { title: "Linear Algebra", icon: <Ruler />, meta: "Top Rated" },
             ].map((item, i) => (
-              <Card key={i} className="w-40 p-6 border-none shadow-sm">
+              <Card key={i} className="w-40 p-6 ring-0 shadow-sm">
                 <div className="bg-indigo-50 w-10 h-10 rounded-lg flex items-center justify-center text-indigo-600 mb-4">
                   {item.icon}
                 </div>
