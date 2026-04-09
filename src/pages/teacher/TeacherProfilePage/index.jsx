@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import Loader from "@/components/ui/loader";
 import { useUserQuery } from "@/queries/authQueries";
@@ -20,18 +19,14 @@ import { Switch } from "@/components/ui/switch";
 import { PiBank } from "react-icons/pi";
 import { MdAlternateEmail } from "react-icons/md";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-
-
+import { Textarea } from "@/components/ui/textarea";
 
 const TeacherProfilePage = () => {
-
   const fileInputRef = useRef();
   const { data, isLoading, error } = useUserQuery();
   const { data: myCourses, isLoading: coursesLoading, error: coursesError } = useTeacherCourses();
-  console.log(myCourses);
+  console.log("myCourses", myCourses);
   const profileUrl = `${window.location.origin}/teacher/profile/${data?._id}`;
-
-
 
   console.log("data", data);
 
@@ -84,7 +79,7 @@ const TeacherProfilePage = () => {
       firstName: data?.firstName || "",
       lastName: data?.lastName || "",
       phone: data?.phone || "",
-      bio: "" || "",
+      bio: data?.bio || "",
       avatar: data?.avatar || "",
     },
     enableReinitialize: true,
@@ -182,7 +177,7 @@ const TeacherProfilePage = () => {
             <h1 className="text-[#141B2B] font-extrabold text-xl md:text-2xl">
               {profileFormik.values.firstName + " " + profileFormik.values.lastName}
             </h1>
-            <p className="text-sm text-gray-500">{profileFormik.data || 'No BIO Provided'}</p>
+            <p className="text-sm text-gray-500">{profileFormik.values.bio || 'No BIO Provided'}</p>
             <Badge className='capitalize' variant="success"><BiSolidBadgeCheck />{data.role}</Badge>
 
             {/* Buttons */}
@@ -230,7 +225,7 @@ const TeacherProfilePage = () => {
 
               <form onSubmit={profileFormik.handleSubmit} >
 
-                <Dialog>
+                <Dialog >
                   <DialogTrigger asChilds>
                     <LuPencilLine color="#464555" size={22} />
                   </DialogTrigger>
@@ -243,7 +238,8 @@ const TeacherProfilePage = () => {
 
                     {/* الفورم هنا */}
                     <form className="flex flex-col gap-2 mt-2">
-                      <Input
+                      <div className="flex flex-row gap-3">
+                         <Input
                         type="text"
                         name="firstName"
                         value={profileFormik.values.firstName}
@@ -252,6 +248,13 @@ const TeacherProfilePage = () => {
                         type="text"
                         name="lastName"
                         value={profileFormik.values.lastName}
+                        onChange={profileFormik.handleChange} onBlur={profileFormik.handleBlur} />
+                      </div>
+                     
+                      <Input
+                        type="email"
+                        name="email"
+                        value={profileFormik.values.email}
                         onChange={profileFormik.handleChange} onBlur={profileFormik.handleBlur} />
                       <Input
                         type="text"
@@ -264,6 +267,13 @@ const TeacherProfilePage = () => {
                         name="status"
                         placeholder={data.status}
                       />
+                      <Textarea
+                        className='border border-transparent bg-secondary'
+                        rows='100'
+                        name='bio'
+                        placeholder='Enter You Bio / About'
+                        value={profileFormik.values.bio}
+                        onChange={profileFormik.handleChange} onBlur={profileFormik.handleBlur} />
                       <Button type="submit" >
                         Save
                       </Button>
@@ -290,7 +300,7 @@ const TeacherProfilePage = () => {
 
       <div className="col-span-1 bg-gradient-to-r from-[#3525CD]  to-[#712AE2] shadow-md shadow-[#000000]/10 px-3 py-5 rounded-md">
         <div className="flex flex-col items-center gap-3 mb-3">
-          <div className="flex justify-between items-center gap-5">
+          <div className="flex justify-between items-center w-full">
             <span className="text-[#F6EFEF] text-sm">Student View Preview</span>
             <IoEyeOutline color="white" />
           </div>
@@ -300,7 +310,7 @@ const TeacherProfilePage = () => {
               <Badge variant="lightPruple" className='rounded-full py-2'><MdOutlineStarOutline size={13} color="white" /></Badge>
               <h3 className="text-white text-md font-light">Total Review</h3>
             </div>
-            <p className="ms-10 text-white font-cold">{myCourses.totalReview || 0}/{myCourses.totalStudents || 0}</p>
+            <p className="ms-10 text-white font-cold">{myCourses?.totalReviews || 0}/{myCourses?.totalStudents || 0}</p>
           </div>
 
           <div className="bg-[#d6bdfe] gap-2 rounded-md w-full p-2 shadow-lg shadow-gray-500/50">
@@ -308,7 +318,7 @@ const TeacherProfilePage = () => {
               <Badge variant="lightPruple" className='rounded-full py-2'><IoPeople size={13} color="white" /></Badge>
               <h3 className="text-white text-md font-light">Total Student</h3>
             </div>
-            <p className="ms-10 text-white font-cold">{myCourses.totalStudents || 0}+</p>
+            <p className="ms-10 text-white font-cold">{myCourses?.totalStudents || 0}+</p>
           </div>
         </div>
 
