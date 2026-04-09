@@ -17,7 +17,7 @@ import { useSearchCourses } from "@/mutations/useSearchMutations";
 import Loader from "@/components/ui/loader";
 import NewCourseCard from "@/components/course/NewCourseCard";
 import CourseCard from "@/components/course/CourseCard";
- 
+
 
 const FilterDropdown = ({ label, children }) => (
   <DropdownMenu>
@@ -93,93 +93,95 @@ const CoursesPage = () => {
 
       {/*Search bar */}
       <div className="bg-[#F1F3FF] rounded-md py-2 px-4 w-full flex flex-col md:flex-row gap-3 items-center justify-between ">
-        <div className="relative w-4/12">
+        <div className="relative">
           <IoSearchSharp className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-300 pointer-events-none z-10" />
 
           <Input
             variant='white'
             type='search'
-            className='pl-9 text-black'
+            className='pl-9 text-black flex-1 w-full'
             placeholder="Search for courses, subjects, or skills..."
             onChange={(e) => handleFilters("keyword", e.target.value)} />
 
         </div>
         <div className="flex flex-col md:flex-row gap-3 items-center">
-          {/**DropDown filters [level: 'beginner', 'intermediate', 'advanced'] 
-           * [category]
-           * [type:'free', 'paid']
-           * minPrice , maxPrice
-           * sort by popular , rating
-          */}
+
           <div className="flex flex-col md:flex-row items-center w-full gap-2 text-[#3525CD] text-md font-semibold">
 
-            {/**category */}
-            <FilterDropdown
-              label={
-                filters.categoryId
-                  ? categories.find(cat => cat._id === filters.categoryId)?.name || "Category"
-                  : "Category"
-              }
-            >              <DropdownMenuLabel>Price</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup
-                value={filters.categoryId}
-                onValueChange={(val) => handleFilters("categoryId", val === "all" ? "" : val)} >
-                <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
-                {categories.map((category) => (
-                  <DropdownMenuRadioItem key={category._id} value={category._id}>
-                    {category.name}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </FilterDropdown>
+            <div className="flex flex-row items-center gap-2 w-full">
 
-            {/**level */}
-            <FilterDropdown label={filters.level || "Level"}>
-              <DropdownMenuLabel>Level</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup
-                value={filters.level}
-                onValueChange={(val) => handleFilters("level", val === "all" ? "" : val)} >
-                <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
-                {LEVELS.map((lvl) => {
-                  return (
-                    <DropdownMenuRadioItem key={lvl} value={lvl}>{lvl.charAt(0).toUpperCase() + lvl.slice(1)}</DropdownMenuRadioItem>
-                  )
-                })}
-              </DropdownMenuRadioGroup>
-            </FilterDropdown>
+              {/**category */}
+              <FilterDropdown
+                label={
+                  filters.categoryId
+                    ? categories.find(cat => cat._id === filters.categoryId)?.name || "Category"
+                    : "Category"
+                }
+              >              <DropdownMenuLabel>Price</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={filters.categoryId}
+                  onValueChange={(val) => handleFilters("categoryId", val === "all" ? "" : val)} >
+                  <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                  {categories.map((category) => (
+                    <DropdownMenuRadioItem key={category._id} value={category._id}>
+                      {category.name}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </FilterDropdown>
 
-            {/* ✅ Type (free / paid) */}
-            <FilterDropdown label={filters.type || "Type"}>
-              <DropdownMenuLabel>Type</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup
-                value={filters.type}
-                onValueChange={(val) => handleFilters("type", val === "all" ? "" : val)} >
-                <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
-                {TYPES.map((type) => {
-                  return (
-                    <DropdownMenuRadioItem key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</DropdownMenuRadioItem>
-                  )
-                })}
-              </DropdownMenuRadioGroup>
-            </FilterDropdown>
+              {/**level */}
+              <FilterDropdown label={filters.level || "Level"}>
+                <DropdownMenuLabel>Level</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={filters.level}
+                  onValueChange={(val) => handleFilters("level", val === "all" ? "" : val)} >
+                  <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                  {LEVELS.map((lvl) => {
+                    return (
+                      <DropdownMenuRadioItem key={lvl} value={lvl}>{lvl.charAt(0).toUpperCase() + lvl.slice(1)}</DropdownMenuRadioItem>
+                    )
+                  })}
+                </DropdownMenuRadioGroup>
+              </FilterDropdown>
+            </div>
 
-            {/* ✅ Sort */}
-            <FilterDropdown label={SORT_OPTIONS.find(opt => opt.value === sort)?.label || "Sort by"}>
-              <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup
-                value={sort}
-                onValueChange={setSort} >
-                {SORT_OPTIONS.map((option) => {
-                  return (
-                    <DropdownMenuRadioItem key={option.value} value={option.value}>{option.label}</DropdownMenuRadioItem>
-                  )
-                })}
-              </DropdownMenuRadioGroup>
-            </FilterDropdown>
+            <div className="flex flex-row items-center gap-2 w-full">
+
+
+              {/* ✅ Type (free / paid) */}
+              <FilterDropdown label={filters.type || "Type"}>
+                <DropdownMenuLabel>Type</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={filters.type}
+                  onValueChange={(val) => handleFilters("type", val === "all" ? "" : val)} >
+                  <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                  {TYPES.map((type) => {
+                    return (
+                      <DropdownMenuRadioItem key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</DropdownMenuRadioItem>
+                    )
+                  })}
+                </DropdownMenuRadioGroup>
+              </FilterDropdown>
+
+              {/* ✅ Sort */}
+              <FilterDropdown label={SORT_OPTIONS.find(opt => opt.value === sort)?.label || "Sort by"}>
+                <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={sort}
+                  onValueChange={setSort} >
+                  {SORT_OPTIONS.map((option) => {
+                    return (
+                      <DropdownMenuRadioItem key={option.value} value={option.value}>{option.label}</DropdownMenuRadioItem>
+                    )
+                  })}
+                </DropdownMenuRadioGroup>
+              </FilterDropdown>
+            </div>
 
             {/**Price range — two controlled inputs */}
             <FilterDropdown label={
@@ -237,7 +239,7 @@ const CoursesPage = () => {
                   <NewCourseCard course={coursesToShow[0]} />
                 </div>
                 {coursesToShow.slice(1).map((course) => (
-                  <div key={course._id} className="col-span-1">
+                  <div key={course._id} className="col-span-2 sm:col-span-2 md:col-span-1">
                     <CourseCard course={course} />
                   </div>
                 ))}

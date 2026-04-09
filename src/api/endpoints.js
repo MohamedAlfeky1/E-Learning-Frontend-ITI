@@ -87,7 +87,8 @@ export const ENDPOINTS = {
   PAYMENTS_MY: "/payments/my",
 
   // ─── Reviews ──────────────────────────────────────────────────────────────────
-  REVIEWS_LIST: (courseId) => `/courses/${courseId}/reviews`,
+  REVIEWS_LIST: (courseId) => `/courseReviews/${courseId}/reviews`,
+  REVIEW_COURSE_BY_ID:(courseId) => `/courseReviews/${courseId}`,
   REVIEWS_CREATE: (courseId) => `/courses/${courseId}/reviews`,
   REVIEWS_DELETE: (id) => `/reviews/${id}`,
 
