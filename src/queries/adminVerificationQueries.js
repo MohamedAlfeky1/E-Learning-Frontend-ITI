@@ -1,7 +1,14 @@
 import { getAllVerifications } from '@/services/verificationService';
 import { useQuery } from '@tanstack/react-query';
 
-// Example TanStack Query hook for fetching courses
+/**
+ * Fetch all teacher verification requests using React Query.
+ *
+ * @function useTeacherVerification
+ * @returns {import('@tanstack/react-query').UseQueryResult}
+ * React Query result with data, loading, and error states.
+ */
+
 export const useTeacherVerification = () => {
   return useQuery({
     queryKey: ['verifications'],
