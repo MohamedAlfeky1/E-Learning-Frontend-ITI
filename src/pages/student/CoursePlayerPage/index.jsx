@@ -230,39 +230,7 @@ const CoursePlayerPage = () => {
             <TabsContent value="quizes" className="mt-4">
               <div className="flex flex-col gap-3">
 
-                {selectedVideo?.materials?.length > 0 ? (
-                  selectedVideo.materials.map((file) => (
-                    <div
-                      key={file._id}
-                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition"
-                    >
-                      {/* Left side */}
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 flex items-center justify-center bg-red-100 text-red-600 rounded-lg">
-                          <FiFileText />
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm font-medium text-gray-700">
-                            {file.title}
-                          </h3>
-                          <p className="text-xs text-gray-400">PDF Document</p>
-                        </div>
-                      </div>
-
-                      {/* Right side */}
-                      <a
-                        href={file.url}
-                        download
-                        className="text-gray-500 hover:text-green-600"
-                      >
-                        <FiDownload size={18} />
-                      </a>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-gray-500">No materials available</p>
-                )}
+                No Quizes Provide
 
               </div>
 
