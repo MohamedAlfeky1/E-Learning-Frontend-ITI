@@ -137,7 +137,10 @@ const PlusIcon = () => (
 const EarningsTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="earnings-tooltip">
+      <div
+        className="bg-slate-950 text-white text-[10px] rounded-md px-2 py-1"
+        style={{ fontFamily: "Inter, sans-serif" }}
+      >
         <span>{payload[0].payload.label}</span>
       </div>
     );
@@ -169,58 +172,57 @@ const ActiveBarLabel = (props) => {
 
 // Stat Card component
 const StatCard = ({ icon, badge, badgeColor, label, children }) => (
-  <div className="stat-card">
-    <div className="stat-card__header">
+  <div className="bg-white rounded-[24px] p-6 flex flex-col gap-1 shadow-[0_20px_40px_-12px_rgba(20,27,43,0.04)]">
+    <div className="flex items-center justify-between mb-3">
       {icon}
-      <span className="stat-card__badge" style={{ color: badgeColor }}>
+      <span className="text-xs font-semibold leading-4 px-2 py-1 rounded-full" style={{ color: badgeColor }}>
         {badge}
       </span>
     </div>
-    <p className="stat-card__label">{label}</p>
-    <div className="stat-card__value">{children}</div>
+    <p className="text-slate-600 text-[11px] font-semibold uppercase tracking-[1.2px] mb-0">{label}</p>
+    <div className="text-slate-950 text-3xl font-extrabold mt-1">{children}</div>
   </div>
 );
 
 // Course Card component
 const CourseCard = ({ course }) => (
-  <div className="course-card">
-    <div className="course-card__thumbnail">
+  <div className="bg-white rounded-[24px] overflow-hidden shadow-[0_20px_40px_-12px_rgba(20,27,43,0.04)] flex flex-col">
+    <div className="relative h-48 overflow-hidden">
       {course.image ? (
-        <img
-          src={course.image}
-          alt={course.title}
-          className="course-card__img"
-        />
+        <img src={course.image} alt={course.title} className="w-full h-full object-cover" />
       ) : (
-        <div className="course-card__img-placeholder" />
+        <div className="w-full h-full bg-gradient-to-br from-slate-950 via-slate-800 to-slate-950" />
       )}
-      <span className="course-card__enrollment-badge">
+      <span className="absolute top-4 right-4 rounded-full bg-white/70 border border-white/20 backdrop-blur px-3 py-1 text-[10px] font-bold uppercase tracking-[0.5px] text-indigo-700">
         {course.enrollments} Enrollments
       </span>
     </div>
-    <div className="course-card__body">
-      <div className="course-card__title-row">
-        <h3 className="course-card__title">{course.title}</h3>
-        <button className="course-card__menu-btn" aria-label="More options">
+    <div className="p-6 flex flex-col gap-2 flex-1">
+      <div className="flex items-start justify-between gap-2">
+        <h3
+          className="text-slate-950 text-base font-bold leading-5 flex-1"
+          style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
+        >
+          {course.title}
+        </h3>
+        <button className="p-1 rounded-lg hover:bg-slate-100" aria-label="More options">
           <DotsMenuIcon />
         </button>
       </div>
-      <div className="course-card__students">
-        <div className="student-avatars">
-          <div className="student-avatar student-avatar--1" />
-          <div className="student-avatar student-avatar--2" />
-          <div className="student-avatar student-avatar--3" />
+      <div className="flex items-center gap-2 pb-2">
+        <div className="flex">
+          <div className="w-6 h-6 rounded-full border-2 border-white -ml-1 first:ml-0 bg-slate-300" />
+          <div className="w-6 h-6 rounded-full border-2 border-white -ml-1 bg-slate-400" />
+          <div className="w-6 h-6 rounded-full border-2 border-white -ml-1 bg-slate-500" />
         </div>
-        <span className="course-card__student-count">
-          +{course.othersStudying} others studying
-        </span>
+        <span className="text-slate-600 text-xs font-medium">+{course.othersStudying} others studying</span>
       </div>
-      <div className="course-card__actions">
-        <button className="course-card__edit-btn">
+      <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4 mt-2">
+        <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.6px] text-indigo-700">
           <EditIcon />
           Edit Course
         </button>
-        <button className="course-card__stats-btn">
+        <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.6px] text-slate-600">
           <StatsIcon />
           Stats
         </button>
@@ -231,27 +233,34 @@ const CourseCard = ({ course }) => (
 
 const TeacherDashboardPage = () => {
   return (
-    <div className="dashboard-page p-8">
+    <div
+      className="p-8 flex flex-col gap-10 bg-slate-50 min-h-full"
+      style={{ fontFamily: "Inter, -apple-system, Roboto, Helvetica, sans-serif" }}
+    >
       {/* Hero Greeting */}
-      <section className="dashboard-hero">
-        <h1 className="dashboard-hero__title">
+      <section className="space-y-2">
+        <h1
+          className="text-slate-950 text-3xl font-bold leading-[36px] tracking-[-0.75px]"
+          style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
+        >
           Welcome back, Academic Prism Instructor
         </h1>
-        <p className="dashboard-hero__subtitle">
-          Your students have shown a 12% increase in engagement this week. Here
-          is a summary of your digital campus performance.
+        <p className="text-slate-600 text-base leading-6 max-w-3xl">
+          Your students have shown a 12% increase in engagement this week. Here is a summary of your digital campus performance.
         </p>
       </section>
 
       {/* Statistics Grid */}
-      <div className="stats-grid">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
         <StatCard
           icon={<RevenueIcon />}
           badge="+14.2%"
           badgeColor="#007030"
           label="Total Revenue"
         >
-          <span className="stat-value">$24,850.00</span>
+          <span className="text-slate-950 text-3xl font-extrabold mt-1 block">
+            $24,850.00
+          </span>
         </StatCard>
 
         <StatCard
@@ -260,7 +269,9 @@ const TeacherDashboardPage = () => {
           badgeColor="#007030"
           label="Enrollments"
         >
-          <span className="stat-value">1,284</span>
+          <span className="text-slate-950 text-3xl font-extrabold mt-1 block">
+            1,284
+          </span>
         </StatCard>
 
         <StatCard
@@ -269,9 +280,9 @@ const TeacherDashboardPage = () => {
           badgeColor="#94A3B8"
           label="Avg Rating"
         >
-          <span className="stat-value stat-value--rating">
+          <span className="inline-flex items-baseline gap-0.5 text-slate-950 text-3xl font-extrabold mt-1">
             4.9
-            <span className="stat-value__suffix">/5.0</span>
+            <span className="text-slate-400 text-sm font-medium">/5.0</span>
           </span>
         </StatCard>
 
@@ -281,25 +292,30 @@ const TeacherDashboardPage = () => {
           badgeColor="#BA1A1A"
           label="Pending Review"
         >
-          <span className="stat-value">42</span>
+          <span className="text-slate-950 text-3xl font-extrabold mt-1 block">
+            42
+          </span>
         </StatCard>
       </div>
 
       {/* Chart + Events Panel */}
-      <div className="dashboard-middle-row">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         {/* Weekly Earnings Chart */}
-        <div className="earnings-section">
-          <div className="earnings-section__header">
+        <div className="xl:col-span-2 bg-white rounded-[24px] p-8 flex flex-col gap-8 shadow-[0_20px_40px_-12px_rgba(20,27,43,0.04)]">
+          <div className="flex items-center justify-between">
             <div>
-              <h2 className="earnings-section__title">Weekly Earnings</h2>
-              <p className="earnings-section__subtitle">
+              <h2
+                className="text-slate-950 text-lg font-bold leading-7"
+                style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
+              >
+                Weekly Earnings
+              </h2>
+              <p className="text-slate-600 text-sm leading-6">
                 Revenue flow from 7 Mar - 14 Mar
               </p>
             </div>
-            <div className="earnings-section__filter">
-              <span className="earnings-section__filter-label">
-                Last 7 Days
-              </span>
+            <div className="flex items-center justify-between gap-1 min-w-[140px] rounded-xl bg-slate-100 px-3 py-2 cursor-pointer">
+              <span className="text-slate-950 text-sm font-bold">Last 7 Days</span>
               <svg width="21" height="21" viewBox="0 0 21 21" fill="none">
                 <path
                   d="M6.2998 8.40039L10.4998 12.6004L14.6998 8.40039"
@@ -312,7 +328,7 @@ const TeacherDashboardPage = () => {
             </div>
           </div>
 
-          <div className="earnings-chart">
+          <div className="flex-1">
             <ResponsiveContainer width="100%" height={256}>
               <BarChart
                 data={earningsData}
@@ -361,544 +377,65 @@ const TeacherDashboardPage = () => {
         </div>
 
         {/* Upcoming Events */}
-        <div className="events-panel">
-          <h2 className="events-panel__title">Upcoming Events</h2>
-          <div className="events-list">
+        <div className="bg-gradient-to-br from-indigo-950 via-indigo-700 to-fuchsia-700 rounded-[24px] p-8 flex flex-col gap-6">
+          <h2
+            className="text-white text-lg font-bold leading-7"
+            style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
+          >Upcoming Events</h2>
+          <div className="flex flex-col gap-5 flex-1">
             {upcomingEvents.map((event, i) => (
-              <div key={i} className="event-item">
-                <div className="event-item__date-badge">
-                  <span className="event-item__day">{event.day}</span>
-                  <span className="event-item__month">{event.month}</span>
+              <div key={i} className="flex items-start gap-4">
+                <div className="flex h-12 w-12 flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/10 backdrop-blur">
+                  <span className="text-white text-xs font-bold leading-4">{event.day}</span>
+                  <span className="text-white text-[10px] font-normal uppercase tracking-[-0.4px]">{event.month}</span>
                 </div>
-                <div className="event-item__info">
-                  <p className="event-item__title">{event.title}</p>
-                  <p className="event-item__subtitle">{event.subtitle}</p>
+                <div>
+                  <p className="text-white text-sm font-bold leading-5 mb-0">{event.title}</p>
+                  <p className="text-slate-200 text-xs leading-4 mb-0">{event.subtitle}</p>
                 </div>
               </div>
             ))}
           </div>
-          <button className="events-panel__cta">View Full Calendar</button>
+          <button className="w-full rounded-xl border border-white/60 bg-transparent py-3 text-sm font-bold text-white transition hover:bg-white/10">
+            View Full Calendar
+          </button>
         </div>
       </div>
 
       {/* Active Courses */}
-      <section className="courses-section">
-        <div className="courses-section__header">
-          <h2 className="courses-section__title">Active Courses</h2>
-          <a href="#" className="courses-section__see-all">
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <h2
+            className="text-slate-950 text-xl font-bold leading-7"
+            style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
+          >Active Courses</h2>
+          <a href="#" className="text-indigo-600 text-sm font-semibold hover:underline">
             See all courses
           </a>
         </div>
 
-        <div className="courses-grid">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {activeCourses.map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
 
           {/* Add New Course CTA */}
-          <div className="new-course-card">
-            <div className="new-course-card__icon-wrapper">
+          <div className="border-2 border-dashed border-slate-300 bg-slate-100 rounded-[24px] flex flex-col items-center justify-center gap-2 text-center p-12 cursor-pointer transition-colors hover:border-indigo-600">
+            <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center mb-2">
               <PlusIcon />
             </div>
-            <h3 className="new-course-card__title">Launch New Module</h3>
-            <p className="new-course-card__desc">
+            <h3
+              className="text-slate-950 text-base font-bold leading-6 mb-0"
+              style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
+            >
+              Launch New Module
+            </h3>
+            <p className="text-slate-600 text-sm leading-6 mb-0">
               Draft your next course using the Curriculum Builder.
             </p>
           </div>
         </div>
       </section>
-
-      <style>{`
-        /* ── Page layout ─────────────────────────────────────────── */
-        .dashboard-page {
-          display: flex;
-          flex-direction: column;
-          gap: 40px;
-          background: #f8fafc;
-          min-height: 100%;
-          font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
-        }
-
-        /* ── Hero ────────────────────────────────────────────────── */
-        .dashboard-hero__title {
-          color: #141b2b;
-          font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-          font-size: 30px;
-          font-weight: 700;
-          line-height: 36px;
-          letter-spacing: -0.75px;
-          margin: 0 0 8px;
-        }
-        .dashboard-hero__subtitle {
-          color: #464555;
-          font-size: 16px;
-          font-weight: 400;
-          line-height: 24px;
-          max-width: 672px;
-          margin: 0;
-        }
-
-        /* ── Stats grid ──────────────────────────────────────────── */
-        .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 24px;
-        }
-        .stat-card {
-          background: #fff;
-          border: 1px solid #fff;
-          border-radius: 16px;
-          padding: 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          box-shadow: 0 20px 40px -12px rgba(20, 27, 43, 0.04);
-        }
-        .stat-card__header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 12px;
-        }
-        .stat-card__badge {
-          font-size: 12px;
-          font-weight: 700;
-          line-height: 16px;
-          padding: 4px 8px;
-          border-radius: 9999px;
-        }
-        .stat-card__label {
-          color: #464555;
-          font-size: 12px;
-          font-weight: 600;
-          line-height: 16px;
-          letter-spacing: 1.2px;
-          text-transform: uppercase;
-          margin: 0;
-        }
-        .stat-value {
-          color: #141b2b;
-          font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-          font-size: 24px;
-          font-weight: 800;
-          line-height: 32px;
-          display: inline-block;
-          margin-top: 4px;
-        }
-        .stat-value--rating {
-          display: inline-flex;
-          align-items: baseline;
-          gap: 2px;
-        }
-        .stat-value__suffix {
-          color: #94a3b8;
-          font-size: 14px;
-          font-weight: 500;
-          line-height: 20px;
-        }
-
-        /* ── Middle row: chart + events ──────────────────────────── */
-        .dashboard-middle-row {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 32px;
-        }
-
-        /* Earnings chart section */
-        .earnings-section {
-          grid-column: 1 / span 2;
-          background: #fff;
-          border: 1px solid #fff;
-          border-radius: 24px;
-          padding: 32px;
-          display: flex;
-          flex-direction: column;
-          gap: 32px;
-          box-shadow: 0 20px 40px -12px rgba(20, 27, 43, 0.04);
-        }
-        .earnings-section__header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .earnings-section__title {
-          color: #141b2b;
-          font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-          font-size: 18px;
-          font-weight: 700;
-          line-height: 28px;
-          margin: 0;
-        }
-        .earnings-section__subtitle {
-          color: #464555;
-          font-size: 14px;
-          font-weight: 400;
-          line-height: 20px;
-          margin: 0;
-        }
-        .earnings-section__filter {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          background: #f1f5f9;
-          border-radius: 8px;
-          padding: 7.5px 8px 7.5px 12px;
-          cursor: pointer;
-          min-width: 140px;
-          justify-content: space-between;
-        }
-        .earnings-section__filter-label {
-          color: #141b2b;
-          font-size: 14px;
-          font-weight: 700;
-          line-height: 20px;
-        }
-        .earnings-chart {
-          flex: 1;
-        }
-        .earnings-tooltip {
-          background: #141b2b;
-          color: #fff;
-          font-size: 10px;
-          font-family: Inter, sans-serif;
-          border-radius: 4px;
-          padding: 4px 8px;
-        }
-
-        /* Upcoming events panel */
-        .events-panel {
-          grid-column: 3 / span 1;
-          background: linear-gradient(135deg, #312e81 0%, #4338ca 40%, #6d28d9 100%);
-          border-radius: 24px;
-          padding: 32px;
-          display: flex;
-          flex-direction: column;
-          gap: 24px;
-        }
-        .events-panel__title {
-          color: #fff;
-          font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-          font-size: 18px;
-          font-weight: 700;
-          line-height: 28px;
-          margin: 0;
-        }
-        .events-list {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          flex: 1;
-        }
-        .event-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 16px;
-        }
-        .event-item__date-badge {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          width: 48px;
-          height: 48px;
-          border-radius: 16px;
-          border: 1px solid rgba(255, 255, 255, 0.10);
-          background: rgba(255, 255, 255, 0.10);
-          backdrop-filter: blur(6px);
-          flex-shrink: 0;
-        }
-        .event-item__day {
-          color: #fff;
-          font-size: 12px;
-          font-weight: 700;
-          line-height: 16px;
-        }
-        .event-item__month {
-          color: #fff;
-          font-size: 8px;
-          font-weight: 400;
-          line-height: 12px;
-          letter-spacing: -0.4px;
-          text-transform: uppercase;
-        }
-        .event-item__title {
-          color: #fff;
-          font-size: 14px;
-          font-weight: 700;
-          line-height: 20px;
-          margin: 0 0 2px;
-        }
-        .event-item__subtitle {
-          color: rgba(199, 210, 254, 0.70);
-          font-size: 12px;
-          font-weight: 400;
-          line-height: 16px;
-          margin: 0;
-        }
-        .events-panel__cta {
-          width: 100%;
-          padding: 12px;
-          border-radius: 12px;
-          border: 1.5px solid rgba(255, 255, 255, 0.60);
-          background: transparent;
-          color: #fff;
-          font-size: 14px;
-          font-weight: 700;
-          font-family: Inter, sans-serif;
-          cursor: pointer;
-          transition: background 0.2s;
-          text-align: center;
-        }
-        .events-panel__cta:hover {
-          background: rgba(255, 255, 255, 0.12);
-        }
-
-        /* ── Active Courses ───────────────────────────────────────── */
-        .courses-section__header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 24px;
-        }
-        .courses-section__title {
-          color: #141b2b;
-          font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-          font-size: 20px;
-          font-weight: 700;
-          line-height: 28px;
-          margin: 0;
-        }
-        .courses-section__see-all {
-          color: #4f46e5;
-          font-size: 14px;
-          font-weight: 600;
-          text-decoration: none;
-        }
-        .courses-section__see-all:hover {
-          text-decoration: underline;
-        }
-
-        .courses-grid {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 24px;
-        }
-
-        /* Course card */
-        .course-card {
-          background: #fff;
-          border-radius: 24px;
-          overflow: hidden;
-          box-shadow: 0 20px 40px -12px rgba(20, 27, 43, 0.04);
-          display: flex;
-          flex-direction: column;
-        }
-        .course-card__thumbnail {
-          position: relative;
-          height: 192px;
-          overflow: hidden;
-          flex-shrink: 0;
-        }
-        .course-card__img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        .course-card__img-placeholder {
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-        }
-        .course-card__enrollment-badge {
-          position: absolute;
-          top: 16px;
-          right: 16px;
-          background: rgba(255, 255, 255, 0.70);
-          border: 1px solid rgba(255, 255, 255, 0.20);
-          backdrop-filter: blur(10px);
-          border-radius: 9999px;
-          padding: 4px 12px;
-          color: #3525cd;
-          font-size: 10px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-        .course-card__body {
-          padding: 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          flex: 1;
-        }
-        .course-card__title-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          gap: 8px;
-        }
-        .course-card__title {
-          color: #141b2b;
-          font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-          font-size: 16px;
-          font-weight: 700;
-          line-height: 20px;
-          margin: 0;
-          flex: 1;
-        }
-        .course-card__menu-btn {
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 4px;
-          flex-shrink: 0;
-        }
-        .course-card__students {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding-bottom: 8px;
-        }
-        .student-avatars {
-          display: flex;
-        }
-        .student-avatar {
-          width: 24px;
-          height: 24px;
-          border-radius: 9999px;
-          border: 2px solid #fff;
-          margin-left: -6px;
-        }
-        .student-avatar:first-child {
-          margin-left: 0;
-        }
-        .student-avatar--1 { background: #e2e8f0; }
-        .student-avatar--2 { background: #cbd5e1; }
-        .student-avatar--3 { background: #94a3b8; }
-        .course-card__student-count {
-          color: #464555;
-          font-size: 12px;
-          font-weight: 500;
-          line-height: 16px;
-        }
-        .course-card__actions {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          border-top: 1px solid #f8fafc;
-          padding-top: 16px;
-          margin-top: 8px;
-        }
-        .course-card__edit-btn {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          background: none;
-          border: none;
-          cursor: pointer;
-          color: #3525cd;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.6px;
-          text-transform: uppercase;
-          font-family: Inter, sans-serif;
-        }
-        .course-card__stats-btn {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          background: none;
-          border: none;
-          cursor: pointer;
-          color: #464555;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.6px;
-          text-transform: uppercase;
-          font-family: Inter, sans-serif;
-        }
-
-        /* New course CTA card */
-        .new-course-card {
-          border: 2px dashed #cbd5e1;
-          background: #f1f5f9;
-          border-radius: 24px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          padding: 48px 32px;
-          gap: 8px;
-          text-align: center;
-          cursor: pointer;
-          transition: border-color 0.2s;
-        }
-        .new-course-card:hover {
-          border-color: #4f46e5;
-        }
-        .new-course-card__icon-wrapper {
-          width: 64px;
-          height: 64px;
-          border-radius: 9999px;
-          background: #fff;
-          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 8px;
-        }
-        .new-course-card__title {
-          color: #141b2b;
-          font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-          font-size: 16px;
-          font-weight: 700;
-          line-height: 24px;
-          margin: 0;
-        }
-        .new-course-card__desc {
-          color: #464555;
-          font-size: 14px;
-          font-weight: 400;
-          line-height: 20px;
-          margin: 0;
-        }
-
-        /* ── Responsive ──────────────────────────────────────────── */
-        @media (max-width: 1024px) {
-          .stats-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-          .dashboard-middle-row {
-            grid-template-columns: 1fr;
-          }
-          .earnings-section {
-            grid-column: 1;
-          }
-          .events-panel {
-            grid-column: 1;
-          }
-          .courses-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-        }
-        @media (max-width: 640px) {
-          .stats-grid {
-            grid-template-columns: 1fr;
-          }
-          .courses-grid {
-            grid-template-columns: 1fr;
-          }
-          .dashboard-footer {
-            flex-direction: column;
-            gap: 16px;
-            align-items: flex-start;
-          }
-          .dashboard-footer__links {
-            flex-wrap: wrap;
-            gap: 16px;
-          }
-        }
-      `}</style>
     </div>
   );
 };
