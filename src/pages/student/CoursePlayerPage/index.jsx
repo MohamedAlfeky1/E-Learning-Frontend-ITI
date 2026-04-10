@@ -11,21 +11,56 @@ import { IoMdCheckmark } from "react-icons/io";
 import { CiCalendar } from "react-icons/ci";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { FiDownload, FiFileText } from "react-icons/fi";
+import { MdBarChart } from "react-icons/md";
+import { useEnrollmentDetailsQuery, useMyCoursesQuery, useUpdateProgressMutation } from "@/queries/enrollmentQueries";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 
 const CoursePlayerPage = () => {
 
+  // states
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [videosProgress, setVideosProgress] = useState({});
+
+
   const { courseId } = useParams();
   const { data: course, isLoading, error } = useGetCoursesById(courseId);
   const { data: lessons, isLoading: lessonsLoading, error: lessonsError } = useGetAllLessonsByCourse(courseId);
+  const { data: enrollments } = useMyCoursesQuery();
+  const { data: enrollmentsDetails } = useEnrollmentDetailsQuery(courseId);
+  const { mutate: updateProgress } = useUpdateProgressMutation();
+  const enrollmentId = enrollmentsDetails?._id
+
+
+  console.log("enrollments", enrollments);
+  console.log("enrollmentsDetails", enrollmentsDetails);
+  console.log("updateProgress", updateProgress);
+
+
+
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-US", {
       month: "long",
       year: "numeric",
     });
   };
-  // states
-  const [selectedVideo, setSelectedVideo] = useState(null);
+
+  const handleProgressUpdate = (enrollmentId, videoId) => {
+    updateProgress(
+      { enrollmentId, videoId },
+      {
+        onSuccess: (data) => {
+          setVideosProgress(prev => ({
+            ...prev,
+            [videoId]: data.progress // { "videoId123": 75, "videoId456": 50 }
+          }));
+        }
+      }
+    );
+  }
+
+
 
 
 
@@ -36,13 +71,13 @@ const CoursePlayerPage = () => {
       if (firstVideo) {
         setSelectedVideo({
           ...firstVideo,
-          url: "/test.mp4",
           lesson: lessons?.data[0]
 
         });
       }
     }
   }, [lessons]);
+
 
   console.log(courseId);
   console.log("course", course);
@@ -66,7 +101,7 @@ const CoursePlayerPage = () => {
 
         <div className="flex flex-col gap-2">
           <p className="text-[#464555] text-xs font-medium"> {course?.data?.title} &gt; Lesson {lessons?.data[0]?.orderIndex} &gt;
-            <span className="text-[var(--primary)]"> {selectedVideo?.lessonOrderIndex}.{selectedVideo?.orderIndex} {selectedVideo?.title}</span>
+            <span className="text-[var(--primary)]"> {selectedVideo?.lesson?.orderIndex}.{selectedVideo?.orderIndex} {selectedVideo?.title}</span>
 
           </p>
 
@@ -84,12 +119,14 @@ const CoursePlayerPage = () => {
           </div>
         </div>
         <div className="flex justify-between items-center mt-4">
-          <h2 className="font-bold text-2xl">{selectedVideo?.lessonOrderIndex}.{selectedVideo?.orderIndex} {selectedVideo?.title}</h2>
-          <Button> <IoMdCheckmark color="white" /> Mark As Compelete</Button>
+          <h2 className="font-bold text-2xl">{selectedVideo?.lesson?.orderIndex}.{selectedVideo?.orderIndex} {selectedVideo?.title}</h2>
+          <Button
+            onClick={() => handleProgressUpdate(enrollmentId, selectedVideo?._id)}
+          > <IoMdCheckmark color="white" /> Record progress</Button>
         </div>
         <p className="flex items-center gap-1 text-xs text-gray-500 mt-2">
           <CiCalendar />
-          Updated {selectedVideo?.updatedAt && formatDate(selectedVideo.updatedAt)}
+          Updated {selectedVideo?.lesson?.updatedAt && formatDate(selectedVideo?.lesson?.updatedAt)}
         </p>
 
         <div>
@@ -110,6 +147,13 @@ const CoursePlayerPage = () => {
                 className="data-active:text-purple-600 data-active:after:bg-purple-600"
               >
                 Course Material
+              </TabsTrigger>
+
+              <TabsTrigger
+                value="quizes"
+                className="data-active:text-purple-600 data-active:after:bg-purple-600"
+              >
+                Course Quizes
               </TabsTrigger>
 
             </TabsList>
@@ -167,7 +211,7 @@ const CoursePlayerPage = () => {
 
                       {/* Right side */}
                       <a
-                        href={file.fileUrl}
+                        href={file.url}
                         download
                         className="text-gray-500 hover:text-green-600"
                       >
@@ -183,18 +227,61 @@ const CoursePlayerPage = () => {
 
             </TabsContent>
 
-          
+            <TabsContent value="quizes" className="mt-4">
+              <div className="flex flex-col gap-3">
+
+                {selectedVideo?.materials?.length > 0 ? (
+                  selectedVideo.materials.map((file) => (
+                    <div
+                      key={file._id}
+                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition"
+                    >
+                      {/* Left side */}
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 flex items-center justify-center bg-red-100 text-red-600 rounded-lg">
+                          <FiFileText />
+                        </div>
+
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-700">
+                            {file.title}
+                          </h3>
+                          <p className="text-xs text-gray-400">PDF Document</p>
+                        </div>
+                      </div>
+
+                      {/* Right side */}
+                      <a
+                        href={file.url}
+                        download
+                        className="text-gray-500 hover:text-green-600"
+                      >
+                        <FiDownload size={18} />
+                      </a>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">No materials available</p>
+                )}
+
+              </div>
+
+            </TabsContent>
+
+
           </Tabs>
         </div>
       </div>
 
       <div className="col-span-1 flex flex-col gap-4">
-        <div className="bg-[var(--secondary)] p-3 rounded-md">
+        <div className="bg-[var(--secondary)] p-5 rounded-md flex flex-col  gap-3">
           <div className=" flex justify-between items-center">
-            <h2 className="font-semibold text-sm">Course Progress</h2>
+            <h2 className="font-semibold text-sm">Video Progress</h2>
+            <Badge variant="lightPruple">{videosProgress[selectedVideo?._id] ?? 0} % DONE</Badge>
           </div>
-
-
+          <div>
+            <Progress value={videosProgress[selectedVideo?._id] ?? 0} className="w-full mt-2 bg-gray-500" />
+          </div>
         </div>
 
         <div className="bg-white shadow shadow-gray-300 py-3 rounded-md">
@@ -239,7 +326,10 @@ const CoursePlayerPage = () => {
                       {lesson.videos?.map((video) => (
                         <div
                           onClick={() => {
-                            setSelectedVideo({ ...video, url: "/test.mp4", ...lesson })
+                            setSelectedVideo({
+                              ...video,
+                              lesson: lesson
+                            })
                           }}
                           key={video._id}
                           className={`text-sm hover:bg-gray-50 p-2
@@ -250,7 +340,12 @@ const CoursePlayerPage = () => {
                         >
                           <div className="flex justify-between items-center">
                             <h2 className="text-sm font-semibold">{video.orderIndex} {video.title}</h2>
-                            <IoPlay className="text-gray-400" />
+                            {selectedVideo?._id === video._id ? (
+                              <MdBarChart className="text-gray-400" />
+                            ) : (
+                              <IoPlay className="text-gray-400" />
+                            )}
+
                           </div>
                           <p className="font-light text-xs text-[var(--primary)]/50">{video.duration}
                             {selectedVideo?._id === video._id && (
@@ -281,50 +376,3 @@ const CoursePlayerPage = () => {
 };
 
 export default CoursePlayerPage;
-
-
-// [{…}]
-// 0
-// : 
-// courseId
-// : 
-// {_id: '69d6a5fb3940a1c77a47fe55', title: 'Teaching English'}
-// createdAt
-// : 
-// "2026-04-08T20:05:47.352Z"
-// description
-// : 
-// "learn the alphabet for begginers learn the alphabet for begginers "
-// materials
-// : 
-// []
-// orderIndex
-// : 
-// 1
-// teacherId
-// : 
-// "69d3f77927768c09bdb61add"
-// title
-// : 
-// "learn the alpahet"
-// updatedAt
-// : 
-// "2026-04-08T20:05:47.352Z"
-// videos
-// : 
-// (2) [{…}, {…}]
-// __v
-// : 
-// 0
-// _id
-// : 
-// "69d6b51b0b026f5877d57cc6"
-// [[Prototype]]
-// : 
-// Object
-// length
-// : 
-// 1
-// [[Prototype]]
-// : 
-// Array(0)
