@@ -22,8 +22,6 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
-  DrawerFooter,
-  DrawerClose,
 } from "@/components/ui/drawer";
 import { useEffect, useState } from "react";
 
@@ -57,8 +55,8 @@ const AdminVerificationsPage = () => {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
-  console.log("paginatedRequests",paginatedRequests);
-  
+  console.log("paginatedRequests", paginatedRequests);
+
 
 
 
@@ -219,7 +217,7 @@ const AdminVerificationsPage = () => {
                       <div className="px-4 flex flex-col gap-2">
 
                         {/* Name & avatar */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
                           {applicant.avatar ? (
                             <img src={applicant.avatar} className="w-12 h-12 rounded-full object-cover" />
                           ) : (
@@ -229,11 +227,11 @@ const AdminVerificationsPage = () => {
                           )}
                           <div>
                             <div className="font-semibold text-gray-900 flex justify-between items-start w-full">
-                              <div className="flex flex-col gap-2">
+                              <div className="flex flex-col justify-end gap-1">
                                 <p>{applicant?.teacherId?.firstName} {applicant.teacherId?.lastName}</p>
-                                <p className="text-sm font-light text-gray-400">ID: {applicant.teacherId?._id}</p>
+                                <p className="text-sm font-light text-gray-400 w-max">ID: {applicant.teacherId?._id}</p>
                               </div>
-                              <div className="flex items-center justify-start gap-2">
+                              <div className="flex items-center justify-start gap-2 ">
                                 {applicant.status === "pending" && <span className="w-2 h-2 rounded-full bg-yellow-400" />}
                                 {applicant.status === "rejected" && <span className="w-2 h-2 rounded-full bg-red-400" />}
                                 {applicant.status === "approved" && <span className="w-2 h-2 rounded-full bg-green-400" />}
@@ -246,41 +244,45 @@ const AdminVerificationsPage = () => {
                         </div>
 
                         {/* Status */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
 
                         </div>
 
-                        {/* Categories */}
-                        <div>
-                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Categories</p>
-                          <div className="flex flex-wrap">
-                            {applicant?.targetCategories?.length > 0 ? (
-                              applicant.targetCategories?.map((cateId) => (
-                                <div key={cateId}>
-                                  <CategoryBadge categoryId={cateId} />
+                        <div className="flex items-center gap-1">
+                          {/* Categories */}
+                          <div>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Categories</p>
+                            <div className="flex flex-wrap">
+                              {applicant?.targetCategories?.length > 0 ? (
+                                applicant.targetCategories?.map((cateId) => (
+                                  <div key={cateId}>
+                                    <CategoryBadge categoryId={cateId} />
+                                  </div>
+                                ))
+                              ) : (
+                                <Badge variant="destructive">No Expertise Listed</Badge>
+                              )}
+
+                            </div>
+                          </div>
+
+                          {/* Certificates */}
+                          <div>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Certificates</p>
+                            <div className="flex flex-wrap">
+                              {applicant.certificates.map((cert, index) => {
+                                return <div key={index} className="flex items-center gap-2">
+                                  <Badge variant="ghost" ><TbCertificate /></Badge>
+                                  <a href={cert.fileUrl} target="_blank" className="text-sm text-blue-600 hover:underline">{cert.title}</a>
+
                                 </div>
-                              ))
-                            ) : (
-                              <Badge variant="destructive">No Expertise Listed</Badge>
-                            )}
-
+                              })
+                              }
+                            </div>
                           </div>
                         </div>
 
-                        {/* Certificates */}
-                        <div>
-                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Certificates</p>
-                          <div className="flex flex-wrap">
-                            {applicant.certificates.map((cert, index) => {
-                              return <div key={index} className="flex items-center gap-2">
-                                <Badge variant="ghost" ><TbCertificate /></Badge>
-                                <a href={cert.fileUrl} target="_blank" className="text-sm text-blue-600 hover:underline">{cert.title}</a>
 
-                              </div>
-                            })
-                            }
-                          </div>
-                        </div>
 
                         {/* Experience */}
                         <div>
@@ -310,7 +312,7 @@ const AdminVerificationsPage = () => {
                         )}
 
                         {/* Decision form */}
-                        <div className="flex flex-col gap-3 border-t pt-4 mt-2">
+                        <div className="flex flex-col gap-3 border-t pt-4">
                           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Verification Decision</p>
 
                           <VerificationDecisionForm applicant={applicant} />
