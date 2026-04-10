@@ -31,7 +31,7 @@ const CoursePlayerPage = () => {
 
   useEffect(() => {
     if (lessons?.data?.length > 0) {
-      const firstVideo = lessons.data[0]?.videos?.[0];
+      const firstVideo = lessons?.data[0]?.videos?.[0];
 
       if (firstVideo) {
         setSelectedVideo({
@@ -206,7 +206,7 @@ const CoursePlayerPage = () => {
 
           <div >
             <Accordion type="single" collapsible className="w-full">
-              {lessons.data.map((lesson) => (
+              {lessons?.data?.map((lesson) => (
                 <AccordionItem key={lesson._id} value={lesson._id}>
 
                   {/* Trigger (your lesson box) */}
