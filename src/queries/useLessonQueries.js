@@ -1,4 +1,3 @@
-useLessonQueries.js
 
 import { getAllLessonByCourse, getLessonById } from "@/services/lessonService"
 import { useQuery } from "@tanstack/react-query"
