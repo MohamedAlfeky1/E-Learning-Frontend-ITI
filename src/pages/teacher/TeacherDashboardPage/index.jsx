@@ -1,11 +1,20 @@
+import { Bar, BarChart, Cell, XAxis } from "recharts";
+import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from "recharts";
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 const earningsData = [
   { day: "Mon", value: 1200, label: "$1.2k" },
@@ -16,6 +25,13 @@ const earningsData = [
   { day: "Sat", value: 1800, label: "$1.8k" },
   { day: "Sun", value: 2400, label: "$2.4k" },
 ];
+
+const chartConfig = {
+  value: {
+    label: "Earnings",
+    color: "#4F46E5",
+  },
+};
 
 const upcomingEvents = [
   {
@@ -133,54 +149,46 @@ const PlusIcon = () => (
   </svg>
 );
 
-// Custom tooltip for the earnings bar chart
-const EarningsTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div
-        className="bg-slate-950 text-white text-[10px] rounded-md px-2 py-1"
-        style={{ fontFamily: "Inter, sans-serif" }}
-      >
-        <span>{payload[0].payload.label}</span>
-      </div>
-    );
-  }
-  return null;
-};
-
-// Custom bar label shown above active bar
-const ActiveBarLabel = (props) => {
-  const { x, y, width, value, index } = props;
-  const entry = earningsData[index];
-  if (!entry?.active) return null;
-  return (
-    <g>
-      <rect x={x - 5} y={y - 34} width={52} height={23} rx={4} fill="#141B2B" />
-      <text
-        x={x + width / 2}
-        y={y - 17}
-        textAnchor="middle"
-        fill="#fff"
-        fontSize={10}
-        fontFamily="Inter, sans-serif"
-      >
-        {entry.label}
-      </text>
-    </g>
-  );
-};
+// TODO: Custom bar label shown above active bar
+// const ActiveBarLabel = (props) => {
+//   const { x, y, width, value, index } = props;
+//   const entry = earningsData[index];
+//   if (!entry?.active) return null;
+//   return (
+//     <g>
+//       <rect x={x - 5} y={y - 34} width={52} height={23} rx={4} fill="#141B2B" />
+//       <text
+//         x={x + width / 2}
+//         y={y - 17}
+//         textAnchor="middle"
+//         fill="#fff"
+//         fontSize={10}
+//         fontFamily="Inter, sans-serif"
+//       >
+//         {entry.label}
+//       </text>
+//     </g>
+//   );
+// };
 
 // Stat Card component
 const StatCard = ({ icon, badge, badgeColor, label, children }) => (
   <div className="bg-white rounded-[24px] p-6 flex flex-col gap-1 shadow-[0_20px_40px_-12px_rgba(20,27,43,0.04)]">
     <div className="flex items-center justify-between mb-3">
       {icon}
-      <span className="text-xs font-semibold leading-4 px-2 py-1 rounded-full" style={{ color: badgeColor }}>
+      <span
+        className="text-xs font-semibold leading-4 px-2 py-1 rounded-full"
+        style={{ color: badgeColor }}
+      >
         {badge}
       </span>
     </div>
-    <p className="text-slate-600 text-[11px] font-semibold uppercase tracking-[1.2px] mb-0">{label}</p>
-    <div className="text-slate-950 text-3xl font-extrabold mt-1">{children}</div>
+    <p className="text-slate-600 text-[11px] font-semibold uppercase tracking-[1.2px] mb-0">
+      {label}
+    </p>
+    <div className="text-slate-950 text-3xl font-extrabold mt-1">
+      {children}
+    </div>
   </div>
 );
 
@@ -189,13 +197,17 @@ const CourseCard = ({ course }) => (
   <div className="bg-white rounded-[24px] overflow-hidden shadow-[0_20px_40px_-12px_rgba(20,27,43,0.04)] flex flex-col">
     <div className="relative h-48 overflow-hidden">
       {course.image ? (
-        <img src={course.image} alt={course.title} className="w-full h-full object-cover" />
+        <img
+          src={course.image}
+          alt={course.title}
+          className="w-full h-full object-cover"
+        />
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-slate-950 via-slate-800 to-slate-950" />
       )}
-      <span className="absolute top-4 right-4 rounded-full bg-white/70 border border-white/20 backdrop-blur px-3 py-1 text-[10px] font-bold uppercase tracking-[0.5px] text-indigo-700">
+      <Badge className="absolute top-4 right-4 rounded-full bg-white/70 border border-white/20 backdrop-blur px-3 py-1 text-[10px] font-bold uppercase tracking-[0.5px] text-indigo-700">
         {course.enrollments} Enrollments
-      </span>
+      </Badge>
     </div>
     <div className="p-6 flex flex-col gap-2 flex-1">
       <div className="flex items-start justify-between gap-2">
@@ -205,27 +217,43 @@ const CourseCard = ({ course }) => (
         >
           {course.title}
         </h3>
-        <button className="p-1 rounded-lg hover:bg-slate-100" aria-label="More options">
+        <Button variant="ghost" size="icon" aria-label="More options">
           <DotsMenuIcon />
-        </button>
+        </Button>
       </div>
-      <div className="flex items-center gap-2 pb-2">
-        <div className="flex">
-          <div className="w-6 h-6 rounded-full border-2 border-white -ml-1 first:ml-0 bg-slate-300" />
-          <div className="w-6 h-6 rounded-full border-2 border-white -ml-1 bg-slate-400" />
-          <div className="w-6 h-6 rounded-full border-2 border-white -ml-1 bg-slate-500" />
-        </div>
-        <span className="text-slate-600 text-xs font-medium">+{course.othersStudying} others studying</span>
+      <div className="flex items-center gap-3 pb-2">
+        <AvatarGroup>
+          <Avatar>
+            <AvatarFallback>AL</AvatarFallback>
+          </Avatar>
+          <Avatar>
+            <AvatarFallback>EM</AvatarFallback>
+          </Avatar>
+          <Avatar>
+            <AvatarFallback>SJ</AvatarFallback>
+          </Avatar>
+        </AvatarGroup>
+        <span className="text-slate-600 text-xs font-medium">
+          +{course.othersStudying} others studying
+        </span>
       </div>
       <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4 mt-2">
-        <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.6px] text-indigo-700">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2 uppercase tracking-[0.6px] text-indigo-700"
+        >
           <EditIcon />
           Edit Course
-        </button>
-        <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.6px] text-slate-600">
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2 uppercase tracking-[0.6px] text-slate-600"
+        >
           <StatsIcon />
           Stats
-        </button>
+        </Button>
       </div>
     </div>
   </div>
@@ -235,7 +263,9 @@ const TeacherDashboardPage = () => {
   return (
     <div
       className="p-8 flex flex-col gap-10 bg-slate-50 min-h-full"
-      style={{ fontFamily: "Inter, -apple-system, Roboto, Helvetica, sans-serif" }}
+      style={{
+        fontFamily: "Inter, -apple-system, Roboto, Helvetica, sans-serif",
+      }}
     >
       {/* Hero Greeting */}
       <section className="space-y-2">
@@ -246,7 +276,8 @@ const TeacherDashboardPage = () => {
           Welcome back, Academic Prism Instructor
         </h1>
         <p className="text-slate-600 text-base leading-6 max-w-3xl">
-          Your students have shown a 12% increase in engagement this week. Here is a summary of your digital campus performance.
+          Your students have shown a 12% increase in engagement this week. Here
+          is a summary of your digital campus performance.
         </p>
       </section>
 
@@ -301,35 +332,22 @@ const TeacherDashboardPage = () => {
       {/* Chart + Events Panel */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         {/* Weekly Earnings Chart */}
-        <div className="xl:col-span-2 bg-white rounded-[24px] p-8 flex flex-col gap-8 shadow-[0_20px_40px_-12px_rgba(20,27,43,0.04)]">
-          <div className="flex items-center justify-between">
+        <Card className="xl:col-span-2 shadow-[0_20px_40px_-12px_rgba(20,27,43,0.04)] p-8 gap-8">
+          <CardHeader className="items-start gap-4 px-0">
             <div>
-              <h2
-                className="text-slate-950 text-lg font-bold leading-7"
+              <CardTitle
+                className="text-lg font-bold leading-7"
                 style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
               >
                 Weekly Earnings
-              </h2>
-              <p className="text-slate-600 text-sm leading-6">
+              </CardTitle>
+              <CardDescription>
                 Revenue flow from 7 Mar - 14 Mar
-              </p>
+              </CardDescription>
             </div>
-            <div className="flex items-center justify-between gap-1 min-w-[140px] rounded-xl bg-slate-100 px-3 py-2 cursor-pointer">
-              <span className="text-slate-950 text-sm font-bold">Last 7 Days</span>
-              <svg width="21" height="21" viewBox="0 0 21 21" fill="none">
-                <path
-                  d="M6.2998 8.40039L10.4998 12.6004L14.6998 8.40039"
-                  stroke="#6B7280"
-                  strokeWidth="1.575"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div className="flex-1">
-            <ResponsiveContainer width="100%" height={256}>
+          </CardHeader>
+          <CardContent className="pt-0 px-0">
+            <ChartContainer config={chartConfig} className="w-full h-[256px]">
               <BarChart
                 data={earningsData}
                 margin={{ top: 40, right: 8, left: 8, bottom: 0 }}
@@ -358,11 +376,15 @@ const TeacherDashboardPage = () => {
                     );
                   }}
                 />
-                <Tooltip content={<EarningsTooltip />} cursor={false} />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
+                />
                 <Bar
                   dataKey="value"
                   radius={[8, 8, 0, 0]}
-                  label={<ActiveBarLabel />}
+                  // label={<ActiveBarLabel />}
+                  fill="var(--color-value)"
                 >
                   {earningsData.map((entry, index) => (
                     <Cell
@@ -372,33 +394,58 @@ const TeacherDashboardPage = () => {
                   ))}
                 </Bar>
               </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+            </ChartContainer>
+          </CardContent>
+          {/* <CardFooter className="justify-between gap-2 px-0 pb-0">
+            <span className="text-slate-950 text-sm font-bold">Last 7 Days</span>
+            <svg width="21" height="21" viewBox="0 0 21 21" fill="none">
+              <path
+                d="M6.2998 8.40039L10.4998 12.6004L14.6998 8.40039"
+                stroke="#6B7280"
+                strokeWidth="1.575"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </CardFooter> */}
+        </Card>
 
         {/* Upcoming Events */}
         <div className="bg-gradient-to-br from-indigo-950 via-indigo-700 to-fuchsia-700 rounded-[24px] p-8 flex flex-col gap-6">
           <h2
             className="text-white text-lg font-bold leading-7"
             style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
-          >Upcoming Events</h2>
+          >
+            Upcoming Events
+          </h2>
           <div className="flex flex-col gap-5 flex-1">
             {upcomingEvents.map((event, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className="flex h-12 w-12 flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/10 backdrop-blur">
-                  <span className="text-white text-xs font-bold leading-4">{event.day}</span>
-                  <span className="text-white text-[10px] font-normal uppercase tracking-[-0.4px]">{event.month}</span>
+                  <span className="text-white text-xs font-bold leading-4">
+                    {event.day}
+                  </span>
+                  <span className="text-white text-[10px] font-normal uppercase tracking-[-0.4px]">
+                    {event.month}
+                  </span>
                 </div>
                 <div>
-                  <p className="text-white text-sm font-bold leading-5 mb-0">{event.title}</p>
-                  <p className="text-slate-200 text-xs leading-4 mb-0">{event.subtitle}</p>
+                  <p className="text-white text-sm font-bold leading-5 mb-0">
+                    {event.title}
+                  </p>
+                  <p className="text-slate-200 text-xs leading-4 mb-0">
+                    {event.subtitle}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
-          <button className="w-full rounded-xl border border-white/60 bg-transparent py-3 text-sm font-bold text-white transition hover:bg-white/10">
+          <Button
+            variant="ghost"
+            className="w-full py-3 text-sm font-bold text-white border border-white/60 hover:bg-white/10"
+          >
             View Full Calendar
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -408,10 +455,16 @@ const TeacherDashboardPage = () => {
           <h2
             className="text-slate-950 text-xl font-bold leading-7"
             style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
-          >Active Courses</h2>
-          <a href="#" className="text-indigo-600 text-sm font-semibold hover:underline">
-            See all courses
-          </a>
+          >
+            Active Courses
+          </h2>
+          <Button
+            asChild
+            variant="link"
+            className="text-sm font-semibold hover:underline"
+          >
+            <a href="#">See all courses</a>
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
