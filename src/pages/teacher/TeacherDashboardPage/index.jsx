@@ -126,8 +126,8 @@ const TeacherDashboardPage = () => {
               <div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="p">
-                      Period <ChevronDown />
+                    <Button variant="outline" className="px-3 py-4 rounded h-0">
+                      Last 7 Days <ChevronDown />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="p-2">
@@ -141,16 +141,10 @@ const TeacherDashboardPage = () => {
                       Month
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem className="px-3 py-2">
-                      3 Months
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem className="px-3 py-2">
                       6 Months
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem className="px-3 py-2">
                       Year
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem className="px-3 py-2">
-                      5 Years
                     </DropdownMenuCheckboxItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
