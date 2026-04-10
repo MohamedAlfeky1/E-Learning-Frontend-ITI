@@ -48,6 +48,7 @@ import StudentChatPage from "@/pages/student/StudentChatPage";
 import BookSessionPage from "@/pages/student/BookSessionPage";
 import MySessionsPage from "@/pages/student/MySessionsPage";
 import SessionRoomPage from "@/pages/student/SessionRoomPage";
+import TicketsPage from "@/pages/student/TicketPage";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TEACHER PAGES  (role: teacher)
@@ -73,6 +74,7 @@ import TeacherSessionsPage from "@/pages/teacher/TeacherSessionsPage";
 import TeacherVerificationPage from "@/pages/teacher/TeacherVerificationPage";
 import QuestionBankPage from "@/pages/teacher/QuestionBankPage";
 import TeacherChatPage from "@/pages/teacher/TeacherChatPage";
+import TeacherTicketPage from "@/pages/teacher/TeacherTicketPage";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ADMIN PAGES  (role: admin)
@@ -222,6 +224,12 @@ const router = createBrowserRouter([
         path: "sessions/:sessionId/room",
         element: <SessionRoomPage />,
       },
+      // /tickets
+      {
+
+        path: "tickets",
+        element: <TicketsPage />,
+      },
     ],
   },
 
@@ -290,6 +298,7 @@ const router = createBrowserRouter([
       // Availability & Sessions
       { path: "availability", element: <TeacherAvailabilityPage /> }, // /teacher/availability
       { path: "sessions", element: <TeacherSessionsPage /> }, // /teacher/sessions
+      { path: "tickets", element: <TeacherTicketPage /> }, // /teacher/tickets
 
       // Verification
     ],

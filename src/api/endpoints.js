@@ -108,19 +108,19 @@ export const ENDPOINTS = {
   REPORTS_GET: (courseId) => `/reports/${courseId}`,
 
   // ─── Revenue & Earnings ───────────────────────────────────────────────────────
-  ADMIN_REVENUE_CONFIG_GET: "/admin/revenue-config",
-  ADMIN_REVENUE_CONFIG_UPDATE: "/admin/revenue-config",
-  TEACHER_EARNINGS: "/teacher/earnings",
-  ADMIN_EARNINGS: "/admin/earnings",
+  ADMIN_REVENUE_CONFIG_GET: "/finance/admin/revenue-config",
+  ADMIN_REVENUE_CONFIG_UPDATE: "/finance/admin/revenue-config",
+  TEACHER_EARNINGS: "/finance/teacher/balance",
+  ADMIN_EARNINGS: "/finance/admin/earnings",
 
   // ─── Withdrawals ──────────────────────────────────────────────────────────────
-  TEACHER_WITHDRAWALS_CREATE: "/teacher/withdrawals",
-  TEACHER_WITHDRAWALS_LIST: "/teacher/withdrawals",
-  ADMIN_WITHDRAWALS_LIST: "/admin/withdrawals",
-  ADMIN_WITHDRAWALS_PROCESS: (id) => `/admin/withdrawals/${id}`,
+  TEACHER_WITHDRAWALS_CREATE: "/finance/teacher/withdraw",
+  TEACHER_WITHDRAWALS_LIST: "/finance/teacher/withdrawals",
+  ADMIN_WITHDRAWALS_LIST: "/finance/admin/withdrawals/pending",
+  ADMIN_WITHDRAWALS_PROCESS: (id) => `/finance/admin/withdrawals/${id}`,
 
   // ─── Admin Dashboard ──────────────────────────────────────────────────────────
-  ADMIN_STATS_OVERVIEW: "/admin/stats/overview",
+  ADMIN_STATS_OVERVIEW: "/finance/admin/stats-platform",
   ADMIN_STATS_REVENUE: "/admin/stats/revenue",
   ADMIN_STATS_ENROLLMENTS: "/admin/stats/enrollments",
 
@@ -184,4 +184,16 @@ export const ENDPOINTS = {
 
   // ─── File Upload ──────────────────────────────────────────────────────────────
   UPLOAD: "/upload",
+  //Ticket System
+// ─── Support Tickets ─────────────────────────────────────────────
+SUPPORT_CREATE: "/support/tickets",
+SUPPORT_MY_TICKETS: "/support/my-tickets",
+SUPPORT_GET: (id) => `/support/tickets/${id}`,
+SUPPORT_REPLY: (id) => `/support/tickets/${id}/reply`,
+
+// Admin
+ADMIN_TICKETS_LIST: "/support/admin/tickets",
+ADMIN_TICKET_REPLY: (id) => `/support/tickets/${id}/reply`,
+ADMIN_TICKET_STATUS: (id) => `/support/tickets/${id}/status`,
+ADMIN_TICKET_DELETE: (id) => `/support/tickets/${id}`,
 };
