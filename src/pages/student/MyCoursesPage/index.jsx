@@ -1,3 +1,4 @@
+
 import { useMyCoursesQuery } from "@/queries/enrollmentQueries";
 import Loader from "@/components/ui/loader";
 import { Card, CardContent } from "@/components/ui/card";
