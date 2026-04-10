@@ -81,10 +81,10 @@ export const ENDPOINTS = {
   CART_REMOVE_VOUCHER: "/cart/remove-voucher",
 
   // ─── Vouchers ─────────────────────────────────────────────────────────────────
-  ADMIN_VOUCHERS_LIST: "/admin/vouchers",
-  ADMIN_VOUCHERS_CREATE: "/admin/vouchers",
-  ADMIN_VOUCHERS_UPDATE: (id) => `/admin/vouchers/${id}`,
-  ADMIN_VOUCHERS_DELETE: (id) => `/admin/vouchers/${id}`,
+  ADMIN_VOUCHERS_LIST: "/vouchers",               
+  ADMIN_VOUCHERS_CREATE: "/vouchers",             
+  ADMIN_VOUCHERS_UPDATE: (id) => `/vouchers/${id}`, 
+  ADMIN_VOUCHERS_DELETE: (id) => `/vouchers/${id}`, 
 
   // ─── Payments ─────────────────────────────────────────────────────────────────
   PAYMENTS_CREATE_INTENT: "/payments/create-intent",
