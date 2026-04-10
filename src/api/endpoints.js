@@ -34,6 +34,10 @@ export const ENDPOINTS = {
   COURSES_SET_STREAK_REQUIREMENT: (id) =>
     `/admin/courses/${id}/streak-requirement`,
 
+  // ─── Lessons ─────────────────────────────────────────────────────────────────
+  LESSONS_LIST: (courseId) => `/lessons/${courseId}`,
+  LESSONS_GET: (courseId , lessonId) => `/lessons/${courseId}/${lessonId}`,
+
   // ─── Videos & Materials ──────────────────────────────────────────────────────
   COURSE_VIDEOS_ADD: (id) => `/courses/${id}/videos`,
   COURSE_VIDEOS_DELETE: (id, videoId) => `/courses/${id}/videos/${videoId}`,
@@ -48,6 +52,7 @@ export const ENDPOINTS = {
   ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) => `/enrollments/update-progress/${enrollmentId}`,
   ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) => `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_PROGRESS: (courseId) => `/enrollments/${courseId}/progress`,
+  
   // ─── Assignments ─────────────────────────────────────────────────────────────
   ASSIGNMENTS_LIST: (courseId) => `/courses/${courseId}/assignments`,
   ASSIGNMENTS_CREATE: (courseId) => `/courses/${courseId}/assignments`,
