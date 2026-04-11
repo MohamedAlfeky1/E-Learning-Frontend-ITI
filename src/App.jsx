@@ -1,10 +1,8 @@
 import { RouterProvider } from "react-router-dom";
-import TeacherCourseList from "./components/teacher/TeacherCourseList";
-// import router from "./router";
+import router from "./router";
 
 function App() {
-  // return <RouterProvider router={router} />;
-  return <TeacherCourseList/>
+  return <RouterProvider router={router} />;
 }
 
 export default App;

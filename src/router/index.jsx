@@ -256,7 +256,7 @@ const router = createBrowserRouter([
 
       // Quizzes
       { path: "courses/:courseId/quizzes", element: <ManageQuizzesPage /> }, // /teacher/courses/:courseId/quizzes
-      { path: "courses/:courseId/quizzes/create", element: <CreateQuizPage /> }, // /teacher/courses/:courseId/quizzes/create
+      { path: "courses/quizzes/create", element: <CreateQuizPage /> }, // /teacher/courses/:courseId/quizzes/create
       { path: "quizzes/:quizId/edit", element: <EditQuizPage /> }, // /teacher/quizzes/:quizId/edit
       {
         path: "quizzes/:quizId/answers",
