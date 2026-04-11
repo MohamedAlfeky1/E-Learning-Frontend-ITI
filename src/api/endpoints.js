@@ -3,7 +3,7 @@ export const ENDPOINTS = {
   AUTH_REGISTER: "/auth/register",
   AUTH_LOGIN: "/auth/login",
   AUTH_REFRESH: "/auth/refresh",
-  AUTH_FORGOT_PASSWORD: "/auth/forgot-password", 
+  AUTH_FORGOT_PASSWORD: "/auth/forgot-password",
   AUTH_RESET_PASSWORD: (token) => `/auth/reset-password/${token}`,
   AUTH_GOOGLE: "/auth/google",
 
@@ -16,6 +16,10 @@ export const ENDPOINTS = {
   // ─── Admin — Users ──────────────────────────────────────────────────────────
   ADMIN_USERS_LIST: "/admin/users",
   ADMIN_USER_STATUS: (id) => `/admin/users/${id}/status`,
+
+  // ─── Lessons ─────────────────────────────────────────────────────────────────
+  LESSONS_LIST: (courseId) => `/lessons/${courseId}`,
+  LESSONS_GET: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
 
   // ─── Categories ─────────────────────────────────────────────────────────────
   CATEGORIES_LIST: "/categories",
@@ -59,13 +63,16 @@ export const ENDPOINTS = {
   ASSIGNMENTS_GRADE: (id, sid) => `/assignments/${id}/submissions/${sid}`,
 
   // ─── Quizzes ──────────────────────────────────────────────────────────────────
-  QUIZZES_LIST: (courseId) => `/courses/${courseId}/quizzes`,
-  QUIZZES_CREATE: (courseId) => `/courses/${courseId}/quizzes`,
+  QUIZZES_LIST: (courseId) => `/quizzes/course/${courseId}`,
+  QUIZZES_GET: (id) => `/quizzes/${id}`,
+  QUIZZES_CREATE: "/quizzes",
   QUIZZES_UPDATE: (id) => `/quizzes/${id}`,
   QUIZZES_DELETE: (id) => `/quizzes/${id}`,
   QUIZZES_START: (id) => `/quizzes/${id}/start`,
   QUIZZES_SUBMIT: (id) => `/quizzes/${id}/submit`,
   QUIZZES_RESULT: (id) => `/quizzes/${id}/result`,
+  QUIZZES_GENERATE_AI: "/quizzes/generate-ai",
+  QUIZZES_LIST_FOR_STUDENT : (id) => `/courses/${id}/student-quizzes`,
 
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
@@ -76,10 +83,10 @@ export const ENDPOINTS = {
   CART_REMOVE_VOUCHER: "/cart/remove-voucher",
 
   // ─── Vouchers ─────────────────────────────────────────────────────────────────
-  ADMIN_VOUCHERS_LIST: "/admin/vouchers",
-  ADMIN_VOUCHERS_CREATE: "/admin/vouchers",
-  ADMIN_VOUCHERS_UPDATE: (id) => `/admin/vouchers/${id}`,
-  ADMIN_VOUCHERS_DELETE: (id) => `/admin/vouchers/${id}`,
+  ADMIN_VOUCHERS_LIST: "/vouchers",
+  ADMIN_VOUCHERS_CREATE: "/vouchers",
+  ADMIN_VOUCHERS_UPDATE: (id) => `/vouchers/${id}`,
+  ADMIN_VOUCHERS_DELETE: (id) => `/vouchers/${id}`,
 
   // ─── Payments ─────────────────────────────────────────────────────────────────
   PAYMENTS_CREATE_INTENT: "/payments/create-intent",
@@ -88,7 +95,7 @@ export const ENDPOINTS = {
 
   // ─── Reviews ──────────────────────────────────────────────────────────────────
   REVIEWS_LIST: (courseId) => `/courseReviews/${courseId}/reviews`,
-  REVIEW_COURSE_BY_ID:(courseId) => `/courseReviews/${courseId}`,
+  REVIEW_COURSE_BY_ID: (courseId) => `/courseReviews/${courseId}`,
   REVIEWS_CREATE: (courseId) => `/courses/${courseId}/reviews`,
   REVIEWS_DELETE: (id) => `/reviews/${id}`,
 

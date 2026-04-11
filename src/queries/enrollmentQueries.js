@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { enrollmentService } from "@/services/enrollmentService";
+import { toast } from "sonner";
 
 /**
  * Fetches the list of courses the current user is enrolled in.
@@ -40,11 +41,15 @@ export const useUpdateProgressMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ enrollmentId, videoId }) => 
+    mutationFn: ({ enrollmentId, videoId }) =>
       enrollmentService.updateProgress(enrollmentId, videoId),
     onSuccess: () => {
+      toast.success("Progress Updated Successfully");
       queryClient.invalidateQueries(["my-courses"]);
       queryClient.invalidateQueries(["enrollment"]);
-    }
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "Error updating progress");
+    },
   });
 };
