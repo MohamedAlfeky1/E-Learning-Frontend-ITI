@@ -60,12 +60,10 @@ const AdminVerificationsPage = () => {
   console.log("paginatedRequests", paginatedRequests);
 
 
-
-
-
   useEffect(() => {
     setCurrentPage(1);
   }, [data]);
+  
 
   if (teacherDataLoading || !teacherData) {
     return <div className="min-h-full min-w-full flex justify-center items-center"><Loader /></div>
