@@ -1,3 +1,4 @@
+// components/tickets/TicketChat.jsx
 import { useTicketQuery } from "@/queries/ticketQueries";
 import { useReplyTicketMutation } from "@/mutations/ticketMutations";
 import { useState, useEffect, useRef } from "react";
@@ -8,7 +9,7 @@ import { Send, Headset, Loader2 } from "lucide-react";
 import TicketMessage from "./TicketMessage";
 import TicketCategoryBadge from "./TicketCategoryBadge";
 
-const TicketChat = ({ ticketId }) => {
+const TicketChat = ({ ticketId, isAdmin = false }) => {
   const { data, isLoading } = useTicketQuery(ticketId);
   const { mutate, isPending } = useReplyTicketMutation();
   const [message, setMessage] = useState("");
@@ -66,7 +67,11 @@ const TicketChat = ({ ticketId }) => {
       <ScrollArea className="flex-1 min-h-0 bg-[#f8fafc]">
         <div className="p-4 md:p-6 space-y-6">
           {(ticket?.conversation || []).map((msg, i) => (
-            <TicketMessage key={i} msg={msg} />
+            <TicketMessage 
+              key={i} 
+              msg={msg} 
+              isContextAdmin={isAdmin} 
+            />
           ))}
           <div ref={messagesEndRef} />
         </div>
@@ -78,7 +83,7 @@ const TicketChat = ({ ticketId }) => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Type your reply..."
+            placeholder={isAdmin ? "Type your response as Support..." : "Type your reply..."}
             disabled={isPending}
             className="flex-1 rounded-2xl bg-slate-50 border-slate-200 focus-visible:ring-primary h-12 pr-14"
           />
@@ -90,8 +95,11 @@ const TicketChat = ({ ticketId }) => {
             {isPending ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
           </Button>
         </div>
+        
         <p className="text-[9px] text-center text-slate-400 mt-2 font-medium">
-          Our team usually responds within a few hours
+          {isAdmin 
+            ? "Your response will be visible to the user immediately" 
+            : "Our team usually responds within a few hours"}
         </p>
       </div>
     </div>

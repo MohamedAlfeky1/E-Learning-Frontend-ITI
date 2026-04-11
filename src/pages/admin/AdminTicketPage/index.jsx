@@ -8,7 +8,7 @@ import {
   useDeleteTicketMutation,
 } from "@/mutations/ticketMutations";
 import { Button } from "@/components/ui/button";
-import { Trash2, CheckCircle2 } from "lucide-react";
+import { Trash2, CheckCircle2, ArrowLeft } from "lucide-react";
 import logo from "@/assets/logo.jpeg";
 
 const AdminTicketsPage = () => {
@@ -29,54 +29,90 @@ const AdminTicketsPage = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto h-[calc(100vh-100px)]">
-      <div className="flex flex-col md:flex-row gap-6 h-full overflow-hidden">
-        <Card className="w-full md:w-[400px] flex flex-col shadow-sm border-slate-200 h-full min-h-0 bg-white">
-          <AdminTicketList selectedId={selectedId} onSelect={setSelectedId} />
+    <div className="p-3 md:p-6 max-w-7xl mx-auto h-[calc(100vh-80px)]">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6 h-full min-h-0 overflow-hidden">
+
+        {/* 📱 Ticket List */}
+        <Card
+          className={`
+            w-full md:w-[400px] flex flex-col h-full min-h-0 bg-white rounded-3xl overflow-hidden border border-slate-200
+            ${selectedId ? "hidden md:flex" : "flex"}
+          `}
+        >
+          <AdminTicketList
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+          />
         </Card>
 
-        <Card className="flex-1 shadow-sm border-slate-200 relative flex flex-col h-full min-h-0 bg-white">
+        {/* 💬 Chat */}
+        <Card
+          className={`
+            flex-1 relative flex flex-col h-full min-h-0 bg-white rounded-3xl overflow-hidden border border-slate-200
+            ${!selectedId ? "hidden md:flex" : "flex"}
+          `}
+        >
           {selectedId ? (
             <>
-              <div className="p-3 border-b bg-slate-50/50 flex justify-end gap-2 shrink-0">
+              {/* 🔙 Header */}
+              <div className="p-3 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center gap-2 shrink-0">
+
+                {/* زرار الرجوع (موبايل فقط) */}
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
-                  className="text-green-600 border-green-200 hover:bg-green-50"
-                  onClick={() => handleStatusChange("resolved")}
+                  className="md:hidden"
+                  onClick={() => setSelectedId(null)}
                 >
-                  <CheckCircle2 className="w-4 h-4 mr-1" /> Mark Resolved
+                  <ArrowLeft className="w-4 h-4" />
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-red-600 border-red-200 hover:bg-red-50"
-                  onClick={handleDelete}
-                >
-                  <Trash2 className="w-4 h-4 mr-1" /> Delete
-                </Button>
+
+                <div className="flex gap-2 ml-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-green-600 border-green-200 hover:bg-green-50 rounded-xl font-bold transition-all active:scale-95"
+                    onClick={() => handleStatusChange("resolved")}
+                  >
+                    <CheckCircle2 className="w-4 h-4 mr-1" />
+                    <span className="hidden sm:inline">Resolved</span>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-red-600 border-red-200 hover:bg-red-50 rounded-xl font-bold transition-all active:scale-95"
+                    onClick={handleDelete}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    <span className="hidden sm:inline">Delete</span>
+                  </Button>
+                </div>
               </div>
 
-              <TicketChat ticketId={selectedId} isAdmin={true} />
+              {/* 💬 Chat Area */}
+              <div className="flex-1 min-h-0">
+                <TicketChat ticketId={selectedId} isAdmin={true} />
+              </div>
             </>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-slate-50/50 animate-in fade-in duration-500">
-              <div className="p-4 bg-white rounded-full shadow-sm mb-4 animate-bounce duration-[3000ms]">
-                <img
-                  src={logo}
-                  className="w-20 h-20 rounded-full object-contain"
-                  alt="Nexora"
-                />
-              </div>
-
-              <h3 className="text-xl font-black text-slate-800 tracking-tight">
-                Nexora Support
-              </h3>
-
-              <p className="text-muted-foreground max-w-[240px] mt-2 text-sm">
-                Select a ticket from the list to start chatting with our team.
-              </p>
-            </div>
+                          <div className="p-4 bg-white rounded-full shadow-sm mb-4 animate-bounce duration-[3000ms]">
+                            <img
+                              src={logo}
+                              className="w-20 h-20 rounded-full object-contain"
+                              alt="Nexora"
+                            />
+                          </div>
+            
+                          <h3 className="text-xl font-black text-slate-800 tracking-tight">
+                            Nexora Support
+                          </h3>
+            
+                          <p className="text-muted-foreground max-w-[240px] mt-2 text-sm">
+                            Select a ticket to start assisting students and teachers, and resolve their inquiries.
+                          </p>
+                        </div>
           )}
         </Card>
       </div>
