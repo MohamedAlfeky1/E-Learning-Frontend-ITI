@@ -3,6 +3,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 
+/**
+ * Updates a student's progress in a specific course.
+ * On success, displays a toast notification and invalidates the "my-courses" query cache
+ * to ensure progress data is updated on the frontend.
+ */
 export const useUpdateProgressMutation = () => {
   const queryClient = useQueryClient();
 
