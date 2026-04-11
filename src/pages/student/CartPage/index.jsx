@@ -1,3 +1,4 @@
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import CourseCard from "./CourseCard";
 import OrderSummary from "./OrderSummary";
 import "./style.css";
@@ -12,7 +13,13 @@ const CartPage = () => {
         </h1>
       </header>
       <section className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <div className="lg:col-span-3 rounded-[24px] flex flex-col gap-2 cursor-pointer">
+        <div className="lg:col-span-3 rounded-[24px] flex flex-col gap-4 cursor-pointer">
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
           <CourseCard />
         </div>
         <OrderSummary />
