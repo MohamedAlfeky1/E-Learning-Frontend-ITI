@@ -1,0 +1,39 @@
+.course-category {
+  color: #712ae2;
+  font-family: "Inter";
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.course-title {
+  color: #141b2b;
+  font-family: "Plus Jakarta Sans";
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.course-description {
+  color: #464555;
+  font-family: "Inter";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.price {
+  color: #141b2b;
+  font-family: "Plus Jakarta Sans";
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 28px;
+}
+
+.details-btn {
+  background-color: #e1e8fd;
+  color: #3525cd;
+  font-family: "Plus Jakarta Sans";
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+}
