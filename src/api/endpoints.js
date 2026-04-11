@@ -63,13 +63,16 @@ export const ENDPOINTS = {
   ASSIGNMENTS_GRADE: (id, sid) => `/assignments/${id}/submissions/${sid}`,
 
   // ─── Quizzes ──────────────────────────────────────────────────────────────────
-  QUIZZES_LIST: (courseId) => `/courses/${courseId}/quizzes`,
-  QUIZZES_CREATE: (courseId) => `/courses/${courseId}/quizzes`,
+  QUIZZES_LIST: (courseId) => `/quizzes/course/${courseId}`,
+  QUIZZES_GET: (id) => `/quizzes/${id}`,
+  QUIZZES_CREATE: "/quizzes",
   QUIZZES_UPDATE: (id) => `/quizzes/${id}`,
   QUIZZES_DELETE: (id) => `/quizzes/${id}`,
   QUIZZES_START: (id) => `/quizzes/${id}/start`,
   QUIZZES_SUBMIT: (id) => `/quizzes/${id}/submit`,
   QUIZZES_RESULT: (id) => `/quizzes/${id}/result`,
+  QUIZZES_GENERATE_AI: "/quizzes/generate-ai",
+  QUIZZES_LIST_FOR_STUDENT : (id) => `/courses/${id}/student-quizzes`,
 
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
