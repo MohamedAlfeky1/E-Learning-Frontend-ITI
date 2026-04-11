@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMyTickets, getTicketById } from "@/services/ticketService";
+import { getMyTickets, getTicketById,getAllTickets } from "@/services/ticketService";
 /**
  * Hook to fetch the list of tickets for the currently authenticated user.
  * @returns {import("@tanstack/react-query").UseQueryResult<any[]>} Query result object containing tickets array and loading state.
@@ -25,5 +25,18 @@ export const useTicketQuery = (id) => {
     enabled: !!id,
 
     select: (res) => res?.data?.data, 
+  });
+};
+/**
+ * Hook to fetch all tickets for the Admin/Support team.
+ * @param {string} [status] - Optional filter by ticket status.
+ * @returns {import("@tanstack/react-query").UseQueryResult<any[]>}
+ */
+export const useAllTicketsQuery = (status) => {
+  return useQuery({
+    queryKey: ["adminTickets", status],
+    queryFn: () => getAllTickets(status),
+    select: (res) => res?.data?.data || res?.data, 
+    staleTime: 0,
   });
 };
