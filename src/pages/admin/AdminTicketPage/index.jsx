@@ -32,7 +32,6 @@ const AdminTicketsPage = () => {
     <div className="p-3 md:p-6 max-w-7xl mx-auto h-[calc(100vh-80px)]">
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 h-full min-h-0 overflow-hidden">
 
-        {/* 📱 Ticket List */}
         <Card
           className={`
             w-full md:w-[400px] flex flex-col h-full min-h-0 bg-white rounded-3xl overflow-hidden border border-slate-200
@@ -54,10 +53,8 @@ const AdminTicketsPage = () => {
         >
           {selectedId ? (
             <>
-              {/* 🔙 Header */}
               <div className="p-3 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center gap-2 shrink-0">
 
-                {/* زرار الرجوع (موبايل فقط) */}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -90,7 +87,6 @@ const AdminTicketsPage = () => {
                 </div>
               </div>
 
-              {/* 💬 Chat Area */}
               <div className="flex-1 min-h-0">
                 <TicketChat ticketId={selectedId} isAdmin={true} />
               </div>
