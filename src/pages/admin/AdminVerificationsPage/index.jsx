@@ -91,7 +91,7 @@ const AdminVerificationsPage = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-2">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-gray-100">
@@ -314,8 +314,15 @@ const AdminVerificationsPage = () => {
                         {/* Decision form */}
                         <div className="flex flex-col gap-3 border-t pt-4 mt-2">
                           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Verification Decision</p>
-
-                          <VerificationDecisionForm applicant={applicant} />
+                          {applicant.status==='approved'?
+                          (<div>
+                            <p className="text-center font-medium text-2xl">This Student is Already <span className="text-green-800">Approved</span></p>
+                          </div>)
+                          :
+                          (
+                            <VerificationDecisionForm applicant={applicant} />
+                          )}
+                          
                         </div>
                       </div>
                     </DrawerContent>
