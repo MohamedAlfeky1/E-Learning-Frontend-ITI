@@ -89,9 +89,9 @@ export const ENDPOINTS = {
   ADMIN_VOUCHERS_DELETE: (id) => `/vouchers/${id}`,
 
   // ─── Payments ─────────────────────────────────────────────────────────────────
-  PAYMENTS_CREATE_INTENT: "/payments/create-intent",
+  PAYMENTS_CREATE_INTENT: "/payments/checkout",
   PAYMENTS_WEBHOOK: "/payments/webhook",
-  PAYMENTS_MY: "/payments/my",
+  PAYMENTS_MY: "/payments/history",
 
   // ─── Reviews ──────────────────────────────────────────────────────────────────
   REVIEWS_LIST: (courseId) => `/courseReviews/${courseId}/reviews`,
