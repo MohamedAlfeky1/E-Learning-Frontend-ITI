@@ -3,7 +3,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 // ─── Layouts ────────────────────────────────────────────────────────────────
 import MainLayout from "@/layouts/MainLayout";
 import AuthLayout from "@/layouts/AuthLayout";
-import DashboardLayout from "@/layouts/DashboardLayout";
+import StudentLayout from "@/layouts/StudentLayout";
 import AdminLayout from "@/layouts/AdminLayout";
 import TeacherLayout from "@/layouts/TeacherLayout";
 
@@ -164,7 +164,7 @@ const router = createBrowserRouter([
   {
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
-        <DashboardLayout />
+        <StudentLayout />
       </ProtectedRoute>
     ),
     children: [
@@ -175,6 +175,7 @@ const router = createBrowserRouter([
       // Courses
       { path: "my-courses", element: <MyCoursesPage /> }, // /my-courses
       { path: "my-courses/:courseId/learn", element: <CoursePlayerPage /> }, // /my-courses/:courseId/learn
+      // {path: "course-viewer/:courseId", element: <CourseViewerPage /> }, // /my-courses/:courseId/view
 
       // Cart & Checkout
       { path: "cart", element: <CartPage /> }, // /cart
