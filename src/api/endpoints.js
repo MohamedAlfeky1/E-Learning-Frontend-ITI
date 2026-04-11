@@ -115,16 +115,17 @@ export const ENDPOINTS = {
   REPORTS_GET: (courseId) => `/reports/${courseId}`,
 
   // ─── Revenue & Earnings ───────────────────────────────────────────────────────
-  ADMIN_REVENUE_CONFIG_GET: "/admin/revenue-config",
-  ADMIN_REVENUE_CONFIG_UPDATE: "/admin/revenue-config",
-  TEACHER_EARNINGS: "/teacher/earnings",
+  ADMIN_REVENUE_CONFIG_GET: "/finance/admin/revenue-config",
+  ADMIN_REVENUE_CONFIG_UPDATE: "/finance/admin/revenue-config",
+  TEACHER_EARNINGS: "/finance/teacher/balance",
   ADMIN_EARNINGS: "/admin/earnings",
 
   // ─── Withdrawals ──────────────────────────────────────────────────────────────
-  TEACHER_WITHDRAWALS_CREATE: "/teacher/withdrawals",
-  TEACHER_WITHDRAWALS_LIST: "/teacher/withdrawals",
-  ADMIN_WITHDRAWALS_LIST: "/admin/withdrawals",
-  ADMIN_WITHDRAWALS_PROCESS: (id) => `/admin/withdrawals/${id}`,
+  TEACHER_WITHDRAWALS_CREATE: "/finance/teacher/withdrawals",
+  TEACHER_WITHDRAWALS_LIST: "/finance/teacher/withdrawals",
+  ADMIN_WITHDRAWALS_LIST: "/finance/admin/withdrawals",
+  ADMIN_PLATFORM_STATS: "/finance/admin/platform-stats",
+  ADMIN_WITHDRAWALS_PROCESS: (id) => `/finance/admin/withdrawals/${id}`,
 
   // ─── Admin Dashboard ──────────────────────────────────────────────────────────
   ADMIN_STATS_OVERVIEW: "/admin/stats/overview",
