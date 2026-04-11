@@ -1,0 +1,235 @@
+/* Favorites Page Styles */
+
+/* CSS Custom Properties for common values */
+:root {
+  --color-primary: #3525cd;
+  --color-secondary: #464555;
+  --color-dark: #141b2b;
+  --font-inter: "Inter";
+  --font-plus-jakarta: "Plus Jakarta Sans";
+  --font-weight-light: 400;
+  --font-weight-medium: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-size-xs: 10px;
+  --font-size-sm: 12px;
+  --font-size-base: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 30px;
+  --font-size-3xl: 48px;
+  --badge-font-family: "Inter";
+  --badge-font-weight: 700;
+  --badge-font-size: 10px;
+}
+
+/* Base utility classes */
+.font-inter {
+  font-family: var(--font-inter);
+}
+
+.font-plus-jakarta {
+  font-family: var(--font-plus-jakarta);
+}
+
+.font-weight-400 {
+  font-weight: var(--font-weight-light);
+}
+
+.font-weight-600 {
+  font-weight: var(--font-weight-medium);
+}
+
+.font-weight-700 {
+  font-weight: var(--font-weight-bold);
+}
+
+.font-weight-800 {
+  font-weight: var(--font-weight-extrabold);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.text-dark {
+  color: var(--color-dark);
+}
+
+.text-size-xs {
+  font-size: var(--font-size-xs);
+}
+
+.text-size-sm {
+  font-size: var(--font-size-sm);
+}
+
+.text-size-base {
+  font-size: var(--font-size-base);
+}
+
+.text-size-lg {
+  font-size: var(--font-size-lg);
+}
+
+.text-size-xl {
+  font-size: var(--font-size-xl);
+}
+
+.text-size-2xl {
+  font-size: var(--font-size-2xl);
+}
+
+.text-size-3xl {
+  font-size: var(--font-size-3xl);
+}
+
+.badge-base {
+  font-family: var(--badge-font-family);
+  font-weight: var(--badge-font-weight);
+  font-size: var(--badge-font-size);
+}
+
+/* Component styles */
+.favorites-page-bg {
+  background-color: #f9f9ff;
+}
+
+.saved-content-label {
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-inter);
+}
+
+.favorites-title {
+  color: var(--color-dark);
+  font-family: var(--font-plus-jakarta);
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-3xl);
+}
+
+.favorites-description {
+  color: var(--color-secondary);
+  font-family: var(--font-inter);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-light);
+}
+
+.total-count {
+  color: var(--color-primary);
+  font-family: var(--font-inter);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xl);
+}
+
+.total-label {
+  color: var(--color-secondary);
+  font-family: var(--font-inter);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xs);
+}
+
+.tabs-list-bg {
+  background-color: #f9f9ff;
+  font-weight: var(--font-weight-medium);
+}
+
+.tab-trigger {
+  font-family: var(--font-inter);
+  font-weight: var(--font-weight-medium);
+}
+
+.inactive-tab-bg {
+  background-color: #f1f3ff;
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.featured-img {
+    border-radius: 0;
+}
+
+.advanced-badge {
+  background-color: #6bff8f;
+  color: #002109;
+  font-family: var(--badge-font-family);
+  font-size: var(--badge-font-size);
+  font-weight: var(--badge-font-weight);
+}
+
+.time-meta {
+  color: var(--color-secondary);
+}
+
+.course-title {
+  color: var(--color-dark);
+  font-family: var(--font-plus-jakarta);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+}
+
+.course-desc {
+  color: var(--color-secondary);
+  font-family: var(--font-inter);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-light);
+}
+
+.continue-btn {
+  background: linear-gradient(to right, #3525cd, #712ae2);
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: var(--font-weight-bold);
+}
+
+.math-badge {
+  background-color: #eaddff;
+  color: #25005a;
+  font-family: var(--badge-font-family);
+  font-weight: var(--badge-font-weight);
+  font-size: var(--badge-font-size);
+}
+
+.sidebar-title {
+  font-family: var(--font-inter);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-lg);
+}
+
+.sidebar-desc {
+  font-family: var(--font-inter);
+  font-weight: var(--font-weight-light);
+  font-size: var(--font-size-sm);
+}
+
+.add-cart-btn {
+  color: var(--color-primary);
+  font-family: var(--font-inter);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+}
+
+.recommended-section {
+  background-color: #f1f3ff;
+}
+
+.recommended-badge {
+  border: none;
+  color: #712ae2;
+  font-family: var(--badge-font-family);
+  font-weight: var(--badge-font-weight);
+  font-size: var(--badge-font-size);
+  letter-spacing: 2px;
+}
+
+.recommended-title {
+  color: var(--color-dark);
+  font-family: var(--font-plus-jakarta);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+}
