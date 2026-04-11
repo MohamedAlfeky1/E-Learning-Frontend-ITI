@@ -24,3 +24,17 @@ export const enrollmentService = {
   return data;
 }
 };
+
+/**
+ * Get All Courses That all student enroll
+ * 
+ */ 
+export const getAllCoursesOfUser = async ()=>{
+  try {
+    const response = await axiosInstance.get(ENDPOINTS.ENROLLMENTS_MY)
+    return response.data;
+  } catch(error) {
+    console.error("Error get lesson data:", error);
+    throw error;
+  }
+}

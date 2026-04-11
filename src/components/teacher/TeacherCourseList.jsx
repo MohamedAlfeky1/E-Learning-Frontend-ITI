@@ -22,7 +22,6 @@ const TeacherCourseList = ({ onCourseChange }) => {
         const fetchedCourses = data.data || [];
         setCourses(fetchedCourses);
 
-        // هنا بنخلي أول كورس هو الـ Default
         if (fetchedCourses.length > 0) {
           const firstCourseId = fetchedCourses[0]._id;
           setSelectedCourseId(firstCourseId);
