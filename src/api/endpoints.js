@@ -29,6 +29,7 @@ export const ENDPOINTS = {
   COURSES_MY: "/courses/my",
   COURSES_GET: (id) => `/courses/${id}`,
   COURSES_CREATE: "/courses",
+  COURSES_UPDATE: (id) => `/courses/${id}`,
   COURSES_STATUS: (id) => `/courses/${id}/status`,
   COURSES_SET_STREAK_REQUIREMENT: (id) =>
     `/admin/courses/${id}/streak-requirement`,

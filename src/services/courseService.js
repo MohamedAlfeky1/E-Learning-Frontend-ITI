@@ -2,6 +2,37 @@ import axiosInstance from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
 
 /**
+ * Fetch all available categories.
+ */
+export const fetchCategories = async () => {
+  const response = await axiosInstance.get(ENDPOINTS.CATEGORIES_LIST);
+  return response.data;
+};
+
+/**
+ * Create a new course.
+ * @param {FormData} courseData - Course payload (supports file uploads)
+ */
+export const createCourse = async (courseData) => {
+  const response = await axiosInstance.post(ENDPOINTS.COURSES_CREATE, courseData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+};
+
+/**
+ * Update an existing course.
+ * @param {string} id - The course ID
+ * @param {FormData} courseData - Updated course payload (supports file uploads)
+ */
+export const updateCourse = async (id, courseData) => {
+  const response = await axiosInstance.put(ENDPOINTS.COURSES_UPDATE(id), courseData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+};
+
+/**
  * Fetch a specific course by its unique ID.
  * @param {string} id - The course ID
  */
