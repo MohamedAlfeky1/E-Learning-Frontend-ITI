@@ -1,12 +1,8 @@
-import "./App.css";
-import RegisterPage from "./pages/auth/RegisterPage";
-import StudentQuizzesPage from "./pages/student/StudentQuizzesPage";
-import CreateQuizPage from "./pages/teacher/CreateQuizPage";
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
 
 function App() {
-     return <>
-     <StudentQuizzesPage/>
-     </>;
+  return <RouterProvider router={router} />;
 }
 
 export default App;
