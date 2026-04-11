@@ -27,7 +27,7 @@ const TicketItem = ({ ticket, isActive, onClick }) => {
             {ticket.subject}
           </h3>
           <div className="flex items-center">
-             <TicketCategoryBadge category={ticket.category} />
+              <TicketCategoryBadge category={ticket.category} />
           </div>
         </div>
         

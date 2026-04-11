@@ -11,7 +11,6 @@ const AdminTicketList = ({ selectedId, onSelect, filterStatus }) => {
   return (
     <div className="flex flex-col h-full min-h-0 bg-white overflow-hidden">
       
-      {/* Header */}
       <div className="p-3 md:p-5 border-b shrink-0 flex justify-between items-center bg-white z-10">
         <div>
           <h2 className="text-base md:text-xl font-bold text-slate-900">
@@ -27,7 +26,6 @@ const AdminTicketList = ({ selectedId, onSelect, filterStatus }) => {
         </Badge>
       </div>
 
-      {/* Scroll Area */}
       <ScrollArea className="flex-1 min-h-0 bg-slate-50/40">
         <div className="p-3 md:p-5 flex flex-col gap-3 md:gap-4">
           
@@ -69,7 +67,6 @@ const AdminTicketList = ({ selectedId, onSelect, filterStatus }) => {
                         : "border-transparent bg-white shadow-sm hover:border-slate-200"
                     )}
                   >
-                    {/* status bar */}
                     <div
                       className={cn(
                         "absolute left-1 top-1/2 -translate-y-1/2 w-1 h-8 md:h-10 rounded-full transition-colors",
@@ -84,7 +81,6 @@ const AdminTicketList = ({ selectedId, onSelect, filterStatus }) => {
 
                     <div className="flex gap-2 md:gap-3">
                       
-                      {/* avatar */}
                       <div
                         className={cn(
                           "w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center text-[10px] md:text-xs font-bold shrink-0",
@@ -96,7 +92,6 @@ const AdminTicketList = ({ selectedId, onSelect, filterStatus }) => {
                         {initials}
                       </div>
 
-                      {/* content */}
                       <div className="flex-1 min-w-0">
                         
                         <h3

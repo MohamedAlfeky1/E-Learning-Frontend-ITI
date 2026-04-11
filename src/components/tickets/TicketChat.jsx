@@ -8,7 +8,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Headset, Loader2 } from "lucide-react";
 import TicketMessage from "./TicketMessage";
 import TicketCategoryBadge from "./TicketCategoryBadge";
-
 const TicketChat = ({ ticketId, isAdmin = false }) => {
   const { data, isLoading } = useTicketQuery(ticketId);
   const { mutate, isPending } = useReplyTicketMutation();
