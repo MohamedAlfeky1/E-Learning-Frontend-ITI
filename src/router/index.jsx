@@ -71,7 +71,6 @@ import WithdrawalRequestPage from "@/pages/teacher/WithdrawalRequestPage";
 import TeacherAvailabilityPage from "@/pages/teacher/TeacherAvailabilityPage";
 import TeacherSessionsPage from "@/pages/teacher/TeacherSessionsPage";
 import TeacherVerificationPage from "@/pages/teacher/TeacherVerificationPage";
-import QuestionBankPage from "@/pages/teacher/QuestionBankPage";
 import TeacherChatPage from "@/pages/teacher/TeacherChatPage";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -274,11 +273,7 @@ const router = createBrowserRouter([
         element: <GradeAssignmentPage />,
       }, // /teacher/assignments/:assignmentId/grade
 
-      // Question Bank (mobile daily questions)
-      {
-        path: "courses/:courseId/question-bank",
-        element: <QuestionBankPage />,
-      }, // /teacher/courses/:courseId/question-bank
+      
 
       // Chat
       { path: "chat/:courseId", element: <TeacherChatPage /> }, // /teacher/chat/:courseId
