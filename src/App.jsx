@@ -1,7 +1,12 @@
 import "./App.css";
+import RegisterPage from "./pages/auth/RegisterPage";
+import StudentQuizzesPage from "./pages/student/StudentQuizzesPage";
+import CreateQuizPage from "./pages/teacher/CreateQuizPage";
 
 function App() {
-  return <h1 className="text-green-500 text-4xl">Hello World</h1>;
+     return <>
+     <StudentQuizzesPage/>
+     </>;
 }
 
 export default App;
