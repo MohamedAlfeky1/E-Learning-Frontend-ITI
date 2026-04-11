@@ -2,7 +2,7 @@ import { useState } from "react";
 import TicketList from "@/components/tickets/TicketList";
 import TicketChat from "@/components/tickets/TicketChat";
 import { Card } from "@/components/ui/card";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.jpeg";
 
 const TeacherTicketPage = () => {
   const [selectedTicketId, setSelectedTicketId] = useState(null);

@@ -184,13 +184,13 @@ export const ENDPOINTS = {
 
   // ─── File Upload ──────────────────────────────────────────────────────────────
   UPLOAD: "/upload",
+  
   //Ticket System
 // ─── Support Tickets ─────────────────────────────────────────────
 SUPPORT_CREATE: "/support/tickets",
 SUPPORT_MY_TICKETS: "/support/my-tickets",
 SUPPORT_GET: (id) => `/support/tickets/${id}`,
 SUPPORT_REPLY: (id) => `/support/tickets/${id}/reply`,
-
 // Admin
 ADMIN_TICKETS_LIST: "/support/admin/tickets",
 ADMIN_TICKET_REPLY: (id) => `/support/tickets/${id}/reply`,

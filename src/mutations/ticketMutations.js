@@ -100,7 +100,7 @@ export const useAdminReplyMutation = () => {
   });
 };
 /**
- * Hook to update the status (e.g., open, resolved) of a ticket.
+ * Hook to update the status (e.g., open, resolved) of a ticket admin.
  * @param {Object} params - The mutation parameters.
  * @param {string} params.id - The ticket ID.
  * @param {string} params.status - The new status string.
@@ -132,7 +132,7 @@ export const useUpdateTicketStatusMutation = () => {
 };
 
 /**
- * Hook to delete a ticket by its ID.
+ * Hook to delete a ticket by its ID admin only.
  * @param {string} id - The ticket ID to be deleted.
  * @returns {import("@tanstack/react-query").UseMutationResult}
  */

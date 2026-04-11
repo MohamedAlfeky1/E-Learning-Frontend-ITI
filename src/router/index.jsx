@@ -95,6 +95,7 @@ import AdminVerificationsPage from "@/pages/admin/AdminVerificationsPage";
 import AdminEnrollStudentPage from "@/pages/admin/AdminEnrollStudentPage";
 import AdminAddAdminPage from "@/pages/admin/AdminAddAdminPage";
 import AdminPaymentsPage from "@/pages/admin/AdminPaymentsPage";
+import AdminTicketPage from "@/pages/admin/AdminTicketPage";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERROR / FALLBACK
@@ -356,6 +357,7 @@ const router = createBrowserRouter([
 
       // Reports & Analytics
       { path: "reports", element: <AdminReportsPage /> }, // /admin/reports
+      {path:"tickets",element:<AdminTicketPage />} // /admin/tickets    
     ],
   },
 

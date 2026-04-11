@@ -2,7 +2,7 @@ import { useState } from "react";
 import TicketList from "@/components/tickets/TicketList";
 import TicketChat from "@/components/tickets/TicketChat";
 import { Card } from "@/components/ui/card";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.jpeg";
 
 const TicketsPage = () => {
   const [selectedTicketId, setSelectedTicketId] = useState(null);
@@ -10,17 +10,16 @@ const TicketsPage = () => {
 
   const handleSelect = (id) => {
     setSelectedTicketId(id);
-    setShowList(false); 
+    setShowList(false);
   };
 
   const handleBack = () => {
-    setShowList(true); 
+    setShowList(true);
   };
 
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto h-[calc(100vh-80px)] animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row gap-6 h-full">
-
         <Card
           className={`
             w-full md:w-80 lg:w-96 flex flex-col shadow-sm border-slate-200 
@@ -30,10 +29,7 @@ const TicketsPage = () => {
             ${showList ? "block md:flex" : "hidden md:flex"}
           `}
         >
-          <TicketList
-            selectedId={selectedTicketId}
-            onSelect={handleSelect}
-          />
+          <TicketList selectedId={selectedTicketId} onSelect={handleSelect} />
         </Card>
 
         <Card
@@ -62,10 +58,10 @@ const TicketsPage = () => {
             </>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-slate-50/50 animate-in fade-in duration-500">
-              <div className="p-4 bg-white rounded-full shadow-sm mb-4 animate-bounce duration-[3000ms]">
+              <div className="w-24 h-24 rounded-full overflow-hidden shadow-sm mb-4 animate-bounce duration-[3000ms]">
                 <img
                   src={logo}
-                  className="w-20 h-20 rounded-full object-contain"
+                  className="w-full h-full object-cover"
                   alt="Nexora"
                 />
               </div>
@@ -80,7 +76,6 @@ const TicketsPage = () => {
             </div>
           )}
         </Card>
-
       </div>
     </div>
   );
