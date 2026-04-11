@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/select";
 import { getAllCoursesOfLoggedInTeacher } from "@/services/courseService";
 import { BookOpen, Loader2 } from "lucide-react"; 
+
 const TeacherCourseList = ({ onCourseChange }) => {
   const [courses, setCourses] = useState([]);
   const [selectedCourseId, setSelectedCourseId] = useState("");
@@ -18,9 +19,16 @@ const TeacherCourseList = ({ onCourseChange }) => {
       setLoading(true);
       try {
         const data = await getAllCoursesOfLoggedInTeacher();
-        console.log(data.data);
-        
-        setCourses(data.data || []);
+        const fetchedCourses = data.data || [];
+        setCourses(fetchedCourses);
+
+        // هنا بنخلي أول كورس هو الـ Default
+        if (fetchedCourses.length > 0) {
+          const firstCourseId = fetchedCourses[0]._id;
+          setSelectedCourseId(firstCourseId);
+          
+          if (onCourseChange) onCourseChange(firstCourseId);
+        }
       } catch (error) {
         console.error("Failed to load courses", error);
       } finally {
@@ -28,7 +36,7 @@ const TeacherCourseList = ({ onCourseChange }) => {
       }
     };
     fetchAllCourses();
-  }, []);
+  }, []); 
 
   const handleValueChange = (value) => {
     setSelectedCourseId(value);
@@ -63,24 +71,18 @@ const TeacherCourseList = ({ onCourseChange }) => {
         </SelectTrigger>
         
         <SelectContent className="rounded-xl shadow-2xl border-slate-100 p-1">
-          {courses.length > 0 ? (
-            courses.map((course) => (
-              <SelectItem 
-                key={course._id} 
-                value={course._id} 
-                className="rounded-lg py-3 focus:bg-indigo-50 focus:text-indigo-700 cursor-pointer transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
-                  <span className="font-medium text-slate-700">{course.title}</span>
-                </div>
-              </SelectItem>
-            ))
-          ) : (
-            <div className="p-6 text-center">
-              <p className="text-sm text-slate-400">No courses available</p>
-            </div>
-          )}
+          {courses.map((course) => (
+            <SelectItem 
+              key={course._id} 
+              value={course._id} 
+              className="rounded-lg py-3 focus:bg-indigo-50 focus:text-indigo-700 cursor-pointer transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                <span className="font-medium text-slate-700">{course.title}</span>
+              </div>
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>

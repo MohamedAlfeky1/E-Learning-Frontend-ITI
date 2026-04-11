@@ -1,3 +1,10 @@
+/**
+ * ========================================
+ * QUIZ MANAGEMENT PAGE
+ * ========================================
+ * Main dashboard for managing course quizzes
+ */
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,38 +16,39 @@ import {
   CheckCircle, FileText, Loader2
 } from "lucide-react";
 
-// API Service
 import { quizApi } from "../../../api/quizApi";
 
-// Components
 import StatCard from "./components/StatCard";
 import QuizCard from "./components/QuizCard";
 import QuizForm from "./components/QuizForm";
 import AIGenerator from "./components/AIGenerator";
 import EmptyState from "./components/EmptyState";
+import TeacherCourseList from "@/components/teacher/TeacherCourseList";
 
-// Main Component
-export default function QuizManagementPage({ courseId, teacherId }) {
+export default function QuizManagementPage() {
   const [activeTab, setActiveTab] = useState("list");
   const [quizzes, setQuizzes] = useState([]);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [draftQuiz, setDraftQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
-    fetchQuizzes();
-  }, [courseId]);
+    if (selectedCourseId) {
+      fetchQuizzes();
+    }
+  }, [selectedCourseId]);
 
   const fetchQuizzes = async () => {
     setLoading(true);
     try {
-      const { data } = await quizApi.getAll(courseId || "69cab49a79558b5ca2441532");
-      let fetchedQuizzes = [];
-      if (Array.isArray(data?.data)) fetchedQuizzes = data.data;
-      else if (Array.isArray(data)) fetchedQuizzes = data;
-      else if (data?.data?.quizzes && Array.isArray(data.data.quizzes)) fetchedQuizzes = data.data.quizzes;
-      setQuizzes(fetchedQuizzes);
+      const { data } = await quizApi.getAll(selectedCourseId);
+      console.log(data.data);
+      
+      setQuizzes(data.data);
     } catch (error) {
       console.error("Failed to fetch quizzes:", error);
     } finally {
@@ -48,9 +56,41 @@ export default function QuizManagementPage({ courseId, teacherId }) {
     }
   };
 
+  const handleCreateNew = () => {
+    setSelectedQuiz(null);
+    setDraftQuiz(null);
+    setActiveTab("create");
+  };
+
+  const handleEditQuiz = (quiz) => {
+    setSelectedQuiz(quiz);
+    setActiveTab("edit");
+  };
+
+  const handleAIReview = (quiz) => {
+    setDraftQuiz(quiz);
+    setActiveTab("create");
+  };
+
+  const handleSuccess = () => {
+    setDraftQuiz(null);
+    fetchQuizzes();
+    setActiveTab("list");
+  };
+
+  const filteredQuizzes = quizzes.filter(quiz => {
+    const matchesSearch = quiz.title?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" || quiz.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const stats = {
+    total: quizzes?.length || 0,
+    active: quizzes?.filter(q => q.status === "published")?.length || 0,
+  };
+
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-      {/* Header Section */}
       <div className="flex justify-between items-end mb-8">
         <div>
           <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">
@@ -69,29 +109,24 @@ export default function QuizManagementPage({ courseId, teacherId }) {
           </Button>
           <Button 
             className="rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200"
-            onClick={() => {
-              setSelectedQuiz(null);
-              setDraftQuiz(null);
-              setActiveTab("create");
-            }}
+            onClick={handleCreateNew}
           >
             <Plus className="w-4 h-4 mr-2" /> Create Quiz
           </Button>
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
         <StatCard 
           title="Total Quizzes" 
-          value={(quizzes?.length || 0).toString()} 
+          value={stats.total.toString()} 
           trend="this month"
           icon={<FileText className="w-5 h-5" />}
           color="blue" 
         />
         <StatCard 
           title="Active Quizzes" 
-          value={(quizzes?.filter?.(q => q.status === "published")?.length || 0).toString()} 
+          value={stats.active.toString()} 
           trend="published"
           icon={<CheckCircle className="w-5 h-5" />}
           color="green" 
@@ -112,6 +147,10 @@ export default function QuizManagementPage({ courseId, teacherId }) {
         />
       </div>
 
+      <div className="mb-10">
+        <TeacherCourseList onCourseChange={(id) => setSelectedCourseId(id)} />
+      </div>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="bg-white p-1 rounded-xl">
           <TabsTrigger value="list" className="rounded-lg data-[state=active]:bg-indigo-50">
@@ -130,12 +169,16 @@ export default function QuizManagementPage({ courseId, teacherId }) {
           )}
         </TabsList>
 
-        {/* Quiz List Tab */}
         <TabsContent value="list" className="space-y-4">
           <div className="flex justify-between items-center mb-4">
             <div className="flex gap-2">
-              <Input placeholder="Search quizzes..." className="w-64 rounded-xl" />
-              <Select defaultValue="all">
+              <Input 
+                placeholder="Search quizzes..." 
+                className="w-64 rounded-xl"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-32 rounded-xl">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
@@ -156,23 +199,22 @@ export default function QuizManagementPage({ courseId, teacherId }) {
             <div className="flex justify-center py-12">
               <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
             </div>
-          ) : quizzes.length === 0 ? (
+          ) : filteredQuizzes.length === 0 ? (
             <EmptyState 
-              title="No quizzes yet"
-              description="Create your first quiz manually or use AI generator"
-              action={() => setActiveTab("create")}
+              title={searchQuery || statusFilter !== "all" ? "No quizzes found" : "No quizzes yet"}
+              description={searchQuery || statusFilter !== "all" 
+                ? "Try adjusting your filters" 
+                : "Create your first quiz manually or use AI generator"}
+              action={handleCreateNew}
               actionText="Create Quiz"
             />
           ) : (
             <div className="space-y-4">
-              {quizzes.map((quiz) => (
+              {filteredQuizzes.map((quiz) => (
                 <QuizCard 
                   key={quiz._id}
                   quiz={quiz}
-                  onEdit={() => {
-                    setSelectedQuiz(quiz);
-                    setActiveTab("edit");
-                  }}
+                  onEdit={() => handleEditQuiz(quiz)}
                   onDelete={fetchQuizzes}
                 />
               ))}
@@ -180,49 +222,33 @@ export default function QuizManagementPage({ courseId, teacherId }) {
           )}
         </TabsContent>
 
-        {/* Create Quiz Tab */}
         <TabsContent value="create">
           <QuizForm 
             key={draftQuiz ? "draft" : "new"}
-            courseId={courseId}
+            courseId={selectedCourseId}
             initialData={draftQuiz}
             isEdit={false}
-            onSuccess={() => {
-              setDraftQuiz(null);
-              fetchQuizzes();
-              setActiveTab("list");
-            }}
+            onSuccess={handleSuccess}
           />
         </TabsContent>
 
-        {/* AI Generator Tab */}
         <TabsContent value="ai">
           <AIGenerator 
-            courseId={courseId}
-            onSuccess={(quiz) => {
-              fetchQuizzes();
-              setActiveTab("list");
-            }}
-            onReview={(quiz) => {
-              setDraftQuiz(quiz);
-              setActiveTab("create");
-            }}
+            courseId={selectedCourseId}
+            onSuccess={handleSuccess}
+            onReview={handleAIReview}
             generating={generating}
             setGenerating={setGenerating}
           />
         </TabsContent>
 
-        {/* Edit Quiz Tab */}
         <TabsContent value="edit">
           {selectedQuiz && (
             <QuizForm 
-              courseId={courseId}
+              courseId={selectedCourseId}
               initialData={selectedQuiz}
               isEdit={true}
-              onSuccess={() => {
-                fetchQuizzes();
-                setActiveTab("list");
-              }}
+              onSuccess={handleSuccess}
             />
           )}
         </TabsContent>
