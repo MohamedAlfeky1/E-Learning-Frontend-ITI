@@ -1,10 +1,11 @@
 import { CloudUpload, PlusIcon } from "lucide-react";
 import "./style.css";
 import { Button } from "@/components/ui/button";
+import UploadingCard from "./UploadingCard";
 
 const UploadMaterialPage = () => {
   return (
-    <div className="min-h-screen text-white p-6 md:p-12 font-sans favorites-page-bg">
+    <div className="min-h-screen text-white p-6 md:p-12 font-sans page-bg">
       {/* Header */}
       <header className="mb-8 flex flex-col justify-between">
         <p className="tracking-widest uppercase mb-2 text-primary text-size-xs font-weight-700 font-inter">
@@ -19,10 +20,13 @@ const UploadMaterialPage = () => {
         </p>
       </header>
 
-      <section>
-        <div className="border-2 border-dashed border-slate-300 bg-white rounded-[24px] flex flex-col items-center justify-center gap-2 text-center p-12 cursor-pointer transition-colors hover:border-indigo-600">
-          <Button variant="secondary" className="size-16 rounded-full flex items-center justify-center mb-2">
-            <CloudUpload color="#3525CD" />
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 border-2 border-dashed border-slate-300 bg-white rounded-[24px] flex flex-col items-center justify-center gap-2 text-center p-12 cursor-pointer transition-colors hover:border-indigo-600">
+          <Button
+            variant="secondary"
+            className="size-16 rounded-full text-primary flex items-center justify-center mb-2"
+          >
+            <CloudUpload />
           </Button>
           <h3
             className="text-slate-950 text-base font-bold leading-6 mb-0"
@@ -34,12 +38,15 @@ const UploadMaterialPage = () => {
             Up to 2GB per file. High-resolution video recommended.
           </p>
           <Button
+            className="background-color-primary"
             style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
           >
             Select Files
           </Button>
         </div>
+        <UploadingCard />
       </section>
+      {/* TODO: recent uploads section */}
     </div>
   );
 };
