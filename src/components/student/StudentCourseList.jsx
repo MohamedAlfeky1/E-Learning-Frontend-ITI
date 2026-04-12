@@ -13,6 +13,10 @@ const StudentCourseList = ({ onCourseChange }) => {
   const [courses, setCourses] = useState([]);
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [loading, setLoading] = useState(true);
+  console.log(courses);
+  console.log(selectedCourseId);
+  
+  
 
   useEffect(() => {
     const fetchAllCourses = async () => {
@@ -23,9 +27,13 @@ const StudentCourseList = ({ onCourseChange }) => {
         
         const fetchedCourses = data.data || [];
         setCourses(fetchedCourses);
+        
+        
 
         if (fetchedCourses.length > 0) {
-          const firstCourseId = fetchedCourses[0]._id;
+          const firstCourseId = fetchedCourses[0].courseId._id;
+          console.log("hereeeeeeeeeeeeeee : ",firstCourseId);
+          
           setSelectedCourseId(firstCourseId);
           
           if (onCourseChange) onCourseChange(firstCourseId);
@@ -74,8 +82,8 @@ const StudentCourseList = ({ onCourseChange }) => {
         <SelectContent className="rounded-xl shadow-2xl border-slate-100 p-1">
           {courses.map((course) => (
             <SelectItem 
-              key={course._id} 
-              value={course._id} 
+              key={course.courseId._id} 
+              value={course.courseId._id} 
               className="rounded-lg py-3 focus:bg-indigo-50 focus:text-indigo-700 cursor-pointer transition-colors"
             >
               <div className="flex items-center gap-3">
