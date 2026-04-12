@@ -1,4 +1,7 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   ArrowRight,
   Banknote,
@@ -8,7 +11,6 @@ import {
   LockKeyhole,
 } from "lucide-react";
 import "./style.css";
-import { Button } from "@/components/ui/button";
 
 const OrderSummary = () => {
   return (
@@ -36,6 +38,16 @@ const OrderSummary = () => {
           <p className="font-semibold font-inter">-$21.60</p>
         </div>
       </div>
+      <Field>
+        <FieldLabel
+          className="uppercase text-[12px] font-normal tracking-[1px] font-inter"
+          style={{ color: "#464555" }}
+        >
+          discount code
+        </FieldLabel>
+        <Input type="text" className="bg-white rounded-lg" placeholder="Enter code" />
+        <Button className="rounded-lg" style={{ backgroundColor: "#F1F3FF", color: "#141B2B" }}>Apply</Button>
+      </Field>
       <div className="grand-total flex flex-col gap-2 sm:flex-row sm:justify-between">
         <div className="flex flex-col text-center sm:text-left">
           <span
