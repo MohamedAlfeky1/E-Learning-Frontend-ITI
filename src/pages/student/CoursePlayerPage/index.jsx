@@ -3,6 +3,7 @@ import { useGetCoursesById } from "@/queries/useCourses";
 import { useGetAllLessonsByCourse } from "@/queries/useLessonQueries";
 import { useParams } from "react-router-dom";
 import { IoPlay } from "react-icons/io5";
+import { MdLockOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils"
@@ -21,7 +22,7 @@ const CoursePlayerPage = () => {
 
   // states
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [videosProgress, setVideosProgress] = useState({});
+  const [courseProgress, setCourseProgress] = useState(0);
 
 
   const { courseId } = useParams();
@@ -31,6 +32,17 @@ const CoursePlayerPage = () => {
   const { data: enrollmentsDetails } = useEnrollmentDetailsQuery(courseId);
   const { mutate: updateProgress } = useUpdateProgressMutation();
   const enrollmentId = enrollmentsDetails?._id
+  const completedVideoIds = enrollmentsDetails?.completedVideos?.map(v => v.videoId) ?? [];
+  const allVideos = lessons?.data?.flatMap(lesson =>
+    lesson.videos.map(video => ({ ...video, lesson }))
+  ) ?? [];
+
+  // A video is accessible if it's completed OR it's the first uncompleted one:
+  const isVideoAccessible = (videoId) => {
+    if (completedVideoIds.includes(videoId)) return true;
+    const firstUncompleted = allVideos.find(v => !completedVideoIds.includes(v._id));
+    return firstUncompleted?._id === videoId;
+  };
 
 
   console.log("enrollments", enrollments);
@@ -51,10 +63,7 @@ const CoursePlayerPage = () => {
       { enrollmentId, videoId },
       {
         onSuccess: (data) => {
-          setVideosProgress(prev => ({
-            ...prev,
-            [videoId]: data.progress // { "videoId123": 75, "videoId456": 50 }
-          }));
+          setCourseProgress(data.progress);
         }
       }
     );
@@ -77,6 +86,13 @@ const CoursePlayerPage = () => {
       }
     }
   }, [lessons]);
+
+
+  useEffect(() => {
+    if (enrollmentsDetails?.progress !== undefined) {
+      setCourseProgress(enrollmentsDetails.progress);
+    }
+  }, [enrollmentsDetails]);
 
 
   console.log(courseId);
@@ -244,11 +260,12 @@ const CoursePlayerPage = () => {
       <div className="col-span-1 flex flex-col gap-4">
         <div className="bg-[var(--secondary)] p-5 rounded-md flex flex-col  gap-3">
           <div className=" flex justify-between items-center">
-            <h2 className="font-semibold text-sm">Video Progress</h2>
-            <Badge variant="lightPruple">{videosProgress[selectedVideo?._id] ?? 0} % DONE</Badge>
+            <h2 className="font-semibold text-sm">Course Progress</h2>
+            <Badge variant="lightPruple">{courseProgress}% DONE</Badge>
+
           </div>
           <div>
-            <Progress value={videosProgress[selectedVideo?._id] ?? 0} className="w-full mt-2 bg-gray-500" />
+            <Progress value={courseProgress} className="w-full mt-2 bg-gray-500" />
           </div>
         </div>
 
@@ -291,13 +308,14 @@ const CoursePlayerPage = () => {
                   {/* Content (videos) */}
                   <AccordionContent >
                     <div className="flex flex-col ">
-                      {lesson.videos?.map((video) => (
+                      {lesson.videos?.map((video) => {
+                        const accessible = isVideoAccessible(video._id);
+                        const isCompleted = completedVideoIds.includes(video._id);
+                        return(
                         <div
                           onClick={() => {
-                            setSelectedVideo({
-                              ...video,
-                              lesson: lesson
-                            })
+                            if (!accessible) return; // 🔒 block click
+                            setSelectedVideo({ ...video, lesson });
                           }}
                           key={video._id}
                           className={`text-sm hover:bg-gray-50 p-2
@@ -308,10 +326,14 @@ const CoursePlayerPage = () => {
                         >
                           <div className="flex justify-between items-center">
                             <h2 className="text-sm font-semibold">{video.orderIndex} {video.title}</h2>
-                            {selectedVideo?._id === video._id ? (
-                              <MdBarChart className="text-gray-400" />
+                            {isCompleted ? (
+                              <IoMdCheckmark className="text-green-500" />   //  done
+                            ) : selectedVideo?._id === video._id ? (
+                              <MdBarChart className="text-gray-400" />       //  watching
+                            ) : accessible ? (
+                              <IoPlay className="text-gray-400" />           //  next
                             ) : (
-                              <IoPlay className="text-gray-400" />
+                              <MdLockOutline className="text-gray-400" />  
                             )}
 
                           </div>
@@ -325,7 +347,8 @@ const CoursePlayerPage = () => {
 
 
                         </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   </AccordionContent>
 
@@ -344,3 +367,50 @@ const CoursePlayerPage = () => {
 };
 
 export default CoursePlayerPage;
+
+
+// [{…}]
+// 0
+// : 
+// courseId
+// : 
+// {_id: '69d6a5fb3940a1c77a47fe55', title: 'Teaching English'}
+// createdAt
+// : 
+// "2026-04-08T20:05:47.352Z"
+// description
+// : 
+// "learn the alphabet for begginers learn the alphabet for begginers "
+// materials
+// : 
+// []
+// orderIndex
+// : 
+// 1
+// teacherId
+// : 
+// "69d3f77927768c09bdb61add"
+// title
+// : 
+// "learn the alpahet"
+// updatedAt
+// : 
+// "2026-04-08T20:05:47.352Z"
+// videos
+// : 
+// (2) [{…}, {…}]
+// __v
+// : 
+// 0
+// _id
+// : 
+// "69d6b51b0b026f5877d57cc6"
+// [[Prototype]]
+// : 
+// Object
+// length
+// : 
+// 1
+// [[Prototype]]
+// : 
+// Array(0)
