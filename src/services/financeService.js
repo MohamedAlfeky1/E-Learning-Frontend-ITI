@@ -9,3 +9,12 @@ export const updateRevenueConfig = (teacherShare) =>
 
 export const getPlatformStats = () =>
     axiosInstance.get(ENDPOINTS.ADMIN_PLATFORM_STATS);
+
+export const getAllPendingWithdrawals = () => 
+    axiosInstance.get("/finance/admin/withdrawals/pending");
+
+export const approveWithdrawal = (requestId) => 
+    axiosInstance.patch(`/finance/admin/withdrawals/${requestId}/approve`);
+
+export const rejectWithdrawal = ({ requestId, adminNote }) => 
+    axiosInstance.patch(`/finance/admin/withdrawals/${requestId}/reject`, { adminNote });

@@ -121,7 +121,7 @@ export const ENDPOINTS = {
   ADMIN_EARNINGS: "/admin/earnings",
 
   // ─── Withdrawals ──────────────────────────────────────────────────────────────
-  TEACHER_WITHDRAWALS_CREATE: "/finance/teacher/withdrawals",
+  TEACHER_WITHDRAWALS_CREATE: "/finance/teacher/withdraw",
   TEACHER_WITHDRAWALS_LIST: "/finance/teacher/withdrawals",
   ADMIN_WITHDRAWALS_LIST: "/finance/admin/withdrawals",
   ADMIN_PLATFORM_STATS: "/finance/admin/platform-stats",

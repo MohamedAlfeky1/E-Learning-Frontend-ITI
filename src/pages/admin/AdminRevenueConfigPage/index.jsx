@@ -16,12 +16,13 @@ import {
   Wallet,
   Banknote,
 } from "lucide-react";
+import Loader from "@/components/ui/loader";
 
 import {
   useRevenueConfigQuery,
   usePlatformStatsQuery,
-  useUpdateRevenueMutation,
 } from "@/queries/financeQueries";
+import {  useUpdateRevenueMutation } from "@/mutations/financeMutations";
 
 const AdminRevenueConfigPage = () => {
   const { data: config, isLoading: configLoading } =
@@ -42,10 +43,10 @@ const AdminRevenueConfigPage = () => {
 
   if (configLoading || statsLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="animate-spin text-primary" size={40} />
-      </div>
-    );
+        <div className="min-h-screen flex items-center justify-center bg-[#f8faff]" >
+          <Loader />
+        </div>
+      );
   }
 
   return (

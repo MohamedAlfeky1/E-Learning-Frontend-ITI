@@ -1,10 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  getRevenueConfig,
-  updateRevenueConfig,
-  getPlatformStats,
-} from "@/services/financeService";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { getAllPendingWithdrawals,  getRevenueConfig,
+  getPlatformStats, } from "@/services/financeService";
+
 
 /**
  * Fetches the revenue configuration for the platform.
@@ -37,36 +34,10 @@ export const usePlatformStatsQuery = () => {
     select: (res) => res.data.data,
   });
 };
-
-/**
- * Mutation hook to update revenue configuration.
- *
- * @returns {import("@tanstack/react-query").UseMutationResult<
- *  any,
- *  unknown,
- *  number
- * >} Mutation object for updating revenue config.
- *
- * @description
- * - Accepts teacher share as a decimal (e.g. 0.8 instead of 80).
- * - Shows success/error toast messages.
- * - Invalidates related queries after success.
- */
-export const useUpdateRevenueMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: updateRevenueConfig,
-
-    onSuccess: () => {
-      toast.success("Revenue configuration updated!");
-
-      queryClient.invalidateQueries({ queryKey: ["revenueConfig"] });
-      queryClient.invalidateQueries({ queryKey: ["platformStats"] });
-    },
-
-    onError: (err) => {
-      toast.error(err.response?.data?.message || "Failed to update");
-    },
+export const usePendingWithdrawalsQuery = () => {
+  return useQuery({
+    queryKey: ["pendingWithdrawals"],
+    queryFn: getAllPendingWithdrawals,
+    select: (res) => res.data.data,
   });
 };
