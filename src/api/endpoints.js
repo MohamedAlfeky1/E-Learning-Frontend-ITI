@@ -3,30 +3,35 @@ export const ENDPOINTS = {
   AUTH_REGISTER: "/auth/register",
   AUTH_LOGIN: "/auth/login",
   AUTH_REFRESH: "/auth/refresh",
-  AUTH_FORGOT_PASSWORD: "/auth/forgot-password", 
+  AUTH_FORGOT_PASSWORD: "/auth/forgot-password",
   AUTH_RESET_PASSWORD: (token) => `/auth/reset-password/${token}`,
   AUTH_GOOGLE: "/auth/google",
 
   // ─── Profile ────────────────────────────────────────────────────────────────
-  PROFILE_GET: "/profile",
-  PROFILE_UPDATE: "/profile",
+  PROFILE_GET: "/auth/me",
+  PROFILE_UPDATE: "/auth/me",
   PROFILE_AVATAR: "/profile/avatar",
-  PROFILE_CHANGE_PASSWORD: "/profile/password",
+  PROFILE_CHANGE_PASSWORD: "/auth/change-password",
 
   // ─── Admin — Users ──────────────────────────────────────────────────────────
   ADMIN_USERS_LIST: "/admin/users",
   ADMIN_USER_STATUS: (id) => `/admin/users/${id}/status`,
 
+  // ─── Lessons ─────────────────────────────────────────────────────────────────
+  LESSONS_LIST: (courseId) => `/lessons/${courseId}`,
+  LESSONS_GET: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
+
   // ─── Categories ─────────────────────────────────────────────────────────────
   CATEGORIES_LIST: "/categories",
+  CATEGORY_BY_ID: (id) => `categories/id/${id}`,
   CATEGORIES_CREATE: "/categories",
   CATEGORIES_UPDATE: (id) => `/categories/${id}`,
   CATEGORIES_DELETE: (id) => `/categories/${id}`,
 
   // ─── Courses ─────────────────────────────────────────────────────────────────
   COURSES_LIST: "/courses",
-  COURSES_SEARCH: "/courses/search",
-  COURSES_MY: "/courses/my",
+  COURSES_SEARCH: "/courses/browserCourses",
+  COURSES_MY: "/courses/my-courses",
   COURSES_GET: (id) => `/courses/${id}`,
   COURSES_CREATE: "/courses",
   COURSES_UPDATE: (id) => `/courses/${id}`,
@@ -43,12 +48,11 @@ export const ENDPOINTS = {
 
   // ─── Enrollments ─────────────────────────────────────────────────────────────
   ENROLLMENTS_CREATE: "/enrollments",
-  ENROLLMENTS_MY: "/enrollments/my",
+  ENROLLMENTS_MY: "/enrollments/my-courses",
   ENROLLMENTS_GET: (courseId) => `/enrollments/${courseId}`,
-  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) =>
-    `/enrollments/${courseId}/videos/${videoId}/complete`,
+  ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) => `/enrollments/update-progress/${enrollmentId}`,
+  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) => `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_PROGRESS: (courseId) => `/enrollments/${courseId}/progress`,
-
   // ─── Assignments ─────────────────────────────────────────────────────────────
   ASSIGNMENTS_LIST: (courseId) => `/courses/${courseId}/assignments`,
   ASSIGNMENTS_CREATE: (courseId) => `/courses/${courseId}/assignments`,
@@ -60,13 +64,16 @@ export const ENDPOINTS = {
   ASSIGNMENTS_GRADE: (id, sid) => `/assignments/${id}/submissions/${sid}`,
 
   // ─── Quizzes ──────────────────────────────────────────────────────────────────
-  QUIZZES_LIST: (courseId) => `/courses/${courseId}/quizzes`,
-  QUIZZES_CREATE: (courseId) => `/courses/${courseId}/quizzes`,
+  QUIZZES_LIST: (courseId) => `/quizzes/course/${courseId}`,
+  QUIZZES_GET: (id) => `/quizzes/${id}`,
+  QUIZZES_CREATE: "/quizzes",
   QUIZZES_UPDATE: (id) => `/quizzes/${id}`,
   QUIZZES_DELETE: (id) => `/quizzes/${id}`,
   QUIZZES_START: (id) => `/quizzes/${id}/start`,
   QUIZZES_SUBMIT: (id) => `/quizzes/${id}/submit`,
   QUIZZES_RESULT: (id) => `/quizzes/${id}/result`,
+  QUIZZES_GENERATE_AI: "/quizzes/generate-ai",
+  QUIZZES_LIST_FOR_STUDENT : (id) => `/courses/${id}/student-quizzes`,
 
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
@@ -77,10 +84,10 @@ export const ENDPOINTS = {
   CART_REMOVE_VOUCHER: "/cart/remove-voucher",
 
   // ─── Vouchers ─────────────────────────────────────────────────────────────────
-  ADMIN_VOUCHERS_LIST: "/admin/vouchers",
-  ADMIN_VOUCHERS_CREATE: "/admin/vouchers",
-  ADMIN_VOUCHERS_UPDATE: (id) => `/admin/vouchers/${id}`,
-  ADMIN_VOUCHERS_DELETE: (id) => `/admin/vouchers/${id}`,
+  ADMIN_VOUCHERS_LIST: "/vouchers",
+  ADMIN_VOUCHERS_CREATE: "/vouchers",
+  ADMIN_VOUCHERS_UPDATE: (id) => `/vouchers/${id}`,
+  ADMIN_VOUCHERS_DELETE: (id) => `/vouchers/${id}`,
 
   // ─── Payments ─────────────────────────────────────────────────────────────────
   PAYMENTS_CREATE_INTENT: "/payments/create-intent",
@@ -88,7 +95,8 @@ export const ENDPOINTS = {
   PAYMENTS_MY: "/payments/my",
 
   // ─── Reviews ──────────────────────────────────────────────────────────────────
-  REVIEWS_LIST: (courseId) => `/courses/${courseId}/reviews`,
+  REVIEWS_LIST: (courseId) => `/courseReviews/${courseId}/reviews`,
+  REVIEW_COURSE_BY_ID: (courseId) => `/courseReviews/${courseId}`,
   REVIEWS_CREATE: (courseId) => `/courses/${courseId}/reviews`,
   REVIEWS_DELETE: (id) => `/reviews/${id}`,
 
@@ -135,7 +143,7 @@ export const ENDPOINTS = {
   TEACHER_VERIFICATION_SUBMIT: "/teacher/verification",
   TEACHER_VERIFICATION_STATUS: "/teacher/verification",
   ADMIN_VERIFICATIONS_LIST: "/admin/verifications",
-  ADMIN_VERIFICATIONS_PROCESS: (id) => `/admin/verifications/${id}`,
+  ADMIN_VERIFICATIONS_PROCESS: (id) => `/admin/verification/${id}`,
 
   // ─── Teacher Availability ─────────────────────────────────────────────────────
   TEACHER_AVAILABILITY_CREATE: "/teacher/availability",
