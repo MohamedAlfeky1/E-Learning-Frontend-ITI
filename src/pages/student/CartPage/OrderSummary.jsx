@@ -45,7 +45,7 @@ const OrderSummary = () => {
         >
           discount code
         </FieldLabel>
-        <Input type="text" className="bg-white rounded-lg" placeholder="Enter code" />
+        <Input type="text" className="bg-white text-black rounded-lg font-inter" placeholder="Enter code" />
         <Button className="rounded-lg" style={{ backgroundColor: "#F1F3FF", color: "#141B2B" }}>Apply</Button>
       </Field>
       <div className="grand-total flex flex-col gap-2 sm:flex-row sm:justify-between">
