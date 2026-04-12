@@ -11,22 +11,14 @@ import { IoMdCheckmark } from "react-icons/io";
 import { CiCalendar } from "react-icons/ci";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { FiDownload, FiFileText } from "react-icons/fi";
-<<<<<<< HEAD
-=======
 import { MdBarChart } from "react-icons/md";
 import { useEnrollmentDetailsQuery, useMyCoursesQuery, useUpdateProgressMutation } from "@/queries/enrollmentQueries";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
->>>>>>> 9afe9e979bfbcd7c80424f27f8f33508b23f7b38
 
 
 const CoursePlayerPage = () => {
 
-<<<<<<< HEAD
-  const { courseId } = useParams();
-  const { data: course, isLoading, error } = useGetCoursesById(courseId);
-  const { data: lessons, isLoading: lessonsLoading, error: lessonsError } = useGetAllLessonsByCourse(courseId);
-=======
   // states
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videosProgress, setVideosProgress] = useState({});
@@ -47,17 +39,12 @@ const CoursePlayerPage = () => {
 
 
 
->>>>>>> 9afe9e979bfbcd7c80424f27f8f33508b23f7b38
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-US", {
       month: "long",
       year: "numeric",
     });
   };
-<<<<<<< HEAD
-  // states
-  const [selectedVideo, setSelectedVideo] = useState(null);
-=======
 
   const handleProgressUpdate = (enrollmentId, videoId) => {
     updateProgress(
@@ -74,7 +61,6 @@ const CoursePlayerPage = () => {
   }
 
 
->>>>>>> 9afe9e979bfbcd7c80424f27f8f33508b23f7b38
 
 
 
