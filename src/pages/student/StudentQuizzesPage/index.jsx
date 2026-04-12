@@ -1,34 +1,14 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import axiosInstance from "@/api/axiosInstance";
-import { ENDPOINTS } from "@/api/endpoints";
 import { quizApi } from "@/api/quizApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import QuizCard from "@/components/quiz/QuizCard";
 import {
-  BookOpen,
   GraduationCap,
   FileQuestion,
 } from "lucide-react";
 
-// ─── Fetch helpers ────────────────────────────────────────────────────────────
-
-const fetchMyCourses = () =>
-  axiosInstance.get(ENDPOINTS.ENROLLMENTS_MY).then((r) => r.data);
-
-const fetchCourseQuizzes = (courseId) =>
-  quizApi.getForStudent(courseId).then((r) => r.data);
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-const CourseSkeleton = () => (
-  <div className="flex gap-3 flex-wrap">
-    {[1, 2, 3].map((i) => (
-      <Skeleton key={i} className="h-10 w-36 rounded-full" />
-    ))}
-  </div>
-);
+import StudentCourseList from "@/components/student/StudentCourseList";
 
 const QuizSkeleton = () => (
   <div className="flex flex-col gap-3">
@@ -46,26 +26,14 @@ const EmptyState = () => (
   </div>
 );
 
-// QuizCard is imported from @/components/quiz/QuizCard
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
+const fetchCourseQuizzes = (courseId) =>
+  quizApi.getForStudent(courseId).then((r) => r.data);
 
 const StudentQuizzesPage = () => {
   const [selectedCourseId, setSelectedCourseId] = useState(null);
+  console.log(selectedCourseId);
+  
 
-  // 1. enrolled courses
-  const {
-    data: enrollments,
-    isLoading: coursesLoading,
-    isError: coursesError,
-  } = useQuery({
-    queryKey: ["enrollments-my"],
-    queryFn: fetchMyCourses,
-  });
-
-  const courses = enrollments?.data ?? enrollments ?? [];
-
-  // 2. quizzes for selected course
   const {
     data: quizzesData,
     isLoading: quizzesLoading,
@@ -76,11 +44,13 @@ const StudentQuizzesPage = () => {
     enabled: !!selectedCourseId,
   });
 
-  const quizzes = quizzesData?.data ?? quizzesData ?? [];
+  const quizzes = quizzesData?.data.quizzes??  [];
+  console.log(quizzes);
+  
+  
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 space-y-8">
-      {/* ── Header ── */}
       <div className="space-y-1">
         <div className="flex items-center gap-2 text-primary">
           <GraduationCap className="size-6" />
@@ -91,55 +61,14 @@ const StudentQuizzesPage = () => {
         </p>
       </div>
 
-      {/* ── Course Selector ── */}
       <section className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           Choose a course
         </h2>
-
-        {coursesLoading && <CourseSkeleton />}
-
-        {coursesError && (
-          <p className="text-sm text-destructive">
-            Failed to load your courses. Please try again.
-          </p>
-        )}
-
-        {!coursesLoading && !coursesError && courses.length === 0 && (
-          <p className="text-sm text-muted-foreground">
-            You are not enrolled in any courses yet.
-          </p>
-        )}
-
-        {!coursesLoading && !coursesError && courses.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {courses.map((enrollment) => {
-              const course = enrollment.course ?? enrollment;
-              const id = course._id ?? course.id;
-              const isActive = selectedCourseId === id;
-
-              return (
-                <button
-                  key={id}
-                  id={`select-course-${id}`}
-                  onClick={() => setSelectedCourseId(id)}
-                  className={[
-                    "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all",
-                    isActive
-                      ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                      : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-accent",
-                  ].join(" ")}
-                >
-                  <BookOpen className="size-3.5" />
-                  {course.title}
-                </button>
-              );
-            })}
-          </div>
-        )}
+        
+        <StudentCourseList onCourseChange={(id) => setSelectedCourseId(id)} />
       </section>
 
-      {/* ── Quiz List ── */}
       {selectedCourseId && (
         <section className="space-y-3">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
@@ -162,7 +91,9 @@ const StudentQuizzesPage = () => {
             <div className="flex flex-col gap-3">
               {quizzes.map((quiz) => (
                 <QuizCard key={quiz._id} quiz={quiz} />
+                
               ))}
+              
             </div>
           )}
         </section>
