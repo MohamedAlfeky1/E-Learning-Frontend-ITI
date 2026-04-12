@@ -21,6 +21,6 @@ export const enrollmentService = {
     ENDPOINTS.ENROLLMENTS_UPDATE_PROGRESS(enrollmentId), 
     { videoId }
   );
-  return data.data;
+  return data;
 }
 };
