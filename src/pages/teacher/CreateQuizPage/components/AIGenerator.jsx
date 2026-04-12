@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 import { Brain, Sparkles, Loader2, Save, Edit3 } from "lucide-react";
 import { quizApi } from "../../../../api/quizApi";
 
@@ -17,22 +18,22 @@ export default function AIGenerator({ courseId, onSuccess, onReview, generating,
 
   const handleGenerate = async () => {
     if (!prompt.topic) {
-      alert("Please enter a topic");
+      toast.error("Please enter a topic");
       return;
     }
 
     setGenerating(true);
     try {
       const { data } = await quizApi.generateAI({
-        courseId:"69cab49a79558b5ca2441532",
+        courseId:courseId,
         title: `${prompt.topic} Quiz (AI Generated)`,
         description: `AI-generated quiz about ${prompt.topic}`,
         aiPrompt: prompt,
       });
       setGeneratedQuiz(data.data);
-      alert("Quiz generated successfully! You can edit it before publishing.");
+      toast.success("Quiz generated successfully! You can edit it before publishing.");
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to generate quiz");
+      toast.error(error.response?.data?.message || "Failed to generate quiz");
     } finally {
       setGenerating(false);
     }
@@ -50,10 +51,10 @@ export default function AIGenerator({ courseId, onSuccess, onReview, generating,
         passingScore: generatedQuiz.passingScore,
         questions: generatedQuiz.questions,
       });
-      alert("Quiz saved successfully");
+      toast.success("Quiz saved successfully");
       onSuccess(generatedQuiz);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to save quiz");
+      toast.error(error.response?.data?.message || "Failed to save quiz");
     } finally {
       setGenerating(false);
     }
