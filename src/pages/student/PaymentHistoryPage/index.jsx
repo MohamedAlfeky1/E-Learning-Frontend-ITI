@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
   Wallet
 } from "lucide-react";
+import Loader from "@/components/ui/Loader";
 import {
   Table,
   TableBody,
@@ -23,17 +24,8 @@ import { Card, CardContent } from "@/components/ui/card";
 const PaymentHistoryPage = () => {
   const { data: payments, isLoading} = usePaymentHistory();
 
-  if (isLoading) return (
-    <div className="flex flex-col items-center justify-center py-40 space-y-4">
-      <div className="relative">
-        <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-        </div>
-      </div>
-      <p className="text-slate-400 font-medium tracking-widest text-xs uppercase">Nexora Intelligence Loading...</p>
-    </div>
-  );
+    if (isLoading) return <div className="flex h-[80vh] items-center justify-center"><Loader /></div>;
+  
 
   return (
     <div className="min-h-screen bg-[radial-gradient(at_top_right,_var(--tw-gradient-stops))] from-indigo-50 via-white to-white p-4 md:p-10 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
