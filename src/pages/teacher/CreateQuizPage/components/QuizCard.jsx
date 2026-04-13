@@ -7,22 +7,34 @@ import {
   BarChart3, Pencil, Trash2, Clock, 
   Sparkles, Brain, FileText, Loader2 
 } from "lucide-react";
+import { toast } from "sonner";
 import { quizApi } from "../../../../api/quizApi";
 
 export default function QuizCard({ quiz, onEdit, onDelete }) {
   const [deleting, setDeleting] = useState(false);
 
-  const handleDelete = async () => {
-    if (!confirm(`Delete "${quiz.title}"? This cannot be undone.`)) return;
-    setDeleting(true);
-    try {
-      await quizApi.delete(quiz._id);
-      onDelete();
-    } catch (error) {
-      alert(error.response?.data?.message || "Failed to delete quiz");
-    } finally {
-      setDeleting(false);
-    }
+  const handleDelete = () => {
+    toast(`Delete "${quiz.title}"?`, {
+      description: "This cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          setDeleting(true);
+          try {
+            await quizApi.delete(quiz._id);
+            onDelete();
+            toast.success("Quiz deleted successfully");
+          } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to delete quiz");
+          } finally {
+            setDeleting(false);
+          }
+        }
+      },
+      cancel: {
+        label: "Cancel"
+      }
+    });
   };
 
   return (

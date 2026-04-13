@@ -49,3 +49,14 @@ export const browseCourses = async (data)=>{
     throw error;
   }
 }
+
+//list all courses (using GET)
+export const getAllCoursesOfLoggedInTeacher = async () => {
+  try {
+    const response = await axiosInstance.get(ENDPOINTS.COURSES_MY)
+    return response.data;
+  } catch(error) {
+    console.error("Error get all courses data:", error);
+    throw error;
+  }
+}
