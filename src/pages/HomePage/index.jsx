@@ -197,7 +197,7 @@ const HomePage = () => {
                     key={course._id ?? course.id ?? course.name ?? index}
                     className="sm:basis-1/2 lg:basis-2/5 xl:basis-1/3"
                   >
-                    <CourseCard course={course} />
+                    <CourseCard course={course} categories={categories} />
                   </CarouselItem>
                 ))}
               </CarouselContent>

@@ -1,8 +1,18 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import "../../pages/HomePage/courses.css";
+import { useEffect, useState } from "react";
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course, categories }) => {
+  const [category, setCategory] = useState("");
+
+  useEffect(() => {
+    const categoryObject = categories.find(
+      (category) => category._id === course.categoryId,
+    );
+    setCategory(categoryObject?.name ?? "Unknown");
+  }, []);
+
   return (
     <div className="course-card h-[500px] md:w-[400px] p-4 bg-white rounded-4xl flex flex-col gap-6">
       <img
@@ -16,10 +26,12 @@ const CourseCard = ({ course }) => {
             variant="ghost"
             className="course-category uppercase text-[10px] leading-[15px]"
           >
-            fine arts
+            {category}
           </Badge>
           <p className="course-title truncate">{course.title}</p>
-          <p className="course-description grow truncate">{course.description}</p>
+          <p className="course-description grow truncate">
+            {course.description}
+          </p>
         </div>
         <div className="price-details pt-4 flex justify-between items-end">
           <p className="price">{`$${course.price}.00`}</p>
