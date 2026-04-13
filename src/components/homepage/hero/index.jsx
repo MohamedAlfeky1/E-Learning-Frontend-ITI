@@ -7,7 +7,7 @@ import "./style.css";
 const Hero = () => {
   return (
     <section
-      className="mx-6 p-8 flex flex-col rounded-[40px] gap-12 sm:p-[64px] xl:flex-row"
+      className="mt-6 mx-6 p-8 flex flex-col rounded-[40px] gap-12 sm:p-[64px] xl:flex-row"
       style={{ backgroundColor: "#F1F3FF" }}
     >
       <div className="flex flex-col gap-8 xl:justify-between">

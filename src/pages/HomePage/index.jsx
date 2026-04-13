@@ -4,7 +4,7 @@ import Courses from "@/components/homepage/courses";
 
 const HomePage = () => {
   return (
-    <main className="py-20 flex flex-col gap-20" style={{ backgroundColor: "#F9F9FF" }}>
+    <main className="flex flex-col gap-20" style={{ backgroundColor: "#F9F9FF" }}>
       <Hero />
       <Categories />
       <Courses />
