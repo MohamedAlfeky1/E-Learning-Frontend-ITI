@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import CourseImg from "../../../assets/homepage/courses/course-img.png";
 import "./style.css";
 
-const CourseCard = () => {
+const CourseCard = ({ course }) => {
   return (
-    <div className="course-card w-full lg:w-[400px] p-4 bg-white rounded-4xl flex flex-col gap-6 ">
+    <div className="course-card md:w-[400px] p-4 bg-white rounded-4xl flex flex-col gap-6 ">
       <img
         src={CourseImg}
         alt="Course Image"
@@ -18,12 +18,12 @@ const CourseCard = () => {
         >
           fine arts
         </Badge>
-        <p className="course-title">Modernism & The Digital Canvas</p>
-        <p className="course-description">
-          Exploring the intersection of traditional painting and digital media.
+        <p className="course-title truncate">{course.title}</p>
+        <p className="course-description truncate">
+          {course.description}
         </p>
         <div className="price-details pt-4 flex justify-between items-end">
-          <p className="price">$49.99</p>
+          <p className="price">{`$${course.price}.00`}</p>
           <Button className="details-btn px-4 py-2">Details</Button>
         </div>
       </div>
