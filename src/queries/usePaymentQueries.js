@@ -12,7 +12,7 @@ export const usePaymentHistory = () => {
         const response = await axiosInstance.get("/payments/history");
         return response.data.data;  
     },
-    staleTime: 1000 * 60 * 5 
+    staleTime: 0
 
     });
 };

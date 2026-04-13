@@ -10,6 +10,7 @@ import {
   UserCircle,
   Megaphone,
   LogOut,
+  Headset,
 } from "lucide-react";
 
 export const teacherSidebarLinks = [
@@ -40,7 +41,7 @@ export const teacherSidebarLinks = [
   },
   {
     title: "Quizzes",
-    href: "/teacher/quizzes", // Ensure this route is correct in actual router
+    href: "courses/quizzes/create",// Ensure this route is correct in actual router
     icon: HelpCircle,
   },
   {
@@ -58,6 +59,11 @@ export const teacherSidebarLinks = [
     href: "/teacher/profile",
     icon: UserCircle,
   },
+  {
+  title: "Support Tickets",
+  href: "/teacher/tickets",
+  icon: Headset,
+},
 ];
 
 export const teacherBottomLinks = [
