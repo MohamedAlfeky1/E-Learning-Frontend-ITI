@@ -1,5 +1,5 @@
 // import Sigma from "../../../assets/homepage/categories/sigma.svg";
-import "./style.css";
+import "../../pages/HomePage/categories.css";
 
 const CategoryCard = ({ category }) => {
   return (
