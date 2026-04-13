@@ -43,7 +43,7 @@ const LoginPage = () => {
       onError: (err) => {
         setApiError(
           err.response?.data?.message ||
-            "Invalid email or password. Please try again."
+            "Invalid email or password. Please try again.",
         );
       },
     });
@@ -51,9 +51,7 @@ const LoginPage = () => {
 
   return (
     <div className="h-screen overflow-hidden bg-background flex items-center justify-center p-4 font-sans">
-      
       <div className="bg-card text-card-foreground rounded-3xl shadow-2xl w-full max-w-6xl flex overflow-hidden border border-border scale-[0.96] lg:scale-100">
-        
         <AuthSideBar />
         <div className="w-full lg:w-1/2 p-6 md:p-10 lg:p-12 flex flex-col justify-center">
           <div className="max-w-md mx-auto w-full">
@@ -65,8 +63,7 @@ const LoginPage = () => {
 
             <AuthErrorMessage
               message={
-                apiError ||
-                googleMutation.error?.response?.data?.message
+                apiError || googleMutation.error?.response?.data?.message
               }
             />
 
@@ -78,18 +75,16 @@ const LoginPage = () => {
               <AuthFormField
                 label="Email Address"
                 type="email"
-                placeholder="name@example.com"
+                placeholder="name@nexora.com"
                 icon={FiMail}
-                name="email"
-                register={register}
                 error={errors.email}
-                validation={{
+                {...register("email", {
                   required: "Email is required",
                   pattern: {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                     message: "Invalid email address",
                   },
-                }}
+                })}
               />
 
               <AuthFormField
@@ -97,16 +92,14 @@ const LoginPage = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 icon={FiLock}
-                name="password"
-                register={register}
                 error={errors.password}
-                validation={{
+                {...register("password", {
                   required: "Password is required",
                   minLength: {
                     value: 6,
                     message: "Password must be at least 6 characters",
                   },
-                }}
+                })}
                 rightElement={
                   <button
                     type="button"

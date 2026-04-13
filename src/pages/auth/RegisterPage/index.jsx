@@ -49,14 +49,15 @@ const RegisterPage = () => {
   const password = watch("password");
 
   const onSubmit = (data) => {
+    const { confirmPassword, ...rest } = data;
     const payload = {
-      ...data,
+      ...rest,
       email: data.email.toLowerCase().trim(),
       role,
     };
+
     registerMutation.mutate(payload);
   };
-
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: (res) => {
       googleMutation.mutate({
@@ -66,15 +67,13 @@ const RegisterPage = () => {
     },
   });
 
-  const isLoading =
-    registerMutation.isPending || googleMutation.isPending;
+  const isLoading = registerMutation.isPending || googleMutation.isPending;
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 font-sans">
       <div className="bg-card text-card-foreground rounded-3xl shadow-2xl w-full max-w-6xl flex overflow-hidden border border-border h-[94vh]">
         <AuthSideBar />
         <div className="w-full lg:w-1/2 p-6 md:p-10 flex flex-col justify-center">
-
           <div className="max-w-md mx-auto w-full">
             <div className="flex justify-between items-center mb-3 pt-2">
               <h2 className="text-3xl font-bold">Create Account</h2>
@@ -158,7 +157,7 @@ const RegisterPage = () => {
                     message: "Invalid email",
                   },
                 })}
-                placeholder="test@nexora.com"
+                placeholder="name@nexora.com"
               />
 
               <div className="grid grid-cols-2 gap-3">
@@ -178,9 +177,7 @@ const RegisterPage = () => {
                   rightElement={
                     <button
                       type="button"
-                      onClick={() =>
-                        setShowPassword(!showPassword)
-                      }
+                      onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
                         <FiEyeOff size={14} />
@@ -193,25 +190,20 @@ const RegisterPage = () => {
 
                 <AuthFormField
                   label="Confirm"
-                  type={
-                    showConfirmPassword ? "text" : "password"
-                  }
+                  type={showConfirmPassword ? "text" : "password"}
                   icon={FiLock}
                   error={errors.confirmPassword}
                   {...register("confirmPassword", {
                     required: "Required",
                     validate: (value) =>
-                      value === password ||
-                      "Passwords do not match",
+                      value === password || "Passwords do not match",
                   })}
                   placeholder="********"
                   rightElement={
                     <button
                       type="button"
                       onClick={() =>
-                        setShowConfirmPassword(
-                          !showConfirmPassword
-                        )
+                        setShowConfirmPassword(!showConfirmPassword)
                       }
                     >
                       {showConfirmPassword ? (
@@ -245,9 +237,7 @@ const RegisterPage = () => {
               </div>
 
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">
-                  Or
-                </span>
+                <span className="bg-card px-2 text-muted-foreground">Or</span>
               </div>
             </div>
             <Button
