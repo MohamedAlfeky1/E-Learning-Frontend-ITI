@@ -54,10 +54,7 @@ const LoginPage = () => {
       
       <div className="bg-card text-card-foreground rounded-3xl shadow-2xl w-full max-w-6xl flex overflow-hidden border border-border scale-[0.96] lg:scale-100">
         
-        {/* LEFT */}
         <AuthSideBar />
-
-        {/* RIGHT */}
         <div className="w-full lg:w-1/2 p-6 md:p-10 lg:p-12 flex flex-col justify-center">
           <div className="max-w-md mx-auto w-full">
             <h2 className="text-4xl font-bold mb-2">Sign In</h2>
@@ -145,7 +142,6 @@ const LoginPage = () => {
               </Button>
             </form>
 
-            {/* Divider */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border"></div>
@@ -158,7 +154,6 @@ const LoginPage = () => {
               </div>
             </div>
 
-            {/* Google */}
             <Button
               type="button"
               variant="outline"
