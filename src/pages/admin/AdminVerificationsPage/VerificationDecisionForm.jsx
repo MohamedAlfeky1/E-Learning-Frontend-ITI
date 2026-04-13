@@ -1,6 +1,7 @@
 import { Input } from "../../../components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DrawerClose } from "@/components/ui/drawer";
+import { Textarea } from "@/components/ui/textarea";
 import { useAdminVerificationDecision } from "@/mutations/adminMutations";
 import { useUserQuery } from "@/queries/authQueries";
 import { useFormik } from "formik";
@@ -47,13 +48,13 @@ const VerificationDecisionForm = ({ applicant }) => {
 
 
             {/* Optional note */}
-            <textarea
+            <Textarea
                 value={formik.values.adminNote}
                 name="adminNote"
                 onChange={formik.handleChange}
                 placeholder="Add a note for the applicant (optional)..."
                 className="w-full border border-gray-200 rounded-xl p-3 text-sm text-gray-700 resize-none focus:outline-none focus:ring-2 focus:ring-[#4338CA]/30"
-                rows={3}
+                rows={2}
             />
 
             <div className="flex justify-between items-center w-full gap-2">
