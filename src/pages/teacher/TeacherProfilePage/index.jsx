@@ -134,7 +134,7 @@ const TeacherProfilePage = () => {
 
   return (
     <form onSubmit={profileFormik.handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      <div className="md:col-span-2 col-span-1 bg-gradient-to-r from-[#F5F6FA] via-[#EDEBFF] to-[#D9D4FF] shadow-md shadow-[#000000]/10 px-10 py-5 rounded-md">
+      <div className="md:col-span-2 col-span-4 bg-gradient-to-r from-[#F5F6FA] via-[#EDEBFF] to-[#D9D4FF] shadow-md shadow-[#000000]/10 px-10 py-5 rounded-md">
         <div className="flex flex-col md:flex-row flex-wrap gap-6 md:gap-10 justify-center md:justify-start items-center">
 
           {/* Avatar */}
@@ -298,7 +298,7 @@ const TeacherProfilePage = () => {
         </div>
       </div>
 
-      <div className="col-span-1 bg-gradient-to-r from-[#3525CD]  to-[#712AE2] shadow-md shadow-[#000000]/10 px-3 py-5 rounded-md">
+      <div className="col-span-4 md:col-span-1 bg-gradient-to-r from-[#3525CD]  to-[#712AE2] shadow-md shadow-[#000000]/10 px-3 py-5 rounded-md">
         <div className="flex flex-col items-center gap-3 mb-3">
           <div className="flex justify-between items-center w-full">
             <span className="text-[#F6EFEF] text-sm">Student View Preview</span>
@@ -326,35 +326,6 @@ const TeacherProfilePage = () => {
           View Full Public Profile
         </Button>
 
-
-
-      </div>
-
-      <div className="col-span-1 gap-4 bg-[#F1F3FF] px-2 py-5 rounded-md">
-        <div className="flex gap-3 items-center pb-3 ">
-          <Badge className='py-4 rounded-md' variant="payment">
-            <PiBank size={17} color="#25005A" />
-          </Badge>
-          <h1 className="font-bold text-md">Payouts</h1>
-        </div>
-
-        <div className="flex flex-col min-w-full gap-5 items-center">
-          <div className="flex justify-between items-center w-full">
-            <Label className='text-[#464555]'>Course Enrollments</Label>
-            <Switch />
-          </div>
-
-          <div className="flex justify-between items-center w-full">
-            <Label className='text-[#464555]'>Student Comments</Label>
-            <Switch />
-          </div>
-
-          <div className="flex justify-between items-center w-full">
-            <Label className='text-[#464555]'>System Updates</Label>
-            <Switch />
-          </div>
-
-        </div>
 
 
       </div>
@@ -456,7 +427,7 @@ const TeacherProfilePage = () => {
 
       </div>
 
-      <div className="col-span-3 border-t pt-5 flex justify-between items-center">
+      <div className="col-span-4 md:col-span-3 border-t pt-5 flex flex-col md:flex-row justify-between items-center gap-4 w-full">
         <div>
           <p className="font-thin text-sm">
             Teacher ID: {data ? data._id : 'Loading...'}
@@ -467,10 +438,7 @@ const TeacherProfilePage = () => {
             Save All Changes
           </Button>
         </div>
-
       </div>
-
-
     </form >
   );
 };

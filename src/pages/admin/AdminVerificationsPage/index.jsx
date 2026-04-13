@@ -89,7 +89,7 @@ const AdminVerificationsPage = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-2">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-gray-100">
@@ -242,11 +242,7 @@ const AdminVerificationsPage = () => {
                         </div>
 
                         {/* Status */}
-                        <div className="flex items-center gap-1">
-
-                        </div>
-
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-2">
                           {/* Categories */}
                           <div>
                             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Categories</p>
@@ -258,48 +254,52 @@ const AdminVerificationsPage = () => {
                                   </div>
                                 ))
                               ) : (
-                                <Badge variant="destructive">No Expertise Listed</Badge>
+                                <Badge variant="destructive">No Categories Listed</Badge>
                               )}
 
                             </div>
                           </div>
 
-                          {/* Certificates */}
+                          {/* Experience */}
                           <div>
-                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Certificates</p>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Expertise</p>
                             <div className="flex flex-wrap">
-                              {applicant.certificates.map((cert, index) => {
+                              {applicant.experiences.map((expo, index) => {
                                 return <div key={index} className="flex items-center gap-2">
-                                  <Badge variant="ghost" ><TbCertificate /></Badge>
-                                  <a href={cert.fileUrl} target="_blank" className="text-sm text-blue-600 hover:underline">{cert.title}</a>
+                                  <Badge variant="ghost"><GrUserExpert /></Badge>
+                                  <div className="text-sm text-gray-700">
+                                    <p className="font-medium">{expo.title} at {expo.organization}</p>
+                                    <p className="font-light text-sm text-gray-500">{expo.description}</p>
+                                    <p className="text-xs text-blue-500">{new Date(expo.from).getFullYear()} - {new Date(expo.to).getFullYear()}</p>
 
+                                  </div>
                                 </div>
                               })
                               }
                             </div>
                           </div>
+
                         </div>
 
 
 
-                        {/* Experience */}
+                        <div className="flex gap-2"></div>
+                        {/* Certificates */}
                         <div>
-                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Expertise</p>
+                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Certificates</p>
                           <div className="flex flex-wrap">
-                            {applicant.experiences.map((expo, index) => {
+                            {applicant.certificates.map((cert, index) => {
                               return <div key={index} className="flex items-center gap-2">
-                                <Badge variant="ghost"><GrUserExpert /></Badge>
-                                <div className="text-sm text-gray-700">
-                                  <p className="font-medium">{expo.title} at {expo.organization}</p>
-                                  <p className="font-light text-sm text-gray-500">{expo.description}</p>
-                                  <p className="text-xs text-blue-500">{new Date(expo.from).getFullYear()} - {new Date(expo.to).getFullYear()}</p>
+                                <Badge variant="ghost" ><TbCertificate /></Badge>
+                                <a href={cert.fileUrl} target="_blank" className="text-sm text-blue-600 hover:underline">{cert.title}</a>
 
-                                </div>
                               </div>
                             })
                             }
                           </div>
                         </div>
+
+
 
                         {/* Bio (if available) */}
                         {applicant.bio && (
@@ -312,8 +312,15 @@ const AdminVerificationsPage = () => {
                         {/* Decision form */}
                         <div className="flex flex-col gap-3 border-t pt-4">
                           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Verification Decision</p>
-
-                          <VerificationDecisionForm applicant={applicant} />
+                          {applicant.status==='approved'?
+                          (<div>
+                            <p className="text-center font-medium text-2xl">This Student is Already <span className="text-green-800">Approved</span></p>
+                          </div>)
+                          :
+                          (
+                            <VerificationDecisionForm applicant={applicant} />
+                          )}
+                          
                         </div>
                       </div>
                     </DrawerContent>
@@ -325,7 +332,7 @@ const AdminVerificationsPage = () => {
         </Table>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-4 text-sm text-gray-400">
+        <div className="flex items-center justify-between px-6  text-sm text-gray-400">
           <span>
             Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
             {Math.min(currentPage * ITEMS_PER_PAGE, allRequests.length)} of{" "}
