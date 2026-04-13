@@ -26,7 +26,7 @@ const Hero = () => {
           Experience prestigious curricula with cutting-edge visual clarity.
         </p>
         <div className="btns flex flex-col gap-[16px] sm:flex-row">
-          <Link to="/courses"><Button className="hero-btn explore-btn text-[14px] sm:text-[18px] hover:scale-101 duration-150">Explore Catalog</Button></Link>
+          <Link to="/courses"><Button className="w-full hero-btn explore-btn text-[14px] sm:text-[18px] hover:scale-101 duration-150">Explore Catalog</Button></Link>
           <Button
             className="hero-btn demo-btn text-[14px] sm:text-[18px] hover:scale-101 duration-150"
           >
