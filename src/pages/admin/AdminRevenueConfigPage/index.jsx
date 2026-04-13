@@ -34,7 +34,6 @@ const AdminRevenueConfigPage = () => {
 
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8">
-      {/* Header Section */}
       <div className="relative overflow-hidden rounded-3xl border bg-card p-6 md:p-8 shadow-sm">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5" />
         <div className="relative z-10">
@@ -43,14 +42,12 @@ const AdminRevenueConfigPage = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <StatCard title="Platform Revenue" value={`$${stats?.totalPlatformRevenue}`} icon={<TrendingUp />} />
         <StatCard title="Paid to Teachers" value={`$${stats?.totalPaidToTeachers}`} icon={<Banknote />} />
         <StatCard title="Pending Payouts" value={`$${stats?.totalPendingToTeachers}`} icon={<Wallet />} />
       </div>
 
-      {/* Main Config Card */}
       <Card className="rounded-3xl border bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -61,7 +58,6 @@ const AdminRevenueConfigPage = () => {
 
         <CardContent className="p-6 md:p-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Form Side */}
             <div className="space-y-6">
               <div>
                 <Label className="text-xs uppercase text-muted-foreground font-semibold">Teacher Share</Label>
@@ -90,7 +86,6 @@ const AdminRevenueConfigPage = () => {
               </Button>
             </div>
 
-            {/* Chart Side */}
             <RevenueChart teacherShare={teacherShare} />
           </div>
         </CardContent>
