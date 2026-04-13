@@ -1,9 +1,9 @@
-import { Sigma, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import "./CategoryCard.css";
 import AvatarGroupCountComponent from "./AvatarGroup";
 import { Button } from "@/components/ui/button";
 
-const CategoryCard = () => {
+const CategoryCard = ({ category }) => {
   return (
     <div
       className="category-card grow p-8 rounded-2xl text-wrap flex flex-col gap-4 justify-between cursor-pointer hover:scale-101 duration-150"
@@ -11,7 +11,7 @@ const CategoryCard = () => {
     >
       <div className="flex justify-between">
         <div className="category-icon size-[56px] bg-white flex justify-center items-center rounded-lg">
-          <Sigma color="#3525CD" />
+          {category.icon}
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" size="icon">
@@ -22,12 +22,12 @@ const CategoryCard = () => {
           </Button>
         </div>
       </div>
-      <h3 className="category-title">Mathematics</h3>
+      <h3 className="category-title">{category.name}</h3>
       <p className="category-description">
         From Algebra to Advanced Calculus and beyond.
       </p>
       <div className="flex justify-between items-end">
-        <p className="category-num-courses">42 COURSES</p>
+        <p className="category-num-courses">{category.courseCount} COURSES</p>
         <AvatarGroupCountComponent />
       </div>
     </div>
