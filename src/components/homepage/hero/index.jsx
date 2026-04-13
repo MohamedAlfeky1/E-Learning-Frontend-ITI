@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import PlayIcon from "../../../assets/homepage/hero/play-icon.svg";
 import HeroImage from "../../../assets/homepage/hero/hero-image.png";
 import "./style.css";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -25,9 +26,9 @@ const Hero = () => {
           Experience prestigious curricula with cutting-edge visual clarity.
         </p>
         <div className="btns flex flex-col gap-[16px] sm:flex-row">
-          <Button className="hero-btn explore-btn text-[14px] sm:text-[18px]">Explore Catalog</Button>
+          <Link to="/courses"><Button className="hero-btn explore-btn text-[14px] sm:text-[18px] hover:scale-101 duration-150">Explore Catalog</Button></Link>
           <Button
-            className="hero-btn demo-btn text-[14px] sm:text-[18px] hover:bg-red-500"
+            className="hero-btn demo-btn text-[14px] sm:text-[18px] hover:scale-101 duration-150"
           >
             Watch Demo
             <img src={PlayIcon} style={{ width: "20px", height: "20px" }} />
