@@ -36,3 +36,6 @@ export const getLessonById = async (courseId, lessonId)=>{
     throw error;
   }
 }
+
+
+

@@ -12,6 +12,7 @@ import {
   MessageSquare,
   CalendarCheck,
   LogOut,
+  Headset,
 } from "lucide-react";
 
 export const studentSidebarLinks = [
@@ -60,12 +61,13 @@ export const studentSidebarLinks = [
     href: "/profile",
     icon: UserCircle,
   },
+  
 ];
 
 export const studentBottomLinks = [
   {
     title: "Help Center",
-    href: "/help",
+    href: "/tickets",
     icon: HelpCircle,
   },
   {
