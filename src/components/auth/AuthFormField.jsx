@@ -1,61 +1,44 @@
+import React from "react";
 import { FiAlertCircle } from "react-icons/fi";
-import { Input } from "@/components/ui/input";
-
-const AuthFormField = ({
-  label,
-  type = "text",
-  placeholder,
-  icon: Icon,
-  error,
-  register,
-  name,
-  validation,
-  rightElement,
-}) => {
+const AuthFormField = React.forwardRef(({ label, icon: Icon, error, rightElement, ...props }, ref) => {
   return (
-    <div className="group">
-      <label
-        className={`block text-sm font-semibold mb-1.5 ${
-          error
-            ? "text-destructive"
-            : "text-muted-foreground group-focus-within:text-primary"
-        }`}
-      >
+    <div className="space-y-1.5 text-left w-full">
+      <label className="block text-[13px] font-bold text-foreground/70 ml-1">
         {label}
       </label>
-
-      <div className="relative">
+      <div className="relative group">
         {Icon && (
-          <Icon className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary" />
+          <div className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors z-10 
+            ${error ? "text-destructive" : "text-muted-foreground group-focus-within:text-primary"}`}>
+            <Icon />
+          </div>
         )}
-
-        <Input
-          type={type}
-          placeholder={placeholder}
-          className={`pl-12 ${
-            rightElement ? "pr-12" : ""
-          } transition-all ${
-            error
-              ? "border-destructive bg-destructive/5 focus-visible:ring-destructive"
-              : "focus-visible:ring-primary"
-          }`}
-          {...register(name, validation)}
+        
+        <input
+          ref={ref}
+          {...props}
+          className={`w-full h-12 bg-muted/30 border-2 rounded-xl transition-all outline-none pl-12 pr-4
+            ${error 
+              ? "border-destructive/50 focus:border-destructive bg-destructive/5" 
+              : "border-transparent focus:border-primary focus:bg-background shadow-sm"}`}
         />
 
         {rightElement && (
-          <div className="absolute right-4 top-1/2 -translate-y-1/2">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10">
             {rightElement}
           </div>
         )}
       </div>
 
       {error && (
-        <p className="text-xs text-destructive mt-1.5 flex items-center gap-1 animate-in fade-in slide-in-from-top-1">
-          <FiAlertCircle /> {error.message}
+        <p className="text-[10px] text-destructive font-bold mt-1 ml-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
+          <FiAlertCircle className="size-3" /> {error.message}
         </p>
       )}
     </div>
   );
-};
+});
+
+AuthFormField.displayName = "AuthFormField";
 
 export default AuthFormField;
