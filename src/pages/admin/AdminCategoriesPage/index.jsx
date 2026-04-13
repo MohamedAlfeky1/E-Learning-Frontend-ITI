@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { CirclePlus, SquarePlus } from "lucide-react";
-import "./style.css";
 import CategoryCard from "./CategoryCard";
 import { useCategories } from "@/queries/useCategories";
 
@@ -9,23 +8,23 @@ const AdminCategoriesPage = () => {
   const categories = data?.data ?? [];
 
   return (
-    <div className="min-h-screen text-white p-6 md:p-12 font-sans categories-page-bg">
+    <div className="min-h-screen bg-[#F9F9FF] p-6 md:p-12">
       {/* Header */}
       <header className="mb-8 flex flex-col md:flex-row gap-4 justify-between md:items-end">
         <div>
-          <p className="tracking-widest uppercase mb-2 text-primary text-size-xs font-weight-700 font-inter">
+          <p className="uppercase mb-2 text-[#3525CD] text-[10px] font-bold tracking-[1.2px] font-['Inter']">
             Platform Architecture
           </p>
-          <h1 className="mb-2 text-dark text-size-3xl font-weight-800 font-plus-jakarta">
+          <h1 className="mb-2 text-[#141B2B] text-[48px] font-extrabold leading-tight font-['Plus Jakarta Sans']">
             Study Domains & Categories
           </h1>
-          <p className="text-muted-foreground max-w-md text-secondary text-size-base font-weight-400 font-inter">
+          <p className="max-w-md text-[#464555] text-base font-normal leading-7 font-['Inter']">
             Organize the high school curriculum into logical domains. Each
             category acts as a hub for specific course materials and teacher
             assignments.
           </p>
         </div>
-        <Button className="continue-btn font-inter font-weight-700 hover:scale-101 duration-150">
+        <Button className="inline-flex items-center gap-2 rounded-[20px] bg-[#3525CD] px-6 py-4 text-white text-base font-bold transition-transform duration-150 hover:scale-[1.01]">
           <CirclePlus />
           Create New Category
         </Button>

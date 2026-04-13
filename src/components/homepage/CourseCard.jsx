@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import "../../pages/HomePage/courses.css";
 import { useEffect, useState } from "react";
 
 const CourseCard = ({ course, categories }) => {
@@ -24,18 +23,20 @@ const CourseCard = ({ course, categories }) => {
         <div className="grow flex flex-col gap-2">
           <Badge
             variant="ghost"
-            className="course-category uppercase text-[10px] leading-[15px]"
+            className="uppercase text-[10px] leading-[15px] text-[#712AE2] font-semibold"
           >
             {category}
           </Badge>
-          <p className="course-title truncate">{course.title}</p>
-          <p className="course-description grow truncate">
+          <p className="truncate text-[#141B2B] font-extrabold text-xl leading-7">{course.title}</p>
+          <p className="grow truncate text-[#464555] text-sm leading-6">
             {course.description}
           </p>
         </div>
-        <div className="price-details pt-4 flex justify-between items-end">
-          <p className="price">{`$${course.price}.00`}</p>
-          <Button className="details-btn px-4 py-2">Details</Button>
+        <div className="pt-4 flex justify-between items-end">
+          <p className="text-[#141B2B] font-extrabold text-lg leading-7">{`$${course.price}.00`}</p>
+          <Button className="px-4 py-2 rounded-full bg-[#E1E8FD] text-[#3525CD] font-bold hover:bg-[#d3d5f2]">
+            Details
+          </Button>
         </div>
       </div>
     </div>

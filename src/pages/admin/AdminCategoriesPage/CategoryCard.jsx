@@ -1,16 +1,12 @@
 import { Pencil, Trash2 } from "lucide-react";
-import "./CategoryCard.css";
 import AvatarGroupCountComponent from "./AvatarGroup";
 import { Button } from "@/components/ui/button";
 
 const CategoryCard = ({ category }) => {
   return (
-    <div
-      className="category-card grow p-8 rounded-2xl text-wrap flex flex-col gap-4 justify-between cursor-pointer hover:scale-101 duration-150"
-      style={{ backgroundColor: "#F1F3FF" }}
-    >
+    <div className="grow min-w-[280px] max-w-[320px] p-8 rounded-2xl bg-[#F1F3FF] flex flex-col gap-4 justify-between cursor-pointer hover:scale-[1.01] transition-transform duration-150">
       <div className="flex justify-between">
-        <div className="category-icon size-[56px] bg-white flex justify-center items-center rounded-lg">
+        <div className="w-[56px] h-[56px] bg-white flex justify-center items-center rounded-lg">
           {category.icon}
         </div>
         <div className="flex gap-2">
@@ -22,12 +18,16 @@ const CategoryCard = ({ category }) => {
           </Button>
         </div>
       </div>
-      <h3 className="category-title">{category.name}</h3>
-      <p className="category-description">
+      <h3 className="text-[#141B2B] font-['Plus Jakarta Sans'] font-extrabold text-lg leading-7">
+        {category.name}
+      </h3>
+      <p className="text-[#464555] font-['Inter'] text-sm leading-6">
         From Algebra to Advanced Calculus and beyond.
       </p>
       <div className="flex justify-between items-end">
-        <p className="category-num-courses">{category.courseCount} COURSES</p>
+        <p className="text-[#3525CD] font-['Inter'] font-bold text-[10px] leading-[15px] uppercase">
+          {category.courseCount} COURSES
+        </p>
         <AvatarGroupCountComponent />
       </div>
     </div>
