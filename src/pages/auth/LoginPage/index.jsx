@@ -1,249 +1,143 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  useLoginMutation,
-  useGoogleMutation,
-} from "../../../mutations/authMutations";
+import { useLoginMutation, useGoogleMutation } from "@/mutations/authMutations";
 import { useGoogleLogin } from "@react-oauth/google";
-import {
-  FiMail,
-  FiLock,
-  FiStar,
-  FiEye,
-  FiEyeOff,
-  FiAlertCircle,
-} from "react-icons/fi";
+import { useForm } from "react-hook-form";
+
+import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
-import { Spinner } from "../../../components/ui/spinner";
-import { Input } from "../../../components/ui/input";
-import { Button } from "../../../components/ui/button";
-import cubesBg from "../../../assets/cubes.png";
+
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
+
+import AuthSideBar from "@/components/auth/AuthSideBar";
+import AuthFormField from "@/components/auth/AuthFormField";
+import AuthErrorMessage from "@/components/auth/AuthErrorMessage";
 
 const LoginPage = () => {
   const loginMutation = useLoginMutation();
   const googleMutation = useGoogleMutation();
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-    api: "",
-  });
 
+  const [apiError, setApiError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: (tokenResponse) => {
       googleMutation.mutate({ token: tokenResponse.access_token });
     },
     onError: () => {
-      setErrors((prev) => ({
-        ...prev,
-        api: "Google authentication failed. Please try again.",
-      }));
+      setApiError("Google authentication failed. Please try again.");
     },
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "", api: "" }));
-  };
+  const onSubmit = (data) => {
+    setApiError("");
 
-  const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    let currentErrors = { email: "", password: "", api: "" };
-    let hasError = false;
-
-    if (!formData.email) {
-      currentErrors.email = "Email address is required";
-      hasError = true;
-    } else if (!validateEmail(formData.email)) {
-      currentErrors.email = "Please enter a valid email address";
-      hasError = true;
-    }
-
-    if (!formData.password) {
-      currentErrors.password = "Password is required";
-      hasError = true;
-    } else if (formData.password.length < 6) {
-      currentErrors.password = "Password must be at least 6 characters";
-      hasError = true;
-    }
-
-    if (hasError) {
-      setErrors(currentErrors);
-      return;
-    }
-
-    loginMutation.mutate(formData, {
+    loginMutation.mutate(data, {
       onError: (err) => {
-        setErrors((prev) => ({
-          ...prev,
-          api:
-            err.response?.data?.message ||
-            "Invalid email or password. Please try again.",
-        }));
+        setApiError(
+          err.response?.data?.message ||
+            "Invalid email or password. Please try again."
+        );
       },
     });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans">
-      <div className="bg-white rounded-3xl shadow-xl w-full max-w-6xl flex overflow-hidden border border-gray-100 transition-all duration-500">
-        <div className="hidden lg:flex w-1/2 bg-purple-600 p-16 flex-col justify-between text-white relative overflow-hidden">
-          <div
-            className="absolute inset-0 opacity-50 "
-            style={{ backgroundImage: `url(${cubesBg})` }}
-          ></div>
+    <div className="h-screen overflow-hidden bg-background flex items-center justify-center p-4 font-sans">
+      
+      <div className="bg-card text-card-foreground rounded-3xl shadow-2xl w-full max-w-6xl flex overflow-hidden border border-border scale-[0.96] lg:scale-100">
+        
+        {/* LEFT */}
+        <AuthSideBar />
 
-          <div className="relative z-10">
-            <Link
-              to="/"
-              className="text-3xl font-black tracking-tighter text-white mb-10 block"
-            >
-              NEXORA.
-            </Link>
-            <h1 className="text-5xl font-extrabold leading-tight mb-6">
-              Welcome back to your
-              <br /> digital campus.
-            </h1>
-            <p className="text-purple-100 text-lg opacity-90">
-              Access your personalized learning path and stay connected.
-            </p>
-          </div>
-
-          <div className="relative z-10 bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
-            <div className="flex items-center gap-4">
-              <div className="bg-yellow-400 p-3 rounded-full text-purple-900 shadow-lg">
-                <FiStar />
-              </div>
-              <div>
-                <p className="font-bold uppercase tracking-wider text-xs opacity-70">
-                  Platform Update
-                </p>
-                <p className="font-medium text-sm">
-                  AI-Powered insights are now live!
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full lg:w-1/2 p-8 md:p-16 flex flex-col justify-center">
+        {/* RIGHT */}
+        <div className="w-full lg:w-1/2 p-6 md:p-10 lg:p-12 flex flex-col justify-center">
           <div className="max-w-md mx-auto w-full">
-            <h2 className="text-4xl font-bold text-gray-900 mb-2">Sign In</h2>
-            <p className="text-gray-500 mb-8">
+            <h2 className="text-4xl font-bold mb-2">Sign In</h2>
+
+            <p className="text-muted-foreground mb-6">
               Enter your credentials to manage your dashboard.
             </p>
 
-            {(errors.api || googleMutation.isError) && (
-              <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 text-sm font-medium border-l-4 border-red-500 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
-                <FiAlertCircle className="text-xl flex-shrink-0" />
-                {errors.api ||
-                  googleMutation.error?.response?.data?.message ||
-                  "Something went wrong."}
-              </div>
-            )}
+            <AuthErrorMessage
+              message={
+                apiError ||
+                googleMutation.error?.response?.data?.message
+              }
+            />
 
-            <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-              {/* Email Field */}
-              <div className="group">
-                <label
-                  className={`block text-sm font-semibold mb-1.5 transition-colors ${errors.email ? "text-red-600" : "text-gray-700 group-focus-within:text-purple-600"}`}
-                >
-                  Email Address
-                </label>
-                <div className="relative">
-                  <FiMail
-                    className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${errors.email ? "text-red-400" : "text-gray-400 group-focus-within:text-purple-500"}`}
-                  />
-                  <Input
-                    type="email"
-                    name="email"
-                    variant="iconFieldMd"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="name@example.com"
-                    className={
-                      errors.email
-                        ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                        : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
-                    }
-                  />
-                </div>
-                {errors.email && (
-                  <p className="text-xs text-red-600 font-medium mt-1.5 ml-1 flex items-center gap-1.5">
-                    <FiAlertCircle /> {errors.email}
-                  </p>
-                )}
-              </div>
-              <div className="group">
-                <div className="flex items-center justify-between mb-1.5">
-                  <label
-                    className={`block text-sm font-semibold transition-colors ${errors.password ? "text-red-600" : "text-gray-700 group-focus-within:text-purple-600"}`}
-                  >
-                    Password
-                  </label>
-                  <Link
-                    to="/forgot-password"
-                    intrinsic
-                    className="text-xs text-purple-600 hover:underline font-semibold"
-                  >
-                    Forget Password?
-                  </Link>
-                </div>
-                <div className="relative">
-                  <FiLock
-                    className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${errors.password ? "text-red-400" : "text-gray-400 group-focus-within:text-purple-500"}`}
-                  />
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    variant="iconFieldXl"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="••••••••"
-                    className={
-                      errors.password
-                        ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                        : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
-                    }
-                  />
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-4"
+              noValidate
+            >
+              <AuthFormField
+                label="Email Address"
+                type="email"
+                placeholder="name@example.com"
+                icon={FiMail}
+                name="email"
+                register={register}
+                error={errors.email}
+                validation={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email address",
+                  },
+                }}
+              />
+
+              <AuthFormField
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                icon={FiLock}
+                name="password"
+                register={register}
+                error={errors.password}
+                validation={{
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                }}
+                rightElement={
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-purple-600 transition-colors focus:outline-none"
+                    className="text-muted-foreground hover:text-primary"
                   >
-                    {showPassword ? (
-                      <FiEyeOff size={20} />
-                    ) : (
-                      <FiEye size={20} />
-                    )}
+                    {showPassword ? <FiEyeOff /> : <FiEye />}
                   </button>
-                </div>
-                {errors.password && (
-                  <p className="text-xs text-red-600 font-medium mt-1.5 ml-1 flex items-center gap-1.5">
-                    <FiAlertCircle /> {errors.password}
-                  </p>
-                )}
+                }
+              />
+
+              <div className="flex justify-end">
+                <Link
+                  to="/forgot-password"
+                  className="text-xs text-primary font-semibold hover:underline"
+                >
+                  Forget Password?
+                </Link>
               </div>
 
               <Button
                 type="submit"
-                variant="purpleBtnXl"
+                className="w-full py-5 rounded-xl text-lg"
                 disabled={loginMutation.isPending || googleMutation.isPending}
               >
                 {loginMutation.isPending ? (
                   <>
-                    <Spinner className="w-5 h-5 border-white" />{" "}
-                    Authenticating...
+                    <Spinner className="w-5 h-5" /> Authenticating...
                   </>
                 ) : (
                   "Sign In Account"
@@ -251,40 +145,42 @@ const LoginPage = () => {
               </Button>
             </form>
 
-            <div className="relative my-8">
+            {/* Divider */}
+            <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-100"></div>
+                <div className="w-full border-t border-border"></div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-400 font-medium">
+
+              <div className="relative flex justify-center">
+                <span className="bg-card px-4 text-muted-foreground text-sm">
                   Or continue with
                 </span>
               </div>
             </div>
 
+            {/* Google */}
             <Button
               type="button"
-              variant="whiteBtnMd"
-              onClick={() => handleGoogleLogin()}
-              disabled={googleMutation.isPending || loginMutation.isPending}
+              variant="outline"
+              className="w-full py-5 rounded-xl"
+              onClick={handleGoogleLogin}
             >
               {googleMutation.isPending ? (
                 <>
-                  <Spinner className="w-5 h-5 border-purple-600" />{" "}
-                  Connecting...
+                  <Spinner className="w-5 h-5" /> Connecting...
                 </>
               ) : (
                 <>
-                  <FcGoogle size={24} /> Sign in with Google
+                  <FcGoogle size={22} /> Sign in with Google
                 </>
               )}
             </Button>
 
-            <p className="text-center text-gray-500 mt-10 text-sm font-medium">
+            <p className="text-center text-muted-foreground mt-8 text-sm">
               Don't have an account?{" "}
               <Link
                 to="/register"
-                className="text-purple-600 hover:text-purple-800 font-bold border-b-2 border-purple-100 hover:border-purple-600 pb-0.5 transition-all"
+                className="text-primary font-bold border-b border-primary/30 hover:border-primary"
               >
                 Create Free Account
               </Link>
