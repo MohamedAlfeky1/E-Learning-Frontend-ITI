@@ -1,14 +1,21 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUserQuery } from '@/queries/authQueries';
-import { useSubmitVerification } from '@/mutations/verificationMutations';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from "@/components/ui/progress"; 
-import { Plus, Loader2, Clock, BookOpen, Briefcase, FileCheck } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserQuery } from "@/queries/authQueries";
+import { useSubmitVerification } from "@/mutations/verificationMutations";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import {
+  Plus,
+  Loader2,
+  Clock,
+  BookOpen,
+  Briefcase,
+  FileCheck,
+} from "lucide-react";
 import { toast } from "sonner";
-import { useLogout } from "@/hooks/useLogout";
+import { useLogout } from "@/utils/useLogout";
 
 const PendingView = () => {
   const logout = useLogout();
@@ -26,14 +33,18 @@ const PendingView = () => {
             </div>
           </div>
           <div className="space-y-3">
-            <h2 className="text-3xl font-black text-slate-800">Review in Progress</h2>
+            <h2 className="text-3xl font-black text-slate-800">
+              Review in Progress
+            </h2>
             <p className="text-slate-500 text-lg leading-relaxed">
-              Your application for <span className="font-bold text-primary">Nexora</span> is being verified. 
-              This usually takes <span className="font-bold text-slate-700">24-48 hours</span>.
+              Your application for{" "}
+              <span className="font-bold text-primary">Nexora</span> is being
+              verified. This usually takes{" "}
+              <span className="font-bold text-slate-700">24-48 hours</span>.
             </p>
           </div>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="rounded-2xl px-10 py-6 border-2 hover:bg-slate-50 text-slate-600 font-bold"
             onClick={logout}
           >
@@ -53,13 +64,15 @@ const TeacherVerificationPage = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     targetCategories: "",
-    experiences: [{ title: '', organization: '', from: '', to: '', description: '' }],
-    certificates: [{ file: null, issuedBy: '', year: '' }]
+    experiences: [
+      { title: "", organization: "", from: "", to: "", description: "" },
+    ],
+    certificates: [{ file: null, issuedBy: "", year: "" }],
   });
 
   useEffect(() => {
-    if (user?.role === 'teacher' && user?.status === 'active') {
-      navigate('/teacher/dashboard', { replace: true });
+    if (user?.role === "teacher" && user?.status === "active") {
+      navigate("/teacher/dashboard", { replace: true });
     }
   }, [user, navigate]);
 
@@ -71,7 +84,7 @@ const TeacherVerificationPage = () => {
       </div>
     );
   }
-  if (user?.status === 'pending') {
+  if (user?.status === "pending") {
     return <PendingView />;
   }
 
@@ -89,44 +102,58 @@ const TeacherVerificationPage = () => {
     }
     if (step === 2) {
       const hasInvalidExp = formData.experiences.some(
-        exp => !exp.title.trim() || !exp.organization.trim() || !exp.from
+        (exp) => !exp.title.trim() || !exp.organization.trim() || !exp.from,
       );
       if (hasInvalidExp) {
-        return toast.error("Please fill in Job Title, Organization, and Start Date.");
+        return toast.error(
+          "Please fill in Job Title, Organization, and Start Date.",
+        );
       }
     }
     if (step === 3) {
-      const hasFile = formData.certificates.some(cert => cert.file !== null);
+      const hasFile = formData.certificates.some((cert) => cert.file !== null);
       if (!hasFile) {
         return toast.error("Please upload at least one certificate file.");
       }
     }
-    setStep(prev => prev + 1);
+    setStep((prev) => prev + 1);
   };
-  
-  const prevStep = () => setStep(prev => prev - 1);
+
+  const prevStep = () => setStep((prev) => prev - 1);
 
   const onSubmit = (e) => {
     e.preventDefault();
     const cleanedExperiences = formData.experiences.filter(
-      exp => exp.title.trim() !== "" && exp.organization.trim() !== "" && exp.from !== ""
+      (exp) =>
+        exp.title.trim() !== "" &&
+        exp.organization.trim() !== "" &&
+        exp.from !== "",
     );
-    const validCertificates = formData.certificates.filter(cert => cert.file !== null);
+    const validCertificates = formData.certificates.filter(
+      (cert) => cert.file !== null,
+    );
 
-    if (cleanedExperiences.length === 0) return toast.error("Please add at least one experience.");
-    if (validCertificates.length === 0) return toast.error("Please upload at least one certificate.");
+    if (cleanedExperiences.length === 0)
+      return toast.error("Please add at least one experience.");
+    if (validCertificates.length === 0)
+      return toast.error("Please upload at least one certificate.");
 
     mutate({
       teacherId: user?.id || user?._id,
-      targetCategories: formData.targetCategories.split(',').map(s => s.trim()).filter(Boolean),
-      experiences: cleanedExperiences, 
-      certificates: validCertificates
+      targetCategories: formData.targetCategories
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      experiences: cleanedExperiences,
+      certificates: validCertificates,
     });
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <h1 className="text-4xl font-bold text-center text-gray-800">Teacher Verification</h1>
+      <h1 className="text-4xl font-bold text-center text-gray-800">
+        Teacher Verification
+      </h1>
       <div className="space-y-2">
         <div className="flex justify-between text-sm font-medium text-gray-500 px-2">
           <span>Step {step} of 3</span>
@@ -144,11 +171,18 @@ const TeacherVerificationPage = () => {
                 <h2 className="text-2xl font-semibold flex items-center gap-2 text-gray-700">
                   <BookOpen className="text-primary" /> Categories
                 </h2>
-                <p className="text-sm text-gray-500">Enter the subjects you want to teach (separated by commas).</p>
+                <p className="text-sm text-gray-500">
+                  Enter the subjects you want to teach (separated by commas).
+                </p>
                 <Input
                   placeholder="e.g. Programming, Graphic Design, Mathematics"
                   value={formData.targetCategories}
-                  onChange={(e) => setFormData({ ...formData, targetCategories: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      targetCategories: e.target.value,
+                    })
+                  }
                 />
               </div>
             )}
@@ -160,26 +194,91 @@ const TeacherVerificationPage = () => {
                   <Briefcase className="text-primary" /> Experience
                 </h2>
                 {formData.experiences.map((exp, index) => (
-                  <div key={index} className="border p-4 rounded-xl space-y-3 bg-gray-50 relative group">
-                    <Input placeholder="Job Title" value={exp.title} onChange={(e) => handleArrayChange('experiences', index, 'title', e.target.value)} />
-                    <Input placeholder="Organization" value={exp.organization} onChange={(e) => handleArrayChange('experiences', index, 'organization', e.target.value)} />
+                  <div
+                    key={index}
+                    className="border p-4 rounded-xl space-y-3 bg-gray-50 relative group"
+                  >
+                    <Input
+                      placeholder="Job Title"
+                      value={exp.title}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "experiences",
+                          index,
+                          "title",
+                          e.target.value,
+                        )
+                      }
+                    />
+                    <Input
+                      placeholder="Organization"
+                      value={exp.organization}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "experiences",
+                          index,
+                          "organization",
+                          e.target.value,
+                        )
+                      }
+                    />
                     <div className="flex gap-2">
                       <div className="flex-1">
-                        <label className="text-[10px] uppercase font-bold text-gray-400 ml-1">From</label>
-                        <Input type="date" value={exp.from} onChange={(e) => handleArrayChange('experiences', index, 'from', e.target.value)} />
+                        <label className="text-[10px] uppercase font-bold text-gray-400 ml-1">
+                          From
+                        </label>
+                        <Input
+                          type="date"
+                          value={exp.from}
+                          onChange={(e) =>
+                            handleArrayChange(
+                              "experiences",
+                              index,
+                              "from",
+                              e.target.value,
+                            )
+                          }
+                        />
                       </div>
                       <div className="flex-1">
-                        <label className="text-[10px] uppercase font-bold text-gray-400 ml-1">To (Optional)</label>
-                        <Input type="date" value={exp.to} onChange={(e) => handleArrayChange('experiences', index, 'to', e.target.value)} />
+                        <label className="text-[10px] uppercase font-bold text-gray-400 ml-1">
+                          To (Optional)
+                        </label>
+                        <Input
+                          type="date"
+                          value={exp.to}
+                          onChange={(e) =>
+                            handleArrayChange(
+                              "experiences",
+                              index,
+                              "to",
+                              e.target.value,
+                            )
+                          }
+                        />
                       </div>
                     </div>
                   </div>
                 ))}
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   className="w-full border-dashed py-6"
-                  onClick={() => setFormData({ ...formData, experiences: [...formData.experiences, { title: '', organization: '', from: '', to: '', description: '' }] })}
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      experiences: [
+                        ...formData.experiences,
+                        {
+                          title: "",
+                          organization: "",
+                          from: "",
+                          to: "",
+                          description: "",
+                        },
+                      ],
+                    })
+                  }
                 >
                   <Plus size={18} className="mr-2" /> Add More Experience
                 </Button>
@@ -193,25 +292,70 @@ const TeacherVerificationPage = () => {
                   <FileCheck className="text-primary" /> Certificates
                 </h2>
                 {formData.certificates.map((cert, index) => (
-                  <div key={index} className="border p-4 rounded-xl space-y-3 bg-gray-50">
+                  <div
+                    key={index}
+                    className="border p-4 rounded-xl space-y-3 bg-gray-50"
+                  >
                     <div className="bg-white p-4 rounded-lg border-2 border-dashed text-center hover:border-primary transition-colors">
-                      <Input 
-                        type="file" 
+                      <Input
+                        type="file"
                         accept=".pdf,.jpg,.jpeg,.png"
                         className="cursor-pointer"
-                        onChange={(e) => handleArrayChange('certificates', index, 'file', e.target.files[0])} 
+                        onChange={(e) =>
+                          handleArrayChange(
+                            "certificates",
+                            index,
+                            "file",
+                            e.target.files[0],
+                          )
+                        }
                       />
-                      {cert.file && <p className="text-xs text-green-600 mt-2 font-medium">Selected: {cert.file.name}</p>}
+                      {cert.file && (
+                        <p className="text-xs text-green-600 mt-2 font-medium">
+                          Selected: {cert.file.name}
+                        </p>
+                      )}
                     </div>
-                    <Input placeholder="Issued By" value={cert.issuedBy} onChange={(e) => handleArrayChange('certificates', index, 'issuedBy', e.target.value)} />
-                    <Input type="number" placeholder="Year" value={cert.year} onChange={(e) => handleArrayChange('certificates', index, 'year', e.target.value)} />
+                    <Input
+                      placeholder="Issued By"
+                      value={cert.issuedBy}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "certificates",
+                          index,
+                          "issuedBy",
+                          e.target.value,
+                        )
+                      }
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Year"
+                      value={cert.year}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "certificates",
+                          index,
+                          "year",
+                          e.target.value,
+                        )
+                      }
+                    />
                   </div>
                 ))}
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   className="w-full border-dashed py-6"
-                  onClick={() => setFormData({ ...formData, certificates: [...formData.certificates, { file: null, issuedBy: '', year: '' }] })}
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      certificates: [
+                        ...formData.certificates,
+                        { file: null, issuedBy: "", year: "" },
+                      ],
+                    })
+                  }
                 >
                   <Plus size={18} className="mr-2" /> Add Another Certificate
                 </Button>
@@ -220,12 +364,31 @@ const TeacherVerificationPage = () => {
           </CardContent>
 
           <div className="p-6 flex justify-between bg-gray-50 border-t">
-            <Button type="button" onClick={prevStep} disabled={step === 1} variant="ghost">Back</Button>
+            <Button
+              type="button"
+              onClick={prevStep}
+              disabled={step === 1}
+              variant="ghost"
+            >
+              Back
+            </Button>
             {step < 3 ? (
-              <Button type="button" onClick={nextStep} className="px-8 font-bold">Next Step</Button>
+              <Button
+                type="button"
+                onClick={nextStep}
+                className="px-8 font-bold"
+              >
+                Next Step
+              </Button>
             ) : (
-              <Button type="submit" disabled={isPending} className="px-10 font-bold">
-                {isPending ? <Loader2 className="animate-spin mr-2" size={18} /> : null}
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="px-10 font-bold"
+              >
+                {isPending ? (
+                  <Loader2 className="animate-spin mr-2" size={18} />
+                ) : null}
                 Submit Application
               </Button>
             )}

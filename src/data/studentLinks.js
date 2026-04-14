@@ -1,3 +1,4 @@
+import { userLogout } from "@/utils/useLogout";
 import {
   LayoutDashboard,
   BookOpen,
@@ -61,7 +62,6 @@ export const studentSidebarLinks = [
     href: "/profile",
     icon: UserCircle,
   },
-  
 ];
 
 export const studentBottomLinks = [
@@ -72,7 +72,7 @@ export const studentBottomLinks = [
   },
   {
     title: "Sign Out",
-    onClick: () => console.log("Sign Out clicked"),
+    onClick: () => userLogout(),
     icon: LogOut,
     isAction: true,
   },
