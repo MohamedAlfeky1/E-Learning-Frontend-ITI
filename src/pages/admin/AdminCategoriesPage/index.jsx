@@ -4,6 +4,7 @@ import CategoryCard from "./CategoryCard";
 import { useCategories } from "@/queries/useCategories";
 import AddCategoryDialog from "./AddCategoryDialog";
 import { Spinner } from "@/components/ui/spinner";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 const AdminCategoriesPage = () => {
   const { data, isLoading, isError } = useCategories();
@@ -30,7 +31,7 @@ const AdminCategoriesPage = () => {
       </header>
       <div className="flex flex-wrap gap-8">
         {isLoading ? (
-          <div className="flex justify-center items-center gap-3">
+          <div className="w-full flex justify-center items-center gap-3">
             <Spinner className="size-8" />
             Loading categories...
           </div>
