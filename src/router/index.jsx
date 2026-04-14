@@ -165,14 +165,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-   {
-    path: "teachers",
-    element: (
-      <ProtectedRoute allowedRoles={["student"]}>
-        <TeachersPage />
-      </ProtectedRoute>
-    ),
-  },
+  
   {
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
@@ -207,6 +200,12 @@ const router = createBrowserRouter([
       { path: "quizzes", element: <StudentQuizzesPage /> }, // /quizzes
       { path: "quizzes/:quizId/take", element: <QuizTakePage /> }, // /quizzes/:quizId/take
       { path: "quizzes/:quizId/result", element: <QuizResultPage /> }, // /quizzes/:quizId/result
+       {
+    path: "teachers",
+    element: (
+        <TeachersPage />
+    ),
+  },
 
       // AI Report
       {
