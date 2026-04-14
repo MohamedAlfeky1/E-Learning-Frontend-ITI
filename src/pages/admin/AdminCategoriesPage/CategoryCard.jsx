@@ -1,6 +1,7 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import AvatarGroupCountComponent from "./AvatarGroup";
 import { Button } from "@/components/ui/button";
+import EditCategoryDialog from "./EditCategoryDialog";
 
 const CategoryCard = ({ category }) => {
   return (
@@ -10,9 +11,7 @@ const CategoryCard = ({ category }) => {
           {category.icon}
         </div>
         <div className="flex gap-2">
-          <Button variant="secondary" size="icon">
-            <Pencil size={22} />
-          </Button>
+          <EditCategoryDialog category={category} />
           <Button variant="destructive" size="icon">
             <Trash2 size={22} />
           </Button>

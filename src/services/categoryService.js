@@ -33,3 +33,18 @@ export const addCategory = async ({ name, description, icon }) => {
     console.log("Error addCategory: ", error);
   }
 };
+
+export const updateCategory = async ({ slug, name, description }) => {
+  try {
+    const response = await axiosInstance.put(
+      ENDPOINTS.CATEGORIES_UPDATE(slug),
+      {
+        name,
+        description,
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.log("Error updateCategory: ", error);
+  }
+};
