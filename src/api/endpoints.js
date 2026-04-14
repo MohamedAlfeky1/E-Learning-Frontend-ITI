@@ -127,7 +127,7 @@ export const ENDPOINTS = {
   ADMIN_WITHDRAWALS_PROCESS: (id) => `/finance/admin/withdrawals/${id}`,
 
   // ─── Admin Dashboard ──────────────────────────────────────────────────────────
-  ADMIN_STATS_OVERVIEW: "/finance/admin/stats-platform",
+  ADMIN_STATS_OVERVIEW: "/admin/stats",
   ADMIN_STATS_REVENUE: "/admin/stats/revenue",
   ADMIN_STATS_ENROLLMENTS: "/admin/stats/enrollments",
 
