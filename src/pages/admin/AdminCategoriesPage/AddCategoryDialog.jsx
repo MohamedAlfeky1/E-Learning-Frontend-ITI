@@ -15,8 +15,6 @@ import { Label } from "@/components/ui/label";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axiosInstance from "@/api/axiosInstance";
-import { ENDPOINTS } from "@/api/endpoints";
 import { toast } from "sonner";
 import { addCategory } from "@/services/categoryService";
 
