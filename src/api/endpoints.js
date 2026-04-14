@@ -153,11 +153,23 @@ export const ENDPOINTS = {
     `/teachers/${teacherId}/availability`,
 
   // ─── Sessions (1-to-1) ────────────────────────────────────────────────────────
-  SESSIONS_BOOK: "/sessions/book",
   SESSIONS_MY: "/sessions/my",
-  SESSIONS_JOIN: (id) => `/sessions/${id}/join`,
   SESSIONS_START_CALL: (id) => `/sessions/${id}/start-call`,
   SESSIONS_END_CALL: (id) => `/sessions/${id}/end-call`,
+  SESSIONS_AVAILABILITY: "/sessions/availability",
+  SESSIONS_AVAILABILITY_UPDATE: (id) => `/sessions/availability/${id}`,
+  SESSIONS_TEACHERS: "/sessions/teachers",
+  SESSIONS_TEACHER_AVAILABILITY: (id) => `/sessions/teachers/${id}/availability`,
+  SESSIONS_BOOK: "/sessions/book",
+  SESSIONS_MY_BOOKINGS: "/sessions/my-bookings",
+  SESSIONS_TEACHER_BOOKINGS: "/sessions/teacher-bookings",
+  SESSIONS_CANCEL: (id) => `/sessions/bookings/${id}/cancel`,
+  SESSIONS_JOIN: (id) => `/sessions/bookings/${id}/join`,
+  SESSIONS_END: (id) => `/sessions/bookings/${id}/end`,
+
+
+
+
 
   // ─── Mobile — Question Bank ───────────────────────────────────────────────────
   QUESTION_BANK_LIST: (courseId) => `/courses/${courseId}/question-bank`,
