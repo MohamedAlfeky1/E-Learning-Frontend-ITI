@@ -4,9 +4,7 @@ import {
   Users,
   CheckCircle,
   XCircle,
-  Sparkles,
   MoreVertical,
-  AlertCircle,
   Clock,
 } from "lucide-react";
 import { toast } from "sonner";
