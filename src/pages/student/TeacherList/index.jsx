@@ -11,6 +11,8 @@ export default function TeachersPage() {
     const fetchTeachers = async () => {
       try {
         const response = await sessionService.getTeachers()
+        console.log(response.data);
+        
         setTeachers(response.data.data)
       } catch (error) {
         console.error("Failed to load teachers", error)
