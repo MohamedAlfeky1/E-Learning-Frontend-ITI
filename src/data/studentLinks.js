@@ -1,3 +1,4 @@
+import { userLogout } from "@/utils/userLogout";
 import {
   LayoutDashboard,
   BookOpen,
@@ -13,6 +14,7 @@ import {
   CalendarCheck,
   LogOut,
   Headset,
+  MessagesSquare,
 } from "lucide-react";
 
 export const studentSidebarLinks = [
@@ -42,6 +44,11 @@ export const studentSidebarLinks = [
     icon: ClipboardList,
   },
   {
+    title: "Chats",
+    href: "/chats",
+    icon: MessagesSquare,
+  },
+  {
     title: "Quizzes",
     href: "/quizzes",
     icon: HelpCircle,
@@ -61,7 +68,6 @@ export const studentSidebarLinks = [
     href: "/profile",
     icon: UserCircle,
   },
-  
 ];
 
 export const studentBottomLinks = [
@@ -72,7 +78,7 @@ export const studentBottomLinks = [
   },
   {
     title: "Sign Out",
-    onClick: () => console.log("Sign Out clicked"),
+    onClick: () => userLogout(),
     icon: LogOut,
     isAction: true,
   },
