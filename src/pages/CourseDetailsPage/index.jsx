@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import Loader from "@/components/ui/loader";
-import { useGetGategories } from "@/queries/categoryQueries";
+import { useCategories } from "@/queries/categoryQueries";
 import { useGetCoursesById } from "@/queries/useCourses";
 import { FaStar } from "react-icons/fa6";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,19 +21,19 @@ const CourseDetailsPage = () => {
 
   const { data: userData, isLoading: useLoading, error: useError } = useUserQuery(id);
   const { data, isLoading, error } = useGetCoursesById(id);
-  const { data: resultsGategories, isLoading: loadingGategories, error: errorGategories } = useGetGategories()
+  const { data: categoriesData, isLoading: loadingCategories, error: errorCategories } = useCategories()
   const { data: reviewsData, isLoading: loadingReviews, error: errorReviews } = useGetCourseReview(id);
   const [openPopover, setOpenPopover] = useState(false);
 
   const navigate = useNavigate()
   const isLoggedIn = !!userData;
   const course = data?.data;
-  const categoryName = resultsGategories?.data?.find(cat => cat._id === course?.categoryId)?.name || "Category";
+  const categoryName = categoriesData?.data?.find(cat => cat._id === course?.categoryId)?.name || "Category";
   const totalVideos = course?.lessons.reduce((total, lesson) => total + lesson.videos.length, 0) || 0;
   const totalMaterials = course?.lessons.reduce((total, lesson) => total + lesson.materials.length, 0) || 0;
   console.log(totalVideos);
   console.log(totalMaterials);
-  console.log("data", data, "resultsGategories", resultsGategories);
+  console.log("data", data, "categoriesData", categoriesData);
   console.log("ID:", id);
   console.log("reviewsData:", reviewsData);
   console.log("loadingReviews:", loadingReviews);

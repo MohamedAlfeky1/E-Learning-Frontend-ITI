@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { SlidersHorizontal, ChevronDown } from "lucide-react"
 import { useCallback, useEffect, useState } from "react";
-import { useGetGategories } from "@/queries/categoryQueries";
+import { useCategories } from "@/queries/categoryQueries";
 import { useSearchCourses } from "@/mutations/useSearchMutations";
 import Loader from "@/components/ui/loader";
 import NewCourseCard from "@/components/course/NewCourseCard";
@@ -28,9 +28,9 @@ import { LEVELS, SORT_OPTIONS, TYPES } from "@/data/courseFilters";
 const CoursesPage = () => {
 
   const { data, isLoading, error } = useGetAllCourses()
-  const { data: resultsGategories, isLoading: loadingGategories, error: errorGategories } = useGetGategories()
+  const { data: categoriesData, isLoading: loadingCategories, error: errorCategories } = useCategories()
   const { mutate: searchCourses, data: results, isPending } = useSearchCourses()
-  console.log(resultsGategories?.data);
+  console.log(categoriesData?.data);
   console.log(data);
 
 
@@ -54,7 +54,7 @@ const CoursesPage = () => {
 
 
 
-  const categories = resultsGategories?.data ?? [];
+  const categories = categoriesData?.data ?? [];
   const hasFilters = Object.values(filters).some(v => v !== null && v !== "" && v !== undefined);
   const coursesToShow = hasFilters ? results?.data?.courses : data?.data;
   const loading = hasFilters ? isPending : isLoading;
