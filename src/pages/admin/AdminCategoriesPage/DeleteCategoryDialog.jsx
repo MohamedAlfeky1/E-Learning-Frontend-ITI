@@ -12,18 +12,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { deleteCategory } from "@/services/categoryService";
+import { Spinner } from "@/components/ui/spinner";
+import { useDeleteCategoryMutation } from "@/mutations/useDeleteCategoryMutation";
 
 const DeleteCategoryDialog = ({ category }) => {
   const [open, setOpen] = useState(false);
+  const { mutateAsync, isPending, isError } = useDeleteCategoryMutation();
 
-  const deleteHandler = async() => {
-    try {
-      await deleteCategory(category.slug);
+  const deleteHandler = async () => {
+    await mutateAsync(category.slug);
+    if (isError) {
+      toast.error(`Failed to add category ${name}`);
+    } else {
       setOpen(false);
       toast.success(`Category "${category.name}" has been deleted`);
-    } catch (error) {
-      toast.error(`Failed to delete category "${category.name}"`);
     }
   };
 
@@ -56,6 +58,7 @@ const DeleteCategoryDialog = ({ category }) => {
             className="bg-red-500 hover:bg-red-700"
             onClick={deleteHandler}
           >
+            <Spinner className={isPending ? "" : "hidden"} />
             Confirm
           </Button>
         </DialogFooter>

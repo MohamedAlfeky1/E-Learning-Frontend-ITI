@@ -16,7 +16,8 @@ import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { updateCategory } from "@/services/categoryService";
+import { useEditCategoryMutation } from "@/mutations/useEditCategoryMutation";
+import { Spinner } from "@/components/ui/spinner";
 
 const formSchema = z.object({
   name: z.string(),
@@ -26,6 +27,7 @@ const formSchema = z.object({
 const EditCategoryDialog = ({ category }) => {
   const { slug } = category;
   const [open, setOpen] = useState(false);
+  const { mutateAsync, isPending, isError } = useEditCategoryMutation();
 
   const {
     control,
@@ -34,19 +36,18 @@ const EditCategoryDialog = ({ category }) => {
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: category.name,
+      description: category.description,
     },
   });
 
   const onSubmit = async ({ name, description }) => {
-    try {
-      await updateCategory({ slug, name, description });
+    await mutateAsync({ slug, name, description });
+    if (isError) {
+      toast.error(`Failed to update category "${name}"`);
+    } else {
       setOpen(false);
-      toast.success(`Category ${category.name} has been updated`);
-    } catch (error) {
-      console.log(error);
-      toast.error(`Failed to update category ${category.name}`);
+      toast.success(`Category "${name}" has been updated`);
     }
   };
 
@@ -61,7 +62,7 @@ const EditCategoryDialog = ({ category }) => {
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Edit Category</DialogTitle>
+            <DialogTitle>Edit Category {`"${category.name}"`}</DialogTitle>
             <DialogDescription>
               Fill out the details below to edit category.
             </DialogDescription>
@@ -112,7 +113,10 @@ const EditCategoryDialog = ({ category }) => {
           </div>
 
           <DialogFooter>
-            <Button type="submit">Edit Category</Button>
+            <Button type="submit">
+              <Spinner className={isPending ? "" : "hidden"} />
+              Edit Category
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
