@@ -2,6 +2,7 @@ import { Trash2 } from "lucide-react";
 import AvatarGroupCountComponent from "./AvatarGroup";
 import { Button } from "@/components/ui/button";
 import EditCategoryDialog from "./EditCategoryDialog";
+import DeleteCategoryDialog from "./DeleteCategoryDialog";
 
 const CategoryCard = ({ category }) => {
   return (
@@ -12,9 +13,7 @@ const CategoryCard = ({ category }) => {
         </div>
         <div className="flex gap-2">
           <EditCategoryDialog category={category} />
-          <Button variant="destructive" size="icon">
-            <Trash2 size={22} />
-          </Button>
+          <DeleteCategoryDialog category={category} />
         </div>
       </div>
       <h3 className="text-[#141B2B] font-['Plus Jakarta Sans'] font-extrabold text-lg leading-7 truncate">
