@@ -45,7 +45,6 @@ import QuizTakePage from "@/pages/student/QuizTakePage";
 import QuizResultPage from "@/pages/student/QuizResultPage";
 import AiReportPage from "@/pages/student/AiReportPage";
 import StudentChatPage from "@/pages/student/StudentChatPage";
-import BookSessionPage from "@/pages/student/BookSessionPage";
 import MySessionsPage from "@/pages/student/MySessionsPage";
 import SessionRoomPage from "@/pages/student/SessionRoomPage";
 import TicketsPage from "@/pages/student/TicketPage";
@@ -69,7 +68,6 @@ import ManageAssignmentsPage from "@/pages/teacher/ManageAssignmentsPage";
 import GradeAssignmentPage from "@/pages/teacher/GradeAssignmentPage";
 import TeacherEarningsPage from "@/pages/teacher/TeacherEarningsPage";
 import WithdrawalRequestPage from "@/pages/teacher/WithdrawalRequestPage";
-import TeacherAvailabilityPage from "@/pages/teacher/TeacherAvailabilityPage";
 import TeacherSessionsPage from "@/pages/teacher/TeacherSessionsPage";
 import TeacherVerificationPage from "@/pages/teacher/TeacherVerificationPage";
 import TeacherChatPage from "@/pages/teacher/TeacherChatPage";
@@ -102,6 +100,7 @@ import AdminTicketPage from "@/pages/admin/AdminTicketPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import BookingPage from "@/pages/student/BookSessionPage";
 import TeachersPage from "@/pages/student/TeacherList";
+import TeacherAvailabilityPage from "@/pages/teacher/TeacherAvailabilityPage";
 
 // =============================================================================
 const router = createBrowserRouter([
