@@ -20,3 +20,16 @@ export const getCategoryById = async (id) => {
     throw error;
   }
 };
+
+export const addCategory = async ({ name, description, icon }) => {
+  try {
+    const response = await axiosInstance.post(ENDPOINTS.CATEGORIES_CREATE, {
+      name,
+      description,
+      icon,
+    });
+    return response.data;
+  } catch (error) {
+    console.log("Error addCategory: ", error);
+  }
+};
