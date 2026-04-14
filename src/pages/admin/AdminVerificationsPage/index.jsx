@@ -314,7 +314,7 @@ const AdminVerificationsPage = () => {
                           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Verification Decision</p>
                           {applicant.status==='approved'?
                           (<div>
-                            <p className="text-center font-medium text-2xl">This Student is Already <span className="text-green-800">Approved</span></p>
+                            <p className="text-center font-medium text-2xl">This Teacher is Already <span className="text-green-800">Approved</span></p>
                           </div>)
                           :
                           (
