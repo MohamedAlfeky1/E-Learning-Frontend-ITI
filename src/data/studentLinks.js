@@ -14,6 +14,7 @@ import {
   CalendarCheck,
   LogOut,
   Headset,
+  MessagesSquare,
 } from "lucide-react";
 
 export const studentSidebarLinks = [
@@ -41,6 +42,11 @@ export const studentSidebarLinks = [
     title: "Assignments",
     href: "/assignments",
     icon: ClipboardList,
+  },
+  {
+    title: "Chats",
+    href: "/chats",
+    icon: MessagesSquare,
   },
   {
     title: "Quizzes",

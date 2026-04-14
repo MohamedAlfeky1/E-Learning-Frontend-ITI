@@ -97,11 +97,11 @@ import AdminPaymentsPage from "@/pages/admin/AdminPaymentsPage";
 import AdminTicketPage from "@/pages/admin/AdminTicketPage";
 import StudentProfilePageA from "@/pages/admin/StudentProfilePage";
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // ERROR / FALLBACK
 // ─────────────────────────────────────────────────────────────────────────────
 import NotFoundPage from "@/pages/NotFoundPage";
+import ChatsPages from "@/pages/student/ChatsPage";
 
 // =============================================================================
 const router = createBrowserRouter([
@@ -139,8 +139,7 @@ const router = createBrowserRouter([
       { path: "register", element: <RegisterPage /> }, // /register
       { path: "forgot-password", element: <ForgotPasswordForm /> },
       { path: "reset-password/:token", element: <ResetPasswordForm /> },
-      
-      
+
       // { path: "register/teacher", element: <TeacherRegisterPage /> }, // /register/teacher
     ],
   },
@@ -195,6 +194,9 @@ const router = createBrowserRouter([
         element: <StudentAssignmentsPage />,
       },
 
+      // Chats
+      { path: "/chats", element: <ChatsPages /> },
+
       // Quizzes
       { path: "quizzes", element: <StudentQuizzesPage /> }, // /quizzes
       { path: "quizzes/:quizId/take", element: <QuizTakePage /> }, // /quizzes/:quizId/take
@@ -228,7 +230,6 @@ const router = createBrowserRouter([
       },
       // /tickets
       {
-
         path: "tickets",
         element: <TicketsPage />,
       },
@@ -242,7 +243,7 @@ const router = createBrowserRouter([
     path: "teacher",
     element: (
       <ProtectedRoute allowedRoles={["teacher"]}>
-      <TeacherLayout />
+        <TeacherLayout />
       </ProtectedRoute>
     ),
     children: [
@@ -252,7 +253,6 @@ const router = createBrowserRouter([
       // Dashboard & profile
       { path: "dashboard", element: <TeacherDashboardPage /> }, // /teacher/dashboard
       { path: "profile", element: <TeacherProfilePage /> }, // /teacher/profile
-
 
       // Courses
       { path: "courses", element: <TeacherCoursesPage /> }, // /teacher/courses
@@ -284,8 +284,6 @@ const router = createBrowserRouter([
         element: <GradeAssignmentPage />,
       }, // /teacher/assignments/:assignmentId/grade
 
-      
-
       // Chat
       { path: "chat/:courseId", element: <TeacherChatPage /> }, // /teacher/chat/:courseId
 
@@ -308,7 +306,7 @@ const router = createBrowserRouter([
         <TeacherVerificationPage />
       </ProtectedRoute>
     ),
-  },  
+  },
   // ───────────────────────────────────────────────────────────────────────────
   // ADMIN  — role guard + AdminLayout
   // ───────────────────────────────────────────────────────────────────────────
@@ -354,8 +352,8 @@ const router = createBrowserRouter([
 
       // Reports & Analytics
       { path: "reports", element: <AdminReportsPage /> }, // /admin/reports
-      {path:"tickets",element:<AdminTicketPage />} ,// /admin/tickets    
-      {path:"students/:id",element:<StudentProfilePageA />} // /admin/students/:id
+      { path: "tickets", element: <AdminTicketPage /> }, // /admin/tickets
+      { path: "students/:id", element: <StudentProfilePageA /> }, // /admin/students/:id
     ],
   },
 
