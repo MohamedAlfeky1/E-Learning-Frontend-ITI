@@ -14,8 +14,11 @@ export const ENDPOINTS = {
   PROFILE_CHANGE_PASSWORD: "/auth/change-password",
 
   // ─── Admin — Users ──────────────────────────────────────────────────────────
-  ADMIN_USERS_LIST: "/admin/users",
-  ADMIN_USER_STATUS: (id) => `/admin/users/${id}/status`,
+  ADMIN_USERS_LIST: "/auth/users",
+  ADMIN_Get_USER_BY_ID: (id) => `/auth/users/${id}/`,
+  ADMIN_USER_DELETE: (id) => `/auth/users/${id}`,
+  ADMIN_USER_ACTIVATE: (id) => `/auth/users/${id}/activate`,
+  ADMIN_USER_SUSPEND: (id) => `/auth/users/${id}/suspend`,
 
   // ─── Lessons ─────────────────────────────────────────────────────────────────
   LESSONS_LIST: (courseId) => `/lessons/${courseId}`,
