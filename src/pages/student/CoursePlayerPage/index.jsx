@@ -78,7 +78,6 @@ const CoursePlayerPage = () => {
     }
   }, [lessons]);
 
-
   console.log(courseId);
   console.log("course", course);
   console.log(lessons?.data);
@@ -344,3 +343,50 @@ const CoursePlayerPage = () => {
 };
 
 export default CoursePlayerPage;
+
+
+// [{…}]
+// 0
+// : 
+// courseId
+// : 
+// {_id: '69d6a5fb3940a1c77a47fe55', title: 'Teaching English'}
+// createdAt
+// : 
+// "2026-04-08T20:05:47.352Z"
+// description
+// : 
+// "learn the alphabet for begginers learn the alphabet for begginers "
+// materials
+// : 
+// []
+// orderIndex
+// : 
+// 1
+// teacherId
+// : 
+// "69d3f77927768c09bdb61add"
+// title
+// : 
+// "learn the alpahet"
+// updatedAt
+// : 
+// "2026-04-08T20:05:47.352Z"
+// videos
+// : 
+// (2) [{…}, {…}]
+// __v
+// : 
+// 0
+// _id
+// : 
+// "69d6b51b0b026f5877d57cc6"
+// [[Prototype]]
+// : 
+// Object
+// length
+// : 
+// 1
+// [[Prototype]]
+// : 
+// Array(0)
