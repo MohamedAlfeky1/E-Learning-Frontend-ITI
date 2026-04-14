@@ -15,7 +15,7 @@ import { Button } from "../../../components/ui/button";
 import { Textarea } from "../../../components/ui/textarea";
 import { Spinner } from "../../../components/ui/spinner";
 import { useCreateCourse } from "../../../mutations/useCreateCourse";
-import { useCategories } from "../../../queries/useCategories";
+import { useCategories } from "../../../queries/categoryQueries";
 
 const LEVELS = ["beginner", "intermediate", "advanced"];
 

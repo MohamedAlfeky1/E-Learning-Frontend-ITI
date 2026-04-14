@@ -1,10 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { CirclePlus, SquarePlus } from "lucide-react";
 import CategoryCard from "./CategoryCard";
-import { useCategories } from "@/queries/useCategories";
+import { useCategories } from "@/queries/categoryQueries";
 import AddCategoryDialog from "./AddCategoryDialog";
 import { Spinner } from "@/components/ui/spinner";
-import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 const AdminCategoriesPage = () => {
   const { data, isLoading, isError } = useCategories();
