@@ -1,6 +1,4 @@
-import { Trash2 } from "lucide-react";
 import AvatarGroupCountComponent from "./AvatarGroup";
-import { Button } from "@/components/ui/button";
 import EditCategoryDialog from "./EditCategoryDialog";
 import DeleteCategoryDialog from "./DeleteCategoryDialog";
 
@@ -16,10 +14,10 @@ const CategoryCard = ({ category }) => {
           <DeleteCategoryDialog category={category} />
         </div>
       </div>
-      <h3 className="text-[#141B2B] font-['Plus Jakarta Sans'] font-extrabold text-lg leading-7 truncate">
+      <h3 className="text-[#141B2B] font-['Plus Jakarta Sans'] font-extrabold text-lg leading-7">
         {category.name}
       </h3>
-      <p className="text-[#464555] font-['Inter'] text-sm leading-6 truncate">
+      <p className="text-[#464555] font-['Inter'] text-sm leading-6">
         {category.description}
       </p>
       <div className="flex justify-between items-end">
