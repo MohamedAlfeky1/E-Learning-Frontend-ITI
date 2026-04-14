@@ -95,6 +95,8 @@ import AdminEnrollStudentPage from "@/pages/admin/AdminEnrollStudentPage";
 import AdminAddAdminPage from "@/pages/admin/AdminAddAdminPage";
 import AdminPaymentsPage from "@/pages/admin/AdminPaymentsPage";
 import AdminTicketPage from "@/pages/admin/AdminTicketPage";
+import StudentProfilePageA from "@/pages/admin/StudentProfilePage";
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERROR / FALLBACK
@@ -352,7 +354,8 @@ const router = createBrowserRouter([
 
       // Reports & Analytics
       { path: "reports", element: <AdminReportsPage /> }, // /admin/reports
-      {path:"tickets",element:<AdminTicketPage />} // /admin/tickets    
+      {path:"tickets",element:<AdminTicketPage />} ,// /admin/tickets    
+      {path:"students/:id",element:<StudentProfilePageA />} // /admin/students/:id
     ],
   },
 
