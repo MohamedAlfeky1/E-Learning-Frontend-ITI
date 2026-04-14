@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "@/api/axiosInstance";
 import { ENDPOINTS } from "@/api/endpoints";
 import { toast } from "sonner";
+import { addCategory } from "@/services/categoryService";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -41,9 +42,7 @@ const AddCategoryDialog = () => {
 
   const onSubmit = async ({ name, description }) => {
     try {
-      const response = await axiosInstance.post(ENDPOINTS.CATEGORIES_CREATE, {
-        name, description
-      });
+      addCategory({ name, description });
       setOpen(false);
       toast.success(`Category ${name} has been added`);
     } catch (error) {
