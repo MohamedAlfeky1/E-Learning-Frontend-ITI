@@ -10,7 +10,6 @@ import {
   UserCircle,
   Megaphone,
   LogOut,
-  Headset,
 } from "lucide-react";
 
 export const teacherSidebarLinks = [
@@ -59,11 +58,6 @@ export const teacherSidebarLinks = [
     href: "/teacher/profile",
     icon: UserCircle,
   },
-  {
-  title: "Support Tickets",
-  href: "/teacher/tickets",
-  icon: Headset,
-},
 ];
 
 export const teacherBottomLinks = [
@@ -75,7 +69,7 @@ export const teacherBottomLinks = [
   // },
   {
     title: "Help Center",
-    href: "/teacher/help",
+    href: "/teacher/tickets",
     icon: HelpCircle,
   },
   {
