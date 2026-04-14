@@ -82,7 +82,7 @@ export default function BookingPage() {
       })
 
       toast.success("Redirecting to checkout...")
-      navigate(`/checkout?bookingId=${response.data.data._id}`)
+      navigate(`/checkout-page?bookingId=${response.data.data._id}`)
     } catch (error) {
       toast.error(error.response?.data?.message || "Booking failed")
     } finally {
