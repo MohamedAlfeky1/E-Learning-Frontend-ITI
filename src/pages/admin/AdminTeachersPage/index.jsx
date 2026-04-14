@@ -112,7 +112,7 @@ const AdminTeachersPage = () => {
 
         <div className="flex flex-col md:flex-row justify-between gap-4 pt-2">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight">
+            <h1 className="text-3xl font-extrabold tracking-tight text-primary">
               Teacher Directory
             </h1>
             <p className="text-muted-foreground text-sm">
