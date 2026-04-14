@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import CategoryCard from "../../components/homepage/CategoryCard";
-import { useCategories } from "@/queries/useCategories";
+import { useCategories } from "@/queries/categoryQueries";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Empty,
@@ -36,8 +36,28 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import CourseCard from "../../components/homepage/CourseCard.jsx";
 import { useGetAllCourses } from "@/queries/useCourses";
+import axiosInstance from "@/api/axiosInstance";
+import { useQuery } from "@tanstack/react-query";
+import { ENDPOINTS } from "@/api/endpoints";
+
+const getSliders = async () => {
+  const response = await axiosInstance.get("/admin" + ENDPOINTS.SLIDERS_LIST);
+  return response.data;
+};
 
 const HomePage = () => {
+  const {
+    data: slidersData,
+    isLoading: slidersLoading,
+    isError: slidersError,
+  } = useQuery({
+    queryKey: ["sliders"],
+    queryFn: getSliders,
+  });
+
+  if (!slidersLoading) console.log(slidersData);
+  else console.log("Loading...");
+
   const {
     data: categoriesData,
     isLoading: categoriesLoading,
@@ -96,7 +116,11 @@ const HomePage = () => {
             </Button>
           </div>
         </div>
-        <img src={HeroImage} className="rounded-xl flex-1 object-cover" alt="Hero" />
+        <img
+          src={HeroImage}
+          className="rounded-xl flex-1 object-cover"
+          alt="Hero"
+        />
       </section>
 
       {/* Categories section */}
