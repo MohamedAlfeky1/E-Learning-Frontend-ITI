@@ -100,6 +100,7 @@ import AdminTicketPage from "@/pages/admin/AdminTicketPage";
 // ERROR / FALLBACK
 // ─────────────────────────────────────────────────────────────────────────────
 import NotFoundPage from "@/pages/NotFoundPage";
+import BookingPage from "@/pages/student/BookSessionPage";
 
 // =============================================================================
 const router = createBrowserRouter([
@@ -216,7 +217,7 @@ const router = createBrowserRouter([
       {
         // /teachers/:teacherId/book
         path: "teachers/:teacherId/book",
-        element: <BookSessionPage />,
+        element: <BookingPage />,
       },
       { path: "sessions", element: <MySessionsPage /> }, // /sessions
       {
