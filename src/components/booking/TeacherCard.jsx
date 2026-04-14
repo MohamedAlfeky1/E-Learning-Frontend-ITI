@@ -16,7 +16,7 @@ export function TeacherCard({ teacher }) {
           className="w-full h-48 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
         />
         <Badge className="absolute top-3 right-3 bg-white/90 text-purple-700 hover:bg-white border-none backdrop-blur-md">
-          ⭐ {teacher.avgRating || "New"}
+           {teacher.avgRating || "New"}
         </Badge>
       </div>
 
