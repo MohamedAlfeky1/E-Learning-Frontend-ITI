@@ -1,4 +1,4 @@
-import { userLogout } from "@/utils/useLogout";
+import { userLogout } from "@/utils/userLogout";
 import {
   LayoutDashboard,
   BookOpen,

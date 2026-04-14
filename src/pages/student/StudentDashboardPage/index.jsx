@@ -1,4 +1,4 @@
-import { useLogout } from "../../../utils/useLogout";
+import { useLogout } from "../../../hooks/useLogout";
 const StudentDashboardPage = () => {
   const logout = useLogout();
 

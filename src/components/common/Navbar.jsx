@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Settings, Menu, X } from "lucide-react";
 import { useUserQuery } from "@/queries/authQueries";
-import { userLogout } from "@/utils/useLogout";
+import { useLogout } from "@/hooks/useLogout";
 import Logo from "@/components/common/Logo";
 import NavLink from "@/components/common/NavLink";
 import SearchBar from "@/components/common/SearchBar";
