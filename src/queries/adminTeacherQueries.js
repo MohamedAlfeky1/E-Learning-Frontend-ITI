@@ -9,3 +9,4 @@ export const useTeachersQuery = (params) => {
     staleTime: 5 * 60 * 1000, 
   });
 };
+

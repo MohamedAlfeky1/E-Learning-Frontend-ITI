@@ -15,8 +15,9 @@ export const ENDPOINTS = {
 
   // ─── Admin — Users ──────────────────────────────────────────────────────────
   ADMIN_USERS_LIST: "/auth/users",
-  ADMIN_Get_USER_BY_ID: (id) => `/auth/users/${id}/`,
+  ADMIN_GET_USER_BY_ID: (id) => `/auth/users/${id}/`,
   ADMIN_USER_DELETE: (id) => `/auth/users/${id}`,
+  ADMIN_STUDENT_GET_PROFILE: (id) => `/auth/users/${id}/profile`,
   ADMIN_USER_ACTIVATE: (id) => `/auth/users/${id}/activate`,
   ADMIN_USER_SUSPEND: (id) => `/auth/users/${id}/suspend`,
 
