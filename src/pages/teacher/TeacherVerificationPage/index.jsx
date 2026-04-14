@@ -15,7 +15,7 @@ import {
   FileCheck,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useLogout } from "@/utils/useLogout";
+import { useLogout } from "@/hooks/useLogout";
 
 const PendingView = () => {
   const logout = useLogout();
