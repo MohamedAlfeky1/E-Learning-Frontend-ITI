@@ -1,4 +1,4 @@
-import { getAllCategory } from "@/services/categoryService"
+import { getAllCategories } from "@/services/categoryService"
 import { getCourseReviews } from "@/services/reviewService"
 import { useQuery } from "@tanstack/react-query"
 
