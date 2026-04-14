@@ -23,7 +23,6 @@ export default function BookingPage() {
   const [loading, setLoading] = useState(false)
   const [loadingSlots, setLoadingSlots] = useState(false)
 
-  // جلب بيانات المعلم
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
@@ -40,15 +39,13 @@ export default function BookingPage() {
     fetchTeacher()
   }, [teacherId])
 
-  // جلب المواعيد المتاحة
   useEffect(() => {
     if (!teacherId || !selectedDate) return
 
     const fetchAvailability = async () => {
       setLoadingSlots(true)
-      setSelectedSlot(null) // تصفير الموعد المختار عند تغيير التاريخ
+      setSelectedSlot(null) 
       try {
-        // استخدام تنسيق تاريخ آمن
         const offset = selectedDate.getTimezoneOffset()
         const adjustedDate = new Date(selectedDate.getTime() - (offset * 60 * 1000))
         const formattedDate = adjustedDate.toISOString().split('T')[0]
