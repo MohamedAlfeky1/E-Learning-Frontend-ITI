@@ -41,7 +41,7 @@ const EditCategoryDialog = ({ category }) => {
 
   const onSubmit = async ({ name, description }) => {
     try {
-      updateCategory({ slug, name, description });
+      await updateCategory({ slug, name, description });
       setOpen(false);
       toast.success(`Category ${category.name} has been updated`);
     } catch (error) {
