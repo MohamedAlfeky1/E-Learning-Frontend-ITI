@@ -1,7 +1,7 @@
 import axiosInstance from "@/api/axiosInstance";
 import { ENDPOINTS } from "@/api/endpoints";
 export const adminUsersService = {
-   getAllUsers: async (params) => {
+    getAllUsers: async (params) => {
     const response = await axiosInstance.get(ENDPOINTS  .ADMIN_USERS_LIST, {
       params: { ...params, role: 'student' } 
     });
