@@ -2,15 +2,17 @@ import { Button } from "@/components/ui/button";
 import { CirclePlus, SquarePlus } from "lucide-react";
 import CategoryCard from "./CategoryCard";
 import { useCategories } from "@/queries/useCategories";
+import AddCategoryDialog from "./AddCategoryDialog";
+import { Spinner } from "@/components/ui/spinner";
 
 const AdminCategoriesPage = () => {
   const { data, isLoading, isError } = useCategories();
   const categories = data?.data ?? [];
 
   return (
-    <div className="min-h-screen bg-[#F9F9FF] p-6 md:p-12">
+    <div className="bg-[#F9F9FF] p-6 md:p-12">
       {/* Header */}
-      <header className="mb-8 flex flex-col md:flex-row gap-4 justify-between md:items-end">
+      <header className="mb-8 flex flex-col lg:flex-row gap-4 justify-between lg:items-end">
         <div>
           <p className="uppercase mb-2 text-[#3525CD] text-[10px] font-bold tracking-[1.2px] font-['Inter']">
             Platform Architecture
@@ -24,24 +26,29 @@ const AdminCategoriesPage = () => {
             assignments.
           </p>
         </div>
-        <Button className="inline-flex items-center gap-2 rounded-[20px] bg-[#3525CD] px-6 py-4 text-white text-base font-bold transition-transform duration-150 hover:scale-[1.01]">
-          <CirclePlus />
-          Create New Category
-        </Button>
+        <AddCategoryDialog />
       </header>
       <div className="flex flex-wrap gap-8">
-        {categories &&
-          categories.map((category) => <CategoryCard category={category} />)}
-        {/* TODO: add new hub button */}
-        {/* <div className="new-hub grow sm:grow-0 px-8 py-20 flex flex-col gap-2 justify-center items-center">
-          <div className="p-4 flex flex-col justify-center items-center rounded-full new-hub-icon-bg">
-            <SquarePlus size={20} />
+        {isLoading ? (
+          <div className="flex justify-center items-center gap-3">
+            <Spinner className="size-8" />
+            Loading categories...
           </div>
-          <h3 className="font-plus-jakarta font-weight-700">New Hub</h3>
-          <p className="w-3/4 text-center font-inter font-weight-400 text-size-sm">
-            Define a new study domain
-          </p>
-        </div> */}
+        ) : isError ? (
+          <Empty className="text-center text-sm text-destructive">
+            <EmptyHeader>
+              <EmptyTitle>Unable to load categories.</EmptyTitle>
+              <EmptyDescription>
+                An error happened while fetching categories from server.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        ) : (
+          categories &&
+          categories.map((category) => (
+            <CategoryCard key={category.slug} category={category} />
+          ))
+        )}
       </div>
     </div>
   );
