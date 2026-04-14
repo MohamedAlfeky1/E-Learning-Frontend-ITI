@@ -16,7 +16,8 @@ import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { addCategory } from "@/services/categoryService";
+import { useAddCategoryMutation } from "@/mutations/useAddCategoryMutation";
+import { Spinner } from "@/components/ui/spinner";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -25,6 +26,7 @@ const formSchema = z.object({
 
 const AddCategoryDialog = () => {
   const [open, setOpen] = useState(false);
+  const { mutateAsync, isPending, isError } = useAddCategoryMutation();
 
   const {
     control,
@@ -39,20 +41,19 @@ const AddCategoryDialog = () => {
   });
 
   const onSubmit = async ({ name, description }) => {
-    try {
-      addCategory({ name, description });
+    await mutateAsync({ name, description });
+    if (isError) {
+      toast.error(`Failed to add category "${name}"`);
+    } else {
       setOpen(false);
-      toast.success(`Category ${name} has been added`);
-    } catch (error) {
-      console.log(error);
-      toast.error(`Failed to add category ${name}`);
+      toast.success(`Category "${name}" has been added`);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full inline-flex items-center gap-2 rounded-[20px] bg-[#3525CD] px-6 py-4 text-white text-base font-bold transition-transform duration-150 hover:scale-[1.01]">
+        <Button className="inline-flex items-center gap-2 rounded-[20px] bg-[#3525CD] px-6 py-4 text-white text-base font-bold transition-transform duration-150 hover:scale-[1.01]">
           <CirclePlus />
           Create New Category
         </Button>
@@ -112,7 +113,10 @@ const AddCategoryDialog = () => {
           </div>
 
           <DialogFooter>
-            <Button type="submit">Add Category</Button>
+            <Button type="submit">
+              <Spinner className={isPending ? "" : "hidden"} />
+              Add Category
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
