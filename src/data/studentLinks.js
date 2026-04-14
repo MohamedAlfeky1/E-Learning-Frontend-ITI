@@ -47,6 +47,11 @@ export const studentSidebarLinks = [
     icon: HelpCircle,
   },
   {
+    title: "Get Mentor",
+    href: "/teachers",
+    icon: HelpCircle,
+  },
+  {
     title: "Sessions",
     href: "/sessions",
     icon: CalendarCheck,

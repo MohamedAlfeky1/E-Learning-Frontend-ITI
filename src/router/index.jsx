@@ -101,6 +101,7 @@ import AdminTicketPage from "@/pages/admin/AdminTicketPage";
 // ─────────────────────────────────────────────────────────────────────────────
 import NotFoundPage from "@/pages/NotFoundPage";
 import BookingPage from "@/pages/student/BookSessionPage";
+import TeachersPage from "@/pages/student/TeacherList";
 
 // =============================================================================
 const router = createBrowserRouter([
@@ -161,6 +162,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
         <PaymentSuccessPage />
+      </ProtectedRoute>
+    ),
+  },
+   {
+    path: "teachers",
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <TeachersPage />
       </ProtectedRoute>
     ),
   },
