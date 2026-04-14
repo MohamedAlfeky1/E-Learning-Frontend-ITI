@@ -17,7 +17,7 @@ function TotalNumbersCard({ icon, title, number, chartData=[] , growth  }) {
         <div className="bg-white rounded-xl p-4 flex flex-col justify-center gap-3">
 
             <div className="flex justify-between items-start">
-                <div className="w-10 flex justify-center bg-[var(--ring)]/30 p-2 rounded-md text-[var(--primary)]">
+                <div className="w-10 flex justify-center bg-[var(--ring)]/20 p-2 rounded-md text-[var(--primary)]">
                     {icon}
                 </div>
                 {growth !== undefined && (
