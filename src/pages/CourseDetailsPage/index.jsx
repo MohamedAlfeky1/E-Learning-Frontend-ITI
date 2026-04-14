@@ -13,22 +13,22 @@ import { useGetCourseReview } from "@/queries/useReviewQueries";
 import { useUserQuery } from "@/queries/authQueries";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useAddToCart } from "@/mutations/cartMutations";
+import { toast } from "sonner";
+import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
 
-// Unified purple palette:
-// Primary accent:   #4f46e5  (indigo-600)
-// Dark text:        #1e1b4b  (indigo-950)
-// Muted text:       #4338ca  (indigo-700)
-// Light bg:         #eef2ff  (indigo-50)
-// Mid bg / cards:   #e0e7ff  (indigo-100)
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
+  const [errors, setErrors] = useState()
+  const [openPopover, setOpenPopover] = useState(false);
 
   const { data: userData, isLoading: useLoading, error: useError } = useUserQuery(id);
   const { data, isLoading, error } = useGetCoursesById(id);
   const { data: resultsGategories, isLoading: loadingGategories, error: errorGategories } = useGetGategories();
   const { data: reviewsData, isLoading: loadingReviews, error: errorReviews } = useGetCourseReview(id);
-  const [openPopover, setOpenPopover] = useState(false);
+  const { data: enrollmentData, isLoading: loadingEnrollment, error: errorEnrollment } = useEnrollmentDetailsQuery(id)
+  const addToCartMutation = useAddToCart();
 
   const navigate = useNavigate();
   const isLoggedIn = !!userData;
@@ -36,13 +36,47 @@ const CourseDetailsPage = () => {
   const categoryName = resultsGategories?.data?.find(cat => cat._id === course?.categoryId)?.name || "Category";
   const totalVideos = course?.lessons.reduce((total, lesson) => total + lesson.videos.length, 0) || 0;
   const totalMaterials = course?.lessons.reduce((total, lesson) => total + lesson.materials.length, 0) || 0;
+  console.log('====================================');
+  console.log(course);
+  console.log('====================================');
+
+
+  // const addToCartAction= ()=>{}
+  const addToCartAction = (data) => {
+    addToCartMutation.mutate(
+      {
+        courseId: data.courseId
+      },
+
+      {
+        onSuccess: () => {
+          toast.success('Course Added Successfully')
+          navigate('/cart');
+        },
+        onError: (err) => {
+          const message = err.response?.data.message || "Failed to add course";
+          setErrors((prev) => ({ ...prev, api: message }));
+          toast.error(message); // add this
+        }
+      })
+
+  }
 
   const handleEnroll = () => {
-    if (!isLoggedIn) {
-      setOpenPopover(true);
-      return;
+    try {
+      if (!isLoggedIn) {
+        setOpenPopover(true);
+        return;
+      }
+      else if (course.type == 'paid') {
+        addToCartAction({ courseId: course._id })
+      } else if (course.type == 'free') {
+        navigate('/my-courses')
+      }
+    } catch (error) {
+      toast.error(error)
     }
-    console.log("Enroll user...");
+
   };
 
   if (isLoading) {
@@ -66,10 +100,12 @@ const CourseDetailsPage = () => {
           <Badge variant="lightPurple">{categoryName}</Badge>
           <p className="text-[#1e1b4b] text-5xl font-extrabold">{course.title}</p>
           <p className="text-[#4338ca] font-medium text-xs">
-            Created At:{" "}
-            <span className="text-[#4338ca] font-light text-xs">{course.createdAt}</span>
+            Course Requirments: &nbsp;
+            {course.requirements.map((req) => {
+              return <span className="text-[#464555] font-light text-xs">{req}</span>
+            })}
           </p>
-          <p className="text-md text-[#4338ca]">{course.description}</p>
+          <p className="text-md text-[#464555]">{course.description}</p>
 
           <div className="flex gap-3 items-center">
             <div className="flex items-center gap-1 text-sm font-medium text-[#4338ca]">
@@ -112,7 +148,7 @@ const CourseDetailsPage = () => {
               relative before:content-[''] before:absolute before:w-2 before:h-7 before:bg-[#4f46e5] before:rounded-full before:left-0 before:top-1/2 before:-translate-y-1/2 pl-4">
               What you'll learn
             </h2>
-            <ul className="list-disc list-inside text-[#4338ca] text-md">
+            <ul className="list-disc list-inside text-[#464555] text-sm">
               {course.whatYouWillLearn.map((outcome, index) => (
                 <li key={index} className="font-light">{outcome}</li>
               ))}
@@ -121,12 +157,12 @@ const CourseDetailsPage = () => {
 
           {/* Feature cards */}
           <div className="flex flex-col md:flex-row gap-3">
-            <div className="mt-5 bg-[#e7e7e7] rounded-md px-3 py-4 w-64">
+            <div className="mt-5 bg-[#f4f4f4] rounded-md px-3 py-4 w-64">
               <MdOutlineVerified color="#4f46e5" size={20} />
               <p className="text-[#1e1b4b] font-semibold">Certified</p>
               <p className="text-[#4338ca]">Industry recognized certificate</p>
             </div>
-            <div className="mt-5 bg-[#e7e7e7] rounded-md px-3 py-4 w-64">
+            <div className="mt-5 bg-[#f4f4f4] rounded-md px-3 py-4 w-64">
               <IoInfinite color="#4f46e5" size={20} />
               <p className="text-[#1e1b4b] font-semibold">Lifetime Access</p>
               <p className="text-[#4338ca]">Learn at your own pace</p>
@@ -140,7 +176,7 @@ const CourseDetailsPage = () => {
               Course Lessons
             </h2>
             <div className="bg-[#eef2ff] rounded-xl">
-              {course.lessons.map((lesson, index) => (
+              {(course.lessons) ? (<p className="col-span-2 text-center text-red-500 text-sm bg-white">No Lessons Provided Yet</p>) : (course.lessons.map((lesson, index) => (
                 <div key={index} className="flex items-center gap-3 p-4">
                   <div className="bg-[#4f46e5] text-white rounded-full p-1 font-semibold">
                     0{lesson.orderIndex}
@@ -150,7 +186,7 @@ const CourseDetailsPage = () => {
                     <p className="text-[#4338ca] text-xs">{lesson.videos.length} Videos</p>
                   </div>
                 </div>
-              ))}
+              )))}
             </div>
           </div>
 
@@ -181,11 +217,11 @@ const CourseDetailsPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {reviewsData?.data?.map((review, index) => (
-                <div key={index} className="bg-[#e0e7ff] rounded-md p-3">
+              {(reviewsData?.data) ? (<p className="col-span-2 text-center text-red-500 text-sm ">No Review Provided</p>) : (reviewsData?.data?.map((review, index) => (
+                <div key={index} className="bg-[#f4f4f4] rounded-md p-3">
                   <div className="flex gap-2 justify-between items-start w-full">
                     <div className="flex items-center gap-2">
-                      <div className="w-12 h-12 bg-[#4f46e5] rounded-full p-3 flex items-center justify-center">
+                      <div className="w-12 h-12 bg-[#cccccc] rounded-full flex items-center justify-center">
                         {review.studentId?.avatar ? (
                           <img src={review.studentId.avatar} alt={review.studentId.name} className="w-12 h-12 rounded-full" />
                         ) : (
@@ -205,7 +241,7 @@ const CourseDetailsPage = () => {
                   </div>
                   <p className="text-[#4338ca] text-sm italic">"{review.comment}"</p>
                 </div>
-              ))}
+              )))}
             </div>
           </div>
 
@@ -215,42 +251,50 @@ const CourseDetailsPage = () => {
         <div className="col-span-1 flex flex-col gap-4">
 
           {/* Enroll Card */}
-          <div className="bg-[#e7e7e7] py-4 px-6 rounded-xl flex flex-col gap-4">
-            {course.type === "paid" ? (
-              <h1 className="text-[#1e1b4b] font-semibold text-4xl">${course.price}</h1>
-            ) : (
-              <h1 className="text-[#1e1b4b] font-semibold text-4xl">Free</h1>
-            )}
-            <p className="text-[#4338ca]">{course.updatedAt}</p>
+          <div className="bg-[#f4f4f4] py-4 px-6 rounded-xl flex flex-col gap-4">
+            {enrollmentData ?
+              <p>You Already Enrolled In This Course</p> :
+              (
+                <>
+                  {course.type === "paid" ? (
+                    <h1 className="text-[#1e1b4b] font-semibold text-4xl">${course.price}</h1>
+                  ) : (
+                    <h1 className="text-[#1e1b4b] font-semibold text-4xl">Free</h1>
+                  )}
+                  <p className="text-[#4338ca]">{course.updatedAt}</p>
 
-            <Button variant="success" onClick={handleEnroll}>
-              <MdOutlineAddShoppingCart color="white" />
-              Enroll Now
-            </Button>
-
-            <Dialog open={openPopover} onOpenChange={setOpenPopover}>
-              <DialogContent showCloseButton={true}>
-                <DialogHeader>
-                  <DialogTitle>Login Required</DialogTitle>
-                  <DialogDescription>
-                    You need to be logged in to enroll in this course.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <Button
-                    variant="purpleBtnDefault"
-                    className="w-full"
-                    onClick={() => navigate("/login")}
-                  >
-                    Go to Login
+                  <Button variant="success" onClick={handleEnroll}>
+                    <MdOutlineAddShoppingCart color="white" />
+                    Enroll Now
                   </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
 
-            <Button variant="secondary" className="text-[#4f46e5]">
-              Try Free Preview
-            </Button>
+                  <Dialog open={openPopover} onOpenChange={setOpenPopover}>
+                    <DialogContent showCloseButton={true}>
+                      <DialogHeader>
+                        <DialogTitle>Login Required</DialogTitle>
+                        <DialogDescription>
+                          You need to be logged in to enroll in this course.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button
+                          variant="purpleBtnDefault"
+                          className="w-full"
+                          onClick={() => navigate("/login")}
+                        >
+                          Go to Login
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+
+                  <Button variant="secondary" className="text-[#4f46e5]">
+                    Try Free Preview
+                  </Button>
+                </>
+              )
+            }
+
 
             <hr className="border-[#c7d2fe]" />
 
@@ -265,7 +309,7 @@ const CourseDetailsPage = () => {
           </div>
 
           {/* Instructor Card */}
-          <div className="bg-[#e7e7e7] py-4 px-6 rounded-xl flex flex-col gap-4">
+          <div className="bg-[#f4f4f4] py-4 px-6 rounded-xl flex flex-col gap-4">
             <h1 className="text-[#1e1b4b] font-bold text-md">Meet Your Instructor</h1>
 
             <div className="flex gap-2 items-start">
