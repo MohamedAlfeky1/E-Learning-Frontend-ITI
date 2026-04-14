@@ -99,6 +99,11 @@ import AdminPaymentsPage from "@/pages/admin/AdminPaymentsPage";
 // ─────────────────────────────────────────────────────────────────────────────
 import NotFoundPage from "@/pages/NotFoundPage";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Chat
+// ─────────────────────────────────────────────────────────────────────────────
+import ChatRoom from "@/components/chat/ChatRoom";
+
 // =============================================================================
 const router = createBrowserRouter([
   // ───────────────────────────────────────────────────────────────────────────
@@ -107,7 +112,7 @@ const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
-      { index: true, element: <HomePage /> }, // /
+      { index: true, element: <ChatRoom /> }, // /
       { path: "about", element: <AboutPage /> }, // /about
       { path: "courses", element: <CoursesPage /> },
 
@@ -135,8 +140,7 @@ const router = createBrowserRouter([
       { path: "register", element: <RegisterPage /> }, // /register
       { path: "forgot-password", element: <ForgotPasswordForm /> },
       { path: "reset-password/:token", element: <ResetPasswordForm /> },
-      
-      
+
       // { path: "register/teacher", element: <TeacherRegisterPage /> }, // /register/teacher
     ],
   },
@@ -232,7 +236,7 @@ const router = createBrowserRouter([
     path: "teacher",
     element: (
       <ProtectedRoute allowedRoles={["teacher"]}>
-      <TeacherLayout />
+        <TeacherLayout />
       </ProtectedRoute>
     ),
     children: [
@@ -242,7 +246,6 @@ const router = createBrowserRouter([
       // Dashboard & profile
       { path: "dashboard", element: <TeacherDashboardPage /> }, // /teacher/dashboard
       { path: "profile", element: <TeacherProfilePage /> }, // /teacher/profile
-
 
       // Courses
       { path: "courses", element: <TeacherCoursesPage /> }, // /teacher/courses
@@ -301,7 +304,7 @@ const router = createBrowserRouter([
         <TeacherVerificationPage />
       </ProtectedRoute>
     ),
-  },  
+  },
   // ───────────────────────────────────────────────────────────────────────────
   // ADMIN  — role guard + AdminLayout
   // ───────────────────────────────────────────────────────────────────────────
