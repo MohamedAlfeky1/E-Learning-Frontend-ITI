@@ -30,8 +30,7 @@ export default function MyBookings() {
 
   const handleJoinSession = (bookingId) => {
     toast.info("Joining video call...")
-   
-    navigate(`/sessions/join/${bookingId}`)
+    navigate(`/teacher/videoCall/${bookingId}`)
   }
 
   if (loading) return (

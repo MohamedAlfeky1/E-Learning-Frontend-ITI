@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { sessionService } from "@/services/sessionService"
 import { toast } from "sonner"
 import { BookingRow } from "@/components/booking/BookingRow"
+import { Navigate } from "react-router-dom"
 
 export default function StudentBookings() {
   const [bookings, setBookings] = useState([])
@@ -21,8 +22,9 @@ export default function StudentBookings() {
     fetchMyBookings()
   }, [])
 
-  const handleJoin = (id) => {
-    window.location.href = `/sessions/join/${id}`
+  const handleJoin = (bookingId) => {
+    toast.info("Joining video call...")
+    Navigate(`/videoCall/${bookingId}`)
   }
 
   return (
