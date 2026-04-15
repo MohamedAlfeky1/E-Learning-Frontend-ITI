@@ -94,11 +94,7 @@ export const adminSidebarLinks = [
     href: "/admin/profile",
     icon: UserCircle,
   },
-  {
-    title: "Support",
-    href: "/admin/tickets",
-    icon: UserCircle,
-  },
+  
   
 ];
 
@@ -110,7 +106,7 @@ export const adminBottomLinks = [
   },
   {
     title: "Help Center",
-    href: "/admin/help",
+    href: "/admin/tickets",
     icon: HelpCircle,
   },
   {

@@ -21,10 +21,6 @@ import FilterDropdown from "@/components/course/FilterDropdown";
 import { LEVELS, SORT_OPTIONS, TYPES } from "@/data/courseFilters";
 
 
-
-
-
-
 const CoursesPage = () => {
 
   const { data, isLoading, error } = useGetAllCourses()

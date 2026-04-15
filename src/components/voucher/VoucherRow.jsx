@@ -10,7 +10,7 @@ const VoucherRow = ({ voucher, onEdit, onDelete, isSelected }) => {
 
   return (
     <>
-      {/* Desktop */}
+     
       <tr className={`hidden md:table-row transition-all ${isSelected ? 'bg-indigo-50/50' : 'hover:bg-slate-50/30'}`}>
         <td className="px-6 py-5">
           <div className="flex items-center gap-4">
@@ -50,7 +50,6 @@ const VoucherRow = ({ voucher, onEdit, onDelete, isSelected }) => {
         </td>
       </tr>
 
-      {/* Mobile */}
       <div className="md:hidden bg-white rounded-2xl shadow-sm p-4 space-y-3 border">
         <div className="flex justify-between">
           <span className="font-bold">{voucher.code}</span>
