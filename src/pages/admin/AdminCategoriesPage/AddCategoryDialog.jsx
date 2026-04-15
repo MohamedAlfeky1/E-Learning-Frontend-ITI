@@ -114,7 +114,7 @@ const AddCategoryDialog = () => {
 
           <DialogFooter>
             <Button type="submit">
-              <Spinner className={isPending ? "" : "hidden"} />
+              {isPending && <Spinner />}
               Add Category
             </Button>
           </DialogFooter>

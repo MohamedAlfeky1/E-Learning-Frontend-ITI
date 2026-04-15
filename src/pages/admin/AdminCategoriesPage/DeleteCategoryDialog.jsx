@@ -58,7 +58,7 @@ const DeleteCategoryDialog = ({ category }) => {
             className="bg-red-500 hover:bg-red-700"
             onClick={deleteHandler}
           >
-            <Spinner className={isPending ? "" : "hidden"} />
+            {isPending && <Spinner />}
             Confirm
           </Button>
         </DialogFooter>
