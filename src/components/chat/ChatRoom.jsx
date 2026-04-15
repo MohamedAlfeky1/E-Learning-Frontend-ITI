@@ -28,7 +28,7 @@ const ChatRoom = ({ courseId, receiverId }) => {
 
   console.log("reciver", reciver[0]);
 
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   // === 1: جلب تاريخ المحادثة ===
   useEffect(() => {
@@ -90,7 +90,7 @@ const ChatRoom = ({ courseId, receiverId }) => {
       ) {
         setMessages((prev) => [...prev, newMessage]);
       }
-      
+
       // Update the conversations list instantly
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     };
@@ -104,7 +104,11 @@ const ChatRoom = ({ courseId, receiverId }) => {
 
   // عمل Auto-scroll
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      // Use scrollTop to prevent the whole browser window from scrolling
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
   // === 4: إرسال الرسالة ===
@@ -125,7 +129,7 @@ const ChatRoom = ({ courseId, receiverId }) => {
     socket.emit("send_message", payload, (response) => {
       if (response && response.success) {
         setMessages((prev) => [...prev, response.message]);
-        
+
         // Update the conversations list instantly
         queryClient.invalidateQueries({ queryKey: ["conversations"] });
       } else {
@@ -157,7 +161,10 @@ const ChatRoom = ({ courseId, receiverId }) => {
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50 dark:bg-zinc-950/50 flex flex-col gap-2">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 p-6 overflow-y-auto bg-slate-50/50 dark:bg-zinc-950/50 flex flex-col gap-2 scroll-smooth"
+      >
         {messages.map((msg, index) => {
           const isMyMessage =
             msg.senderId?._id === currentUserId ||
@@ -181,7 +188,6 @@ const ChatRoom = ({ courseId, receiverId }) => {
             </div>
           );
         })}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input Form Area */}

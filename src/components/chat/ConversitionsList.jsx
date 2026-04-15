@@ -11,7 +11,7 @@ export default function ConversitionsList() {
 
   if (isLoading)
     return (
-      <div className="flex flex-col border-r border-border w-80 bg-background h-[calc(100vh-80px)]">
+      <div className="flex flex-col border-r border-border w-full bg-background h-full">
         <div className="p-5 border-b border-border shrink-0 flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-primary" />
           <h2 className="text-xl font-bold tracking-tight text-foreground">
@@ -25,7 +25,7 @@ export default function ConversitionsList() {
     );
 
   return (
-    <div className="flex flex-col border-r border-border w-80 bg-card h-[calc(100vh-80px)]">
+    <div className="flex flex-col w-full bg-card h-full">
       {/* Sticky Header */}
       <div className="p-5 border-b border-border shrink-0 flex items-center gap-2 bg-card/95 backdrop-blur z-10 supports-[backdrop-filter]:bg-card/60">
         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
