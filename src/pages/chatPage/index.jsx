@@ -21,22 +21,17 @@ export default function ChatPage() {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   return (
-    <>
-      <ResizablePanelGroup
-        orientation="horizontal"
-        className="min-h-[200px] max-w-md rounded-lg border md:min-w-[450px]"
-      >
-        <ResizablePanel defaultSize="25%">
-          <ConversitionsList />
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize="75%">
-          <ChatRoom
-            courseId="69d5826c3cfb86707175c9ec"
-            receiverId={receiverId}
-          />
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </>
+    <ResizablePanelGroup
+      orientation="horizontal"
+      className="min-h-[200px] w-full rounded-lg border "
+    >
+      <ResizablePanel defaultSize="25%">
+        <ConversitionsList />
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize="75%">
+        <ChatRoom courseId="69d5826c3cfb86707175c9ec" receiverId={receiverId} />
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 }
