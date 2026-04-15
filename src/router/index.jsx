@@ -102,7 +102,7 @@ import NotFoundPage from "@/pages/NotFoundPage";
 // ─────────────────────────────────────────────────────────────────────────────
 // Chat
 // ─────────────────────────────────────────────────────────────────────────────
-import ChatRoom from "@/components/chat/ChatRoom";
+import ChatPage from "@/pages/chatPage";
 
 // =============================================================================
 const router = createBrowserRouter([
@@ -112,7 +112,8 @@ const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
-      { index: true, element: <ChatRoom /> }, // /
+      { index: true, element: <HomePage /> }, // /
+      { path: "chat", element: <ChatPage /> }, // /chat
       { path: "about", element: <AboutPage /> }, // /about
       { path: "courses", element: <CoursesPage /> },
 

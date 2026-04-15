@@ -2,31 +2,43 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { useUserQuery } from "../../queries/authQueries";
+import { Send, Loader2, MessageCircle } from "lucide-react";
+import { useGetConversations } from "@/queries/chatQueries";
+import { useQueryClient } from "@tanstack/react-query";
 
 const BACKEND_URL = "http://localhost:5000";
 
-const ChatRoom = () => {
+const ChatRoom = ({ courseId, receiverId }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [socket, setSocket] = useState(null);
   const [inputText, setInputText] = useState("");
 
+  const { data, isLoading, error } = useGetConversations();
   const { data: user } = useUserQuery();
   const currentUserId = user?._id;
+  const queryClient = useQueryClient();
 
-  console.log("Current User ID:", user);
-  console.log("Current User ID:", currentUserId);
+  const reciver = data?.data?.map((conversation) => {
+    // Get the participant who is not the current user (the receiver)
+    return conversation.participants.find(
+      (participant) => participant._id !== currentUserId,
+    );
+  });
 
-  // === Ref for Auto-Scroll ===
+  console.log("reciver", reciver[0]);
+
   const messagesEndRef = useRef(null);
 
-  // === Step 1: Fetch Chat History ===
+  // === 1: جلب تاريخ المحادثة ===
   useEffect(() => {
+    if (!courseId || !receiverId) return;
+
     const fetchHistory = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BACKEND_URL}/api/chat/69d46dde4b801f36d3264456/history/69d3f77927768c09bdb61add`,
+          `${BACKEND_URL}/api/chat/${courseId}/history/${receiverId}`,
           { headers: { Authorization: `Bearer ${token}` } },
         );
 
@@ -41,11 +53,12 @@ const ChatRoom = () => {
     };
 
     fetchHistory();
-  }, []);
+  }, [courseId, receiverId]);
 
-  // === Step 2: Establish Socket Connection ===
+  // === 2: الاتصال بالسوكيت ===
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token) return;
 
     const newSocket = io(BACKEND_URL, {
       auth: { token: token },
@@ -54,78 +67,98 @@ const ChatRoom = () => {
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
-      console.log("✅ Connected to socket. ID:", newSocket.id);
+      console.log("✅ Connected to socket.");
     });
 
-    newSocket.on("connect_error", (err) => {
-      console.error("❌ Socket connection failed:", err.message);
+    newSocket.on("error", (err) => {
+      console.error("❌ Socket Error from Backend:", err.message);
     });
 
-    // Cleanup: Disconnect socket when leaving the page
     return () => {
       newSocket.disconnect();
     };
   }, []);
 
-  // === Step 3: Listen for Incoming Messages ===
+  // === 3: استقبال الرسائل الجديدة ===
   useEffect(() => {
     if (!socket) return;
 
     const handleIncomingMessage = (newMessage) => {
-      setMessages((prev) => [...prev, newMessage]);
+      if (
+        newMessage.courseId === courseId &&
+        (newMessage.from === receiverId || newMessage.to === receiverId)
+      ) {
+        setMessages((prev) => [...prev, newMessage]);
+      }
+      
+      // Update the conversations list instantly
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
     };
 
     socket.on("receive_message", handleIncomingMessage);
 
-    // Explicit listener setup
-    socket.on("receive_message", (data) => {
-      handleIncomingMessage(data);
-    });
-    // Cleanup: Remove listeners to prevent duplicate events
     return () => {
       socket.off("receive_message", handleIncomingMessage);
-      socket.off("error");
     };
-  }, [socket]);
+  }, [socket, courseId, receiverId]);
 
-  // === Step 4: Send Message ===
+  // عمل Auto-scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // === 4: إرسال الرسالة ===
   const handleSendMessage = (e) => {
     e.preventDefault();
 
-    if (!socket || !inputText.trim()) return;
+    if (!socket || !inputText.trim() || !courseId || !receiverId) return;
 
     const payload = {
-      to: "69d3f77927768c09bdb61add",
-      courseId: "69d46dde4b801f36d3264456",
+      to: receiverId, // ديناميك
+      courseId: courseId, // ديناميك
       message: inputText,
     };
 
+    const messageText = inputText;
+    setInputText("");
+
     socket.emit("send_message", payload, (response) => {
-      if (response.success) {
-        // Instantly add message to the UI upon successful transmission
+      if (response && response.success) {
         setMessages((prev) => [...prev, response.message]);
-        setInputText(""); // Clear the input field
+        
+        // Update the conversations list instantly
+        queryClient.invalidateQueries({ queryKey: ["conversations"] });
       } else {
-        alert("Failed to send the message!");
+        console.error("❌ Send failed:", response);
+        setInputText(messageText);
       }
     });
   };
 
-  // === User Interface (UI) ===
-  if (loading) {
+  if (loading)
     return (
-      <div style={{ textAlign: "center", padding: "20px" }}>
-        Loading chat history...
+      <div className="flex-1 flex flex-col items-center justify-center p-5 text-muted-foreground bg-background h-[calc(100vh-80px)] border-l border-border">
+        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+        <p className="text-sm font-medium text-foreground">
+          Loading your messages...
+        </p>
       </div>
     );
-  }
 
   return (
-    <div style={styles.chatContainer}>
-      {/* Messages Display Area */}
-      <div style={styles.messagesArea}>
+    <div className="flex flex-col flex-1 h-[calc(100vh-80px)] border-l border-border bg-background">
+      {/* Sleek chat header */}
+      <div className="p-4 px-6 border-b border-border bg-card/95 backdrop-blur shrink-0 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <h3 className="font-semibold text-lg tracking-tight text-foreground">
+            {`${reciver[0]?.firstName} ${reciver[0]?.lastName}`}
+          </h3>
+        </div>
+      </div>
+
+      {/* Messages Area */}
+      <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50 dark:bg-zinc-950/50 flex flex-col gap-2">
         {messages.map((msg, index) => {
-          // Determine layout alignment based on whether the message was sent by the current user or the other party
           const isMyMessage =
             msg.senderId?._id === currentUserId ||
             msg.senderId === currentUserId ||
@@ -133,97 +166,50 @@ const ChatRoom = () => {
 
           return (
             <div
-              key={index}
-              style={{
-                ...styles.messageWrapper,
-                justifyContent: isMyMessage ? "flex-end" : "flex-start",
-              }}
+              key={msg._id || index}
+              className={`flex w-full ${isMyMessage ? "justify-end" : "justify-start"} group`}
             >
               <div
-                style={{
-                  ...styles.messageBubble,
-                  backgroundColor: isMyMessage ? "#007bff" : "#e9ecef",
-                  color: isMyMessage ? "white" : "black",
-                }}
+                className={`relative px-5 py-3.5 rounded-xl max-w-[75%] break-words shadow-sm text-[15px] leading-relaxed transition-all duration-200 ${
+                  isMyMessage
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card border border-border text-card-foreground"
+                }`}
               >
                 {msg.message}
               </div>
             </div>
           );
         })}
-        {/* Dummy div acting as an anchor for the auto-scroll */}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Message Input Area */}
-      <form onSubmit={handleSendMessage} style={styles.formArea}>
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          placeholder="Type a message..."
-          style={styles.input}
-        />
-        <button type="submit" disabled={!socket} style={styles.button}>
-          Send
-        </button>
-      </form>
+      {/* Input Form Area */}
+      <div className="p-4 bg-background border-t border-border mt-auto">
+        <form
+          onSubmit={handleSendMessage}
+          className="flex items-end gap-3 max-w-4xl mx-auto w-full relative"
+        >
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Type your message..."
+              className="w-full px-5 py-3.5 rounded-full border border-input bg-secondary/30 outline-none text-foreground text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/60"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={!socket || !inputText.trim()}
+            className="flex items-center justify-center shrink-0 w-12 h-12 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm active:scale-95"
+          >
+            <Send className="w-5 h-5 ml-0.5" />
+          </button>
+        </form>
+      </div>
     </div>
   );
-};
-
-// === Simple inline styles for a tidy chat layout (can be replaced with Tailwind CSS) ===
-const styles = {
-  chatContainer: {
-    display: "flex",
-    flexDirection: "column",
-    height: "500px",
-    maxWidth: "600px",
-    margin: "0 auto",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-  },
-  messagesArea: {
-    flex: 1,
-    padding: "15px",
-    overflowY: "auto",
-    backgroundColor: "#f8f9fa",
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-  messageWrapper: {
-    display: "flex",
-    width: "100%",
-  },
-  messageBubble: {
-    padding: "10px 15px",
-    borderRadius: "20px",
-    maxWidth: "70%",
-    wordWrap: "break-word",
-  },
-  formArea: {
-    display: "flex",
-    padding: "10px",
-    backgroundColor: "white",
-    borderTop: "1px solid #ccc",
-  },
-  input: {
-    flex: 1,
-    padding: "10px",
-    borderRadius: "20px",
-    border: "1px solid #ccc",
-    marginRight: "10px",
-    outline: "none",
-  },
-  button: {
-    padding: "10px 20px",
-    borderRadius: "20px",
-    border: "none",
-    backgroundColor: "#28a745",
-    color: "white",
-    cursor: "pointer",
-  },
 };
 
 export default ChatRoom;
