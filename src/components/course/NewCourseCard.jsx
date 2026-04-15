@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 function NewCourseCard({ course }) {
     return (
-        <div className="relative h-80 flex flex-col md:flex-row overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
+        <Link to={`/courses/${course._id}`} className="relative h-80 flex flex-col md:flex-row overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
 
             {/* Thumbnail */}
             <div className="w-full md:w-2/5 h-48 md:h-auto overflow-hidden">
@@ -16,9 +16,9 @@ function NewCourseCard({ course }) {
                     alt="Course Thumbnail"
                     className="w-full h-full object-cover"
                 />
-                <Link to={`/courses/${course._id}`} className="absolute top-3 right-3 bg-gray-200 text-gray-200 p-1 rounded-full">
+                {/* <Link to={`/courses/${course._id}`} className="absolute top-3 right-3 bg-gray-200 text-gray-200 p-1 rounded-full">
                     <FaRegEye color='#3525CD' />
-                </Link>
+                </Link> */}
             </div>
 
             {/* Content */}
@@ -71,11 +71,11 @@ function NewCourseCard({ course }) {
                             <span className="text-2xl font-bold text-[#3525CD]">
                                 ${course.price ?? "129.99"}
                             </span>
-                            <button className="bg-indigo-600 hover:bg-[#3525CD] text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200">
+                            <button className="bg-indigo-600 hover:bg-[#3525CD] hover:cursor:pointer text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200">
                                 Enroll Now
                             </button>
                         </div> :
-                        <button className="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200">
+                        <button className="bg-green-600 hover:bg-green-700 hover:cursor:pointer text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200">
                             Enroll Now
                         </button>
                     }
@@ -83,7 +83,7 @@ function NewCourseCard({ course }) {
                 </div>
 
             </div>
-        </div >
+        </Link >
     );
 }
 

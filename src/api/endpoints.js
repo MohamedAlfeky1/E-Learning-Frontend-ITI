@@ -13,6 +13,9 @@ export const ENDPOINTS = {
   PROFILE_AVATAR: "/profile/avatar",
   PROFILE_CHANGE_PASSWORD: "/auth/change-password",
 
+  // ─── User ────────────────────────────────────────────────────────────────
+  USER_GET_BY_ID: (id) => `/user/${id}`,
+
   // ─── Admin — Users ──────────────────────────────────────────────────────────
   ADMIN_USERS_LIST: "/auth/users",
   ADMIN_GET_USER_BY_ID: (id) => `/auth/users/${id}/`,
