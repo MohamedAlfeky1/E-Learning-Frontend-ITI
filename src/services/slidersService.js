@@ -16,6 +16,12 @@ export const addSlider = async (data) => {
     ENDPOINTS.ADMIN_SLIDERS_CREATE,
     data,
   );
-  console.log(response);
-  return response;
+  return response.data;
+};
+
+export const deleteSlider = async (id) => {
+  const response = await axiosInstance.delete(
+    ENDPOINTS.ADMIN_SLIDERS_DELETE(id),
+  );
+  return response.data;
 };
