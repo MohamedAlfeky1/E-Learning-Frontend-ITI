@@ -22,8 +22,6 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
-  DrawerFooter,
-  DrawerClose,
 } from "@/components/ui/drawer";
 import { useEffect, useState } from "react";
 
@@ -217,7 +215,7 @@ const AdminVerificationsPage = () => {
                       <div className="px-4 flex flex-col gap-2">
 
                         {/* Name & avatar */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
                           {applicant.avatar ? (
                             <img src={applicant.avatar} className="w-12 h-12 rounded-full object-cover" />
                           ) : (
@@ -227,11 +225,11 @@ const AdminVerificationsPage = () => {
                           )}
                           <div>
                             <div className="font-semibold text-gray-900 flex justify-between items-start w-full">
-                              <div className="flex flex-col gap-2">
+                              <div className="flex flex-col justify-end gap-1">
                                 <p>{applicant?.teacherId?.firstName} {applicant.teacherId?.lastName}</p>
-                                <p className="text-sm font-light text-gray-400">ID: {applicant.teacherId?._id}</p>
+                                <p className="text-sm font-light text-gray-400 w-max">ID: {applicant.teacherId?._id}</p>
                               </div>
-                              <div className="flex items-center justify-start gap-2">
+                              <div className="flex items-center justify-start gap-2 ">
                                 {applicant.status === "pending" && <span className="w-2 h-2 rounded-full bg-yellow-400" />}
                                 {applicant.status === "rejected" && <span className="w-2 h-2 rounded-full bg-red-400" />}
                                 {applicant.status === "approved" && <span className="w-2 h-2 rounded-full bg-green-400" />}
@@ -312,7 +310,7 @@ const AdminVerificationsPage = () => {
                         )}
 
                         {/* Decision form */}
-                        <div className="flex flex-col gap-3 border-t pt-4 mt-2">
+                        <div className="flex flex-col gap-3 border-t pt-4">
                           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Verification Decision</p>
                           {applicant.status==='approved'?
                           (<div>
