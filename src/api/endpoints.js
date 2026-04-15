@@ -50,8 +50,10 @@ export const ENDPOINTS = {
   ENROLLMENTS_CREATE: "/enrollments",
   ENROLLMENTS_MY: "/enrollments/my-courses",
   ENROLLMENTS_GET: (courseId) => `/enrollments/${courseId}`,
-  ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) => `/enrollments/update-progress/${enrollmentId}`,
-  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) => `/enrollments/${courseId}/videos/${videoId}/complete`,
+  ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) =>
+    `/enrollments/update-progress/${enrollmentId}`,
+  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) =>
+    `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_PROGRESS: (courseId) => `/enrollments/${courseId}/progress`,
   // ─── Assignments ─────────────────────────────────────────────────────────────
   ASSIGNMENTS_LIST: (courseId) => `/courses/${courseId}/assignments`,
@@ -73,7 +75,7 @@ export const ENDPOINTS = {
   QUIZZES_SUBMIT: (id) => `/quizzes/${id}/submit`,
   QUIZZES_RESULT: (id) => `/quizzes/${id}/result`,
   QUIZZES_GENERATE_AI: "/quizzes/generate-ai",
-  QUIZZES_LIST_FOR_STUDENT : (id) => `/quizzes/courses/${id}/student-quizzes`,
+  QUIZZES_LIST_FOR_STUDENT: (id) => `/quizzes/courses/${id}/student-quizzes`,
 
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
@@ -133,11 +135,12 @@ export const ENDPOINTS = {
   ADMIN_STATS_ENROLLMENTS: "/admin/stats/enrollments",
 
   // ─── Sliders ──────────────────────────────────────────────────────────────────
-  SLIDERS_LIST: "/sliders",
-  ADMIN_SLIDERS_CREATE: "/admin/sliders",
-  ADMIN_SLIDERS_UPDATE: (id) => `/admin/sliders/${id}`,
-  ADMIN_SLIDERS_DELETE: (id) => `/admin/sliders/${id}`,
-  ADMIN_SLIDERS_REORDER: "/admin/sliders/reorder",
+  SLIDERS_LIST: "/slider/sliders",
+  ADMIN_SLIDERS_LIST: "/slider/admin/sliders",
+  ADMIN_SLIDERS_CREATE: "/slider/admin/sliders",
+  ADMIN_SLIDERS_UPDATE: (id) => `/slider/admin/sliders/${id}`,
+  ADMIN_SLIDERS_DELETE: (id) => `/slider/admin/sliders/${id}`,
+  ADMIN_SLIDERS_REORDER: "/slider/admin/sliders/reorder",
 
   // ─── Teacher Verification ─────────────────────────────────────────────────────
   TEACHER_VERIFICATION_SUBMIT: "/teacher/verification",
@@ -192,16 +195,16 @@ export const ENDPOINTS = {
 
   // ─── File Upload ──────────────────────────────────────────────────────────────
   UPLOAD: "/upload",
-  
+
   //Ticket System
-// ─── Support Tickets ─────────────────────────────────────────────
-SUPPORT_CREATE: "/support/tickets",
-SUPPORT_MY_TICKETS: "/support/my-tickets",
-SUPPORT_GET: (id) => `/support/tickets/${id}`,
-SUPPORT_REPLY: (id) => `/support/tickets/${id}/reply`,
-// Admin
-ADMIN_TICKETS_LIST: "/support/admin/tickets",
-ADMIN_TICKET_REPLY: (id) => `/support/tickets/${id}/reply`,
-ADMIN_TICKET_STATUS: (id) => `/support/tickets/${id}/status`,
-ADMIN_TICKET_DELETE: (id) => `/support/tickets/${id}`,
+  // ─── Support Tickets ─────────────────────────────────────────────
+  SUPPORT_CREATE: "/support/tickets",
+  SUPPORT_MY_TICKETS: "/support/my-tickets",
+  SUPPORT_GET: (id) => `/support/tickets/${id}`,
+  SUPPORT_REPLY: (id) => `/support/tickets/${id}/reply`,
+  // Admin
+  ADMIN_TICKETS_LIST: "/support/admin/tickets",
+  ADMIN_TICKET_REPLY: (id) => `/support/tickets/${id}/reply`,
+  ADMIN_TICKET_STATUS: (id) => `/support/tickets/${id}/status`,
+  ADMIN_TICKET_DELETE: (id) => `/support/tickets/${id}`,
 };
