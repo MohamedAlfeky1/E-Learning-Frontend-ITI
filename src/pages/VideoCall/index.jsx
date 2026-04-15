@@ -2,16 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Peer from 'peerjs';
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Mic, MicOff, Video, VideoOff, PhoneOff, User, Loader2 } from "lucide-react";
+import { Mic, MicOff, Video, VideoOff, PhoneOff, User, Loader2, Maximize2, Minimize2 } from "lucide-react";
 import { toast } from "sonner";
 import { sessionService } from '@/services/sessionService';
 
 export default function VideoCall() {
-  const {bookingId} = useParams();
-  console.log("theeId", bookingId);
-  
+  const { bookingId } = useParams();
   const navigate = useNavigate();
   
   const [myPeerId, setMyPeerId] = useState('');
@@ -21,20 +18,31 @@ export default function VideoCall() {
   const [isCameraOff, setIsCameraOff] = useState(false);
   const [isConnecting, setIsConnecting] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [hasStream, setHasStream] = useState(false); 
   
-  const myVideoRef = useRef();
-  const remoteVideoRef = useRef();
+  const myVideoRef = useRef(null);
+  const remoteVideoRef = useRef(null);
   const peerInstance = useRef(null);
-  const myStreamRef = useRef();
+  const myStreamRef = useRef(null);
+  const containerRef = useRef(null);
+
+  console.log("otherPeerId" , otherPeerId);
+  
 
   useEffect(() => {
     const initSession = async () => {
+      if (!bookingId) {
+        toast.error('No booking ID');
+        navigate('/dashboard');
+        return;
+      }
+      
       try {
         const { data } = await sessionService.joinSession(bookingId);
         console.log('Join session response:', data);
-        
-        setOtherPeerId(data.otherPeerId);
-        setIsConnecting(false);
+
+        setOtherPeerId(data?.data?.otherPeerId);
       } catch (error) {
         console.error('Failed to join session:', error);
         toast.error(error.response?.data?.message || 'Could not join session');
@@ -45,12 +53,58 @@ export default function VideoCall() {
     initSession();
   }, [bookingId, navigate]);
 
+  // the configration of camera and mic
   useEffect(() => {
-    if (!otherPeerId) return;
+    const setupMedia = async () => {
+      try {
+        console.log('Requesting camera/microphone...');
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: true, 
+          audio: true 
+        });
+        
+        myStreamRef.current = stream;
+        setHasStream(true); 
+        
+        if (myVideoRef.current) {
+          myVideoRef.current.srcObject = stream;
+          console.log('Local video attached to element');
+        }
+        
+        setIsConnecting(false);
+      } catch (err) {
+        console.error('Failed to get media:', err);
+        toast.error('Cannot access camera/microphone. Please check permissions.');
+        setIsConnecting(false);
+        setHasStream(false);
+      }
+    };
+    
+    setupMedia();
+    
+    return () => {
+      if (myStreamRef.current) {
+        myStreamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
+
+  // make sure that the video attached to the stream
+  useEffect(() => {
+    if (myStreamRef.current && myVideoRef.current) {
+      myVideoRef.current.srcObject = myStreamRef.current;
+    }
+  }, []);
+
+  // PeerJS
+  useEffect(() => {
+    if (!otherPeerId || !myStreamRef.current) return;
 
     let mounted = true;
 
     const setupPeer = async () => {
+      console.log('Setting up PeerJS...');
+      
       const peer = new Peer({
         host: '0.peerjs.com',
         port: 443,
@@ -58,25 +112,14 @@ export default function VideoCall() {
         secure: true,
       });
 
-      peer.on('open', async (id) => {
+      peer.on('open', (id) => {
         if (!mounted) return;
-        
         setMyPeerId(id);
         console.log('My Peer ID:', id);
         
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: true, 
-            audio: true 
-          });
-          
-          myStreamRef.current = stream;
-          if (myVideoRef.current) {
-            myVideoRef.current.srcObject = stream;
-          }
-          
+        if (myStreamRef.current) {
           console.log('Calling:', otherPeerId);
-          const call = peer.call(otherPeerId, stream);
+          const call = peer.call(otherPeerId, myStreamRef.current);
           
           call.on('stream', (remoteStream) => {
             console.log('Received remote stream');
@@ -92,28 +135,14 @@ export default function VideoCall() {
           });
           
           setIsCallActive(true);
-          
-        } catch (err) {
-          console.error('Failed to get media:', err);
-          toast.error('Cannot access camera/microphone');
         }
       });
 
-      peer.on('call', async (call) => {
+      peer.on('call', (call) => {
         console.log('Incoming call from:', call.peer);
         
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: true, 
-            audio: true 
-          });
-          
-          myStreamRef.current = stream;
-          if (myVideoRef.current) {
-            myVideoRef.current.srcObject = stream;
-          }
-          
-          call.answer(stream);
+        if (myStreamRef.current) {
+          call.answer(myStreamRef.current);
           
           call.on('stream', (remoteStream) => {
             console.log('Received remote stream from incoming call');
@@ -124,8 +153,6 @@ export default function VideoCall() {
           });
           
           setIsCallActive(true);
-        } catch (err) {
-          console.error('Failed to answer call:', err);
         }
       });
 
@@ -144,11 +171,27 @@ export default function VideoCall() {
       if (peerInstance.current) {
         peerInstance.current.destroy();
       }
-      if (myStreamRef.current) {
-        myStreamRef.current.getTracks().forEach(track => track.stop());
-      }
     };
   }, [otherPeerId]);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
   const toggleMic = () => {
     if (myStreamRef.current) {
@@ -156,6 +199,7 @@ export default function VideoCall() {
       if (audioTrack) {
         audioTrack.enabled = !audioTrack.enabled;
         setIsMuted(!audioTrack.enabled);
+        toast.info(audioTrack.enabled ? 'Microphone on' : 'Microphone off');
       }
     }
   };
@@ -166,6 +210,7 @@ export default function VideoCall() {
       if (videoTrack) {
         videoTrack.enabled = !videoTrack.enabled;
         setIsCameraOff(!videoTrack.enabled);
+        toast.info(videoTrack.enabled ? 'Camera on' : 'Camera off');
       }
     }
   };
@@ -193,65 +238,99 @@ export default function VideoCall() {
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-indigo-500 mx-auto mb-4" />
-          <p className="text-slate-400">Connecting to session...</p>
+          <p className="text-slate-400">Requesting camera access...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 p-4 md:p-8 flex flex-col items-center justify-center font-sans">
-      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-        
-        <Card className="relative overflow-hidden rounded-[2.5rem] bg-slate-800 border-none aspect-video flex items-center justify-center shadow-2xl">
-          <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" />
-          {!remoteStream && isCallActive === false && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-slate-500">
-              <User size={80} className="animate-pulse mb-4" />
-              <p className="font-bold">Waiting for the other person...</p>
-              <p className="text-sm mt-2">Your Peer ID: {myPeerId}</p>
+    <div ref={containerRef} className="min-h-screen bg-slate-900">
+      <div className="w-full h-screen">
+        <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
+          
+          {/* Remote Video */}
+          <div className="relative bg-slate-800 flex items-center justify-center">
+            <video 
+              ref={remoteVideoRef} 
+              autoPlay 
+              playsInline 
+              className="w-full h-full object-cover" 
+            />
+            {!remoteStream && !isCallActive && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-slate-500">
+                <User size={80} className="animate-pulse mb-4" />
+                <p className="font-bold text-lg">Waiting for the other person...</p>
+                <p className="text-sm mt-2">Your Peer ID: {myPeerId}</p>
+              </div>
+            )}
+            <div className="absolute bottom-6 left-6">
+              <Badge className="bg-black/60 backdrop-blur-md border-none text-white px-4 py-2 rounded-xl text-sm">
+                Remote Participant
+              </Badge>
             </div>
-          )}
-          <div className="absolute bottom-6 left-6">
-            <Badge className="bg-black/40 backdrop-blur-md border-none text-white px-4 py-2 rounded-xl">
-              Remote Participant
-            </Badge>
           </div>
-        </Card>
 
-        <Card className="relative overflow-hidden rounded-[2.5rem] bg-slate-800 border-none aspect-video shadow-2xl">
-          <video ref={myVideoRef} autoPlay muted playsInline className="w-full h-full object-cover" />
-          <div className="absolute bottom-6 left-6">
-            
+          {/* My Video */}
+          <div className="relative bg-slate-800 flex items-center justify-center">
+            <video 
+              ref={myVideoRef} 
+              autoPlay 
+              muted 
+              playsInline 
+              className="w-full h-full object-cover" 
+            />
+            <div className="absolute bottom-6 left-6">
+              <Badge className="bg-[#6332E3]/80 backdrop-blur-md border-none text-white px-4 py-2 rounded-xl text-sm">
+                You {isCameraOff && '(Camera Off)'}
+              </Badge>
+            </div>
+            {!hasStream && (
+              <div className="absolute inset-0 flex items-center justify-center bg-slate-800/80">
+                <Loader2 className="h-8 w-8 animate-spin text-white" />
+              </div>
+            )}
           </div>
-        </Card>
 
+        </div>
       </div>
 
       {/* Control Bar */}
-      <div className="fixed bottom-10 flex items-center gap-4 bg-white/10 backdrop-blur-2xl p-6 rounded-[3rem] border border-white/10 shadow-2xl">
-        <Button 
-          variant="outline" 
-          onClick={toggleMic}
-          className={`rounded-full w-14 h-14 border-none ${isMuted ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
-        >
-          {isMuted ? <MicOff size={20} /> : <Mic size={20} />}
-        </Button>
+      <div className="fixed bottom-8 left-0 right-0 flex justify-center z-50">
+        <div className="flex items-center gap-3 bg-black/60 backdrop-blur-2xl p-4 rounded-full border border-white/20 shadow-2xl">
+          
+          <Button 
+            variant="outline" 
+            onClick={toggleMic}
+            className={`rounded-full w-12 h-12 md:w-14 md:h-14 border-none ${isMuted ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
+          >
+            {isMuted ? <MicOff size={20} /> : <Mic size={20} />}
+          </Button>
 
-        <Button 
-          variant="outline" 
-          onClick={toggleCamera}
-          className={`rounded-full w-14 h-14 border-none ${isCameraOff ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
-        >
-          {isCameraOff ? <VideoOff size={20} /> : <Video size={20} />}
-        </Button>
+          <Button 
+            variant="outline" 
+            onClick={toggleCamera}
+            className={`rounded-full w-12 h-12 md:w-14 md:h-14 border-none ${isCameraOff ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
+          >
+            {isCameraOff ? <VideoOff size={20} /> : <Video size={20} />}
+          </Button>
 
-        <Button 
-          onClick={endCall}
-          className="rounded-full w-20 h-14 bg-red-500 hover:bg-red-600 text-white border-none shadow-lg shadow-red-500/20"
-        >
-          <PhoneOff size={20} />
-        </Button>
+          <Button 
+            variant="outline" 
+            onClick={toggleFullscreen}
+            className="rounded-full w-12 h-12 md:w-14 md:h-14 border-none bg-white/10 text-white hover:bg-white/20"
+          >
+            {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+          </Button>
+
+          <Button 
+            onClick={endCall}
+            className="rounded-full w-12 h-12 md:w-14 md:h-14 bg-red-500 hover:bg-red-600 text-white border-none shadow-lg shadow-red-500/20"
+          >
+            <PhoneOff size={20} />
+          </Button>
+
+        </div>
       </div>
     </div>
   );
