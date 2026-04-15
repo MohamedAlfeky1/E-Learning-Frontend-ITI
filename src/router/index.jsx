@@ -104,6 +104,7 @@ import BookingPage from "@/pages/student/BookSessionPage";
 import TeachersPage from "@/pages/student/TeacherList";
 import TeacherAvailabilityPage from "@/pages/teacher/TeacherAvailabilityPage";
 import ChatsPages from "@/pages/student/ChatsPage";
+import VideoCall from "@/pages/VideoCall";
 
 // =============================================================================
 const router = createBrowserRouter([
@@ -237,6 +238,9 @@ const router = createBrowserRouter([
         path: "sessions/:sessionId/room",
         element: <SessionRoomPage />,
       },
+      //video call
+      { path: "videoCall/:bookingId", element: <VideoCall /> },
+
       // /tickets
       {
         path: "tickets",
@@ -304,6 +308,9 @@ const router = createBrowserRouter([
       { path: "availability", element: <TeacherAvailabilityPage /> }, // /teacher/availability
       { path: "mybookings", element: <MyBookings/> }, // /teacher/sessions
       { path: "tickets", element: <TeacherTicketPage /> }, // /teacher/tickets
+
+      // video call
+      { path: "videoCall/:bookingId", element: <VideoCall /> },
 
       // Verification
     ],
