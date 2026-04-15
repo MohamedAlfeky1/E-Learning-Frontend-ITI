@@ -130,14 +130,6 @@ const QuizResultPage = () => {
       {/* ── Actions ── */}
       <div className="flex flex-col sm:flex-row gap-3 w-full">
         <Button
-          variant="outline"
-          className="flex-1 gap-2"
-          onClick={() => navigate(`/quizzes/${quizId}/take`)}
-        >
-          <RotateCcw className="size-4" />
-          Retry Quiz
-        </Button>
-        <Button
           id="back-to-quizzes-btn"
           className="flex-1 gap-2"
           onClick={() => navigate("/quizzes")}

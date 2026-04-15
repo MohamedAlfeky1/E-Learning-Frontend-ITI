@@ -87,12 +87,17 @@ const QuizTakePage = () => {
   const [submitted, setSubmitted] = useState(false);
 
   // 1. Load quiz questions
+  
   const { data, isLoading, isError } = useQuery({
     queryKey: ["quiz-start", quizId],
     queryFn: () => quizApi.start(quizId).then((r) => r.data),
   });
+  console.log(isError);
+  
 
   const quiz = data?.data ?? data ?? {};
+  console.log(quiz);
+  
   const questions = quiz.questions ?? [];
   const totalSeconds = quiz.duration ? quiz.duration * 60 : null;
 

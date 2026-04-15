@@ -21,10 +21,6 @@ import FilterDropdown from "@/components/course/FilterDropdown";
 import { LEVELS, SORT_OPTIONS, TYPES } from "@/data/courseFilters";
 
 
-
-
-
-
 const CoursesPage = () => {
 
   const { data, isLoading, error } = useGetAllCourses()
@@ -87,7 +83,7 @@ const CoursesPage = () => {
             onChange={(e) => handleFilters("keyword", e.target.value)} />
 
         </div>
-        <div className="flex flex-col md:flex-row gap-3 items-center">
+        <div className="flex flex-col md:flex-row items-center">
 
           <div className="flex flex-col md:flex-row items-center w-full gap-2 text-[#3525CD] text-md font-semibold">
 
@@ -166,36 +162,40 @@ const CoursesPage = () => {
               </FilterDropdown>
             </div>
 
-            {/**Price range — two controlled inputs */}
-            <FilterDropdown label={
-              filters.minPrice || filters.maxPrice
-                ? `$${filters.minPrice || 0} – $${filters.maxPrice || "∞"}`
-                : "Price"
-            }>
-              <DropdownMenuLabel>Price range</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <div className="flex justify-between gap-2">
-                <Input
-                  type="number"
-                  placeholder="Min"
-                  value={filters.minPrice}
-                  onChange={(e) => handleFilters("minPrice", e.target.value ? Number(e.target.value) : null)}
-                  className="w-60 rounded-md px-2"
-                />
-                <Input
-                  type="number"
-                  placeholder="Max"
-                  value={filters.maxPrice}
-                  onChange={(e) => handleFilters("maxPrice", e.target.value ? Number(e.target.value) : null)}
-                  className="w-60 rounded-md px-2"
-                />
-              </div>
-            </FilterDropdown>
+            <div className="flex flex-row items-center gap-2 w-full">
+              {/**Price range — two controlled inputs */}
+              <FilterDropdown label={
+                filters.minPrice || filters.maxPrice
+                  ? `$${filters.minPrice || 0} – $${filters.maxPrice || "∞"}`
+                  : "Price"
+              }>
+                <DropdownMenuLabel>Price range</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <div className="flex justify-between gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Min"
+                    value={filters.minPrice}
+                    onChange={(e) => handleFilters("minPrice", e.target.value ? Number(e.target.value) : null)}
+                    className="w-60 rounded-md px-2"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Max"
+                    value={filters.maxPrice}
+                    onChange={(e) => handleFilters("maxPrice", e.target.value ? Number(e.target.value) : null)}
+                    className="w-60 rounded-md px-2"
+                  />
+                </div>
+              </FilterDropdown>
 
-            <div className="flex items-center gap-1.5 px-4 py-2  rounded-lg text-sm font-medium">
+              <div className="flex items-center gap-1.5 py-2  rounded-lg text-sm font-medium">
               <SlidersHorizontal color="#3525CD" />
               <p>All Filters</p>
             </div>
+
+            </div>
+            
           </div>
         </div>
 

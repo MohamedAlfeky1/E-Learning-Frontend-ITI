@@ -2,6 +2,7 @@ import axiosInstance from "@/api/axiosInstance";
 import { ENDPOINTS } from "@/api/endpoints"
 
 
+
 /**
  * Fetches all lessons for a specific course.
  * 
@@ -18,6 +19,7 @@ export const getAllLessonByCourse = async (courseId)=>{
     throw error;
   }
 }
+
 
 /**
  * Fetches the details of a specific lesson within a course.
@@ -36,3 +38,9 @@ export const getLessonById = async (courseId, lessonId)=>{
     throw error;
   }
 }
+
+
+
+
+
+

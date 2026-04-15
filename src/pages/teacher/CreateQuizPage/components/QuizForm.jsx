@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 import { Plus, Loader2, Save } from "lucide-react";
 import { quizApi } from "../../../../api/quizApi";
 import QuestionCard from "./QuestionCard";
@@ -70,7 +71,7 @@ export default function QuizForm({ courseId, initialData, isEdit, onSuccess }) {
     for (let i = 0; i < formData.questions.length; i++) {
       const correctCount = formData.questions[i].options.filter(opt => opt.isCorrect).length;
       if (correctCount !== 1) {
-        alert(`Question ${i + 1} must have exactly one correct answer`);
+        toast.error(`Question ${i + 1} must have exactly one correct answer`);
         return;
       }
     }
@@ -78,7 +79,7 @@ export default function QuizForm({ courseId, initialData, isEdit, onSuccess }) {
     setSaving(true);
     try {
       const payload = {
-        courseId:"69cab49a79558b5ca2441532",
+        courseId:courseId,
         title: formData.title,
         description: formData.description,
         duration: parseInt(formData.duration),
@@ -88,14 +89,14 @@ export default function QuizForm({ courseId, initialData, isEdit, onSuccess }) {
 
       if (isEdit) {
         await quizApi.update(initialData._id, payload);
-        alert("Quiz updated successfully");
+        toast.success("Quiz updated successfully");
       } else {
         await quizApi.create(payload);
-        alert("Quiz created successfully");
+        toast.success("Quiz created successfully");
       }
       onSuccess();
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to save quiz");
+      toast.error(error.response?.data?.message || "Failed to save quiz");
     } finally {
       setSaving(false);
     }
