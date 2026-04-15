@@ -120,7 +120,7 @@ const StudentProfilePage = () => {
 
 
   if (isLoading) return <div className="min-h-full min-w-full flex justify-center items-center"><Loader /></div>
-  if (error) return
+  if (error) return <div className="min-h-full min-w-full flex justify-center items-center"><p className="text-red-500">Error loading profile: {error.message}</p></div>
 
   return (
     <form onSubmit={profileFormik.handleSubmit} className="bg-gray-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">

@@ -40,7 +40,7 @@ export const teacherSidebarLinks = [
   },
   {
     title: "Quizzes",
-    href: "/teacher/quizzes", // Ensure this route is correct in actual router
+    href: "courses/quizzes/create",// Ensure this route is correct in actual router
     icon: HelpCircle,
   },
   {
@@ -69,7 +69,7 @@ export const teacherBottomLinks = [
   // },
   {
     title: "Help Center",
-    href: "/teacher/help",
+    href: "/teacher/tickets",
     icon: HelpCircle,
   },
   {
