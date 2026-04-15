@@ -9,8 +9,8 @@ import { Link } from 'react-router-dom';
 function CourseCard({ course }) {
     return (
         <>
-            <div className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
-
+            <Link to={`/courses/${course._id}`} className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
+            
                 {/* Thumbnail */}
                 <div className="relative w-full h-32 overflow-hidden ">
                     <img
@@ -18,9 +18,9 @@ function CourseCard({ course }) {
                         alt="Course Thumbnail"
                         className="w-full h-full object-cover"
                     />
-                    <Link to={`/courses/${course._id}`} className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full">
+                    {/* <Link to={`/courses/${course._id}`} className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full">
                         <IoEyeOutline color='#3525CD'/>
-                    </Link>
+                    </Link> */}
                 </div>
 
                 {/* Content */}
@@ -70,7 +70,7 @@ function CourseCard({ course }) {
                     </div>
 
                 </div>
-            </div >
+            </Link >
         </>
     )
 }

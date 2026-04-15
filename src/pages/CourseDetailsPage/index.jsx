@@ -95,7 +95,7 @@ const CourseDetailsPage = () => {
     <div className="p-6">
 
       {/* Hero Banner */}
-      <div className="bg-[#eef2ff] px-5 py-5 md:py-20 grid grid-cols-1 md:grid-cols-3 gap-5 rounded-lg">
+      <div className="bg-[#eef2ff] px-5 md:py-20 grid grid-cols-1 md:grid-cols-3 gap-5 rounded-lg">
         <div className="col-span-2 flex flex-col gap-4">
           <Badge variant="lightPurple">{categoryName}</Badge>
           <p className="text-[#1e1b4b] text-5xl font-extrabold">{course.title}</p>
@@ -333,10 +333,10 @@ const CourseDetailsPage = () => {
             <div className="flex flex-col gap-1 items-center justify-center">
               <p className="text-[#4338ca] text-xs">{course.teacherId?.bio}</p>
               <div className="w-full flex flex-col md:flex-row gap-3">
-                <Button variant="secondary" className="rounded-md text-[#4f46e5] flex-1 py-2">
+                <Button onClick={() => { navigate(`teachers/${course.teacherId?._id}/book`) }} variant="secondary" className="rounded-md text-[#4f46e5] flex-1 py-2">
                   Book Appointment
                 </Button>
-                <Button variant="outline" className="rounded-md text-[#4338ca] flex-1 py-2">
+                <Button onClick={()=>{navigate(`/teachers/${course.teacherId?._id}`)}} variant="outline" className="rounded-md text-[#4338ca] flex-1 py-2">
                   Profile
                 </Button>
               </div>
