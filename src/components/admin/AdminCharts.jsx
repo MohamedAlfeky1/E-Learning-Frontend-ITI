@@ -7,7 +7,8 @@ import { FaArrowTrendDown } from "react-icons/fa6";
 const chartConfig = {
     value: { color: "#7C3AED" }
 }
-function TotalNumbersCard({ icon, title, number, chartData=[] , growth  }) {
+function AdminCharts({ icon, title, number, chartData=[] , growth  }) {
+    
 
     const coloredData = chartData.map((item, index) => ({
         ...item,
@@ -48,4 +49,4 @@ function TotalNumbersCard({ icon, title, number, chartData=[] , growth  }) {
     )
 }
 
-export default TotalNumbersCard
+export default AdminCharts

@@ -72,7 +72,7 @@ export const ENDPOINTS = {
   QUIZZES_SUBMIT: (id) => `/quizzes/${id}/submit`,
   QUIZZES_RESULT: (id) => `/quizzes/${id}/result`,
   QUIZZES_GENERATE_AI: "/quizzes/generate-ai",
-  QUIZZES_LIST_FOR_STUDENT : (id) => `/quizzes/courses/${id}/student-quizzes`,
+  QUIZZES_LIST_FOR_STUDENT: (id) => `/quizzes/courses/${id}/student-quizzes`,
 
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
@@ -127,7 +127,7 @@ export const ENDPOINTS = {
   ADMIN_WITHDRAWALS_PROCESS: (id) => `/finance/admin/withdrawals/${id}`,
 
   // ─── Admin Dashboard ──────────────────────────────────────────────────────────
-  ADMIN_STATS_OVERVIEW: "/finance/admin/stats-platform",
+  ADMIN_STATS_OVERVIEW: "/admin/stats",
   ADMIN_STATS_REVENUE: "/admin/stats/revenue",
   ADMIN_STATS_ENROLLMENTS: "/admin/stats/enrollments",
 
@@ -191,16 +191,16 @@ export const ENDPOINTS = {
 
   // ─── File Upload ──────────────────────────────────────────────────────────────
   UPLOAD: "/upload",
-  
+
   //Ticket System
-// ─── Support Tickets ─────────────────────────────────────────────
-SUPPORT_CREATE: "/support/tickets",
-SUPPORT_MY_TICKETS: "/support/my-tickets",
-SUPPORT_GET: (id) => `/support/tickets/${id}`,
-SUPPORT_REPLY: (id) => `/support/tickets/${id}/reply`,
-// Admin
-ADMIN_TICKETS_LIST: "/support/admin/tickets",
-ADMIN_TICKET_REPLY: (id) => `/support/tickets/${id}/reply`,
-ADMIN_TICKET_STATUS: (id) => `/support/tickets/${id}/status`,
-ADMIN_TICKET_DELETE: (id) => `/support/tickets/${id}`,
+  // ─── Support Tickets ─────────────────────────────────────────────
+  SUPPORT_CREATE: "/support/tickets",
+  SUPPORT_MY_TICKETS: "/support/my-tickets",
+  SUPPORT_GET: (id) => `/support/tickets/${id}`,
+  SUPPORT_REPLY: (id) => `/support/tickets/${id}/reply`,
+  // Admin
+  ADMIN_TICKETS_LIST: "/support/admin/tickets",
+  ADMIN_TICKET_REPLY: (id) => `/support/tickets/${id}/reply`,
+  ADMIN_TICKET_STATUS: (id) => `/support/tickets/${id}/status`,
+  ADMIN_TICKET_DELETE: (id) => `/support/tickets/${id}`,
 };
