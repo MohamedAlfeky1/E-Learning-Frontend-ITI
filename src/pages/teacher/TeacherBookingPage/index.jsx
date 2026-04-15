@@ -59,6 +59,7 @@ export default function MyBookings() {
                 key={booking._id} 
                 booking={booking} 
                 onJoin={handleJoinSession} 
+                role="teacher"
               />
             ))
           )}

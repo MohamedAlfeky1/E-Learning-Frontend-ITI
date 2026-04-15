@@ -45,7 +45,7 @@ import QuizTakePage from "@/pages/student/QuizTakePage";
 import QuizResultPage from "@/pages/student/QuizResultPage";
 import AiReportPage from "@/pages/student/AiReportPage";
 import StudentChatPage from "@/pages/student/StudentChatPage";
-import MySessionsPage from "@/pages/student/MySessionsPage";
+import MySessionsPage from "@/pages/student/MyBookingsPage";
 import SessionRoomPage from "@/pages/student/SessionRoomPage";
 import TicketsPage from "@/pages/student/TicketPage";
 
