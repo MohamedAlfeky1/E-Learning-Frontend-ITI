@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Video, Clock, User, Calendar as CalendarIcon } from "lucide-react"
 
-export function BookingRow({ booking, onJoin }) {
+export function BookingRow({ booking, onJoin , role }) {
   
   const getBookingDetails = () => {
     const dateObj = new Date(booking.scheduledDate)
@@ -27,7 +27,9 @@ export function BookingRow({ booking, onJoin }) {
   }
 
   const { date, timeRange } = getBookingDetails()
-
+  const displayName = role === "student" 
+    ? `Mentor : ${booking.teacherId?.firstName} ${booking.teacherId?.lastName}`
+    : `${booking.studentId?.firstName} ${booking.studentId?.lastName}`
   return (
     <div className="group flex flex-col md:flex-row items-center justify-between bg-white p-6 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-50 mb-4">
       <div className="flex items-center gap-6 w-full md:w-auto">
@@ -37,7 +39,7 @@ export function BookingRow({ booking, onJoin }) {
         
         <div className="space-y-2">
           <h3 className="text-xl font-black text-slate-800 leading-none">
-            {booking.studentId?.firstName} {booking.studentId?.lastName}
+            {displayName}
           </h3>
 
           <div className="flex flex-col gap-1.5">
