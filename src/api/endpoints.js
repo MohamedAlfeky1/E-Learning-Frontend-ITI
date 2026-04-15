@@ -49,8 +49,10 @@ export const ENDPOINTS = {
   ENROLLMENTS_CREATE: "/enrollments",
   ENROLLMENTS_MY: "/enrollments/my-courses",
   ENROLLMENTS_GET: (courseId) => `/enrollments/${courseId}`,
-  ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) => `/enrollments/update-progress/${enrollmentId}`,
-  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) => `/enrollments/${courseId}/videos/${videoId}/complete`,
+  ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) =>
+    `/enrollments/update-progress/${enrollmentId}`,
+  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) =>
+    `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_PROGRESS: (courseId) => `/enrollments/${courseId}/progress`,
   // ─── Assignments ─────────────────────────────────────────────────────────────
   ASSIGNMENTS_LIST: (courseId) => `/courses/${courseId}/assignments`,
@@ -72,7 +74,7 @@ export const ENDPOINTS = {
   QUIZZES_SUBMIT: (id) => `/quizzes/${id}/submit`,
   QUIZZES_RESULT: (id) => `/quizzes/${id}/result`,
   QUIZZES_GENERATE_AI: "/quizzes/generate-ai",
-  QUIZZES_LIST_FOR_STUDENT : (id) => `/courses/${id}/student-quizzes`,
+  QUIZZES_LIST_FOR_STUDENT: (id) => `/courses/${id}/student-quizzes`,
 
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
@@ -109,6 +111,7 @@ export const ENDPOINTS = {
   CHAT_SEND: (courseId) => `/chat/${courseId}`,
   CHAT_MARK_READ: (courseId) => `/chat/${courseId}/read`,
   CHAT_UNREAD_COUNT: "/chat/unread-count",
+  CONVERSATIONS: "/chat/conversations",
 
   // ─── AI Reports ───────────────────────────────────────────────────────────────
   REPORTS_GENERATE: (courseId) => `/reports/${courseId}/generate`,
