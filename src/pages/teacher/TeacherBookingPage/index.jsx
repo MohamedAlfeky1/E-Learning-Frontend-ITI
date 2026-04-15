@@ -8,12 +8,16 @@ export default function MyBookings() {
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
+  console.log(bookings);
+  
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
         const response = await sessionService.getTeacherBookings()
         setBookings(response.data.data || [])
+        console.log(response.data.data);
+        
       } catch (error) {
         toast.error("Failed to load your bookings")
         console.error(error)
