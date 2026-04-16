@@ -9,6 +9,8 @@ export default function ConversitionsList() {
 
   const currentUserId = user?._id;
 
+  console.log("data", data);
+
   if (isLoading)
     return (
       <div className="flex flex-col border-r border-border w-full bg-background h-full">
@@ -89,10 +91,18 @@ export default function ConversitionsList() {
                   </div>
 
                   {/* Latest message */}
-                  <p className="text-xs  mt-0.5 truncate pr-2  transition-colors">
-                    {conversation.latestMessage ||
-                      "Started a new conversation..."}
-                  </p>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs  mt-0.5 truncate pr-2  transition-colors">
+                      {conversation.latestMessage ||
+                        "Started a new conversation..."}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate pr-2  transition-colors">
+                      {new Date(conversation.updatedAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
                 </div>
               </div>
             );

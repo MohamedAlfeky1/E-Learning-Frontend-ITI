@@ -107,7 +107,7 @@ const ChatRoom = ({ courseId, receiverId }) => {
               return { ...msg, isRead: true };
             }
             return msg;
-          })
+          }),
         );
       }
     };
@@ -210,19 +210,23 @@ const ChatRoom = ({ courseId, receiverId }) => {
                 }`}
               >
                 <span>{msg.message}</span>
-                
-                {isMyMessage && (
-                  <div className="self-end flex items-center justify-end gap-1 opacity-80 mt-0.5">
-                    <span className="text-[10px] uppercase font-semibold">
-                      {new Date(msg.sentAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                    {msg.isRead ? (
+
+                <div
+                  className={`self-end flex items-center justify-end gap-1 opacity-80 mt-0.5 ${!isMyMessage ? "text-muted-foreground/80" : ""}`}
+                >
+                  <span className="text-[10px] uppercase font-semibold">
+                    {new Date(msg.sentAt || Date.now()).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                  {isMyMessage &&
+                    (msg.isRead ? (
                       <CheckCheck className="w-4 h-4 text-emerald-300 drop-shadow-sm" />
                     ) : (
                       <Check className="w-4 h-4 text-primary-foreground/60" />
-                    )}
-                  </div>
-                )}
+                    ))}
+                </div>
               </div>
             </div>
           );
