@@ -17,6 +17,7 @@ import { Spinner } from "../../../components/ui/spinner";
 import { useCreateCourse } from "../../../mutations/useCreateCourse";
 import { useCategories } from "../../../queries/categoryQueries";
 import { useUserQuery } from "@/queries/authQueries";
+import { toast } from "sonner";
 
 const LEVELS = ["beginner", "intermediate", "advanced"];
 
@@ -46,7 +47,8 @@ const CreateCoursePage = () => {
   const navigate = useNavigate();
   const { data: teacherData, isError: teacherError } = useUserQuery();
   const { mutate: createCourse, isPending } = useCreateCourse();
-  const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
+  const { data: categoriesData, isLoading: categoriesLoading } =
+    useCategories();
   const categories = categoriesData?.data ?? [];
 
   const [formData, setFormData] = useState(INITIAL_FORM);
@@ -159,12 +161,15 @@ const CreateCoursePage = () => {
 
     createCourse(payload, {
       onSuccess: () => {
+        toast.success("Course created successfully!");
         navigate("/teacher/courses");
       },
       onError: (err) => {
         setErrors((prev) => ({
           ...prev,
-          api: err.response?.data?.message || "Failed to create course. Please try again.",
+          api:
+            err.response?.data?.message ||
+            "Failed to create course. Please try again.",
         }));
       },
     });
@@ -174,8 +179,12 @@ const CreateCoursePage = () => {
     <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-3xl mx-auto">
         <header className="mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900">Create New Course</h1>
-          <p className="text-gray-500 mt-1">Fill in the details below to publish your course.</p>
+          <h1 className="text-3xl font-extrabold text-gray-900">
+            Create New Course
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Fill in the details below to publish your course.
+          </p>
         </header>
 
         {errors.api && (
@@ -188,20 +197,28 @@ const CreateCoursePage = () => {
         <form onSubmit={handleSubmit} className="space-y-8" noValidate>
           {/* Basic Info Card */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5">
-            <h2 className="text-lg font-bold text-gray-800">Basic Information</h2>
+            <h2 className="text-lg font-bold text-gray-800">
+              Basic Information
+            </h2>
 
             {/* Title */}
             <div className="flex flex-col gap-1.5 group">
               <label
-                className={`text-sm font-600 transition-colors ${errors.title ? "text-red-600" : "text-gray-700 group-focus-within:text-purple-600"
-                  }`}
+                className={`text-sm font-600 transition-colors ${
+                  errors.title
+                    ? "text-red-600"
+                    : "text-gray-700 group-focus-within:text-purple-600"
+                }`}
               >
                 Course Title <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <FiBook
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${errors.title ? "text-red-400" : "text-gray-400 group-focus-within:text-purple-500"
-                    }`}
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${
+                    errors.title
+                      ? "text-red-400"
+                      : "text-gray-400 group-focus-within:text-purple-500"
+                  }`}
                 />
                 <Input
                   type="text"
@@ -227,8 +244,11 @@ const CreateCoursePage = () => {
             {/* Description */}
             <div className="flex flex-col gap-1.5 group">
               <label
-                className={`text-sm font-600 transition-colors ${errors.description ? "text-red-600" : "text-gray-700 group-focus-within:text-purple-600"
-                  }`}
+                className={`text-sm font-600 transition-colors ${
+                  errors.description
+                    ? "text-red-600"
+                    : "text-gray-700 group-focus-within:text-purple-600"
+                }`}
               >
                 Description <span className="text-red-500">*</span>
               </label>
@@ -255,8 +275,11 @@ const CreateCoursePage = () => {
               {/* Category */}
               <div className="flex flex-col gap-1.5 group">
                 <label
-                  className={`text-sm font-600 transition-colors ${errors.category ? "text-red-600" : "text-gray-700 group-focus-within:text-purple-600"
-                    }`}
+                  className={`text-sm font-600 transition-colors ${
+                    errors.category
+                      ? "text-red-600"
+                      : "text-gray-700 group-focus-within:text-purple-600"
+                  }`}
                 >
                   Category <span className="text-red-500">*</span>
                 </label>
@@ -266,12 +289,15 @@ const CreateCoursePage = () => {
                     value={formData.category}
                     onChange={handleChange}
                     disabled={categoriesLoading}
-                    className={`w-full appearance-none px-3.5 py-2.5 rounded-xl border text-sm bg-transparent outline-none cursor-pointer transition-all focus:ring-4 ${errors.category
-                      ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                      : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
-                      }`}
+                    className={`w-full appearance-none px-3.5 py-2.5 rounded-xl border text-sm bg-transparent outline-none cursor-pointer transition-all focus:ring-4 ${
+                      errors.category
+                        ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
+                        : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
+                    }`}
                   >
-                    <option value="">{categoriesLoading ? "Loading..." : "Select a category"}</option>
+                    <option value="">
+                      {categoriesLoading ? "Loading..." : "Select a category"}
+                    </option>
                     {categories.map((cat) => (
                       <option key={cat._id || cat.id} value={cat._id || cat.id}>
                         {cat.name}
@@ -290,8 +316,11 @@ const CreateCoursePage = () => {
               {/* Level */}
               <div className="flex flex-col gap-1.5 group">
                 <label
-                  className={`text-sm font-600 transition-colors ${errors.level ? "text-red-600" : "text-gray-700 group-focus-within:text-purple-600"
-                    }`}
+                  className={`text-sm font-600 transition-colors ${
+                    errors.level
+                      ? "text-red-600"
+                      : "text-gray-700 group-focus-within:text-purple-600"
+                  }`}
                 >
                   Level <span className="text-red-500">*</span>
                 </label>
@@ -300,10 +329,11 @@ const CreateCoursePage = () => {
                     name="level"
                     value={formData.level}
                     onChange={handleChange}
-                    className={`w-full appearance-none px-3.5 py-2.5 rounded-xl border text-sm bg-transparent outline-none cursor-pointer transition-all focus:ring-4 ${errors.level
-                      ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                      : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
-                      }`}
+                    className={`w-full appearance-none px-3.5 py-2.5 rounded-xl border text-sm bg-transparent outline-none cursor-pointer transition-all focus:ring-4 ${
+                      errors.level
+                        ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
+                        : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
+                    }`}
                   >
                     <option value="">Select level</option>
                     {LEVELS.map((lvl) => (
@@ -326,15 +356,21 @@ const CreateCoursePage = () => {
               {/* Price */}
               <div className="flex flex-col gap-1.5 group">
                 <label
-                  className={`text-sm font-600 transition-colors ${errors.price ? "text-red-600" : "text-gray-700 group-focus-within:text-purple-600"
-                    }`}
+                  className={`text-sm font-600 transition-colors ${
+                    errors.price
+                      ? "text-red-600"
+                      : "text-gray-700 group-focus-within:text-purple-600"
+                  }`}
                 >
                   Price (USD) <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <FiDollarSign
-                    className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${errors.price ? "text-red-400" : "text-gray-400 group-focus-within:text-purple-500"
-                      }`}
+                    className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${
+                      errors.price
+                        ? "text-red-400"
+                        : "text-gray-400 group-focus-within:text-purple-500"
+                    }`}
                   />
                   <Input
                     type="number"
@@ -362,15 +398,21 @@ const CreateCoursePage = () => {
               {/* Language */}
               <div className="flex flex-col gap-1.5 group">
                 <label
-                  className={`text-sm font-600 transition-colors ${errors.language ? "text-red-600" : "text-gray-700 group-focus-within:text-purple-600"
-                    }`}
+                  className={`text-sm font-600 transition-colors ${
+                    errors.language
+                      ? "text-red-600"
+                      : "text-gray-700 group-focus-within:text-purple-600"
+                  }`}
                 >
                   Language <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <FiGlobe
-                    className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${errors.language ? "text-red-400" : "text-gray-400 group-focus-within:text-purple-500"
-                      }`}
+                    className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${
+                      errors.language
+                        ? "text-red-400"
+                        : "text-gray-400 group-focus-within:text-purple-500"
+                    }`}
                   />
                   <Input
                     type="text"
@@ -397,21 +439,32 @@ const CreateCoursePage = () => {
 
           {/* Thumbnail Card */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-            <h2 className="text-lg font-bold text-gray-800">Course Thumbnail</h2>
+            <h2 className="text-lg font-bold text-gray-800">
+              Course Thumbnail
+            </h2>
             <div
               onClick={() => fileInputRef.current?.click()}
-              className={`w-full min-h-[180px] border-2 border-dashed rounded-2xl cursor-pointer transition-all overflow-hidden flex items-center justify-center ${errors.thumbnail
-                ? "border-red-300 bg-red-50"
-                : "border-gray-200 bg-gray-50/50 hover:border-purple-400 hover:bg-purple-50/30"
-                }`}
+              className={`w-full min-h-[180px] border-2 border-dashed rounded-2xl cursor-pointer transition-all overflow-hidden flex items-center justify-center ${
+                errors.thumbnail
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-200 bg-gray-50/50 hover:border-purple-400 hover:bg-purple-50/30"
+              }`}
             >
               {thumbnailPreview ? (
-                <img src={thumbnailPreview} alt="Thumbnail preview" className="w-full h-[220px] object-cover" />
+                <img
+                  src={thumbnailPreview}
+                  alt="Thumbnail preview"
+                  className="w-full h-[220px] object-cover"
+                />
               ) : (
                 <div className="flex flex-col items-center p-8 text-center">
                   <FiImage className="text-4xl text-gray-300 mb-3" />
-                  <p className="text-sm font-semibold text-gray-500">Click to upload thumbnail</p>
-                  <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP up to 5MB</p>
+                  <p className="text-sm font-semibold text-gray-500">
+                    Click to upload thumbnail
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    PNG, JPG, WEBP up to 5MB
+                  </p>
                 </div>
               )}
             </div>
@@ -445,8 +498,12 @@ const CreateCoursePage = () => {
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-gray-800">Requirements</h2>
-                <p className="text-xs text-gray-400 mt-0.5">What should students know before enrolling?</p>
+                <h2 className="text-lg font-bold text-gray-800">
+                  Requirements
+                </h2>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  What should students know before enrolling?
+                </p>
               </div>
               <button
                 type="button"
@@ -462,7 +519,9 @@ const CreateCoursePage = () => {
                   <Input
                     type="text"
                     value={req}
-                    onChange={(e) => handleListChange("requirements", index, e.target.value)}
+                    onChange={(e) =>
+                      handleListChange("requirements", index, e.target.value)
+                    }
                     placeholder={`Requirement ${index + 1}`}
                     className="border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
                   />
@@ -484,8 +543,12 @@ const CreateCoursePage = () => {
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-gray-800">What Students Will Learn</h2>
-                <p className="text-xs text-gray-400 mt-0.5">Key outcomes students can expect.</p>
+                <h2 className="text-lg font-bold text-gray-800">
+                  What Students Will Learn
+                </h2>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Key outcomes students can expect.
+                </p>
               </div>
               <button
                 type="button"
@@ -501,7 +564,13 @@ const CreateCoursePage = () => {
                   <Input
                     type="text"
                     value={item}
-                    onChange={(e) => handleListChange("whatYouWillLearn", index, e.target.value)}
+                    onChange={(e) =>
+                      handleListChange(
+                        "whatYouWillLearn",
+                        index,
+                        e.target.value,
+                      )
+                    }
                     placeholder={`Learning outcome ${index + 1}`}
                     className="border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
                   />
