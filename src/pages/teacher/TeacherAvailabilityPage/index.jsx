@@ -97,7 +97,7 @@ export default function TeacherAvailabilityPage() {
           </Card>
         </section>
 
-      </div>
+      </div >
     </div>
   )
 }
