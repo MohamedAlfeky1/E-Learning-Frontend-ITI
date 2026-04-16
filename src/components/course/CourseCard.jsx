@@ -4,6 +4,7 @@ import { FaStar } from "react-icons/fa6";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { IoEyeOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import placeholderImg from "@/assets/placeholder.jpg";
 
 function CourseCard({ course }) {
   return (
