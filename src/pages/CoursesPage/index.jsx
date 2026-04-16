@@ -20,10 +20,6 @@ import CourseCard from "@/components/course/CourseCard";
 import FilterDropdown from "@/components/course/FilterDropdown";
 import { LEVELS, SORT_OPTIONS, TYPES } from "@/data/courseFilters";
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 const CoursesPage = () => {
   const { data, isLoading, error } = useGetAllCourses();
   const {
@@ -36,6 +32,7 @@ const CoursesPage = () => {
     data: results,
     isPending,
   } = useSearchCourses();
+  
   console.log(categoriesData?.data);
   console.log(data);
 
@@ -73,6 +70,8 @@ const CoursesPage = () => {
 
   return (
     <div className="p-6">
+
+      {/* Hero */}
       <div className="flex flex-col gap-3">
         <p className="font-semibold text-xs text-[#3525CD]">Course Catalog</p>
         <h1 className="text-5xl font-extrabold">
@@ -86,9 +85,9 @@ const CoursesPage = () => {
 
       {/*Search bar */}
       <div className="bg-[#F1F3FF] rounded-md py-2 px-4 w-full flex flex-col md:flex-row gap-3 items-center justify-between ">
+        {/* Search input */}
         <div className="relative">
           <IoSearchSharp className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-300 pointer-events-none z-10" />
-
           <Input
             variant="white"
             type="search"
@@ -97,25 +96,26 @@ const CoursesPage = () => {
             onChange={(e) => handleFilters("keyword", e.target.value)}
           />
         </div>
-<<<<<<< Updated upstream
-        <div className="flex flex-col md:flex-row items-center">
 
-=======
+        {/* Filters */}
         <div className="flex flex-col md:flex-row gap-3 items-center">
->>>>>>> Stashed changes
           <div className="flex flex-col md:flex-row items-center w-full gap-2 text-[#3525CD] text-md font-semibold">
+
+            {/* Row 1: Category + Level */}
             <div className="flex flex-row items-center gap-2 w-full">
               {/**category */}
               <FilterDropdown
                 label={
                   filters.categoryId
                     ? categories.find((cat) => cat._id === filters.categoryId)
-                        ?.name || "Category"
+                      ?.name || "Category"
                     : "Category"
                 }
               >
                 {" "}
-                <DropdownMenuLabel>Price</DropdownMenuLabel>
+                <DropdownMenuLabel>Category
+
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup
                   value={filters.categoryId}
@@ -203,34 +203,6 @@ const CoursesPage = () => {
               </FilterDropdown>
             </div>
 
-<<<<<<< Updated upstream
-            <div className="flex flex-row items-center gap-2 w-full">
-              {/**Price range — two controlled inputs */}
-              <FilterDropdown label={
-                filters.minPrice || filters.maxPrice
-                  ? `$${filters.minPrice || 0} – $${filters.maxPrice || "∞"}`
-                  : "Price"
-              }>
-                <DropdownMenuLabel>Price range</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <div className="flex justify-between gap-2">
-                  <Input
-                    type="number"
-                    placeholder="Min"
-                    value={filters.minPrice}
-                    onChange={(e) => handleFilters("minPrice", e.target.value ? Number(e.target.value) : null)}
-                    className="w-60 rounded-md px-2"
-                  />
-                  <Input
-                    type="number"
-                    placeholder="Max"
-                    value={filters.maxPrice}
-                    onChange={(e) => handleFilters("maxPrice", e.target.value ? Number(e.target.value) : null)}
-                    className="w-60 rounded-md px-2"
-                  />
-                </div>
-              </FilterDropdown>
-=======
             {/**Price range — two controlled inputs */}
             <FilterDropdown
               label={
@@ -268,18 +240,18 @@ const CoursesPage = () => {
                 />
               </div>
             </FilterDropdown>
->>>>>>> Stashed changes
 
-              <div className="flex items-center gap-1.5 py-2  rounded-lg text-sm font-medium">
+            <div className="flex items-center gap-1.5 py-2  rounded-lg text-sm font-medium">
               <SlidersHorizontal color="#3525CD" />
               <p>All Filters</p>
             </div>
 
-            </div>
-            
           </div>
         </div>
+
       </div>
+
+
 
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
         {loading ? (
@@ -317,22 +289,23 @@ const CoursesPage = () => {
         )}
       </div>
 
-      {hasFilters && results?.data?.totalPages > 1 && (
-        <div className="flex gap-2 justify-center mt-4">
-          {Array.from({ length: results.data.totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => setPage(i + 1)}
-              className={`px-3 py-1 rounded border ${
-                page === i + 1 ? "bg-[#3525CD] text-white" : "bg-white"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+      {
+        hasFilters && results?.data?.totalPages > 1 && (
+          <div className="flex gap-2 justify-center mt-4">
+            {Array.from({ length: results.data.totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i + 1)}
+                className={`px-3 py-1 rounded border ${page === i + 1 ? "bg-[#3525CD] text-white" : "bg-white"
+                  }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        )
+      }
+    </div >
   );
 };
 
