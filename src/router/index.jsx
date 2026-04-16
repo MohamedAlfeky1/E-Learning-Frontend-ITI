@@ -105,6 +105,7 @@ import TeachersPage from "@/pages/student/TeacherList";
 import TeacherAvailabilityPage from "@/pages/teacher/TeacherAvailabilityPage";
 import ChatsPages from "@/pages/student/ChatsPage";
 import VideoCall from "@/pages/VideoCall";
+import AvailableSlotsPage from "@/pages/teacher/AvailableSlotsPage";
 
 // =============================================================================
 const router = createBrowserRouter([
@@ -306,6 +307,8 @@ const router = createBrowserRouter([
 
       // Availability & Sessions
       { path: "availability", element: <TeacherAvailabilityPage /> }, // /teacher/availability
+      { path: "availableSlotsPage", element: <AvailableSlotsPage /> }, // /teacher/availability
+
       { path: "mybookings", element: <MyBookings/> }, // /teacher/sessions
       { path: "tickets", element: <TeacherTicketPage /> }, // /teacher/tickets
 
