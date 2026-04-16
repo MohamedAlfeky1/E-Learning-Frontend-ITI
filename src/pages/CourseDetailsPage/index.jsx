@@ -105,7 +105,7 @@ const CourseDetailsPage = () => {
 
         <div className="col-span-1">
           <img
-            src={course.thumbnail}
+            src={`http://localhost:5000${course.thumbnail}`}
             alt="Course Thumbnail"
             className="w-full h-auto object-cover rounded-lg transform rotate-3 shadow-2xl shadow-gray-600"
           />
