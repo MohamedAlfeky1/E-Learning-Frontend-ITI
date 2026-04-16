@@ -95,9 +95,19 @@ const CreateCoursePage = () => {
     if (!formData.title.trim()) {
       newErrors.title = "Course title is required";
       valid = false;
+    } else if (formData.title.trim().length < 10) {
+      newErrors.title = "Course title must be at least 10 characters";
+      valid = false;
+    } else if (formData.title.trim().length > 150) {
+      newErrors.title = "Course title must be at most 150 characters";
+      valid = false;
     }
+
     if (!formData.description.trim()) {
       newErrors.description = "Description is required";
+      valid = false;
+    } else if (formData.description.trim().length < 50) {
+      newErrors.description = "Description must be at least 50 characters";
       valid = false;
     }
     if (!formData.category) {
