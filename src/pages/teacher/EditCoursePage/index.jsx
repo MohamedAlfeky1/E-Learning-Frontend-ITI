@@ -82,7 +82,7 @@ const EditCoursePage = () => {
           : [""],
       });
       if (course.thumbnail) {
-        setThumbnailPreview(`http://localhost:5000${course.thumbnail}`);
+        setThumbnailPreview(course.thumbnail);
       }
     }
   }, [course]);
