@@ -31,7 +31,6 @@ import {
   DrawerDescription,
 } from "@/components/ui/drawer";
 import { useEffect, useState } from "react";
-
 import Loader from "@/components/ui/loader";
 import VerificationDecisionForm from "./VerificationDecisionForm";
 import { TbCertificate } from "react-icons/tb";
