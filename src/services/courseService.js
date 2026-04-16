@@ -24,7 +24,7 @@ export const createCourse = async (courseData) => {
  * @param {FormData} courseData - Updated course payload (supports file uploads)
  */
 export const updateCourse = async (id, courseData) => {
-  const response = await axiosInstance.put(ENDPOINTS.COURSES_UPDATE(id), courseData);
+  const response = await axiosInstance.patch(ENDPOINTS.COURSES_UPDATE(id), courseData);
   return response.data;
 };
 
