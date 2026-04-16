@@ -14,7 +14,7 @@ function CourseCard({ course }) {
                 {/* Thumbnail */}
                 <div className="relative w-full h-32 overflow-hidden ">
                     <img
-                        src={course.thumbnail}
+                        src={`http://localhost:5000${course.thumbnail}`}
                         alt="Course Thumbnail"
                         className="w-full h-full object-cover"
                     />
