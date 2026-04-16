@@ -35,7 +35,10 @@ export default function TeacherAvailabilityPage() {
           price: slot.price
         })
         successCount++
-      } catch (e) { console.error(e) }
+      } catch (e) { 
+        toast.error("this slot already avalable")
+        console.error(e)
+       }
     }
 
     if (successCount > 0) {
@@ -80,7 +83,7 @@ export default function TeacherAvailabilityPage() {
               <p className="text-slate-400 text-sm mt-1">Review your slots before publishing</p>
             </div>
 
-            <SlotSummaryList slots={slots} onRemove={removeSlot} />
+            <SlotSummaryList slots={slots} onRemove={removeSlot} selectedDate={selectedDate} />
 
             <div className="mt-auto pt-8">
               <Button 

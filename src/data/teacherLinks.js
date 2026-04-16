@@ -58,6 +58,11 @@ export const teacherSidebarLinks = [
     href: "/teacher/myBookings", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
     icon: Users,
   },
+  {   
+    title: "My Availabilits",
+    href: "/teacher/availableSlotsPage", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
+    icon: Users,
+  },
   {
     title: "Earnings",
     href: "/teacher/earnings",
