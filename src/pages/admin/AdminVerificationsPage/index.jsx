@@ -278,17 +278,6 @@ const AdminVerificationsPage = () => {
                           )}
                           <div>
                             <div className="font-semibold text-gray-900 flex justify-between items-start w-full">
-<<<<<<< Updated upstream
-                              <div className="flex flex-col justify-end gap-1">
-                                <p>{applicant?.teacherId?.firstName} {applicant.teacherId?.lastName}</p>
-                                <p className="text-sm font-light text-gray-400 w-max">ID: {applicant.teacherId?._id}</p>
-                              </div>
-                              <div className="flex items-center justify-start gap-2 ">
-                                {applicant.status === "pending" && <span className="w-2 h-2 rounded-full bg-yellow-400" />}
-                                {applicant.status === "rejected" && <span className="w-2 h-2 rounded-full bg-red-400" />}
-                                {applicant.status === "approved" && <span className="w-2 h-2 rounded-full bg-green-400" />}
-                                <span className="text-sm font-medium text-gray-700 capitalize">{applicant.status}</span>
-=======
                               <div className="flex flex-col gap-2">
                                 <p>
                                   {applicant?.teacherId?.firstName}{" "}
@@ -311,7 +300,6 @@ const AdminVerificationsPage = () => {
                                 <span className="text-sm font-medium text-gray-700 capitalize">
                                   {applicant.status}
                                 </span>
->>>>>>> Stashed changes
                               </div>
                             </div>
                           </div>
@@ -415,16 +403,6 @@ const AdminVerificationsPage = () => {
                         )}
 
                         {/* Decision form */}
-<<<<<<< Updated upstream
-                        <div className="flex flex-col gap-3 border-t pt-4">
-                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Verification Decision</p>
-                          {applicant.status==='approved'?
-                          (<div>
-                            <p className="text-center font-medium text-2xl">This Teacher is Already <span className="text-green-800">Approved</span></p>
-                          </div>)
-                          :
-                          (
-=======
                         <div className="flex flex-col gap-3 border-t pt-4 mt-2">
                           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
                             Verification Decision
@@ -437,7 +415,6 @@ const AdminVerificationsPage = () => {
                               </p>
                             </div>
                           ) : (
->>>>>>> Stashed changes
                             <VerificationDecisionForm applicant={applicant} />
                           )}
                         </div>
