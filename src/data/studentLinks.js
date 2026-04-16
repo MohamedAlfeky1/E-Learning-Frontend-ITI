@@ -26,6 +26,11 @@ export const studentSidebarLinks = [
     icon: BookOpen,
   },
   {
+    title: "Chat",
+    href: "/chat",
+    icon: MessageSquare,
+  },
+  {
     title: "Favorites",
     href: "/favorites",
     icon: Heart,

@@ -12,9 +12,9 @@ const StudentLayout = () => {
       <div className="flex-1 flex flex-col ml-64">
         {/* Header - sticky top */}
         <StudentHeader />
-        
+
         {/* Page Content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-2">
           <Outlet />
         </main>
       </div>

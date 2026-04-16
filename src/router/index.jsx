@@ -113,7 +113,6 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <HomePage /> }, // /
-      { path: "chat", element: <ChatPage /> }, // /chat
       { path: "about", element: <AboutPage /> }, // /about
       { path: "courses", element: <CoursesPage /> },
 
@@ -176,6 +175,7 @@ const router = createBrowserRouter([
       // Dashboard & profile
       { path: "dashboard", element: <StudentDashboardPage /> }, // /dashboard
       { path: "profile", element: <StudentProfilePage /> }, // /profile
+      { path: "chat", element: <ChatPage /> }, // /chat
 
       // Courses
       { path: "my-courses", element: <MyCoursesPage /> }, // /my-courses

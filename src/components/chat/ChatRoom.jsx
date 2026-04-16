@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { useUserQuery } from "../../queries/authQueries";
-import { Send, Loader2, MessageCircle } from "lucide-react";
+import { Send, Loader2, MessageCircle, Check, CheckCheck } from "lucide-react";
 import { useGetConversations } from "@/queries/chatQueries";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -95,12 +95,38 @@ const ChatRoom = ({ courseId, receiverId }) => {
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     };
 
+    const handleMessagesRead = (payload) => {
+      if (payload.courseId === courseId && payload.receiverId === receiverId) {
+        setMessages((prev) =>
+          prev.map((msg) => {
+            const isMyMessage =
+              msg.senderId?._id === currentUserId ||
+              msg.senderId === currentUserId ||
+              msg.from === currentUserId;
+            if (isMyMessage) {
+              return { ...msg, isRead: true };
+            }
+            return msg;
+          })
+        );
+      }
+    };
+
     socket.on("receive_message", handleIncomingMessage);
+    socket.on("messages_read", handleMessagesRead);
 
     return () => {
       socket.off("receive_message", handleIncomingMessage);
+      socket.off("messages_read", handleMessagesRead);
     };
   }, [socket, courseId, receiverId]);
+
+  // Mark messages as read automatically when array length changes or on load
+  useEffect(() => {
+    if (socket && courseId && receiverId && messages.length > 0) {
+      socket.emit("mark_messages_read", { courseId, senderId: receiverId });
+    }
+  }, [socket, courseId, receiverId, messages.length]);
 
   // عمل Auto-scroll
   useEffect(() => {
@@ -177,13 +203,26 @@ const ChatRoom = ({ courseId, receiverId }) => {
               className={`flex w-full ${isMyMessage ? "justify-end" : "justify-start"} group`}
             >
               <div
-                className={`relative px-5 py-3.5 rounded-xl max-w-[75%] break-words shadow-sm text-[15px] leading-relaxed transition-all duration-200 ${
+                className={`relative px-5 py-3.5 rounded-xl max-w-[75%] break-words shadow-sm text-[15px] leading-relaxed transition-all duration-200 flex flex-col gap-1 ${
                   isMyMessage
                     ? "bg-primary text-primary-foreground"
                     : "bg-card border border-border text-card-foreground"
                 }`}
               >
-                {msg.message}
+                <span>{msg.message}</span>
+                
+                {isMyMessage && (
+                  <div className="self-end flex items-center justify-end gap-1 opacity-80 mt-0.5">
+                    <span className="text-[10px] uppercase font-semibold">
+                      {new Date(msg.sentAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                    {msg.isRead ? (
+                      <CheckCheck className="w-4 h-4 text-emerald-300 drop-shadow-sm" />
+                    ) : (
+                      <Check className="w-4 h-4 text-primary-foreground/60" />
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           );
