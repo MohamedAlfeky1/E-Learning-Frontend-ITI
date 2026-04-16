@@ -3,14 +3,16 @@ import { Badge } from '@/components/ui/badge'
 import { FaStar } from "react-icons/fa6";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { IoEyeOutline } from "react-icons/io5";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 function CourseCard({ course }) {
+    const navigate = useNavigate();
+
     return (
         <>
             <Link to={`/courses/${course._id}`} className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
-            
+
                 {/* Thumbnail */}
                 <div className="relative w-full h-32 overflow-hidden ">
                     <img
@@ -58,11 +60,19 @@ function CourseCard({ course }) {
                                 <p className="text-2xl font-bold text-[#3525CD]">
                                     ${course.price}
                                 </p>
-                                <Badge variant='lightPruple' className='cursor-pointer rounded-md py-3 px-3'>
+                                <Badge onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    navigate('/cart')
+                                }} variant='lightPruple' className='cursor-pointer rounded-md py-3 px-3'>
                                     <MdOutlineAddShoppingCart color='#3525CD' />
                                 </Badge>
                             </div> :
-                            <Badge variant='lightPruple' className='cursor-pointer rounded-md py-3 px-3'>
+                            <Badge onClick={() => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                navigate('/cart')
+                            }} variant='lightPruple' className='cursor-pointer rounded-md py-3 px-3'>
                                 <MdOutlineAddShoppingCart color='#3525CD' />
                             </Badge>
                         }
