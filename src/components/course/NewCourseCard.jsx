@@ -2,10 +2,12 @@ import { Badge } from '@/components/ui/badge'
 import React from 'react'
 import { FaStar } from "react-icons/fa6";
 import { FaRegEye } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 function NewCourseCard({ course }) {
+    const navigate = useNavigate();
+
     return (
         <Link to={`/courses/${course._id}`} className="relative h-80 flex flex-col md:flex-row overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
 
@@ -71,11 +73,19 @@ function NewCourseCard({ course }) {
                             <span className="text-2xl font-bold text-[#3525CD]">
                                 ${course.price ?? "129.99"}
                             </span>
-                            <button className="bg-indigo-600 hover:bg-[#3525CD] hover:cursor:pointer text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200">
+                            <button onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                navigate('/cart')
+                            }} className="bg-indigo-600 hover:bg-[#3525CD] hover:cursor:pointer text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200">
                                 Enroll Now
                             </button>
                         </div> :
-                        <button className="bg-green-600 hover:bg-green-700 hover:cursor:pointer text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200">
+                        <button onClick={(e) => {
+                             e.stopPropagation();
+                            e.preventDefault();
+                            navigate('/cart')
+                        }} className="bg-green-600 hover:bg-green-700 hover:cursor:pointer text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200">
                             Enroll Now
                         </button>
                     }
