@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import "./style.css";
 
-const OrderSummary = () => {
+const OrderSummary = ({ total }) => {
   return (
     <div
       className="h-min sticky top-4 p-8 flex flex-col gap-8 rounded-4xl"
@@ -45,8 +45,17 @@ const OrderSummary = () => {
         >
           discount code
         </FieldLabel>
-        <Input type="text" className="bg-white text-black rounded-lg font-inter" placeholder="Enter code" />
-        <Button className="rounded-lg" style={{ backgroundColor: "#F1F3FF", color: "#141B2B" }}>Apply</Button>
+        <Input
+          type="text"
+          className="bg-white text-black rounded-lg font-inter"
+          placeholder="Enter code"
+        />
+        <Button
+          className="rounded-lg"
+          style={{ backgroundColor: "#F1F3FF", color: "#141B2B" }}
+        >
+          Apply
+        </Button>
       </Field>
       <div className="grand-total flex flex-col gap-2 sm:flex-row sm:justify-between">
         <div className="flex flex-col text-center sm:text-left">
@@ -57,7 +66,7 @@ const OrderSummary = () => {
             grand total
           </span>
           <div className="grand-total-price text-3xl font-extrabold text-black font-plus-jakarta">
-            $133.92
+            ${total}
           </div>
         </div>
         <Badge

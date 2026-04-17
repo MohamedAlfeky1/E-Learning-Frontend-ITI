@@ -1,14 +1,23 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import CourseImg from "../../../assets/homepage/courses/course-img.png";
 import "./CourseCard.css";
 import { Trash2 } from "lucide-react";
+import placeholderImg from "@/assets/placeholder.jpg";
+import { useGetCategoryById } from "@/queries/categoryQueries";
+import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
+import { Spinner } from "@/components/ui/spinner";
+import { Link } from "react-router-dom";
 
-const CourseCard = () => {
+const CourseCard = ({ course }) => {
+  const { mutateAsync: removeFromCart, isPending: removePending } =
+    useDeleteCartMutation();
+  const { data: categoryData } = useGetCategoryById(course.categoryId);
+  const category = categoryData?.data ?? {};
+
   return (
     <div className="p-4 bg-white rounded-4xl flex flex-col sm:flex-row items-center gap-6 hover:scale-101 duration-150">
       <img
-        src={CourseImg}
+        src={course.thumbnail || placeholderImg}
         alt="Course Image"
         className="h-[150px] rounded-xl"
       />
@@ -19,19 +28,26 @@ const CourseCard = () => {
               variant="ghost"
               className="course-category uppercase text-[10px] leading-[15px]"
             >
-              fine arts
+              {category.name}
             </Badge>
-            <p className="course-title">Modernism & The Digital Canvas</p>
+            <p className="course-title">{course.title}</p>
           </div>
-          <Button size="icon-sm" variant="destructive" className="rounded-full">
-            <Trash2 color="red" />
+          <Button
+            onClick={() => removeFromCart(course._id)}
+            size="icon-sm"
+            variant="destructive"
+            className="rounded-full"
+          >
+            {removePending ? <Spinner /> : <Trash2 color="red" />}
           </Button>
         </div>
         <div className="price-details pt-4 flex justify-between items-end">
           <p className="price" style={{ color: "#3525CD" }}>
-            $49.99
+            ${course.price}
           </p>
-          <Button className="details-btn px-4 py-2">Details</Button>
+          <Link to={`/courses/${course._id}`}>
+            <Button className="details-btn px-4 py-2">Details</Button>
+          </Link>
         </div>
       </div>
     </div>
