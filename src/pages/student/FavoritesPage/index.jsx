@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const FavoritesPage = () => {
-  const { data, isLoading, isError } = useFavorites();
+  const { data, isLoading, isRefetching, isError, refetch } = useFavorites();
   const favorites = data?.data ?? [];
 
   return (
@@ -32,8 +32,8 @@ const FavoritesPage = () => {
           </p>
         </div>
         <div className="text-right">
-          <span className="text-primary text-size-xl font-weight-700 font-inter">
-            {isLoading ? <Spinner /> : favorites.length}
+          <span className="text-primary text-size-xl font-weight-700 font-inter flex justify-end">
+            {isLoading ? <Spinner className="text-black" /> : favorites.length}
           </span>
           <p className="uppercase text-secondary text-size-xs font-weight-700 font-inter">
             Total Items
@@ -44,9 +44,9 @@ const FavoritesPage = () => {
       {/* Favorites */}
       <ScrollArea className="whitespace-nowrap mb-8">
         <div className="flex flex-wrap gap-4 py-4">
-          {isLoading ? (
+          {isLoading || isRefetching ? (
             <div className="w-full text-black flex justify-center items-center gap-3">
-              <Spinner className="size-8" />
+              <Spinner className="text-black" className="size-8" />
               Loading favorites...
             </div>
           ) : isError ? (
@@ -59,6 +59,11 @@ const FavoritesPage = () => {
                   An error happened while fetching favorites from server.
                 </EmptyDescription>
               </EmptyHeader>
+              <EmptyContent>
+                <Button className="text-lg" onClick={() => refetch()}>
+                  Try Again
+                </Button>
+              </EmptyContent>
             </Empty>
           ) : !favorites.length ? (
             <Empty className="text-center text-sm text-destructive">
