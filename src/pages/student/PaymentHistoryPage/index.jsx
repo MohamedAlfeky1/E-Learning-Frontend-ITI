@@ -33,7 +33,6 @@ const PaymentHistoryPage = () => {
 
   return (
     <div className="min-h-screen bg-background rounded-xl p-4 md:p-10 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-      {/* Header Section */}
       <div className="relative flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-2">
           <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase">
@@ -54,10 +53,15 @@ const PaymentHistoryPage = () => {
               Total Spent
             </p>
             <p className="text-xl font-black text-primary">
-              $ {payments
+              ${" "}
+              {payments
                 ?.reduce(
-                  (acc, curr) => acc + (curr.status === "completed" ? (Number(curr.amount) || 0) : 0),
-                  0
+                  (acc, curr) =>
+                    acc +
+                    (curr.status === "completed"
+                      ? Number(curr.amount) || 0
+                      : 0),
+                  0,
                 )
                 .toFixed(2)}
             </p>
@@ -94,16 +98,23 @@ const PaymentHistoryPage = () => {
                   <div className="flex flex-col gap-1">
                     {payment.type === "course_sale" ? (
                       payment.courses?.map((c) => (
-                        <span key={c._id} className="font-bold text-foreground group-hover:text-primary transition-colors">
+                        <span
+                          key={c._id}
+                          className="font-bold text-foreground group-hover:text-primary transition-colors"
+                        >
                           {c.title}
                         </span>
                       ))
                     ) : (
                       <div className="flex flex-col">
                         <span className="font-bold text-foreground group-hover:text-primary transition-colors">
-                          Private Session: {payment.sessionId?.teacherId?.firstName} {payment.sessionId?.teacherId?.lastName}
+                          Private Session:{" "}
+                          {payment.sessionId?.teacherId?.firstName}{" "}
+                          {payment.sessionId?.teacherId?.lastName}
                         </span>
-                        <span className="text-[10px] text-primary font-bold uppercase">1-on-1 Mentorship</span>
+                        <span className="text-[10px] text-primary font-bold uppercase">
+                          1-on-1 Mentorship
+                        </span>
                       </div>
                     )}
 
@@ -113,7 +124,6 @@ const PaymentHistoryPage = () => {
                     </div>
                   </div>
                 </TableCell>
-
                 <TableCell>
                   <div className="flex items-center gap-2 text-muted-foreground font-medium">
                     <Calendar className="w-4 h-4 opacity-60" />
@@ -152,23 +162,31 @@ const PaymentHistoryPage = () => {
 
       <div className="md:hidden grid gap-4">
         {payments?.map((payment) => (
-          <Card key={payment._id} className="border border-border bg-card shadow-sm rounded-3xl overflow-hidden">
+          <Card
+            key={payment._id}
+            className="border border-border bg-card shadow-sm rounded-3xl overflow-hidden"
+          >
             <CardContent className="p-6 space-y-6">
               <div className="flex justify-between items-start">
                 <div className="space-y-1">
                   {payment.type === "course_sale" ? (
                     payment.courses?.map((c) => (
-                      <h3 key={c._id} className="font-black text-foreground leading-tight text-lg">
+                      <h3
+                        key={c._id}
+                        className="font-black text-foreground leading-tight text-lg"
+                      >
                         {c.title}
                       </h3>
                     ))
                   ) : (
                     <h3 className="font-black text-foreground leading-tight text-lg">
-                      Session with {payment.sessionId?.teacherId?.firstName || "Teacher"}
+                      Session with{" "}
+                      {payment.sessionId?.teacherId?.firstName || "Teacher"}
                     </h3>
                   )}
                   <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px] font-bold uppercase tracking-tighter">
-                    {payment.type === "course_sale" ? "Course" : "Session"} • {payment.status}
+                    {payment.type === "course_sale" ? "Course" : "Session"} •{" "}
+                    {payment.status}
                   </Badge>
                 </div>
                 <div className="p-3 bg-muted rounded-2xl">
@@ -178,13 +196,17 @@ const PaymentHistoryPage = () => {
 
               <div className="flex items-center justify-between text-muted-foreground">
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-bold tracking-widest">Date</span>
+                  <span className="text-[10px] uppercase font-bold tracking-widest">
+                    Date
+                  </span>
                   <span className="text-sm font-bold text-foreground">
                     {new Date(payment.createdAt).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="text-right flex flex-col">
-                  <span className="text-[10px] uppercase font-bold tracking-widest">Total</span>
+                  <span className="text-[10px] uppercase font-bold tracking-widest">
+                    Total
+                  </span>
                   <span className="text-2xl font-black text-primary">
                     ${(Number(payment.amount) || 0).toFixed(2)}
                   </span>
@@ -201,7 +223,9 @@ const PaymentHistoryPage = () => {
             <Receipt className="w-12 h-12 text-muted-foreground" />
           </div>
           <h2 className="text-xl font-bold text-foreground">No History Yet</h2>
-          <p className="text-muted-foreground">Your future enrollments and bookings will appear here.</p>
+          <p className="text-muted-foreground">
+            Your future enrollments and bookings will appear here.
+          </p>
         </div>
       )}
     </div>
