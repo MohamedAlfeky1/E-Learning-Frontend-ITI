@@ -122,13 +122,15 @@ export const ENDPOINTS = {
   ADMIN_REVENUE_CONFIG_GET: "/finance/admin/revenue-config",
   ADMIN_REVENUE_CONFIG_UPDATE: "/finance/admin/revenue-config",
   TEACHER_EARNINGS: "/finance/teacher/balance",
-  ADMIN_EARNINGS: "/finance/admin/earnings",
+  ADMIN_EARNINGS: "/admin/earnings",
 
   // ─── Withdrawals ──────────────────────────────────────────────────────────────
   TEACHER_WITHDRAWALS_CREATE: "/finance/teacher/withdraw",
   TEACHER_WITHDRAWALS_LIST: "/finance/teacher/withdrawals",
-  ADMIN_WITHDRAWALS_LIST: "/finance/admin/withdrawals/pending",
+  ADMIN_WITHDRAWALS_LIST: "/finance/admin/withdrawals",
+  ADMIN_PLATFORM_STATS: "/finance/admin/platform-stats",
   ADMIN_WITHDRAWALS_PROCESS: (id) => `/finance/admin/withdrawals/${id}`,
+
 
   // ─── Admin Dashboard ──────────────────────────────────────────────────────────
   ADMIN_STATS_OVERVIEW: "/finance/admin/stats-platform",
