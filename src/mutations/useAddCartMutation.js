@@ -13,7 +13,9 @@ export const useAddCartMutation = () => {
       console.log(data);
     },
     onError: (error) => {
-      toast.error("Failed to add course to cart");
+      toast.error(
+        `Failed to add course to cart: ${error.message || "Unknown error"}`,
+      );
       console.log(error);
     },
   });

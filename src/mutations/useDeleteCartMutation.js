@@ -13,7 +13,9 @@ export const useDeleteCartMutation = () => {
       console.log(data);
     },
     onError: (error) => {
-      toast.error("Failed to remove course from cart");
+      toast.error(
+        `Failed to remove course from cart: ${error.message || "Unknown error"}`,
+      );
       console.log(error);
     },
   });
