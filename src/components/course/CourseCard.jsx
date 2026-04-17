@@ -2,11 +2,31 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { FaStar } from "react-icons/fa6";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
-import { IoEyeOutline } from "react-icons/io5";
+import { IoEyeOutline, IoHeart, IoHeartOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
+import { useUserQuery } from "@/queries/authQueries";
+import { useFavorites } from "@/queries/favoritesQueries";
+import { useAddFavoriteMutation } from "@/mutations/useAddFavoriteMutation";
+import { useDeleteFavoriteMutation } from "@/mutations/useDeleteFavoriteMutation";
 import placeholderImg from "@/assets/placeholder.jpg";
 
 function CourseCard({ course }) {
+  const { data: user } = useUserQuery();
+  const {
+    data: favoritesData,
+    isLoading: favoritesLoading,
+    error: favoritesError,
+  } = useFavorites();
+  const { mutate: addFavorite } = useAddFavoriteMutation();
+  const { mutate: removeFavorite } = useDeleteFavoriteMutation();
+  const favorites = favoritesData?.data || [];
+  let favorite = null;
+
+  if (!favoritesLoading && !favoritesError) {
+    favorite = favorites.find((fav) => fav.courseId._id === course._id);
+  }
+
   return (
     <>
       <div className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
@@ -17,11 +37,32 @@ function CourseCard({ course }) {
             alt="Course Thumbnail"
             className="w-full h-full object-cover"
           />
-          <Link
-            to={`/courses/${course._id}`}
-            className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full"
-          >
-            <IoEyeOutline color="#3525CD" />
+          {user?.role === "student" && !favoritesLoading && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() =>
+                favorite
+                  ? removeFavorite(favorite._id)
+                  : addFavorite(course._id)
+              }
+              className="absolute top-3 right-14 bg-gray-300 text-gray-200 p-1 rounded-full"
+            >
+              {favorite ? (
+                <IoHeart color="red" />
+              ) : (
+                <IoHeartOutline color="red" />
+              )}
+            </Button>
+          )}
+          <Link to={`/courses/${course._id}`}>
+            <Button
+              size="icon-sm"
+              variant="secondary"
+              className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full"
+            >
+              <IoEyeOutline color="#3525CD" />
+            </Button>
           </Link>
         </div>
 
