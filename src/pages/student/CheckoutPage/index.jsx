@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { use, useEffect, useState } from "react";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useCheckoutMutation } from "../../../mutations/usePaymentMutations";
 import StripeWrapper from "@/components/payment/StripeWrapper";
 import CheckoutForm from "@/components/payment/CheckoutForm";
@@ -27,9 +27,13 @@ import {
 } from "lucide-react";
 
 const CheckoutPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const bookingId = location.state?.bookingId;
+ const location = useLocation();
+const params = new URLSearchParams(location.search);
+
+const bookingId = params.get("bookingId");
+
+console.log(bookingId);
+  
 
   const { mutate, data, isPending } = useCheckoutMutation();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
