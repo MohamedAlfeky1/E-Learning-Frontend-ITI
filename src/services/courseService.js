@@ -14,7 +14,10 @@ export const fetchCategories = async () => {
  * @param {FormData} courseData - Course payload (supports file uploads)
  */
 export const createCourse = async (courseData) => {
-  const response = await axiosInstance.post(ENDPOINTS.COURSES_CREATE, courseData);
+  const response = await axiosInstance.post(
+    ENDPOINTS.COURSES_CREATE,
+    courseData,
+  );
   return response.data;
 };
 
@@ -24,7 +27,10 @@ export const createCourse = async (courseData) => {
  * @param {FormData} courseData - Updated course payload (supports file uploads)
  */
 export const updateCourse = async (id, courseData) => {
-  const response = await axiosInstance.patch(ENDPOINTS.COURSES_UPDATE(id), courseData);
+  const response = await axiosInstance.patch(
+    ENDPOINTS.COURSES_UPDATE(id),
+    courseData,
+  );
   return response.data;
 };
 
@@ -47,7 +53,7 @@ export const postCourseStatus = async (id, statusData) => {
   try {
     const response = await axiosInstance.post(
       ENDPOINTS.COURSES_STATUS(id),
-      statusData
+      statusData,
     );
     return response.data;
   } catch (error) {
@@ -59,18 +65,18 @@ export const postCourseStatus = async (id, statusData) => {
 //list all courses (using GET)
 export const getAllCourses = async () => {
   try {
-    const response = await axiosInstance.get(ENDPOINTS.COURSES_LIST)
+    const response = await axiosInstance.get(ENDPOINTS.COURSES_LIST);
     return response.data;
   } catch (error) {
     console.error("Error get all courses data:", error);
     throw error;
   }
-}
+};
 
 //browse & search courses
 export const browseCourses = async (data) => {
   try {
-    const response = await axiosInstance.post(ENDPOINTS.COURSES_SEARCH, data)
+    const response = await axiosInstance.post(ENDPOINTS.COURSES_SEARCH, data);
     console.log("Browse courses response:", response);
 
     return response.data;
@@ -78,15 +84,29 @@ export const browseCourses = async (data) => {
     console.error("Error browse courses :", error);
     throw error;
   }
-}
+};
 
 //list all courses (using GET)
 export const getAllCoursesOfLoggedInTeacher = async () => {
   try {
-    const response = await axiosInstance.get(ENDPOINTS.COURSES_MY)
+    const response = await axiosInstance.get(ENDPOINTS.COURSES_MY);
     return response.data;
   } catch (error) {
     console.error("Error get all courses data:", error);
     throw error;
   }
-}
+};
+
+/**
+ * Delete a course by its ID.
+ * @param {string} id - The course ID
+ */
+export const deleteCourse = async (id) => {
+  try {
+    const response = await axiosInstance.delete(ENDPOINTS.COURSES_UPDATE(id));
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting course:", error);
+    throw error;
+  }
+};
