@@ -18,11 +18,10 @@ const CartPage = () => {
     data: cartData,
     isLoading: cartLoading,
     error: cartError,
+    refetch,
   } = useCart();
   const cartObject = cartData?.data || {};
   const cartItems = cartObject?.cart?.items || [];
-
-  console.log(cartObject);
 
   return (
     <div className="min-h-screen text-white p-6 md:p-12 font-sans page-bg">
@@ -32,37 +31,54 @@ const CartPage = () => {
           Review Your <span style={{ color: "#712AE2" }}>Cart</span>
         </h1>
       </header>
-      <section className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <div className="lg:col-span-3 rounded-[24px] flex flex-col gap-4 cursor-pointer">
-          {cartLoading ? (
-            <div className="flex justify-center items-center gap-3">
-              <Spinner className="size-8" /> Loading cart...
-            </div>
-          ) : !cartItems.length ? (
-            <Empty className="text-center text-sm text-destructive">
-              <EmptyHeader>
-                <EmptyTitle className="text-4xl font-bold">
-                  Cart Empty.
-                </EmptyTitle>
-                <EmptyDescription className="text-xl font-semibold">
-                  You haven't added any courses to your cart yet. Explore our
-                  course catalog and start learning today!
-                </EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <Link to={"/courses"}>
-                  <Button className="text-lg">Explore course catalog</Button>
-                </Link>
-              </EmptyContent>
-            </Empty>
-          ) : (
-            cartItems.map((item) => (
-              <CourseCard key={item._id} course={item.courseId} />
-            ))
-          )}
+
+      {cartLoading ? (
+        <div className="flex justify-center items-center gap-3">
+          <Spinner className="size-8" /> Loading cart...
         </div>
-        <OrderSummary total={cartObject.total} />
-      </section>
+      ) : cartError ? (
+        <Empty className="text-center text-sm text-destructive">
+          <EmptyHeader>
+            <EmptyTitle className="text-4xl font-bold">
+              Unable to load cart.
+            </EmptyTitle>
+            <EmptyDescription className="text-xl font-semibold">
+              An error happened while fetching cart items from server.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button className="text-lg" onClick={() => refetch()}>
+              Try Again
+            </Button>
+          </EmptyContent>
+        </Empty>
+      ) : !cartItems.length ? (
+        <Empty className="text-center text-sm text-destructive">
+          <EmptyHeader>
+            <EmptyTitle className="text-4xl font-bold">Cart Empty.</EmptyTitle>
+            <EmptyDescription className="text-xl font-semibold">
+              You haven't added any courses to your cart yet. Explore our course
+              catalog and start learning today!
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Link to={"/courses"}>
+              <Button className="text-lg">Explore course catalog</Button>
+            </Link>
+          </EmptyContent>
+        </Empty>
+      ) : (
+        <section className="flex flex-col xl:flex-row gap-8">
+          {/* <section className="grid grid-cols-1 lg:grid-cols-4 gap-8"> */}
+          <div className="xl:flex-3 rounded-[24px] flex flex-col gap-4">
+            {/* <div className="lg:col-span-3 rounded-[24px] flex flex-col gap-4"> */}
+            {cartItems.map((item) => (
+              <CourseCard key={item._id} course={item.courseId} />
+            ))}
+          </div>
+          <OrderSummary cart={cartObject} />
+        </section>
+      )}
     </div>
   );
 };
