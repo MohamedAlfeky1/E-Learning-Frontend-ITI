@@ -9,6 +9,7 @@ import { IoPricetags, IoInfinite, IoFileTrayFullSharp } from "react-icons/io5";
 import {
   MdPlayLesson,
   MdOutlineStarBorder,
+  MdOutlineStarBorder,
   MdOutlineRemoveShoppingCart,
   MdOutlineVerified,
   MdOndemandVideo,
