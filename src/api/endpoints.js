@@ -104,7 +104,7 @@ export const ENDPOINTS = {
 
   // ─── Favorites ────────────────────────────────────────────────────────────────
   FAVORITES_LIST: "/favorites",
-  FAVORITES_ADD: (courseId) => `/favorites/${courseId}`,
+  FAVORITES_ADD: "/favorites",
   FAVORITES_REMOVE: (courseId) => `/favorites/${courseId}`,
 
   // ─── Chat ─────────────────────────────────────────────────────────────────────
