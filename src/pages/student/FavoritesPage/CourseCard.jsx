@@ -34,12 +34,11 @@ const CourseCard = ({ favorite }) => {
         size="icon"
         className="bg-white/70 hover:bg-white/80 absolute top-8 right-8 cursor-pointer"
         onClick={() => {
-          // setIsFavorite(!isFavorite);
           removeFromFavorites(favorite._id);
         }}
       >
         {isRemoving ? (
-          <Spinner />
+          <Spinner className="text-black" />
         ) : (
           <Heart
             className="size-6"
