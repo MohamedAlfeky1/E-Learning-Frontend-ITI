@@ -12,10 +12,10 @@ import {
 } from "lucide-react";
 import "./style.css";
 
-const OrderSummary = ({ total }) => {
+const OrderSummary = ({ cart }) => {
   return (
     <div
-      className="h-min sticky top-4 p-8 flex flex-col gap-8 rounded-4xl"
+      className="xl:flex-1 h-min sticky top-4 p-8 flex flex-col gap-8 rounded-4xl"
       style={{ backgroundColor: "#DCE2F7" }}
     >
       <h2 className="text-black text-center text-2xl px-8 font-extrabold font-plus-jakarta">
@@ -24,19 +24,16 @@ const OrderSummary = ({ total }) => {
       <div className="flex flex-col gap-4">
         <div className="subtotal font-inter flex justify-between">
           <p style={{ color: "#464555" }}>Subtotal</p>
-          <p className="text-black font-semibold font-inter">$144.00</p>
+          <p className="text-black font-semibold font-inter">${cart.total}</p>
         </div>
-        <div className="tax font-inter flex justify-between">
-          <p style={{ color: "#464555" }}>Tax</p>
-          <p className="text-black font-semibold font-inter">$11.52</p>
-        </div>
-        <div
+        {/* TODO: Implement discount/voucher logic */}
+        {/* <div
           className="discount font-inter flex justify-between"
           style={{ color: "#005523" }}
         >
           <p>Discount</p>
           <p className="font-semibold font-inter">-$21.60</p>
-        </div>
+        </div> */}
       </div>
       <Field>
         <FieldLabel
@@ -57,27 +54,28 @@ const OrderSummary = ({ total }) => {
           Apply
         </Button>
       </Field>
-      <div className="grand-total flex flex-col gap-2 sm:flex-row sm:justify-between">
-        <div className="flex flex-col text-center sm:text-left">
+      <div className="grand-total flex flex-col items-center gap-2">
+        <div className="flex flex-col sm:text-left">
           <span
-            className="grand-total-label -mb-1 uppercase text-xs tracking-[1px] font-semibold font-inter"
+            className="grand-total-label -mb-1 uppercase text-xs text-center tracking-[1px] font-semibold font-inter"
             style={{ color: "#777587" }}
           >
             grand total
           </span>
           <div className="grand-total-price text-3xl font-extrabold text-black font-plus-jakarta">
-            ${total}
+            ${cart.total}
           </div>
         </div>
-        <Badge
-          className="uppercase font-semibold font-inter self-center sm:self-end"
+        {/* TODO: Implement discount/voucher logic */}
+        {/* <Badge
+          className="uppercase font-semibold font-inter"
           style={{ backgroundColor: "#4AE176", color: "#005321" }}
         >
-          <CircleCheck size={36} color="#4AE176" fill="#141B2B" />
+          <CircleCheck color="#4AE176" fill="#141B2B" />
           saved $21.60
-        </Badge>
+        </Badge> */}
       </div>
-      <Button className="px-6 py-10 capitalize text-base sm:text-lg font-bold font-plus-jakarta">
+      <Button className="px-6 py-10 capitalize font-bold font-plus-jakarta flex flex-col xl:flex-row">
         proceed to checkout <ArrowRight />
       </Button>
       <div className="flex justify-center items-center gap-4">

@@ -40,7 +40,7 @@ const FavoritesPage = () => {
         <div className="flex flex-wrap gap-4 py-4">
           {isLoading || isRefetching ? (
             <div className="w-full text-black flex justify-center items-center gap-3">
-              <Spinner className="text-black" className="size-8" />
+              <Spinner className="text-black size-8" />
               Loading favorites...
             </div>
           ) : isError ? (
