@@ -39,7 +39,6 @@ export const useVoucherMutations = () => {
     mutationFn: voucherService.updateVoucher,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vouchers"] });
-      toast.success("Voucher updated successfully!");
     }
   });
 
