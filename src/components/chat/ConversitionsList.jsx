@@ -3,13 +3,11 @@ import { useUserQuery } from "@/queries/authQueries";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageSquare } from "lucide-react";
 
-export default function ConversitionsList() {
+export default function ConversitionsList({ onSelectConversation }) {
   const { data, isLoading, error } = useGetConversations();
   const { data: user } = useUserQuery();
 
   const currentUserId = user?._id;
-
-  console.log("data", data);
 
   if (isLoading)
     return (
@@ -60,6 +58,7 @@ export default function ConversitionsList() {
             return (
               <div
                 key={conversation._id}
+                onClick={() => onSelectConversation(conversation)}
                 className="group flex items-start gap-3 p-3 bg-transparent rounded-xl border border-transparent cursor-pointer hover:bg-accent hover:border-border/50 transition-all duration-200"
               >
                 {/* Avatar */}
