@@ -21,15 +21,9 @@ const FavoritesPage = () => {
       {/* Header */}
       <header className="mb-8 flex flex-col md:flex-row justify-between items-end">
         <div>
-          <p className="tracking-widest uppercase mb-2 text-primary text-size-xs font-weight-700 font-inter">
-            Saved Content
-          </p>
           <h1 className="mb-2 text-dark text-size-3xl font-weight-800 font-plus-jakarta">
             Favorites
           </h1>
-          <p className="text-muted-foreground max-w-md text-secondary text-size-base font-weight-400 font-inter">
-            Your curated collection of premium courses and study guides.
-          </p>
         </div>
         <div className="text-right">
           <span className="text-primary text-size-xl font-weight-700 font-inter flex justify-end">
