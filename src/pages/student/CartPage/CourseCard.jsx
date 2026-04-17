@@ -15,11 +15,11 @@ const CourseCard = ({ course }) => {
   const category = categoryData?.data ?? {};
 
   return (
-    <div className="p-4 bg-white rounded-4xl flex flex-col sm:flex-row items-center gap-6 hover:scale-101 duration-150">
+    <div className="p-4 bg-white rounded-4xl flex flex-col lg:flex-row gap-6 hover:scale-101 duration-150">
       <img
         src={course.thumbnail || placeholderImg}
         alt="Course Image"
-        className="h-[150px] rounded-xl"
+        className="size-[150px] self-center lg:self-start rounded-xl"
       />
       <div className="grow flex flex-col justify-between">
         <div className="flex justify-between">
