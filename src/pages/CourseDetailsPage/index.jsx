@@ -9,6 +9,7 @@ import { IoPricetags, IoInfinite, IoFileTrayFullSharp } from "react-icons/io5";
 import {
   MdPlayLesson,
   MdOutlineStarBorder,
+  MdOutlineAddShoppingCart,
   MdOutlineRemoveShoppingCart,
   MdOutlineVerified,
   MdOndemandVideo,
@@ -370,11 +371,6 @@ const CourseDetailsPage = () => {
                 </Button>
               </PopoverTrigger>
             </Popover>
-
-            <Button variant="success" onClick={handleEnroll}>
-              <MdOutlineAddShoppingCart color="white" />
-              Enroll Now
-            </Button>
 
             <Dialog open={openPopover} onOpenChange={setOpenPopover}>
               <DialogContent showCloseButton={true}>
