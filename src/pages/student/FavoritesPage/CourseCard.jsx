@@ -1,12 +1,31 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import CourseImg from "../../../assets/favorites/favorite-card-thumb.jpg";
 import { useState } from "react";
-import { Heart } from "lucide-react";
-import "./CourseCard.css";
+import { Heart, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useCourse } from "@/queries/useCourse";
+import placeholderImg from "@/assets/placeholder.jpg";
+import { useGetCategoryById } from "@/queries/categoryQueries";
+import { Spinner } from "@/components/ui/spinner";
+import { useDeleteFavoriteMutation } from "@/mutations/useDeleteFavoriteMutation";
 
-const CourseCard = () => {
-  const [isFavorite, setIsFavorite] = useState(false);
+const CourseCard = ({ favorite }) => {
+  const [isFavorite, setIsFavorite] = useState(true);
+  const {
+    data: courseData,
+    isLoading,
+    error,
+  } = useCourse(favorite.courseId._id);
+  const course = courseData?.data ?? {};
+
+  const {
+    mutateAsync: removeFromFavorites,
+    isPending: isRemoving,
+    error: removeFromFavoritesError,
+  } = useDeleteFavoriteMutation();
+
+  const { data: categoryData } = useGetCategoryById(course.categoryId);
+  const category = categoryData?.data ?? {};
 
   return (
     <div className="course-card w-[200px] md:w-[300px] p-4 bg-white rounded-4xl flex flex-col gap-6 relative hover:scale-102 transition-transform duration-300 cursor-pointer">
@@ -15,18 +34,23 @@ const CourseCard = () => {
         size="icon"
         className="bg-white/70 hover:bg-white/80 absolute top-8 right-8 cursor-pointer"
         onClick={() => {
-          setIsFavorite(!isFavorite);
+          // setIsFavorite(!isFavorite);
+          removeFromFavorites(favorite._id);
         }}
       >
-        <Heart
-          className="size-6"
-          fill={isFavorite ? "#BA1A1A" : ""}
-          color={isFavorite ? "#BA1A1A" : ""}
-        />
+        {isRemoving ? (
+          <Spinner />
+        ) : (
+          <Heart
+            className="size-6"
+            fill={isFavorite ? "#BA1A1A" : ""}
+            color={isFavorite ? "#BA1A1A" : ""}
+          />
+        )}
       </Button>
 
       <img
-        src={CourseImg}
+        src={course?.thumbnail || placeholderImg}
         alt="Course Image"
         className="course-img rounded-4xl"
       />
@@ -35,15 +59,14 @@ const CourseCard = () => {
           variant="ghost"
           className="course-category uppercase text-[10px] leading-[15px]"
         >
-          fine arts
+          {category.name}
         </Badge>
-        <p className="course-title truncate">Modernism & The Digital Canvas</p>
-        <p className="course-description truncate">
-          Exploring the intersection of traditional painting and digital media.
-        </p>
+        <p className="course-title truncate">{course.title}</p>
+        <p className="course-description truncate">{course.description}</p>
         <div className="price-details pt-4 flex flex-col gap-3 md:flex-row md:justify-between md:items-end">
-          <p className="price text-center">$49.99</p>
-          <Button className="details-btn px-4 py-2">Details</Button>
+          <Link to={`/courses/${course._id}`}>
+            <Button className="details-btn px-4 py-2">Details</Button>
+          </Link>
         </div>
       </div>
     </div>
