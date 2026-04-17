@@ -52,8 +52,10 @@ const FavoritesPage = () => {
           ) : isError ? (
             <Empty className="text-center text-sm text-destructive">
               <EmptyHeader>
-                <EmptyTitle>Unable to load favorites.</EmptyTitle>
-                <EmptyDescription>
+                <EmptyTitle className="text-4xl font-bold">
+                  Unable to load favorites.
+                </EmptyTitle>
+                <EmptyDescription className="text-xl font-semibold">
                   An error happened while fetching favorites from server.
                 </EmptyDescription>
               </EmptyHeader>
@@ -61,15 +63,17 @@ const FavoritesPage = () => {
           ) : !favorites.length ? (
             <Empty className="text-center text-sm text-destructive">
               <EmptyHeader>
-                <EmptyTitle>No favorites found.</EmptyTitle>
-                <EmptyDescription>
+                <EmptyTitle className="text-4xl font-bold">
+                  No favorites found.
+                </EmptyTitle>
+                <EmptyDescription className="text-xl font-semibold">
                   No courses were added to your favorites. Add more courses to
                   your favorites.
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
                 <Link to={"/courses"}>
-                  <Button>Explore course catalog</Button>
+                  <Button className="text-lg">Explore course catalog</Button>
                 </Link>
               </EmptyContent>
             </Empty>
