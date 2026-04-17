@@ -103,7 +103,8 @@ export const ENDPOINTS = {
   // ─── Reviews ──────────────────────────────────────────────────────────────────
   REVIEWS_LIST: (courseId) => `/courseReviews/${courseId}/reviews`,
   REVIEW_COURSE_BY_ID: (courseId) => `/courseReviews/${courseId}`,
-  REVIEWS_CREATE: (courseId) => `/courses/${courseId}/reviews`,
+  MY_REVIEW_COURSE_BY_ID: (courseId , studentId) => `/courseReviews/${courseId}/${studentId}`,
+  REVIEWS_CREATE: '/courseReviews',
   REVIEWS_DELETE: (id) => `/reviews/${id}`,
 
   // ─── Favorites ────────────────────────────────────────────────────────────────
