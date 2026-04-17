@@ -1,4 +1,3 @@
-// components/tickets/TicketChat.jsx
 import { useTicketQuery } from "@/queries/ticketQueries";
 import { useReplyTicketMutation } from "@/mutations/ticketMutations";
 import { useState, useEffect, useRef } from "react";
@@ -8,11 +7,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Headset, Loader2 } from "lucide-react";
 import TicketMessage from "./TicketMessage";
 import TicketCategoryBadge from "./TicketCategoryBadge";
+
 const TicketChat = ({ ticketId, isAdmin = false }) => {
   const { data, isLoading } = useTicketQuery(ticketId);
   const { mutate, isPending } = useReplyTicketMutation();
   const [message, setMessage] = useState("");
-  
   const messagesEndRef = useRef(null);
   const ticket = data?.data || data;
 
@@ -35,28 +34,27 @@ const TicketChat = ({ ticketId, isAdmin = false }) => {
   };
 
   if (isLoading) return (
-    <div className="flex h-full items-center justify-center bg-slate-50/30">
+    <div className="flex h-full items-center justify-center bg-white">
       <Loader2 className="animate-spin text-primary" size={30} />
     </div>
   );
 
   return (
     <div className="flex flex-col h-full bg-white overflow-hidden"> 
-      
-      <div className="p-4 border-b flex items-center justify-between bg-white shrink-0 shadow-sm z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-            <Headset size={20} />
+      <div className="p-3 md:p-4 border-b flex items-center justify-between bg-white shrink-0 z-10">
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <Headset size={18} />
           </div>
-          <div>
-            <h2 className="font-bold text-slate-900 text-sm md:text-base line-clamp-1">
+          <div className="min-w-0">
+            <h2 className="font-bold text-slate-900 text-sm md:text-base truncate">
               {ticket?.subject || "Support Ticket"}
             </h2>
-            <div className="flex items-center gap-2 mt-0.5">
+            <div className="flex items-center gap-1.5 mt-0.5">
               <TicketCategoryBadge category={ticket?.category} />
               <span className="text-[10px] text-slate-300">|</span>
-              <p className="text-[10px] uppercase font-bold text-muted-foreground">
-                Status: {ticket?.status}
+              <p className="text-[9px] md:text-[10px] uppercase font-bold text-muted-foreground">
+                {ticket?.status}
               </p>
             </div>
           </div>
@@ -64,42 +62,32 @@ const TicketChat = ({ ticketId, isAdmin = false }) => {
       </div>
 
       <ScrollArea className="flex-1 min-h-0 bg-[#f8fafc]">
-        <div className="p-4 md:p-6 space-y-6">
+        <div className="p-4 md:p-6 space-y-4 md:space-y-6">
           {(ticket?.conversation || []).map((msg, i) => (
-            <TicketMessage 
-              key={i} 
-              msg={msg} 
-              isContextAdmin={isAdmin} 
-            />
+            <TicketMessage key={i} msg={msg} isContextAdmin={isAdmin} />
           ))}
           <div ref={messagesEndRef} />
         </div>
       </ScrollArea>
 
-      <div className="p-4 border-t bg-white shrink-0">
+      <div className="p-3 md:p-4 border-t bg-white shrink-0">
         <div className="flex gap-2 max-w-4xl mx-auto relative items-center">
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder={isAdmin ? "Type your response as Support..." : "Type your reply..."}
+            placeholder="Type your reply..."
             disabled={isPending}
-            className="flex-1 rounded-2xl bg-slate-50 border-slate-200 focus-visible:ring-primary h-12 pr-14"
+            className="flex-1 rounded-2xl bg-slate-50 border-slate-200 h-11 md:h-12 pr-12 text-sm"
           />
           <Button
             onClick={handleSend}
             disabled={isPending || !message.trim()}
-            className="absolute right-1.5 w-10 h-10 rounded-xl shadow-lg transition-transform active:scale-95"
+            className="absolute right-1 w-9 h-9 md:w-10 md:h-10 rounded-xl"
           >
-            {isPending ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
+            {isPending ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
           </Button>
         </div>
-        
-        <p className="text-[9px] text-center text-slate-400 mt-2 font-medium">
-          {isAdmin 
-            ? "Your response will be visible to the user immediately" 
-            : "Our team usually responds within a few hours"}
-        </p>
       </div>
     </div>
   );

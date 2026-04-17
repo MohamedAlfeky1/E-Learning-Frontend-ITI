@@ -13,9 +13,16 @@ export const ENDPOINTS = {
   PROFILE_AVATAR: "/profile/avatar",
   PROFILE_CHANGE_PASSWORD: "/auth/change-password",
 
+  // ─── User ────────────────────────────────────────────────────────────────
+  USER_GET_BY_ID: (id) => `/user/${id}`,
+
   // ─── Admin — Users ──────────────────────────────────────────────────────────
-  ADMIN_USERS_LIST: "/admin/users",
-  ADMIN_USER_STATUS: (id) => `/admin/users/${id}/status`,
+  ADMIN_USERS_LIST: "/auth/users",
+  ADMIN_GET_USER_BY_ID: (id) => `/auth/users/${id}/`,
+  ADMIN_USER_DELETE: (id) => `/auth/users/${id}`,
+  ADMIN_STUDENT_GET_PROFILE: (id) => `/auth/users/${id}/profile`,
+  ADMIN_USER_ACTIVATE: (id) => `/auth/users/${id}/activate`,
+  ADMIN_USER_SUSPEND: (id) => `/auth/users/${id}/suspend`,
 
   // ─── Lessons ─────────────────────────────────────────────────────────────────
   LESSONS_LIST: (courseId) => `/lessons/${courseId}`,
@@ -99,7 +106,8 @@ export const ENDPOINTS = {
   // ─── Reviews ──────────────────────────────────────────────────────────────────
   REVIEWS_LIST: (courseId) => `/courseReviews/${courseId}/reviews`,
   REVIEW_COURSE_BY_ID: (courseId) => `/courseReviews/${courseId}`,
-  REVIEWS_CREATE: (courseId) => `/courses/${courseId}/reviews`,
+  MY_REVIEW_COURSE_BY_ID: (courseId , studentId) => `/courseReviews/${courseId}/${studentId}`,
+  REVIEWS_CREATE: '/courseReviews',
   REVIEWS_DELETE: (id) => `/reviews/${id}`,
 
   // ─── Favorites ────────────────────────────────────────────────────────────────
@@ -121,16 +129,18 @@ export const ENDPOINTS = {
   ADMIN_REVENUE_CONFIG_GET: "/finance/admin/revenue-config",
   ADMIN_REVENUE_CONFIG_UPDATE: "/finance/admin/revenue-config",
   TEACHER_EARNINGS: "/finance/teacher/balance",
-  ADMIN_EARNINGS: "/finance/admin/earnings",
+  ADMIN_EARNINGS: "/admin/earnings",
 
   // ─── Withdrawals ──────────────────────────────────────────────────────────────
   TEACHER_WITHDRAWALS_CREATE: "/finance/teacher/withdraw",
   TEACHER_WITHDRAWALS_LIST: "/finance/teacher/withdrawals",
-  ADMIN_WITHDRAWALS_LIST: "/finance/admin/withdrawals/pending",
+  ADMIN_WITHDRAWALS_LIST: "/finance/admin/withdrawals",
+  ADMIN_PLATFORM_STATS: "/finance/admin/platform-stats",
   ADMIN_WITHDRAWALS_PROCESS: (id) => `/finance/admin/withdrawals/${id}`,
 
+
   // ─── Admin Dashboard ──────────────────────────────────────────────────────────
-  ADMIN_STATS_OVERVIEW: "/finance/admin/stats-platform",
+  ADMIN_STATS_OVERVIEW: "/admin/stats",
   ADMIN_STATS_REVENUE: "/admin/stats/revenue",
   ADMIN_STATS_ENROLLMENTS: "/admin/stats/enrollments",
 
@@ -143,7 +153,7 @@ export const ENDPOINTS = {
   ADMIN_SLIDERS_REORDER: "/slider/admin/sliders/reorder",
 
   // ─── Teacher Verification ─────────────────────────────────────────────────────
-  TEACHER_VERIFICATION_SUBMIT: "/teacher/verification",
+  TEACHER_VERIFICATION_SUBMIT: (id) => `/teacher/verification/${id}`,
   TEACHER_VERIFICATION_STATUS: "/teacher/verification",
   ADMIN_VERIFICATIONS_LIST: "/admin/verifications",
   ADMIN_VERIFICATIONS_PROCESS: (id) => `/admin/verification/${id}`,
@@ -157,11 +167,23 @@ export const ENDPOINTS = {
     `/teachers/${teacherId}/availability`,
 
   // ─── Sessions (1-to-1) ────────────────────────────────────────────────────────
-  SESSIONS_BOOK: "/sessions/book",
   SESSIONS_MY: "/sessions/my",
-  SESSIONS_JOIN: (id) => `/sessions/${id}/join`,
   SESSIONS_START_CALL: (id) => `/sessions/${id}/start-call`,
   SESSIONS_END_CALL: (id) => `/sessions/${id}/end-call`,
+  SESSIONS_AVAILABILITY: "/sessions/availability",
+  SESSIONS_AVAILABILITY_UPDATE: (id) => `/sessions/availability/${id}`,
+  SESSIONS_TEACHERS: "/sessions/teachers",
+  SESSIONS_TEACHER_AVAILABILITY: (id) => `/sessions/teachers/${id}/availability`,
+  SESSIONS_BOOK: "/sessions/book",
+  SESSIONS_MY_BOOKINGS: "/sessions/my-bookings",
+  SESSIONS_TEACHER_BOOKINGS: "/sessions/teacher-bookings",
+  SESSIONS_CANCEL: (id) => `/sessions/bookings/${id}/cancel`,
+  SESSIONS_JOIN: (id) => `/sessions/bookings/${id}/join`,
+  SESSIONS_END: (id) => `/sessions/bookings/${id}/end`,
+
+
+
+
 
   // ─── Mobile — Question Bank ───────────────────────────────────────────────────
   QUESTION_BANK_LIST: (courseId) => `/courses/${courseId}/question-bank`,

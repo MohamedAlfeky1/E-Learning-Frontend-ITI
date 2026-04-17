@@ -3,6 +3,7 @@ import { useGetCoursesById } from "@/queries/useCourses";
 import { useGetAllLessonsByCourse } from "@/queries/useLessonQueries";
 import { useParams } from "react-router-dom";
 import { IoPlay } from "react-icons/io5";
+import { MdLockOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils"
@@ -15,6 +16,13 @@ import { MdBarChart } from "react-icons/md";
 import { useEnrollmentDetailsQuery, useMyCoursesQuery, useUpdateProgressMutation } from "@/queries/enrollmentQueries";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
+import { useAddReview } from "@/mutations/useReviewMutations";
+import { useFormik } from "formik";
+import { RATING_RANGE } from "@/data/reviewData";
+import { useGetMyCourseReview } from "@/queries/useReviewQueries";
+import { useUserQuery } from "@/queries/authQueries";
+import { FaStar } from "react-icons/fa";
 
 
 const CoursePlayerPage = () => {
@@ -22,15 +30,66 @@ const CoursePlayerPage = () => {
   // states
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videosProgress, setVideosProgress] = useState({});
+  const [reviewError, setReviewError] = useState({
+    review: "",
+    api: ""
+  });
+  const [courseProgress, setCourseProgress] = useState(0);
 
 
   const { courseId } = useParams();
+  const { data: studentData } = useUserQuery();
+  const studentId = studentData._id
   const { data: course, isLoading, error } = useGetCoursesById(courseId);
   const { data: lessons, isLoading: lessonsLoading, error: lessonsError } = useGetAllLessonsByCourse(courseId);
   const { data: enrollments } = useMyCoursesQuery();
+  const { data: reviewsData, isLoading: loadingReviews, error: errorReviews } = useGetMyCourseReview(courseId, studentId);
   const { data: enrollmentsDetails } = useEnrollmentDetailsQuery(courseId);
   const { mutate: updateProgress } = useUpdateProgressMutation();
+  const addReviewMutation = useAddReview()
   const enrollmentId = enrollmentsDetails?._id
+  const myReview = reviewsData?.data
+
+  console.log("myReview", myReview);
+
+
+  const handleSubmitReview = (formData) => {
+    addReviewMutation.mutate({
+      courseId: courseId,
+      rating: formData.rating,
+      comment: formData.comment,
+    },
+      {
+        onError: (err) => {
+          setReviewError((prev) => ({
+            ...prev,
+            api:
+              err.response?.data.message ||
+              "Invalid data"
+          }))
+        }
+      }
+    )
+  }
+
+  let formik = useFormik({
+    initialValues: {
+      comment: '',
+      rating: ''
+    },
+    onSubmit: handleSubmitReview
+  })
+  const completedVideoIds = enrollmentsDetails?.completedVideos?.map(v => v.videoId) ?? [];
+  const allVideos = lessons?.data?.flatMap(lesson =>
+    lesson.videos.map(video => ({ ...video, lesson }))
+  ) ?? [];
+
+  // A video is accessible if it's completed OR it's the first uncompleted one:
+  const isVideoAccessible = (videoId) => {
+    if (completedVideoIds.includes(videoId)) return true;
+    const firstUncompleted = allVideos.find(v => !completedVideoIds.includes(v._id));
+    return firstUncompleted?._id === videoId;
+  };
 
 
   console.log("enrollments", enrollments);
@@ -51,17 +110,11 @@ const CoursePlayerPage = () => {
       { enrollmentId, videoId },
       {
         onSuccess: (data) => {
-          setVideosProgress(prev => ({
-            ...prev,
-            [videoId]: data.progress // { "videoId123": 75, "videoId456": 50 }
-          }));
+          setCourseProgress(data.progress);
         }
       }
     );
   }
-
-
-
 
 
   useEffect(() => {
@@ -77,6 +130,13 @@ const CoursePlayerPage = () => {
       }
     }
   }, [lessons]);
+
+
+  useEffect(() => {
+    if (enrollmentsDetails?.progress !== undefined) {
+      setCourseProgress(enrollmentsDetails.progress);
+    }
+  }, [enrollmentsDetails]);
 
 
   console.log(courseId);
@@ -118,12 +178,14 @@ const CoursePlayerPage = () => {
             )}
           </div>
         </div>
+
         <div className="flex justify-between items-center mt-4">
           <h2 className="font-bold text-2xl">{selectedVideo?.lesson?.orderIndex}.{selectedVideo?.orderIndex} {selectedVideo?.title}</h2>
           <Button
             onClick={() => handleProgressUpdate(enrollmentId, selectedVideo?._id)}
           > <IoMdCheckmark color="white" /> Record progress</Button>
         </div>
+
         <p className="flex items-center gap-1 text-xs text-gray-500 mt-2">
           <CiCalendar />
           Updated {selectedVideo?.lesson?.updatedAt && formatDate(selectedVideo?.lesson?.updatedAt)}
@@ -153,7 +215,7 @@ const CoursePlayerPage = () => {
                 value="quizes"
                 className="data-active:text-purple-600 data-active:after:bg-purple-600"
               >
-                Course Quizes
+                Course Comments
               </TabsTrigger>
 
             </TabsList>
@@ -227,12 +289,63 @@ const CoursePlayerPage = () => {
 
             </TabsContent>
 
-            <TabsContent value="quizes" className="mt-4">
+            <TabsContent value="quizes" className="mt-4 flex flex-col gap-3">
+
+              <h2 className="text-lg font-semibold mb-3">My Reviews</h2>
+
               <div className="flex flex-col gap-3">
+                {myReview.map((item) => (
+                  <div
+                    key={item._id}
+                    className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition"
+                  >
+                    {/* Top Row */}
+                    <div className="flex justify-between items-center mb-2">
+                      {/* Comment */}
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        {item.comment}
+                      </p>
 
-                No Quizes Provide
+                      {/* Rating */}
+                      <div className="flex items-center gap-1 text-yellow-500 font-semibold">
+                        {item.rating}
+                        <FaStar />
+                      </div>
 
+                    </div>
+
+
+
+                    {/* Date */}
+                    <p className="text-xs text-gray-400 mt-2">
+                      {new Date(item.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))}
               </div>
+              <form onSubmit={formik.handleSubmit} className="flex flex-col gap-3">
+                <Input variant='white'
+                  className='text-black border border-gray-200'
+                  placeholder='Add Your Comment'
+                  name="comment"
+                  value={formik.values.comment}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur} />
+
+                <label for="rating">Rate This Course:</label>
+                <select id="rating" name="rating"
+                  value={formik.values.rating}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}>
+                  <option value="">Select rating</option>
+                  {RATING_RANGE.map((value) =>
+                    <option key={value} value={value}>{value}</option>
+                  )}
+                </select>
+                <p className="text-red-500 ">{reviewError.api || reviewError.review}</p>
+                <Button variant="purpleBtnXl">Submit</Button>
+
+              </form>
 
             </TabsContent>
 
@@ -244,11 +357,12 @@ const CoursePlayerPage = () => {
       <div className="col-span-1 flex flex-col gap-4">
         <div className="bg-[var(--secondary)] p-5 rounded-md flex flex-col  gap-3">
           <div className=" flex justify-between items-center">
-            <h2 className="font-semibold text-sm">Video Progress</h2>
-            <Badge variant="lightPruple">{videosProgress[selectedVideo?._id] ?? 0} % DONE</Badge>
+            <h2 className="font-semibold text-sm">Course Progress</h2>
+            <Badge variant="lightPruple">{courseProgress}% DONE</Badge>
+
           </div>
           <div>
-            <Progress value={videosProgress[selectedVideo?._id] ?? 0} className="w-full mt-2 bg-gray-500" />
+            <Progress value={courseProgress} className="w-full mt-2 bg-gray-500" />
           </div>
         </div>
 
@@ -291,13 +405,14 @@ const CoursePlayerPage = () => {
                   {/* Content (videos) */}
                   <AccordionContent >
                     <div className="flex flex-col ">
-                      {lesson.videos?.map((video) => (
+                      {lesson.videos?.map((video) => {
+                        const accessible = isVideoAccessible(video._id);
+                        const isCompleted = completedVideoIds.includes(video._id);
+                        return(
                         <div
                           onClick={() => {
-                            setSelectedVideo({
-                              ...video,
-                              lesson: lesson
-                            })
+                            if (!accessible) return; // 🔒 block click
+                            setSelectedVideo({ ...video, lesson });
                           }}
                           key={video._id}
                           className={`text-sm hover:bg-gray-50 p-2
@@ -308,10 +423,14 @@ const CoursePlayerPage = () => {
                         >
                           <div className="flex justify-between items-center">
                             <h2 className="text-sm font-semibold">{video.orderIndex} {video.title}</h2>
-                            {selectedVideo?._id === video._id ? (
-                              <MdBarChart className="text-gray-400" />
+                            {isCompleted ? (
+                              <IoMdCheckmark className="text-green-500" />   //  done
+                            ) : selectedVideo?._id === video._id ? (
+                              <MdBarChart className="text-gray-400" />       //  watching
+                            ) : accessible ? (
+                              <IoPlay className="text-gray-400" />           //  next
                             ) : (
-                              <IoPlay className="text-gray-400" />
+                              <MdLockOutline className="text-gray-400" />  
                             )}
 
                           </div>
@@ -325,7 +444,8 @@ const CoursePlayerPage = () => {
 
 
                         </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   </AccordionContent>
 
@@ -344,3 +464,96 @@ const CoursePlayerPage = () => {
 };
 
 export default CoursePlayerPage;
+
+
+// [{…}]
+// 0
+// : 
+// courseId
+// : 
+// {_id: '69d6a5fb3940a1c77a47fe55', title: 'Teaching English'}
+// createdAt
+// : 
+// "2026-04-08T20:05:47.352Z"
+// description
+// : 
+// "learn the alphabet for begginers learn the alphabet for begginers "
+// materials
+// : 
+// []
+// orderIndex
+// : 
+// 1
+// teacherId
+// : 
+// "69d3f77927768c09bdb61add"
+// title
+// : 
+// "learn the alpahet"
+// updatedAt
+// : 
+// "2026-04-08T20:05:47.352Z"
+// videos
+// : 
+// (2) [{…}, {…}]
+// __v
+// : 
+// 0
+// _id
+// : 
+// "69d6b51b0b026f5877d57cc6"
+// [[Prototype]]
+// : 
+// Object
+// length
+// : 
+// 1
+// [[Prototype]]
+// : 
+// Array(0)
+
+// [{…}]
+// 0
+// : 
+// courseId
+// : 
+// {_id: '69d6a5fb3940a1c77a47fe55', title: 'Teaching English'}
+// createdAt
+// : 
+// "2026-04-08T20:05:47.352Z"
+// description
+// : 
+// "learn the alphabet for begginers learn the alphabet for begginers "
+// materials
+// : 
+// []
+// orderIndex
+// : 
+// 1
+// teacherId
+// : 
+// "69d3f77927768c09bdb61add"
+// title
+// : 
+// "learn the alpahet"
+// updatedAt
+// : 
+// "2026-04-08T20:05:47.352Z"
+// videos
+// : 
+// (2) [{…}, {…}]
+// __v
+// : 
+// 0
+// _id
+// : 
+// "69d6b51b0b026f5877d57cc6"
+// [[Prototype]]
+// : 
+// Object
+// length
+// : 
+// 1
+// [[Prototype]]
+// : 
+// Array(0)
