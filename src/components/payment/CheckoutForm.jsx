@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useLocation } from "react-router-dom"; 
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ShieldCheck, Loader2 } from "lucide-react";
@@ -7,7 +8,11 @@ import { ShieldCheck, Loader2 } from "lucide-react";
 const CheckoutForm = ({ amount, clientSecret }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const location = useLocation(); 
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const params = new URLSearchParams(location.search);
+  const isSession = params.get("bookingId");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,17 +39,18 @@ const CheckoutForm = ({ amount, clientSecret }) => {
       toast.error(error.message || "Payment failed.");
       setIsProcessing(false);
     } else if (paymentIntent.status === "succeeded") {
-      toast.success("Enrolled Successfully! 🎉");
+      toast.success("Payment Successful! 🎉");
 
+      const type = isSession ? "session" : "course";
+      
       setTimeout(() => {
-        window.location.href = "/payment-success";
+        window.location.href = `/payment-success?type=${type}`;
       }, 1500);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-
       <div className="group transition-all">
         <label className="text-sm font-medium text-foreground mb-2 block">
           Card Details
@@ -115,7 +121,6 @@ const CheckoutForm = ({ amount, clientSecret }) => {
       <p className="text-center text-[10px] text-muted-foreground uppercase tracking-widest">
         Powered by Stripe
       </p>
-
     </form>
   );
 };
