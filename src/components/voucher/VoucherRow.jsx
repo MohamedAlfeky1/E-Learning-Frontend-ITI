@@ -19,7 +19,7 @@ const VoucherRow = ({ voucher, onEdit, onDelete, isSelected }) => {
           : "hover:bg-muted/50"
       }`}
     >
-د      <div className="flex items-center gap-4 flex-1 min-w-0">
+    <div className="flex items-center gap-4 flex-1 min-w-0">
         <div
           className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center ${
             isExpired
