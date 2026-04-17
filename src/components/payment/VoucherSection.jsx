@@ -31,6 +31,7 @@ const VoucherSection = ({ onApply, isLoading }) => {
       </div>
       <Button
         variant="outline"
+        type="button"
         onClick={() => onApply(code)}
         disabled={!code || isLoading}
         className="
