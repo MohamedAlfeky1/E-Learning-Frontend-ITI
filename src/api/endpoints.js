@@ -13,6 +13,9 @@ export const ENDPOINTS = {
   PROFILE_AVATAR: "/profile/avatar",
   PROFILE_CHANGE_PASSWORD: "/auth/change-password",
 
+  // ─── User ────────────────────────────────────────────────────────────────
+  USER_GET_BY_ID: (id) => `/user/${id}`,
+
   // ─── Admin — Users ──────────────────────────────────────────────────────────
   ADMIN_USERS_LIST: "/auth/users",
   ADMIN_GET_USER_BY_ID: (id) => `/auth/users/${id}/`,
@@ -76,7 +79,7 @@ export const ENDPOINTS = {
   QUIZZES_SUBMIT: (id) => `/quizzes/${id}/submit`,
   QUIZZES_RESULT: (id) => `/quizzes/${id}/result`,
   QUIZZES_GENERATE_AI: "/quizzes/generate-ai",
-  QUIZZES_LIST_FOR_STUDENT : (id) => `/quizzes/courses/${id}/student-quizzes`,
+  QUIZZES_LIST_FOR_STUDENT: (id) => `/quizzes/courses/${id}/student-quizzes`,
 
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
@@ -133,7 +136,7 @@ export const ENDPOINTS = {
 
 
   // ─── Admin Dashboard ──────────────────────────────────────────────────────────
-  ADMIN_STATS_OVERVIEW: "/finance/admin/stats-platform",
+  ADMIN_STATS_OVERVIEW: "/admin/stats",
   ADMIN_STATS_REVENUE: "/admin/stats/revenue",
   ADMIN_STATS_ENROLLMENTS: "/admin/stats/enrollments",
 
@@ -159,11 +162,23 @@ export const ENDPOINTS = {
     `/teachers/${teacherId}/availability`,
 
   // ─── Sessions (1-to-1) ────────────────────────────────────────────────────────
-  SESSIONS_BOOK: "/sessions/book",
   SESSIONS_MY: "/sessions/my",
-  SESSIONS_JOIN: (id) => `/sessions/${id}/join`,
   SESSIONS_START_CALL: (id) => `/sessions/${id}/start-call`,
   SESSIONS_END_CALL: (id) => `/sessions/${id}/end-call`,
+  SESSIONS_AVAILABILITY: "/sessions/availability",
+  SESSIONS_AVAILABILITY_UPDATE: (id) => `/sessions/availability/${id}`,
+  SESSIONS_TEACHERS: "/sessions/teachers",
+  SESSIONS_TEACHER_AVAILABILITY: (id) => `/sessions/teachers/${id}/availability`,
+  SESSIONS_BOOK: "/sessions/book",
+  SESSIONS_MY_BOOKINGS: "/sessions/my-bookings",
+  SESSIONS_TEACHER_BOOKINGS: "/sessions/teacher-bookings",
+  SESSIONS_CANCEL: (id) => `/sessions/bookings/${id}/cancel`,
+  SESSIONS_JOIN: (id) => `/sessions/bookings/${id}/join`,
+  SESSIONS_END: (id) => `/sessions/bookings/${id}/end`,
+
+
+
+
 
   // ─── Mobile — Question Bank ───────────────────────────────────────────────────
   QUESTION_BANK_LIST: (courseId) => `/courses/${courseId}/question-bank`,
@@ -197,16 +212,16 @@ export const ENDPOINTS = {
 
   // ─── File Upload ──────────────────────────────────────────────────────────────
   UPLOAD: "/upload",
-  
+
   //Ticket System
-// ─── Support Tickets ─────────────────────────────────────────────
-SUPPORT_CREATE: "/support/tickets",
-SUPPORT_MY_TICKETS: "/support/my-tickets",
-SUPPORT_GET: (id) => `/support/tickets/${id}`,
-SUPPORT_REPLY: (id) => `/support/tickets/${id}/reply`,
-// Admin
-ADMIN_TICKETS_LIST: "/support/admin/tickets",
-ADMIN_TICKET_REPLY: (id) => `/support/tickets/${id}/reply`,
-ADMIN_TICKET_STATUS: (id) => `/support/tickets/${id}/status`,
-ADMIN_TICKET_DELETE: (id) => `/support/tickets/${id}`,
+  // ─── Support Tickets ─────────────────────────────────────────────
+  SUPPORT_CREATE: "/support/tickets",
+  SUPPORT_MY_TICKETS: "/support/my-tickets",
+  SUPPORT_GET: (id) => `/support/tickets/${id}`,
+  SUPPORT_REPLY: (id) => `/support/tickets/${id}/reply`,
+  // Admin
+  ADMIN_TICKETS_LIST: "/support/admin/tickets",
+  ADMIN_TICKET_REPLY: (id) => `/support/tickets/${id}/reply`,
+  ADMIN_TICKET_STATUS: (id) => `/support/tickets/${id}/status`,
+  ADMIN_TICKET_DELETE: (id) => `/support/tickets/${id}`,
 };
