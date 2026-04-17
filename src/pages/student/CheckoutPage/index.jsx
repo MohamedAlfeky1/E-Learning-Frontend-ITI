@@ -1,5 +1,5 @@
-import { use, useEffect, useState } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useCheckoutMutation } from "../../../mutations/usePaymentMutations";
 import StripeWrapper from "@/components/payment/StripeWrapper";
 import CheckoutForm from "@/components/payment/CheckoutForm";
@@ -27,32 +27,38 @@ import {
 } from "lucide-react";
 
 const CheckoutPage = () => {
- const location = useLocation();
-const params = new URLSearchParams(location.search);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const bookingId = params.get("bookingId");
 
-const bookingId = params.get("bookingId");
-
-console.log(bookingId);
-  
-
-  const { mutate, data, isPending } = useCheckoutMutation();
+  const { mutate, isPending } = useCheckoutMutation();
+  const [checkoutDetails, setCheckoutDetails] = useState(null);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   useEffect(() => {
-    mutate(
-      {
-        voucherCode: null,
-        bookingId: bookingId || null,
-      },
-      {
-        onSuccess: () => {
-          setIsFirstLoad(false);
+    if (bookingId) {
+      mutate(
+        {
+          voucherCode: null,
+          bookingId: bookingId,
         },
-      },
-    );
-  }, []);
+        {
+          onSuccess: (data) => {
+            setCheckoutDetails(data);
+            setIsFirstLoad(false);
+          },
+          onError: (err) => {
+            console.error("Checkout Error:", err);
+            toast.error("Failed to load checkout details");
+            setIsFirstLoad(false);
+          },
+        },
+      );
+    }
+  }, [bookingId, mutate]);
 
-  if (isFirstLoad && isPending) {
+  if (isFirstLoad && !checkoutDetails) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background space-y-6 px-4">
         <div className="relative flex items-center justify-center">
@@ -121,36 +127,37 @@ console.log(bookingId);
 
               <CardContent className="space-y-6">
                 <div
-                  className={`${isPending && !isFirstLoad ? "opacity-50 pointer-events-none" : ""}`}
+                  className={`${isPending ? "opacity-50 pointer-events-none" : ""}`}
                 >
                   <PaymentSummary
-                    subtotal={data?.originalAmount || 0}
-                    discount={data?.discount || 0}
-                    total={data?.finalAmount || 0}
+                    subtotal={checkoutDetails?.originalAmount || 0}
+                    discount={checkoutDetails?.discount || 0}
+                    total={checkoutDetails?.finalAmount || 0}
                   />
                 </div>
 
                 <Separator />
 
                 <VoucherSection
-                  isLoading={isPending && !isFirstLoad}
+                  isLoading={isPending}
                   onApply={(code) =>
                     mutate(
                       {
                         voucherCode: code,
                         bookingId: bookingId || null,
-                        
                       },
-                      
                       {
+                        onSuccess: (newData) => {
+                          setCheckoutDetails(newData);
+                          toast.success("Voucher applied successfully!");
+                        },
                         onError: (error) => {
                           toast.error(
                             error?.response?.data?.message ||
-                              "Please enter a valid voucher",
+                              "Invalid voucher code",
                           );
                         },
                       },
-                      toast.success("Voucher applied successfully!")
                     )
                   }
                 />
@@ -167,7 +174,6 @@ console.log(bookingId);
             </Card>
           </div>
 
-          {/* Payment */}
           <div className="lg:col-span-7 space-y-6">
             <Card className="border border-border shadow-lg bg-card rounded-2xl">
               <CardHeader className="border-b border-border">
@@ -178,24 +184,25 @@ console.log(bookingId);
                     </CardTitle>
                     <CardDescription>Secure payment via Stripe</CardDescription>
                   </div>
-
                   <div className="flex gap-2 opacity-70">
-                    <img src={visa} className="h-4" />
-                    <img src={mastercard} className="h-4" />
+                    <img src={visa} className="h-4" alt="Visa" />
+                    <img src={mastercard} className="h-4" alt="Mastercard" />
                   </div>
                 </div>
               </CardHeader>
 
               <CardContent>
-                <StripeWrapper
-                  key={data?.clientSecret}
-                  clientSecret={data?.clientSecret}
-                >
-                  <CheckoutForm
-                    amount={data?.finalAmount}
-                    clientSecret={data?.clientSecret}
-                  />
-                </StripeWrapper>
+                {checkoutDetails?.clientSecret && (
+                  <StripeWrapper
+                    key={checkoutDetails.clientSecret}
+                    clientSecret={checkoutDetails.clientSecret}
+                  >
+                    <CheckoutForm
+                      amount={checkoutDetails.finalAmount}
+                      clientSecret={checkoutDetails.clientSecret}
+                    />
+                  </StripeWrapper>
+                )}
 
                 <div className="mt-6 flex items-start gap-3 p-4 bg-muted rounded-xl border border-border">
                   <Lock className="w-4 h-4 text-muted-foreground" />
