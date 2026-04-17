@@ -6,7 +6,11 @@ import { FaStar } from "react-icons/fa6";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoMdPeople } from "react-icons/io";
 import { IoPricetags, IoInfinite, IoFileTrayFullSharp } from "react-icons/io5";
-import { MdPlayLesson, MdOutlineStarBorder } from "react-icons/md";
+import {
+  MdPlayLesson,
+  MdOutlineStarBorder,
+  MdOutlineRemoveShoppingCart,
+} from "react-icons/md";
 import {
   MdOutlineAddShoppingCart,
   MdOutlineVerified,
@@ -22,6 +26,10 @@ import {
 } from "@/components/ui/popover";
 import { useState } from "react";
 import placeholderImg from "@/assets/placeholder.jpg";
+import { useCart } from "@/queries/cartQueries";
+import { useAddCartMutation } from "@/mutations/useAddCartMutation";
+import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
+import { Spinner } from "@/components/ui/spinner";
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
@@ -45,9 +53,25 @@ const CourseDetailsPage = () => {
   } = useGetCourseReview(id);
   const [openPopover, setOpenPopover] = useState(false);
 
+  const {
+    data: cartData,
+    isLoading: cartLoading,
+    error: cartError,
+  } = useCart();
+  const { mutateAsync: addToCart, isPending: isAddingToCart } =
+    useAddCartMutation();
+  const { mutateAsync: removeFromCart, isPending: isRemovingFromCart } =
+    useDeleteCartMutation();
+  const cartItems = cartData?.data?.cart?.items || [];
+
   const navigate = useNavigate();
   const isLoggedIn = !!userData;
   const course = data?.data;
+  let cartItem = null;
+  if (!cartLoading && !cartError && !isLoading && !error) {
+    cartItem = cartItems.find((item) => item.courseId._id === course._id);
+  }
+  console.log("cartItem:", cartItem);
   const categoryName =
     categoriesData?.data?.find((cat) => cat._id === course?.categoryId)?.name ||
     "Category";
@@ -76,8 +100,14 @@ const CourseDetailsPage = () => {
       return;
     }
 
+    console.log("cartItem:", cartItem);
+
     // continue enroll logic
-    console.log("Enroll user...");
+    if (cartItem) {
+      removeFromCart(course._id);
+    } else {
+      addToCart(course._id);
+    }
   };
 
   if (isLoading) {
@@ -292,9 +322,23 @@ const CourseDetailsPage = () => {
 
             <Popover open={openPopover} onOpenChange={setOpenPopover}>
               <PopoverTrigger asChild>
-                <Button variant="success" onClick={handleEnroll}>
-                  <MdOutlineAddShoppingCart color="white" />
-                  Enroll Now
+                <Button
+                  variant={cartItem ? "destructive" : "success"}
+                  onClick={handleEnroll}
+                >
+                  {isAddingToCart || isRemovingFromCart ? (
+                    <Spinner className="size-4" />
+                  ) : cartItem ? (
+                    <>
+                      <MdOutlineRemoveShoppingCart color="red" />
+                      Unenroll
+                    </>
+                  ) : (
+                    <>
+                      <MdOutlineAddShoppingCart color="white" />
+                      Enroll Now
+                    </>
+                  )}
                 </Button>
               </PopoverTrigger>
 
