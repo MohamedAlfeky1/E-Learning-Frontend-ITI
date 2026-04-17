@@ -1,7 +1,10 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { FaStar } from "react-icons/fa6";
-import { MdOutlineAddShoppingCart } from "react-icons/md";
+import {
+  MdOutlineAddShoppingCart,
+  MdOutlineRemoveShoppingCart,
+} from "react-icons/md";
 import { IoEyeOutline, IoHeart, IoHeartOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
@@ -9,7 +12,11 @@ import { useUserQuery } from "@/queries/authQueries";
 import { useFavorites } from "@/queries/favoritesQueries";
 import { useAddFavoriteMutation } from "@/mutations/useAddFavoriteMutation";
 import { useDeleteFavoriteMutation } from "@/mutations/useDeleteFavoriteMutation";
+import { useCart } from "@/queries/cartQueries";
+import { useAddCartMutation } from "@/mutations/useAddCartMutation";
+import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
 import placeholderImg from "@/assets/placeholder.jpg";
+import { Spinner } from "../ui/spinner";
 
 function CourseCard({ course }) {
   const { data: user } = useUserQuery();
@@ -18,13 +25,30 @@ function CourseCard({ course }) {
     isLoading: favoritesLoading,
     error: favoritesError,
   } = useFavorites();
-  const { mutate: addFavorite } = useAddFavoriteMutation();
-  const { mutate: removeFavorite } = useDeleteFavoriteMutation();
+  const {
+    data: cartData,
+    isLoading: cartLoading,
+    error: cartError,
+  } = useCart();
+  const { mutateAsync: addFavorite, isPending: isAddingFavorite } =
+    useAddFavoriteMutation();
+  const { mutateAsync: removeFavorite, isPending: isRemovingFavorite } =
+    useDeleteFavoriteMutation();
+  const { mutateAsync: addToCart, isPending: isAddingToCart } =
+    useAddCartMutation();
+  const { mutateAsync: removeFromCart, isPending: isRemovingFromCart } =
+    useDeleteCartMutation();
   const favorites = favoritesData?.data || [];
+  const cartItems = cartData?.data?.cart?.items || [];
   let favorite = null;
+  let cartItem = null;
 
   if (!favoritesLoading && !favoritesError) {
     favorite = favorites.find((fav) => fav.courseId._id === course._id);
+  }
+
+  if (!cartLoading && !cartError) {
+    cartItem = cartItems.find((item) => item.courseId._id === course._id);
   }
 
   return (
@@ -39,7 +63,7 @@ function CourseCard({ course }) {
           />
           {user?.role === "student" && !favoritesLoading && (
             <Button
-              variant="ghost"
+              variant="primary"
               size="icon-sm"
               onClick={() =>
                 favorite
@@ -48,7 +72,9 @@ function CourseCard({ course }) {
               }
               className="absolute top-3 right-14 bg-gray-300 text-gray-200 p-1 rounded-full"
             >
-              {favorite ? (
+              {isAddingFavorite || isRemovingFavorite ? (
+                <Spinner className="text-red-500 size-4" />
+              ) : favorite ? (
                 <IoHeart color="red" />
               ) : (
                 <IoHeartOutline color="red" />
@@ -58,7 +84,7 @@ function CourseCard({ course }) {
           <Link to={`/courses/${course._id}`}>
             <Button
               size="icon-sm"
-              variant="secondary"
+              variant="primary"
               className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full"
             >
               <IoEyeOutline color="#3525CD" />
@@ -102,20 +128,42 @@ function CourseCard({ course }) {
                 <p className="text-2xl font-bold text-[#3525CD]">
                   ${course.price}
                 </p>
-                <Badge
-                  variant="lightPruple"
-                  className="cursor-pointer rounded-md py-3 px-3"
+                <Button
+                  size="icon-sm"
+                  variant="secondary"
+                  className="cursor-pointer rounded-full py-3 px-3"
+                  onClick={() =>
+                    cartItem
+                      ? removeFromCart(course._id)
+                      : addToCart(course._id)
+                  }
                 >
-                  <MdOutlineAddShoppingCart color="#3525CD" />
-                </Badge>
+                  {isAddingToCart || isRemovingFromCart ? (
+                    <Spinner className="size-4" />
+                  ) : cartItem ? (
+                    <MdOutlineRemoveShoppingCart color="#3525CD" />
+                  ) : (
+                    <MdOutlineAddShoppingCart color="#3525CD" />
+                  )}
+                </Button>
               </div>
             ) : (
-              <Badge
-                variant="lightPruple"
-                className="cursor-pointer rounded-md py-3 px-3"
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                className="cursor-pointer rounded-full py-3 px-3"
+                onClick={() =>
+                  cartItem ? removeFromCart(course._id) : addToCart(course._id)
+                }
               >
-                <MdOutlineAddShoppingCart color="#3525CD" />
-              </Badge>
+                {isAddingToCart || isRemovingFromCart ? (
+                  <Spinner className="size-4" />
+                ) : cartItem ? (
+                  <MdOutlineRemoveShoppingCart color="#3525CD" />
+                ) : (
+                  <MdOutlineAddShoppingCart color="#3525CD" />
+                )}
+              </Button>
             )}
           </div>
         </div>
