@@ -1,81 +1,75 @@
 import React from "react";
 import { Ticket, Edit3, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const VoucherRow = ({ voucher, onEdit, onDelete, isSelected }) => {
   const isExpired = new Date(voucher.validUntil) < new Date();
-  const creatorName = voucher.createdBy 
-    ? `${voucher.createdBy.firstName} ${voucher.createdBy.lastName}` 
+
+  const creatorName = voucher.createdBy
+    ? `${voucher.createdBy.firstName} ${voucher.createdBy.lastName}`
     : "System Admin";
 
   return (
-    <>
-     
-      <tr className={`hidden md:table-row transition-all ${isSelected ? 'bg-indigo-50/50' : 'hover:bg-slate-50/30'}`}>
-        <td className="px-6 py-5">
-          <div className="flex items-center gap-4">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isExpired ? 'bg-slate-100 text-slate-400' : 'bg-[#f0f0ff] text-[#6366f1]'}`}>
-              <Ticket size={18} />
-            </div>
-            <div>
-              <span className="font-bold text-slate-800 uppercase block">{voucher.code}</span>
-              <span className="text-[10px] text-slate-400 font-bold">Created by {creatorName}</span>
-            </div>
-          </div>
-        </td>
-
-        <td className="px-6 py-5">
-          <span className="text-xs font-black text-[#6366f1]">
-            {voucher.discountType === 'percentage'
-              ? `${voucher.discountValue}% OFF`
-              : `$${voucher.discountValue} FLAT`}
-          </span>
-        </td>
-
-        <td className="px-6 py-5">
-          <span className="text-xs text-slate-500">
-            {voucher.currentUses} / {voucher.maxUses || '∞'}
-          </span>
-        </td>
-
-        <td className="px-6 py-5 text-right">
-          <div className="flex justify-end gap-2">
-            <Button size="icon" onClick={() => onEdit(voucher)}>
-              <Edit3 size={14} />
-            </Button>
-            <Button size="icon" onClick={() => onDelete(voucher._id)}>
-              <Trash2 size={14} />
-            </Button>
-          </div>
-        </td>
-      </tr>
-
-      <div className="md:hidden bg-white rounded-2xl shadow-sm p-4 space-y-3 border">
-        <div className="flex justify-between">
-          <span className="font-bold">{voucher.code}</span>
-          <span className="text-xs text-slate-400">{creatorName}</span>
+    <Card
+      className={`transition-all border border-border rounded-2xl p-4 md:p-5 
+      flex flex-col md:flex-row md:items-center gap-4 ${
+        isSelected
+          ? "bg-primary/10 ring-2 ring-primary/20"
+          : "hover:bg-muted/50"
+      }`}
+    >
+د      <div className="flex items-center gap-4 flex-1 min-w-0">
+        <div
+          className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center ${
+            isExpired
+              ? "bg-muted text-muted-foreground"
+              : "bg-primary/10 text-primary"
+          }`}
+        >
+          <Ticket size={18} />
         </div>
 
-        <div className="text-sm text-[#6366f1] font-bold">
-          {voucher.discountType === 'percentage'
-            ? `${voucher.discountValue}% OFF`
-            : `$${voucher.discountValue} FLAT`}
-        </div>
-
-        <div className="text-xs text-slate-500">
-          {voucher.currentUses} / {voucher.maxUses || '∞'}
-        </div>
-
-        <div className="flex justify-end gap-2">
-          <Button size="icon" onClick={() => onEdit(voucher)}>
-            <Edit3 size={14} />
-          </Button>
-          <Button size="icon" onClick={() => onDelete(voucher._id)}>
-            <Trash2 size={14} />
-          </Button>
+        <div className="min-w-0">
+          <p className="font-bold text-foreground uppercase truncate">
+            {voucher.code}
+          </p>
+          <p className="text-[10px] text-muted-foreground font-bold truncate">
+            Created by {creatorName}
+          </p>
         </div>
       </div>
-    </>
+
+      <div className="flex flex-wrap items-center gap-4 text-sm">
+        <span className="font-black text-primary whitespace-nowrap">
+          {voucher.discountType === "percentage"
+            ? `${voucher.discountValue}% OFF`
+            : `$${voucher.discountValue} FLAT`}
+        </span>
+
+        <span className="text-xs text-muted-foreground whitespace-nowrap">
+          {voucher.currentUses} / {voucher.maxUses || "∞"}
+        </span>
+      </div>
+
+      <div className="flex gap-2 md:ml-auto">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onEdit(voucher)}
+        >
+          <Edit3 size={14} />
+        </Button>
+
+        <Button
+          variant="destructive"
+          size="icon"
+          onClick={() => onDelete(voucher._id)}
+        >
+          <Trash2 size={14} />
+        </Button>
+      </div>
+    </Card>
   );
 };
 
