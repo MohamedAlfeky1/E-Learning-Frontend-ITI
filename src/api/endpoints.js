@@ -80,7 +80,7 @@ export const ENDPOINTS = {
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
   CART_ADD: "/cart/add",
-  CART_REMOVE: (id) => `/cart/remove/${id}`,
+  CART_REMOVE: "/cart/remove",
   CART_CLEAR: "/cart/clear",
   CART_APPLY_VOUCHER: "/cart/apply-voucher",
   CART_REMOVE_VOUCHER: "/cart/remove-voucher",
