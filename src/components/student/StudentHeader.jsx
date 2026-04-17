@@ -1,37 +1,47 @@
-import { Bell, Settings } from "lucide-react";
+import { Bell, Settings, Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUserQuery } from "@/queries/authQueries";
 
-const StudentHeader = () => {
+const StudentHeader = ({ setIsSidebarOpen }) => {
+  const { data: user } = useUserQuery();
+  console.log(user);
+
   return (
-    <header className="h-16 border-b bg-white flex items-center justify-end px-6 sticky top-0 z-10">
-      <div className="flex items-center gap-6">
-        
-        {/* Notifications & Settings */}
-        <div className="flex items-center gap-4 text-slate-500">
-          <button className="hover:text-slate-900 transition-colors relative">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-          </button>
-          <button className="hover:text-slate-900 transition-colors">
-            <Settings className="w-5 h-5" />
-          </button>
-        </div>
+    <header className="h-16 bg-white border-b flex items-center justify-between lg:justify-end px-4 sm:px-6 sticky top-0 z-30 transition-all">
+      {/* Mobile Menu Toggle */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="p-2 -ml-2 text-slate-600 hover:text-indigo-600 hover:bg-slate-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
 
+      <div className="flex items-center gap-4 sm:gap-6">
         {/* Vertical divider */}
-        <div className="h-8 w-px bg-slate-200"></div>
+        <div className="hidden sm:block h-8 w-px bg-slate-200"></div>
 
         {/* User Profile */}
-        <div className="flex items-center gap-3">
-          <div className="text-right">
-            <p className="text-sm font-semibold text-slate-900">John Doe</p>
-            <p className="text-xs text-slate-500">Student</p>
+        <div className="flex items-center gap-3 pl-2 sm:pl-0">
+          <div className="text-right hidden sm:block">
+            <p className="text-sm font-bold text-slate-800">
+              {`${user?.firstName} ${user?.lastName}` || ""}
+            </p>
+            <p className="text-xs font-medium text-emerald-600 bg-emerald-50 inline-block px-1.5 py-0.5 rounded">
+              Student
+            </p>
           </div>
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@student" />
-            <AvatarFallback>JD</AvatarFallback>
+          <Avatar className="h-10 w-10 border-2 border-indigo-100 shadow-sm cursor-pointer hover:border-indigo-300 transition-colors">
+            <AvatarImage
+              src={user?.avatar || "https://github.com/shadcn.png"}
+              alt="@student"
+            />
+            <AvatarFallback className="bg-indigo-600 text-white font-bold">
+              {user?.firstName?.[0] || "U"}
+            </AvatarFallback>
           </Avatar>
         </div>
-
       </div>
     </header>
   );

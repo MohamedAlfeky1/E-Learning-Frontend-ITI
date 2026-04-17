@@ -10,9 +10,6 @@ import {
   MdPlayLesson,
   MdOutlineStarBorder,
   MdOutlineRemoveShoppingCart,
-} from "react-icons/md";
-import {
-  MdOutlineAddShoppingCart,
   MdOutlineVerified,
   MdOndemandVideo,
 } from "react-icons/md";
@@ -25,6 +22,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
+
 import placeholderImg from "@/assets/placeholder.jpg";
 import { useCart } from "@/queries/cartQueries";
 import { useAddCartMutation } from "@/mutations/useAddCartMutation";
@@ -33,12 +41,13 @@ import { Spinner } from "@/components/ui/spinner";
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
-  console.log(id);
+  const [errors, setErrors] = useState();
+  const [openPopover, setOpenPopover] = useState(false);
 
   const {
     data: userData,
-    isLoading: useLoading,
-    error: useError,
+    isLoading: userLoading,
+    error: userError,
   } = useUserQuery(id);
   const { data, isLoading, error } = useGetCoursesById(id);
   const {
@@ -51,7 +60,11 @@ const CourseDetailsPage = () => {
     isLoading: loadingReviews,
     error: errorReviews,
   } = useGetCourseReview(id);
-  const [openPopover, setOpenPopover] = useState(false);
+  const {
+    data: enrollmentData,
+    isLoading: loadingEnrollment,
+    error: errorEnrollment,
+  } = useEnrollmentDetailsQuery(id);
 
   const {
     data: cartData,
@@ -67,11 +80,12 @@ const CourseDetailsPage = () => {
   const navigate = useNavigate();
   const isLoggedIn = !!userData;
   const course = data?.data;
+
   let cartItem = null;
   if (!cartLoading && !cartError && !isLoading && !error) {
     cartItem = cartItems.find((item) => item.courseId._id === course._id);
   }
-  console.log("cartItem:", cartItem);
+
   const categoryName =
     categoriesData?.data?.find((cat) => cat._id === course?.categoryId)?.name ||
     "Category";
@@ -108,6 +122,7 @@ const CourseDetailsPage = () => {
     } else {
       addToCart(course._id);
     }
+    console.log("Enroll user...");
   };
 
   if (isLoading) {
@@ -168,12 +183,14 @@ const CourseDetailsPage = () => {
           <img
             src={course.thumbnail || placeholderImg}
             alt="Course Thumbnail"
-            className="w-full h-auto object-cover rounded-lg transform rotate-3 shadow-2xl shadow-gray-600"
+            className="w-full h-auto object-cover rounded-lg transform rotate-3 shadow-2xl shadow-indigo-300"
           />
         </div>
       </div>
 
+      {/* Main Content */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
+        {/* Left Column */}
         <div className="col-span-1 md:col-span-2 flex flex-col gap-5">
           <div>
             <h2
@@ -194,6 +211,7 @@ const CourseDetailsPage = () => {
             </ul>
           </div>
 
+          {/* Feature cards */}
           <div className="flex flex-col md:flex-row gap-3">
             <div className=" mt-5 bg-gray-200 rounded-md px-3 py-4 w-64">
               <MdOutlineVerified color="#3525CD" size={20} />
@@ -214,6 +232,7 @@ const CourseDetailsPage = () => {
             </div> */}
           </div>
 
+          {/* Course Lessons */}
           <div className="flex flex-col">
             <h2
               className="text-2xl font-bold text-[#141B2B] mb-4
@@ -239,6 +258,7 @@ const CourseDetailsPage = () => {
             </div>
           </div>
 
+          {/* Student Reviews */}
           <div className="flex flex-col gap-4">
             <div className="flex justify-between items-center">
               <div>
@@ -269,46 +289,54 @@ const CourseDetailsPage = () => {
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {reviewsData?.data?.map((review, index) => (
-                <div key={index} className="bg-gray-200 rounded-md p-3">
-                  <div className="flex gap-2 justify-between items-start w-full">
-                    <div className="flex items-center items-start gap-2">
-                      <div className="w-12 h-12 bg-gray-500 rounded-full p-3">
-                        {review.studentId?.avatar ? (
-                          <img
-                            src={review.studentId.avatar}
-                            alt={review.studentId.name}
-                            className="w-12 h-12 rounded-full"
-                          />
-                        ) : (
-                          <span className="text-gray-200">
-                            {`${review.studentId.firstName?.[0] || ""}${review.studentId.lastName?.[0] || ""}`}
-                          </span>
-                        )}
-                      </div>
-                      <p className="font-semibold">
-                        {review.studentId?.firstName +
-                          " " +
-                          review.studentId?.lastName}
-                      </p>
-                    </div>
 
-                    <div></div>
-                    <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mt-2">
-                      {review.rating}
-                      <FaStar color="#3525CD" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {reviewsData?.data ? (
+                <p className="col-span-2 text-center text-red-500 text-sm ">
+                  No Review Provided
+                </p>
+              ) : (
+                reviewsData?.data?.map((review, index) => (
+                  <div key={index} className="bg-[#f4f4f4] rounded-md p-3">
+                    <div className="flex gap-2 justify-between items-start w-full">
+                      <div className="flex items-center gap-2">
+                        <div className="w-12 h-12 bg-[#cccccc] rounded-full flex items-center justify-center">
+                          {review.studentId?.avatar ? (
+                            <img
+                              src={review.studentId.avatar}
+                              alt={review.studentId.name}
+                              className="w-12 h-12 rounded-full"
+                            />
+                          ) : (
+                            <span className="text-white text-sm font-medium">
+                              {`${review.studentId.firstName?.[0] || ""}${review.studentId.lastName?.[0] || ""}`}
+                            </span>
+                          )}
+                        </div>
+                        <p className="font-semibold">
+                          {review.studentId?.firstName +
+                            " " +
+                            review.studentId?.lastName}
+                        </p>
+                      </div>
+
+                      <div></div>
+                      <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mt-2">
+                        {review.rating}
+                        <FaStar color="#3525CD" />
+                      </div>
                     </div>
+                    <p className="text-[#464555] text-sm italic">
+                      "{review.comment}"
+                    </p>
                   </div>
-                  <p className="text-[#464555] text-sm italic">
-                    "{review.comment}"
-                  </p>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
 
+        {/* Right Column */}
         <div className="col-span-1 flex flex-col gap-4">
           <div className="bg-gray-200 py-4 px-6 rounded-xl flex flex-col gap-4">
             {course.type === "paid" ? (
@@ -341,25 +369,38 @@ const CourseDetailsPage = () => {
                   )}
                 </Button>
               </PopoverTrigger>
-
-              <PopoverContent>
-                <p>Please log in to enroll in this course.</p>
-
-                <Button
-                  variant="purpleBtnDefault"
-                  className="mt-2 w-full"
-                  onClick={() => navigate("/login")}
-                >
-                  Go to Login
-                </Button>
-              </PopoverContent>
             </Popover>
+
+            <Button variant="success" onClick={handleEnroll}>
+              <MdOutlineAddShoppingCart color="white" />
+              Enroll Now
+            </Button>
+
+            <Dialog open={openPopover} onOpenChange={setOpenPopover}>
+              <DialogContent showCloseButton={true}>
+                <DialogHeader>
+                  <DialogTitle>Login Required</DialogTitle>
+                  <DialogDescription>
+                    You need to be logged in to enroll in this course.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button
+                    variant="purpleBtnDefault"
+                    className="w-full"
+                    onClick={() => navigate("/login")}
+                  >
+                    Go to Login
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             <Button variant="secondary" className="text-[#3525CD]">
               Try Free Preview
             </Button>
 
-            <hr />
+            <hr className="border-[#c7d2fe]" />
 
             <div>
               <p className="text-[#141B2B] font-semibold text-lg ">
@@ -390,7 +431,7 @@ const CourseDetailsPage = () => {
             </h1>
 
             <div className="flex gap-2 items-start">
-              <div className="w-12 h-12 bg-gray-500 rounded-full p-3">
+              <div className="w-12 h-12 bg-[#4f46e5] rounded-full flex items-center justify-center">
                 {course.teacherId?.avatar ? (
                   <img
                     src={course.teacherId.avatar}
@@ -398,7 +439,7 @@ const CourseDetailsPage = () => {
                     className="w-12 h-12 rounded-full"
                   />
                 ) : (
-                  <span className="text-gray-200">
+                  <span className="text-white text-sm font-medium">
                     {`${course.teacherId.firstName?.[0] || ""}${course.teacherId.lastName?.[0] || ""}`}
                   </span>
                 )}
