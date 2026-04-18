@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import {
-  Ticket, Trash2, Edit3, XCircle, PlusCircle, Zap, 
-  Calendar, Hash, Info, CheckCircle2, Clock, ArrowRight, AlertCircle
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import Loader from "@/components/ui/loader";
 
@@ -16,11 +13,14 @@ import VoucherRow from "../../../components/voucher/VoucherRow";
 
 const AdminVoucherPage = () => {
   const [selectedVoucher, setSelectedVoucher] = useState(null);
+
   const { data: vouchers, isLoading } = useGetVouchers();
-  const { createVoucher, updateVoucher, deleteVoucher } = useVoucherMutations();
+  const { createVoucher, updateVoucher, deleteVoucher } =
+    useVoucherMutations();
+
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f8faff]" >
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader />
       </div>
     );
@@ -37,14 +37,20 @@ const AdminVoucherPage = () => {
     };
 
     if (selectedVoucher) {
-      updateVoucher.mutate({ id: selectedVoucher._id, data: formattedData }, { 
-        onSuccess: () => {
-          clearSelection();
-          toast.success("Changes Applied Successfully");
-        } 
-      });
+      updateVoucher.mutate(
+        { id: selectedVoucher._id, data: formattedData },
+        {
+          onSuccess: () => {
+            clearSelection();
+            toast.success("Voucher updated successfully");
+          },
+        }
+      );
     } else {
-      createVoucher.mutate({ ...formattedData, validFrom: new Date().toISOString() });
+      createVoucher.mutate({
+        ...formattedData,
+        validFrom: new Date().toISOString(),
+      });
     }
   };
 
@@ -58,24 +64,36 @@ const AdminVoucherPage = () => {
         },
       },
       cancel: { label: "Cancel" },
-      className: "border-red-100", 
+      className: "border-destructive/20",
     });
   };
 
   return (
-    <div className="min-h-screen bg-[#f8faff] p-4 lg:p-10 font-sans antialiased">
-      <div className="max-w-[1300px] mx-auto space-y-8">
+    <div className="min-h-screen bg-background relative p-3 sm:p-4 md:p-6 lg:p-10 font-sans">
+
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
+
+      <div className="relative max-w-[1300px] mx-auto space-y-8 md:space-y-10">
         
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/60 pb-8">
+        <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between border-b border-border pb-6 md:pb-8">
           <div>
-            <p className="text-[#6366f1] font-black text-[10px] uppercase tracking-[0.2em] mb-1">Promotions Engine</p>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Vouchers Management</h1>
-            <p className="text-slate-400 text-xs font-medium mt-1">Create, monitor, and manage academic discounts and promotional codes.</p>
+            <p className="text-primary font-black text-[10px] uppercase tracking-[0.2em] mb-1">
+              Promotions Engine
+            </p>
+
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-foreground">
+              Vouchers Management
+            </h1>
+
+            <p className="text-muted-foreground text-xs mt-1">
+              Create, monitor, and manage academic discounts and promotional codes.
+            </p>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-4 lg:sticky lg:top-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+
+          <div className="lg:col-span-4 lg:sticky lg:top-10 z-20">
             <VoucherForm
               selectedVoucher={selectedVoucher}
               clearSelection={clearSelection}
@@ -84,36 +102,29 @@ const AdminVoucherPage = () => {
             />
           </div>
 
-          <div className="lg:col-span-8">
-            <Card className="border-none shadow-xl shadow-slate-200/50 rounded-[2rem] overflow-hidden bg-white">
-              <div className="p-6 border-b border-slate-50 flex items-center justify-between">
-                <h3 className="font-bold text-slate-800 text-sm">Active Vouchers</h3>
-                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-[#6366f1]"><ArrowRight size={16} /></Button>
+          <div className="lg:col-span-8 relative z-10">
+            <Card className="bg-card border border-border rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden backdrop-blur">
+
+              <div className="p-5 md:p-6 border-b border-border flex items-center justify-between bg-muted/30 backdrop-blur-sm">
+                <h3 className="font-bold text-foreground text-sm md:text-base">
+                  Active Vouchers
+                </h3>
+
+                
               </div>
-              
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-[#f8faff]/50">
-                    <tr className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
-                      <th className="px-6 py-4 text-left">Code</th>
-                      <th className="px-6 py-4 text-left">Discount</th>
-                      <th className="px-6 py-4 text-left">Usage</th>
-                      <th className="px-6 py-4 text-right">Settings</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {!isLoading && vouchers?.map(v => (
-                      <VoucherRow
-                        key={v._id}
-                        voucher={v}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
-                        isSelected={selectedVoucher?._id === v._id}
-                      />
-                    ))}
-                  </tbody>
-                </table>
+
+              <div className="p-4 md:p-6 space-y-4">
+                {vouchers?.map((v) => (
+                  <VoucherRow
+                    key={v._id}
+                    voucher={v}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    isSelected={selectedVoucher?._id === v._id}
+                  />
+                ))}
               </div>
+
             </Card>
           </div>
         </div>

@@ -71,7 +71,7 @@ const StudentProfilePage = () => {
       firstName: data?.firstName || "",
       lastName: data?.lastName || "",
       phone: data?.phone || "",
-      bio: "" || "",
+      bio: data?.bio || "",
       avatar: data?.avatar || "",
     },
     enableReinitialize: true,
@@ -120,11 +120,11 @@ const StudentProfilePage = () => {
 
 
   if (isLoading) return <div className="min-h-full min-w-full flex justify-center items-center"><Loader /></div>
-  if (error) return
+  if (error) return <div className="min-h-full min-w-full flex justify-center items-center"><p className="text-red-500">Error loading profile: {error.message}</p></div>
 
   return (
-    <div onSubmit={profileFormik.handleSubmit} className="bg-gray-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-      <div className="md:col-span-4 col-span-1 bg-gradient-to-r from-[#F5F6FA] via-[#EDEBFF] to-[#D9D4FF] shadow-md shadow-[#000000]/10 px-10 py-5 rounded-md">
+    <form onSubmit={profileFormik.handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="col-span-4 bg-gradient-to-r from-[#F5F6FA] via-[#EDEBFF] to-[#D9D4FF] shadow-md shadow-[#000000]/10 px-10 py-5 rounded-md">
 
         <div className="flex flex-col md:flex-row flex-wrap gap-6 md:gap-10 justify-center md:justify-start items-center">
 
@@ -185,7 +185,7 @@ const StudentProfilePage = () => {
         </div>
       </div>
 
-      <div className="md:col-span-3 bg-white col-span-1 gap-4 px-10 py-5 rounded-md">
+      <div className="col-span-4 md:col-span-3 bg-white col-span-1 gap-4 px-10 py-5 rounded-md">
 
         <div className="flex gap-3 items-center ">
           <Badge className='py-4' variant="lightPruple">
@@ -270,7 +270,7 @@ const StudentProfilePage = () => {
         </div>
       </div>
 
-      <div className="col-span-1 flex flex-col gap-5  ">
+      <div className="col-span-4 md:col-span-1 flex flex-row md:flex-col  gap-5  ">
         <div className="flex flex-col gap-3 px-2 py-5 rounded-md bg-white">
 
           <div className="flex gap-3 items-center ">
@@ -370,7 +370,7 @@ const StudentProfilePage = () => {
       </div>
 
 
-    </div>
+    </form>
   );
 };
 
