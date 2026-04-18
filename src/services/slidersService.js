@@ -41,3 +41,27 @@ export const deleteSlider = async (id) => {
     throw error.response.data;
   }
 };
+
+export const updateSlider = async (id, data) => {
+  try {
+    const response = await axiosInstance.patch(
+      ENDPOINTS.ADMIN_SLIDERS_UPDATE(id),
+      data,
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const reorderSliders = async (orderData) => {
+  try {
+    const response = await axiosInstance.patch(
+      ENDPOINTS.ADMIN_SLIDERS_REORDER,
+      orderData,
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
