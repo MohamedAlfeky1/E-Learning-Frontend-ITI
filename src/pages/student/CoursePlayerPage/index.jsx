@@ -39,7 +39,7 @@ const CoursePlayerPage = () => {
 
   const { courseId } = useParams();
   const { data: studentData } = useUserQuery();
-  const studentId = studentData._id
+  const studentId = studentData?._id
   const { data: course, isLoading, error } = useGetCoursesById(courseId);
   const { data: lessons, isLoading: lessonsLoading, error: lessonsError } = useGetAllLessonsByCourse(courseId);
   const { data: enrollments } = useMyCoursesQuery();
@@ -50,7 +50,7 @@ const CoursePlayerPage = () => {
   const enrollmentId = enrollmentsDetails?._id
   const myReview = reviewsData?.data
 
-  console.log("myReview", myReview);
+  console.log("reviewsData", reviewsData);
 
 
   const handleSubmitReview = (formData) => {
