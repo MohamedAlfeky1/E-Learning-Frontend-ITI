@@ -9,6 +9,8 @@ import { useQueryClient } from "@tanstack/react-query";
 const BACKEND_URL = "http://localhost:5000";
 
 const ChatRoom = ({ courseId, receiverId }) => {
+  console.log("courseId", courseId);
+  console.log("receiverId", receiverId);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [socket, setSocket] = useState(null);
@@ -30,7 +32,7 @@ const ChatRoom = ({ courseId, receiverId }) => {
 
   const messagesContainerRef = useRef(null);
 
-  // === 1: جلب تاريخ المحادثة ===
+  // Get Chat History
   useEffect(() => {
     if (!courseId || !receiverId) return;
 
@@ -55,7 +57,7 @@ const ChatRoom = ({ courseId, receiverId }) => {
     fetchHistory();
   }, [courseId, receiverId]);
 
-  // === 2: الاتصال بالسوكيت ===
+  // Connect to Socket
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -79,7 +81,7 @@ const ChatRoom = ({ courseId, receiverId }) => {
     };
   }, []);
 
-  // === 3: استقبال الرسائل الجديدة ===
+  // Receive New Messages
   useEffect(() => {
     if (!socket) return;
 
@@ -128,7 +130,7 @@ const ChatRoom = ({ courseId, receiverId }) => {
     }
   }, [socket, courseId, receiverId, messages.length]);
 
-  // عمل Auto-scroll
+  // Auto-scroll
   useEffect(() => {
     if (messagesContainerRef.current) {
       // Use scrollTop to prevent the whole browser window from scrolling
@@ -144,8 +146,8 @@ const ChatRoom = ({ courseId, receiverId }) => {
     if (!socket || !inputText.trim() || !courseId || !receiverId) return;
 
     const payload = {
-      to: receiverId, // ديناميك
-      courseId: courseId, // ديناميك
+      to: receiverId,
+      courseId: courseId,
       message: inputText,
     };
 
