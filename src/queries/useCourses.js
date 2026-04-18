@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllCourses, getCourseById } from '../services/courseService';
+import { getAllCourses, getAllCoursesOfLoggedInTeacher, getCourseById } from '../services/courseService';
 
 // Example TanStack Query hook for fetching courses
 // export const useCourses = () => {
@@ -39,6 +39,14 @@ export const useGetAllCourses = () =>{
   return useQuery({
     queryKey:['allCourses'],
     queryFn:getAllCourses,
+  })
+}
+
+
+export const useGetAllTeacherCourses = () =>{
+  return useQuery({
+    queryKey:['allCourses'],
+    queryFn:getAllCoursesOfLoggedInTeacher,
   })
 }
 
