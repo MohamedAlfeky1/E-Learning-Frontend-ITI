@@ -63,14 +63,14 @@ export const ENDPOINTS = {
     `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_PROGRESS: (courseId) => `/enrollments/${courseId}/progress`,
   // ─── Assignments ─────────────────────────────────────────────────────────────
-  ASSIGNMENTS_LIST: (courseId) => `/courses/${courseId}/assignments`,
-  ASSIGNMENTS_CREATE: (courseId) => `/courses/${courseId}/assignments`,
-  ASSIGNMENTS_UPDATE: (id) => `/assignments/${id}`,
-  ASSIGNMENTS_DELETE: (id) => `/assignments/${id}`,
-  ASSIGNMENTS_SUBMIT: (id) => `/assignments/${id}/submit`,
-  ASSIGNMENTS_MY_SUBMISSION: (id) => `/assignments/${id}/my`,
-  ASSIGNMENTS_SUBMISSIONS_LIST: (id) => `/assignments/${id}/submissions`,
-  ASSIGNMENTS_GRADE: (id, sid) => `/assignments/${id}/submissions/${sid}`,
+  ASSIGNMENTS_LIST: (courseId) => `/assignment/courses/${courseId}`,
+  ASSIGNMENTS_CREATE: (courseId) => `/assignment/courses/${courseId}`,
+  ASSIGNMENTS_UPDATE: (id) => `/assignment/${id}`,
+  ASSIGNMENTS_DELETE: (id) => `/assignment/${id}`,
+  ASSIGNMENTS_SUBMIT: (id) => `/assignment/${id}/submit`,
+  ASSIGNMENTS_MY_SUBMISSION: (id) => `/assignment/${id}/my-submission`,
+  ASSIGNMENTS_SUBMISSIONS_LIST: (id) => `/assignment/${id}/submissions`,
+  ASSIGNMENTS_GRADE: (id, sid) => `/assignment/${id}/submissions/${sid}`,
 
   // ─── Quizzes ──────────────────────────────────────────────────────────────────
   QUIZZES_LIST: (courseId) => `/quizzes/course/${courseId}`,

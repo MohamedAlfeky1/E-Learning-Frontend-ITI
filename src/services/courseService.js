@@ -86,13 +86,20 @@ export const browseCourses = async (data) => {
   }
 };
 
-//list all courses (using GET)
+// Fetch all courses belonging to the currently logged-in teacher.
+// Returns an empty-data structure instead of throwing when the
+// backend responds with 404 (no courses exist yet).
 export const getAllCoursesOfLoggedInTeacher = async () => {
   try {
     const response = await axiosInstance.get(ENDPOINTS.COURSES_MY);
     return response.data;
   } catch (error) {
-    console.error("Error get all courses data:", error);
+    // Backend returns 404 when the teacher has no courses yet.
+    // Treat this as "no data" rather than a real error.
+    if (error?.response?.status === 404) {
+      return { data: [], message: "No courses found" };
+    }
+    console.error("Error fetching teacher courses:", error);
     throw error;
   }
 };
