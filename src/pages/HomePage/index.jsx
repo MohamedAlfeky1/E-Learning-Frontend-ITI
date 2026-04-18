@@ -39,24 +39,15 @@ import { useGetAllCourses } from "@/queries/useCourses";
 import axiosInstance from "@/api/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import { ENDPOINTS } from "@/api/endpoints";
-
-const getSliders = async () => {
-  const response = await axiosInstance.get("/admin" + ENDPOINTS.SLIDERS_LIST);
-  return response.data;
-};
+import { usePublicSliders } from "@/queries/slidersQueries";
 
 const HomePage = () => {
   const {
-    data: slidersData,
-    isLoading: slidersLoading,
-    isError: slidersError,
-  } = useQuery({
-    queryKey: ["sliders"],
-    queryFn: getSliders,
-  });
-
-  if (!slidersLoading) console.log(slidersData);
-  else console.log("Loading...");
+    data: publicSlidersData,
+    isLoading: publicSlidersLoading,
+    isError: publicSlidersError,
+  } = usePublicSliders();
+  const sliders = publicSlidersData?.data ?? [];
 
   const {
     data: categoriesData,
@@ -65,8 +56,11 @@ const HomePage = () => {
   } = useCategories();
   const categories = categoriesData?.data ?? [];
 
-  const [api, setApi] = useState();
-  const [current, setCurrent] = useState(0);
+  const [heroApi, setHeroApi] = useState();
+  const [heroCurrent, setHeroCurrent] = useState(0);
+  const [coursesApi, setCoursesApi] = useState();
+  const [coursesCurrent, setCoursesCurrent] = useState(0);
+
   const {
     data: coursesData,
     isLoading: coursesLoading,
@@ -74,53 +68,128 @@ const HomePage = () => {
   } = useGetAllCourses();
   const courses = coursesData?.data ?? [];
 
+  // Hero carousel listener
   useEffect(() => {
-    if (!api) return;
+    if (!heroApi) return;
 
     const onSelect = () => {
-      setCurrent(api.selectedScrollSnap());
+      setHeroCurrent(heroApi.selectedScrollSnap());
     };
 
-    api.on("select", onSelect);
+    heroApi.on("select", onSelect);
 
     return () => {
-      api.off("select", onSelect);
+      heroApi.off("select", onSelect);
     };
-  }, [api]);
+  }, [heroApi]);
+
+  // Courses carousel listener
+  useEffect(() => {
+    if (!coursesApi) return;
+
+    const onSelect = () => {
+      setCoursesCurrent(coursesApi.selectedScrollSnap());
+    };
+
+    coursesApi.on("select", onSelect);
+
+    return () => {
+      coursesApi.off("select", onSelect);
+    };
+  }, [coursesApi]);
 
   return (
     <main className="flex flex-col gap-20 bg-[#F9F9FF]">
-      {/* Hero section */}
-      <section className="mt-6 mx-6 p-8 flex flex-col rounded-[40px] gap-12 sm:p-[64px] xl:flex-row bg-[#F1F3FF]">
-        <div className="flex flex-col gap-8 xl:justify-between">
-          <Badge className="inline-flex items-center rounded-full bg-[#E2DFFF] px-4 py-1.5 text-[#3323CC] text-[11px] font-bold tracking-[1.1px] uppercase">
-            WELCOME TO THE DIGITAL CAMPUS
-          </Badge>
-          <h2 className="text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight">
-            Elevate Your{" "}
-            <span className="text-[#3525CD] italic">Potential.</span>
-          </h2>
-          <p className="text-base sm:text-xl text-[#464555] leading-8 max-w-2xl">
-            A modern digital environment designed for high school excellence.
-            Experience prestigious curricula with cutting-edge visual clarity.
-          </p>
-          <div className="flex flex-col gap-4 sm:flex-row">
-            <Link to="/courses" className="w-full sm:w-auto">
-              <Button className="w-full sm:w-auto rounded-[20px] px-8 py-4 text-[14px] sm:text-[18px] font-bold text-white bg-gradient-to-r from-[#3525CD] to-[#712AE2] shadow-[0_8px_10px_-6_rgba(53,37,205,0.2),0_20px_25px_-5_rgba(53,37,205,0.2)] transition-transform duration-150 hover:scale-[1.01]">
-                Explore Catalog
-              </Button>
-            </Link>
-            <Button className="w-full sm:w-auto rounded-[20px] px-8 py-4 text-[14px] sm:text-[18px] font-bold text-[#3525CD] bg-white border border-[#3525CD] transition-transform duration-150 hover:scale-[1.01] inline-flex items-center justify-center gap-2">
-              Watch Demo
-              <img src={PlayIcon} className="w-5 h-5" alt="Play demo" />
-            </Button>
+      {/* Dynamic Hero Section */}
+      <section className="mt-6 mx-6 rounded-[40px] overflow-hidden relative group shadow-2xl">
+        {publicSlidersLoading ? (
+          <div className="w-full h-[600px] flex flex-col justify-center items-center gap-4 bg-[#F1F3FF]">
+            <Spinner className="size-12 border-[#3525CD]" />
+            <p className="text-gray-400 font-bold animate-pulse uppercase tracking-[2px]">
+              Initializing Experience...
+            </p>
           </div>
-        </div>
-        <img
-          src={HeroImage}
-          className="rounded-xl flex-1 object-cover"
-          alt="Hero"
-        />
+        ) : sliders.length > 0 ? (
+          <Carousel
+            plugins={[Autoplay({ delay: 6000 })]}
+            className="w-full"
+            setApi={setHeroApi}
+          >
+            <CarouselContent>
+              {sliders.map((slider) => (
+                <CarouselItem
+                  key={slider._id}
+                  className="relative h-[550px] sm:h-[650px] lg:h-[750px]"
+                >
+                  {/* Slider Background with Parallax-like effect */}
+                  <div
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[2000ms] group-hover:scale-110"
+                    style={{
+                      backgroundImage: `url(${slider.imageUrl.startsWith("http") ? slider.imageUrl : `http://localhost:5000${slider.imageUrl}`})`,
+                    }}
+                  />
+                  {/* Premium Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#141B2B]/95 via-[#141B2B]/60 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#141B2B]/40 via-transparent to-transparent" />
+
+                  {/* Content Container */}
+                  <div className="relative h-full container mx-auto px-10 sm:px-20 flex flex-col justify-center gap-8 max-w-5xl">
+                    <Badge className="w-fit rounded-full bg-[#E2DFFF]/20 backdrop-blur-xl px-4 py-2 text-white text-[11px] font-bold tracking-[2px] uppercase border border-white/20 animate-in fade-in slide-in-from-left-4 duration-700">
+                      Welcome to ITI Digital Campus
+                    </Badge>
+
+                    <div className="space-y-4 animate-in fade-in slide-in-from-left-8 duration-1000 delay-100">
+                      <h2 className="text-4xl sm:text-7xl lg:text-8xl font-black text-white tracking-tight leading-[1.1] max-w-3xl">
+                        {slider.title}
+                      </h2>
+                      <p className="text-lg sm:text-2xl text-white/70 leading-relaxed font-medium max-w-2xl">
+                        {slider.description}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-5 sm:flex-row animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+                      {slider.linkUrl && (
+                        <Link to={slider.linkUrl} className="w-full sm:w-auto">
+                          <Button className="w-full sm:w-auto rounded-full px-10 py-7 text-lg font-bold text-white bg-gradient-to-r from-[#3525CD] to-[#712AE2] border-0 shadow-[0_15px_30px_-10px_rgba(53,37,205,0.5)] hover:shadow-[#3525CD]/60 hover:-translate-y-1 transition-all">
+                            {slider.buttonText || "Explore Now"}
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+
+            {/* Navigation Controls */}
+            <div className="absolute bottom-12 right-12 flex gap-4 scale-90 sm:scale-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <CarouselPrevious className="static translate-y-0 h-14 w-14 rounded-full bg-white/10 border-white/20 text-white hover:bg-[#3525CD] hover:border-[#3525CD] transition-all" />
+              <CarouselNext className="static translate-y-0 h-14 w-14 rounded-full bg-white/10 border-white/20 text-white hover:bg-[#3525CD] hover:border-[#3525CD] transition-all" />
+            </div>
+
+            {/* Custom Dot Indicators */}
+            <div className="absolute bottom-12 left-10 sm:left-20 flex gap-3">
+              {sliders.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => heroApi?.scrollTo(i)}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${
+                    heroCurrent === i
+                      ? "w-12 bg-white"
+                      : "w-4 bg-white/30 hover:bg-white/50"
+                  }`}
+                />
+              ))}
+            </div>
+          </Carousel>
+        ) : (
+          /* Empty State Fallback */
+          <div className="w-full h-[600px] bg-[#F1F3FF] flex items-center justify-center">
+            <p className="text-gray-400 font-medium italic">
+              Preparing your digital campus journey...
+            </p>
+          </div>
+        )}
       </section>
 
       {/* Categories section */}
@@ -190,7 +259,7 @@ const HomePage = () => {
         ) : (
           <>
             <Carousel
-              setApi={setApi}
+              setApi={setCoursesApi}
               className="flex flex-col gap-10"
               plugins={[Autoplay({ delay: 3000 })]}
             >
@@ -223,13 +292,13 @@ const HomePage = () => {
                         <PaginationLink
                           href="#"
                           className={`inline-block h-2 rounded-full transition-all duration-200 ${
-                            current === index
+                            coursesCurrent === index
                               ? "w-8 bg-[#3525CD]"
                               : "w-2 bg-[#c7c4d8] hover:bg-[#3525CD]"
                           }`}
                           onClick={(event) => {
                             event.preventDefault();
-                            api?.scrollTo(index);
+                            coursesApi?.scrollTo(index);
                           }}
                         ></PaginationLink>
                       </PaginationItem>
