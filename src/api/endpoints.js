@@ -95,6 +95,7 @@ export const ENDPOINTS = {
   // ─── Vouchers ─────────────────────────────────────────────────────────────────
   ADMIN_VOUCHERS_LIST: "/vouchers",
   ADMIN_VOUCHERS_CREATE: "/vouchers",
+  ADMIN_VOUCHERS_APPLY: "/vouchers/apply",
   ADMIN_VOUCHERS_UPDATE: (id) => `/vouchers/${id}`,
   ADMIN_VOUCHERS_DELETE: (id) => `/vouchers/${id}`,
 
@@ -106,8 +107,9 @@ export const ENDPOINTS = {
   // ─── Reviews ──────────────────────────────────────────────────────────────────
   REVIEWS_LIST: (courseId) => `/courseReviews/${courseId}/reviews`,
   REVIEW_COURSE_BY_ID: (courseId) => `/courseReviews/${courseId}`,
-  MY_REVIEW_COURSE_BY_ID: (courseId , studentId) => `/courseReviews/${courseId}/${studentId}`,
-  REVIEWS_CREATE: '/courseReviews',
+  MY_REVIEW_COURSE_BY_ID: (courseId, studentId) =>
+    `/courseReviews/${courseId}/${studentId}`,
+  REVIEWS_CREATE: "/courseReviews",
   REVIEWS_DELETE: (id) => `/reviews/${id}`,
 
   // ─── Favorites ────────────────────────────────────────────────────────────────
@@ -137,7 +139,6 @@ export const ENDPOINTS = {
   ADMIN_WITHDRAWALS_LIST: "/finance/admin/withdrawals",
   ADMIN_PLATFORM_STATS: "/finance/admin/platform-stats",
   ADMIN_WITHDRAWALS_PROCESS: (id) => `/finance/admin/withdrawals/${id}`,
-
 
   // ─── Admin Dashboard ──────────────────────────────────────────────────────────
   ADMIN_STATS_OVERVIEW: "/admin/stats",
@@ -173,17 +174,14 @@ export const ENDPOINTS = {
   SESSIONS_AVAILABILITY: "/sessions/availability",
   SESSIONS_AVAILABILITY_UPDATE: (id) => `/sessions/availability/${id}`,
   SESSIONS_TEACHERS: "/sessions/teachers",
-  SESSIONS_TEACHER_AVAILABILITY: (id) => `/sessions/teachers/${id}/availability`,
+  SESSIONS_TEACHER_AVAILABILITY: (id) =>
+    `/sessions/teachers/${id}/availability`,
   SESSIONS_BOOK: "/sessions/book",
   SESSIONS_MY_BOOKINGS: "/sessions/my-bookings",
   SESSIONS_TEACHER_BOOKINGS: "/sessions/teacher-bookings",
   SESSIONS_CANCEL: (id) => `/sessions/bookings/${id}/cancel`,
   SESSIONS_JOIN: (id) => `/sessions/bookings/${id}/join`,
   SESSIONS_END: (id) => `/sessions/bookings/${id}/end`,
-
-
-
-
 
   // ─── Mobile — Question Bank ───────────────────────────────────────────────────
   QUESTION_BANK_LIST: (courseId) => `/courses/${courseId}/question-bank`,
