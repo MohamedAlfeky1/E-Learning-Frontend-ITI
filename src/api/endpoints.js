@@ -13,9 +13,16 @@ export const ENDPOINTS = {
   PROFILE_AVATAR: "/profile/avatar",
   PROFILE_CHANGE_PASSWORD: "/auth/change-password",
 
+  // ─── User ────────────────────────────────────────────────────────────────
+  USER_GET_BY_ID: (id) => `/user/${id}`,
+
   // ─── Admin — Users ──────────────────────────────────────────────────────────
-  ADMIN_USERS_LIST: "/admin/users",
-  ADMIN_USER_STATUS: (id) => `/admin/users/${id}/status`,
+  ADMIN_USERS_LIST: "/auth/users",
+  ADMIN_GET_USER_BY_ID: (id) => `/auth/users/${id}/`,
+  ADMIN_USER_DELETE: (id) => `/auth/users/${id}`,
+  ADMIN_STUDENT_GET_PROFILE: (id) => `/auth/users/${id}/profile`,
+  ADMIN_USER_ACTIVATE: (id) => `/auth/users/${id}/activate`,
+  ADMIN_USER_SUSPEND: (id) => `/auth/users/${id}/suspend`,
 
   // ─── Lessons ─────────────────────────────────────────────────────────────────
   LESSONS_LIST: (courseId) => `/lessons/${courseId}`,
@@ -74,7 +81,7 @@ export const ENDPOINTS = {
   QUIZZES_SUBMIT: (id) => `/quizzes/${id}/submit`,
   QUIZZES_RESULT: (id) => `/quizzes/${id}/result`,
   QUIZZES_GENERATE_AI: "/quizzes/generate-ai",
-  QUIZZES_LIST_FOR_STUDENT: (id) => `/courses/${id}/student-quizzes`,
+  QUIZZES_LIST_FOR_STUDENT: (id) => `/quizzes/courses/${id}/student-quizzes`,
 
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
@@ -91,14 +98,15 @@ export const ENDPOINTS = {
   ADMIN_VOUCHERS_DELETE: (id) => `/vouchers/${id}`,
 
   // ─── Payments ─────────────────────────────────────────────────────────────────
-  PAYMENTS_CREATE_INTENT: "/payments/create-intent",
+  PAYMENTS_CREATE_INTENT: "/payments/checkout",
   PAYMENTS_WEBHOOK: "/payments/webhook",
-  PAYMENTS_MY: "/payments/my",
+  PAYMENTS_MY: "/payments/history",
 
   // ─── Reviews ──────────────────────────────────────────────────────────────────
   REVIEWS_LIST: (courseId) => `/courseReviews/${courseId}/reviews`,
   REVIEW_COURSE_BY_ID: (courseId) => `/courseReviews/${courseId}`,
-  REVIEWS_CREATE: (courseId) => `/courses/${courseId}/reviews`,
+  MY_REVIEW_COURSE_BY_ID: (courseId , studentId) => `/courseReviews/${courseId}/${studentId}`,
+  REVIEWS_CREATE: '/courseReviews',
   REVIEWS_DELETE: (id) => `/reviews/${id}`,
 
   // ─── Favorites ────────────────────────────────────────────────────────────────
@@ -118,19 +126,21 @@ export const ENDPOINTS = {
   REPORTS_GET: (courseId) => `/reports/${courseId}`,
 
   // ─── Revenue & Earnings ───────────────────────────────────────────────────────
-  ADMIN_REVENUE_CONFIG_GET: "/admin/revenue-config",
-  ADMIN_REVENUE_CONFIG_UPDATE: "/admin/revenue-config",
-  TEACHER_EARNINGS: "/teacher/earnings",
+  ADMIN_REVENUE_CONFIG_GET: "/finance/admin/revenue-config",
+  ADMIN_REVENUE_CONFIG_UPDATE: "/finance/admin/revenue-config",
+  TEACHER_EARNINGS: "/finance/teacher/balance",
   ADMIN_EARNINGS: "/admin/earnings",
 
   // ─── Withdrawals ──────────────────────────────────────────────────────────────
-  TEACHER_WITHDRAWALS_CREATE: "/teacher/withdrawals",
-  TEACHER_WITHDRAWALS_LIST: "/teacher/withdrawals",
-  ADMIN_WITHDRAWALS_LIST: "/admin/withdrawals",
-  ADMIN_WITHDRAWALS_PROCESS: (id) => `/admin/withdrawals/${id}`,
+  TEACHER_WITHDRAWALS_CREATE: "/finance/teacher/withdraw",
+  TEACHER_WITHDRAWALS_LIST: "/finance/teacher/withdrawals",
+  ADMIN_WITHDRAWALS_LIST: "/finance/admin/withdrawals",
+  ADMIN_PLATFORM_STATS: "/finance/admin/platform-stats",
+  ADMIN_WITHDRAWALS_PROCESS: (id) => `/finance/admin/withdrawals/${id}`,
+
 
   // ─── Admin Dashboard ──────────────────────────────────────────────────────────
-  ADMIN_STATS_OVERVIEW: "/admin/stats/overview",
+  ADMIN_STATS_OVERVIEW: "/admin/stats",
   ADMIN_STATS_REVENUE: "/admin/stats/revenue",
   ADMIN_STATS_ENROLLMENTS: "/admin/stats/enrollments",
 
@@ -142,7 +152,7 @@ export const ENDPOINTS = {
   ADMIN_SLIDERS_REORDER: "/admin/sliders/reorder",
 
   // ─── Teacher Verification ─────────────────────────────────────────────────────
-  TEACHER_VERIFICATION_SUBMIT: "/teacher/verification",
+  TEACHER_VERIFICATION_SUBMIT: (id) => `/teacher/verification/${id}`,
   TEACHER_VERIFICATION_STATUS: "/teacher/verification",
   ADMIN_VERIFICATIONS_LIST: "/admin/verifications",
   ADMIN_VERIFICATIONS_PROCESS: (id) => `/admin/verification/${id}`,
@@ -156,11 +166,23 @@ export const ENDPOINTS = {
     `/teachers/${teacherId}/availability`,
 
   // ─── Sessions (1-to-1) ────────────────────────────────────────────────────────
-  SESSIONS_BOOK: "/sessions/book",
   SESSIONS_MY: "/sessions/my",
-  SESSIONS_JOIN: (id) => `/sessions/${id}/join`,
   SESSIONS_START_CALL: (id) => `/sessions/${id}/start-call`,
   SESSIONS_END_CALL: (id) => `/sessions/${id}/end-call`,
+  SESSIONS_AVAILABILITY: "/sessions/availability",
+  SESSIONS_AVAILABILITY_UPDATE: (id) => `/sessions/availability/${id}`,
+  SESSIONS_TEACHERS: "/sessions/teachers",
+  SESSIONS_TEACHER_AVAILABILITY: (id) => `/sessions/teachers/${id}/availability`,
+  SESSIONS_BOOK: "/sessions/book",
+  SESSIONS_MY_BOOKINGS: "/sessions/my-bookings",
+  SESSIONS_TEACHER_BOOKINGS: "/sessions/teacher-bookings",
+  SESSIONS_CANCEL: (id) => `/sessions/bookings/${id}/cancel`,
+  SESSIONS_JOIN: (id) => `/sessions/bookings/${id}/join`,
+  SESSIONS_END: (id) => `/sessions/bookings/${id}/end`,
+
+
+
+
 
   // ─── Mobile — Question Bank ───────────────────────────────────────────────────
   QUESTION_BANK_LIST: (courseId) => `/courses/${courseId}/question-bank`,
@@ -194,4 +216,16 @@ export const ENDPOINTS = {
 
   // ─── File Upload ──────────────────────────────────────────────────────────────
   UPLOAD: "/upload",
+
+  //Ticket System
+  // ─── Support Tickets ─────────────────────────────────────────────
+  SUPPORT_CREATE: "/support/tickets",
+  SUPPORT_MY_TICKETS: "/support/my-tickets",
+  SUPPORT_GET: (id) => `/support/tickets/${id}`,
+  SUPPORT_REPLY: (id) => `/support/tickets/${id}/reply`,
+  // Admin
+  ADMIN_TICKETS_LIST: "/support/admin/tickets",
+  ADMIN_TICKET_REPLY: (id) => `/support/tickets/${id}/reply`,
+  ADMIN_TICKET_STATUS: (id) => `/support/tickets/${id}/status`,
+  ADMIN_TICKET_DELETE: (id) => `/support/tickets/${id}`,
 };
