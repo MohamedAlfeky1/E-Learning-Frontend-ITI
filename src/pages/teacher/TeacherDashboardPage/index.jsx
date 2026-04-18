@@ -27,7 +27,7 @@ import {
   PendingIcon,
   PlusIcon,
 } from "./icons";
-import { StatCard, CourseCard } from "./components";
+import { StatCard, CourseCard } from "@/components/teacher/dashboard";
 import { chartConfig, upcomingEvents } from "./constants";
 
 // Queries

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useSliders } from "@/queries/slidersQueries";
 import { useDeleteSliderMutation } from "@/mutations/useDeleteSliderMutation";
 import { useReorderSlidersMutation } from "@/mutations/useReorderSlidersMutation";
-import AddSliderDialog from "./AddSliderDialog";
-import EditSliderDialog from "./EditSliderDialog";
+import AddSliderDialog from "@/components/admin/sliders/AddSliderDialog";
+import EditSliderDialog from "@/components/admin/sliders/EditSliderDialog";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Empty,
