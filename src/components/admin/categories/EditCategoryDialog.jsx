@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -79,6 +80,7 @@ const EditCategoryDialog = ({ category }) => {
                   <Input
                     {...field}
                     id="name"
+                    placeholder="Update category name..."
                     className={errors.name ? "border-destructive" : ""}
                   />
                 )}
@@ -97,9 +99,10 @@ const EditCategoryDialog = ({ category }) => {
                 name="description"
                 control={control}
                 render={({ field }) => (
-                  <Input
+                  <Textarea
                     {...field}
                     id="description"
+                    placeholder="Update category description..."
                     className={errors.description ? "border-destructive" : ""}
                   />
                 )}

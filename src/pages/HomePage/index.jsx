@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 // Categories section imports
 import { ArrowRight } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import CategoryCard from "../../components/homepage/CategoryCard";
+import CategoryCard from "@/components/admin/categories/CategoryCard";
 import { useCategories } from "@/queries/categoryQueries";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -40,8 +40,17 @@ import axiosInstance from "@/api/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import { ENDPOINTS } from "@/api/endpoints";
 import { usePublicSliders } from "@/queries/slidersQueries";
+import { useUserQuery } from "@/queries/authQueries";
 
 const HomePage = () => {
+  const {
+    data: userData,
+    isLoading: userLoading,
+    error: userError,
+  } = useUserQuery();
+  const isAdmin = userData?.role === "admin";
+  console.log(userData);
+
   const {
     data: publicSlidersData,
     isLoading: publicSlidersLoading,
@@ -60,6 +69,7 @@ const HomePage = () => {
   const [heroCurrent, setHeroCurrent] = useState(0);
   const [coursesApi, setCoursesApi] = useState();
   const [coursesCurrent, setCoursesCurrent] = useState(0);
+  const [coursesSlides, setCoursesSlides] = useState(0);
 
   const {
     data: coursesData,
@@ -87,11 +97,16 @@ const HomePage = () => {
   useEffect(() => {
     if (!coursesApi) return;
 
+    setCoursesSlides(coursesApi.scrollSnapList().length);
+
     const onSelect = () => {
       setCoursesCurrent(coursesApi.selectedScrollSnap());
     };
 
     coursesApi.on("select", onSelect);
+    coursesApi.on("reInit", () => {
+      setCoursesSlides(coursesApi.scrollSnapList().length);
+    });
 
     return () => {
       coursesApi.off("select", onSelect);
@@ -220,17 +235,24 @@ const HomePage = () => {
                     Curated Study Domains
                   </h2>
                 </div>
-                <div className="flex items-center gap-2 text-[12px] sm:text-[16px] text-[#3525CD] font-semibold">
-                  View All Categories <ArrowRight size={16} />
-                </div>
+                {isAdmin && (
+                  <Link
+                    to="/admin/categories"
+                    className="flex items-center gap-2 text-[12px] sm:text-[16px] text-[#3525CD] font-semibold cursor-pointer hover:underline"
+                  >
+                    View All Categories <ArrowRight size={16} />
+                  </Link>
+                )}
               </div>
               <ScrollArea className="whitespace-nowrap">
                 <div className="pb-4 flex gap-4">
                   {categories.map((category) => (
-                    <CategoryCard
+                    <div
                       key={category._id ?? category.id ?? category.name}
-                      category={category}
-                    />
+                      className="w-[320px] flex-shrink-0"
+                    >
+                      <CategoryCard category={category} isAdmin={isAdmin} />
+                    </div>
                   ))}
                 </div>
                 <ScrollBar orientation="horizontal" />
@@ -285,25 +307,22 @@ const HomePage = () => {
               </CarouselContent>
               <Pagination>
                 <PaginationContent className="flex gap-2">
-                  {courses.map((course, index) => {
-                    if (index >= courses.length - 1) return null;
-                    return (
-                      <PaginationItem key={course._id ?? course.id ?? index}>
-                        <PaginationLink
-                          href="#"
-                          className={`inline-block h-2 rounded-full transition-all duration-200 ${
-                            coursesCurrent === index
-                              ? "w-8 bg-[#3525CD]"
-                              : "w-2 bg-[#c7c4d8] hover:bg-[#3525CD]"
-                          }`}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            coursesApi?.scrollTo(index);
-                          }}
-                        ></PaginationLink>
-                      </PaginationItem>
-                    );
-                  })}
+                  {Array.from({ length: coursesSlides }).map((_, index) => (
+                    <PaginationItem key={index}>
+                      <PaginationLink
+                        href="#"
+                        className={`inline-block h-2 rounded-full transition-all duration-300 ${
+                          coursesCurrent === index
+                            ? "w-8 bg-[#3525CD]"
+                            : "w-2 bg-[#c7c4d8] hover:bg-[#3525CD]"
+                        }`}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          coursesApi?.scrollTo(index);
+                        }}
+                      ></PaginationLink>
+                    </PaginationItem>
+                  ))}
                 </PaginationContent>
               </Pagination>
             </Carousel>
