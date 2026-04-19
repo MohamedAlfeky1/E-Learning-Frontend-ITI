@@ -5,8 +5,6 @@ import { Avatar, AvatarImage, AvatarFallback, AvatarGroup, AvatarGroupCount } fr
 
 function TeacherActiveCoureCard({ course }) {
     const { data: enrollmentDetails } = useTeacherEnrollmentDetailsQuery(course?._id)
-    console.log(enrollmentDetails);
-
     const visibleStudents = enrollmentDetails?.slice(0, 3) ?? [];
     const extraCount = (enrollmentDetails?.length ?? 0) - visibleStudents.length;
 

@@ -1,6 +1,5 @@
-import { useLogout } from "../../../hooks/useLogout";
 import { useGetAllTeacherCourses } from "@/queries/useCourses";
-import { FaArrowTrendUp, FaGraduationCap } from "react-icons/fa6";
+import { FaArrowTrendUp } from "react-icons/fa6";
 import { useTeacherVerification } from "@/queries/adminVerificationQueries";
 import Loader from "@/components/ui/loader";
 import { Bar, BarChart, ResponsiveContainer, XAxis, Tooltip, YAxis, Cell } from "recharts";
@@ -13,39 +12,57 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useUserQuery } from "@/queries/authQueries";
 import { useTeacherBalance } from "@/queries/useTeacherFinanceQueries";
 import { useEnrollmentDetailsQuery, useTeacherCoursesQuery } from "@/queries/enrollmentQueries";
-import generateWeeklyData from "@/components/teacher/generateWeeklyData";
 import TeacherActiveCoureCard from "@/components/teacher/TeacherActiveCoureCard";
 import { IoMdAdd } from "react-icons/io";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { sessionService } from "@/services/sessionService";
+import { Button } from "@/components/ui/button";
 
-
-const getStatBadge = (value) => {
-  if (!value || value === 0) return { label: "No data", color: "text-gray-400 bg-gray-100" };
-  return { label: "Active", color: "text-green-600 bg-green-100" };
-};
 
 const TeacherDashboardPage = () => {
   const navigate = useNavigate()
-  const logout = useLogout();
   const { data: userData, isLoading, error } = useUserQuery()
   const { data: teacherBalance } = useTeacherBalance()
   const { data: teacherErollemnts } = useTeacherCoursesQuery()
   const { data: teacherCourses } = useGetAllTeacherCourses()
   const { data: verificationData } = useTeacherVerification()
   const { data: enrollmentDetails } = useEnrollmentDetailsQuery()
+  // const {}
 
   const [period, setPeriod] = useState(7);
   const [open, setOpen] = useState(false);
+  const [bookings, setBookings] = useState([])
 
+  const fetchBookings = async () => {
+    try {
+      const response = await sessionService.getTeacherBookings()
+      setBookings(response.data.data || [])
+      console.log('Teacher Booking', response.data.data);
 
+    } catch (error) {
+      toast.error("Failed to load your bookings")
+      console.error(error)
+    } finally {
+    }
+  }
 
   const weeklyData = useMemo(() => {
-    return generateWeeklyData(teacherBalance?.totalEarnings ?? 0, period);
-  }, [teacherBalance?.totalEarnings, period]);
+    if (!teacherBalance?.dailyEarnings) return [];
+
+    return teacherBalance.dailyEarnings
+      .slice(-period) // last 7, 14, or 30 days based on selector
+      .map(entry => ({
+        day: new Date(entry.date).toLocaleDateString("en-GB", { weekday: "short" }).slice(0, 3),
+        amount: entry.amount,
+        date: entry.date
+      }));
+  }, [teacherBalance?.dailyEarnings, period]);
+
 
   const today = new Date();
   const startDate = new Date(today);
@@ -53,23 +70,23 @@ const TeacherDashboardPage = () => {
   const formatDate = (d) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
   const dateRange = `Revenue flow from ${formatDate(startDate)} - ${formatDate(today)}`;
 
-  console.log("userData", userData);
-
-  console.log("teacherCourses", teacherCourses);
-
-  console.log("teacherErollemnts", teacherErollemnts);
-  console.log("teacherBalance", teacherBalance);
-  console.log("verificationData", verificationData);
 
 
   const coursesStatus = teacherCourses?.data.map((st) => st.status === "published");
   const publishedCourses = teacherCourses?.data.filter((st) => st.status === "published");
   const publishedCoursesCount = publishedCourses?.length;
-  console.log("coursesStatus", coursesStatus);
 
+  console.log("coursesStatus", coursesStatus);
+  console.log("userData", userData);
+  console.log("teacherCourses", teacherCourses);
+  console.log("teacherErollemnts", teacherErollemnts);
+  console.log("teacherBalance", teacherBalance);
+  console.log("verificationData", verificationData);
   console.log("publishedCourses", publishedCourses);
 
-
+  useEffect(() => {
+    fetchBookings()
+  }, [])
 
 
   if (isLoading) return <div className="min-h-full min-w-full flex justify-center items-center"><Loader /></div>
@@ -217,100 +234,46 @@ const TeacherDashboardPage = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className=" bg-[#312E81] rounded-xl py-7 px-5 flex flex-col gap-3">
-          <div className="flex flex-col md:flex-row justify-between items-center ">
-            <h2 className="text-lg font-bold text-white">Upcoming Events</h2>
-            <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild>
-                <button className="text-xs text-[var(--primary)] font-bold">
-                  View All
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>All Recent Activities</DialogTitle>
-                </DialogHeader>
-
-                <div className="flex flex-col gap-3 mt-4">
-                  {/* {sortedActivities.map((item, index) => (
-                    <div key={index} className="flex gap-3 items-center">
-                      {item.type === "revenue" ? (
-                        <div className="bg-[var(--primary)]/20 w-8 h-8 rounded-full flex items-center justify-center">
-                          <span className="text-xs font-bold">$</span>
-                        </div>
-                      ) : (
-                        <div className="bg-[#6BFF8F] w-8 h-8 rounded-full flex items-center justify-center">
-                          <IoPersonAddSharp size={15} />
-                        </div>
-                      )}
-
-                      <div>
-                        {item.type === "revenue" ? (
-                          <>
-                            <h3>Revenue Updated</h3>
-                            <p className="text-sm text-gray-500">
-                              This Month: ${item.thisMonth} | Total: ${item.total}
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            <h3>New Teacher {item.teacherName}</h3>
-                            <p className="text-sm text-gray-500">
-                              Status: {item.status}
-                            </p>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  ))} */}
-                </div>
-              </DialogContent>
-            </Dialog>
+        <div className="bg-[#312E81] rounded-xl py-7 px-5 flex flex-col gap-3">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <h2 className="text-lg font-bold text-white">Upcoming Sessions</h2>
           </div>
-          <div className="flex flex-col gap-3">
-            {/* {sortedActivities.slice(0, 5).map((item, index) => {
-              return (
-                <div key={index} className="flex flex-col gap-10">
-                  <div className="flex gap-3 items-center">
 
-
-                    {item.type === "revenue" ? (
-                      <div className="bg-[var(--primary)]/20 w-8 h-8 rounded-full flex items-center justify-center">
-                        <span className="text-xs font-bold">$</span>
-                      </div>
-                    ) : (
-                      <div className="bg-[#6BFF8F] w-8 h-8 rounded-full flex items-center justify-center">
-                        <IoPersonAddSharp size={15} />
-                      </div>
-                    )}
-
-
-                    <div>
-                      {item.type === "revenue" ? (
-                        <>
-                          <h3>Revenue Updated</h3>
-                          <p className="text-sm text-gray-500">
-                            This Month: ${item.thisMonth} | Total: ${item.total}
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <h3>New Teacher {item.teacherName}</h3>
-                          <p className="text-sm text-gray-500">
-                            Status: {item.status}
-                          </p>
-                        </>
-                      )}
-                    </div>
-
+          {/* 👇 This is what was MISSING — show bookings in the card itself */}
+          <div className="flex flex-col gap-3 flex-1 justify-between">
+            {bookings.length === 0 ? (
+              <p className="text-white/50 text-sm text-center mt-4">No upcoming sessions</p>
+            ) : (
+              bookings.slice(0, 3).map((book) => ( // show max 3 in the card
+                <div key={book._id} className="flex gap-3 items-center">
+                  <div className="bg-white/10 rounded-md px-2 py-1 border-2 border-white/30 text-white text-xs font-bold text-center min-w-[45px]">
+                    {new Date(book?.scheduledDate).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short"
+                    })}
                   </div>
+                  <div>
+                    <h3 className="text-white text-sm font-semibold">
+                      Session with {book?.studentId?.firstName}
+                    </h3>
+                    <p className="text-white/60 text-xs">At {book?.scheduledTime}</p>
+                  </div>
+                  <span className="ml-auto text-xs font-semibold px-2 py-1 rounded-full bg-yellow-100 text-yellow-600">
+                    {book.status}
+                  </span>
                 </div>
-              );
-            })} */}
+              ))
+            )}
 
+            <div className="mt-auto">
+              <Button variant="white" className="text-[#312E81] rounded-md w-full"
+                onClick={() => {
+                  navigate('/teacher/myBookings')
+                }}>
+                View Full Calendar
+              </Button>
+            </div>
           </div>
-
-
         </div>
 
       </div>
@@ -325,7 +288,7 @@ const TeacherDashboardPage = () => {
             <TeacherActiveCoureCard key={item._id} course={item} /> // ✅ key on the component, use _id not index
           ))}
           <div className="border-1 border-gray-400 border-dashed bg-gray-200 flex flex-col justify-center items-center py-30 rounded-md text-center">
-            <button  onClick={()=>navigate('/teacher/courses/create')}  className="bg-white w-12 h-12 flex justify-center items-center rounded-full text-[var(--primary)]"><IoMdAdd size={25} /></button>
+            <button onClick={() => navigate('/teacher/courses/create')} className="bg-white w-12 h-12 flex justify-center items-center rounded-full text-[var(--primary)]"><IoMdAdd size={25} /></button>
             <h3 className="text-lg font-semibold">Launch New Module</h3>
             <p className="text-gray-600 text-xs font-light">Create Your New Course</p>
           </div>
@@ -334,10 +297,7 @@ const TeacherDashboardPage = () => {
 
 
     </div>
-    // <div>
-    //   <h1>AdminDashboardPage</h1>
-    //   <button onClick={logout}>Logout</button>
-    // </div>
+
   );
 };
 
