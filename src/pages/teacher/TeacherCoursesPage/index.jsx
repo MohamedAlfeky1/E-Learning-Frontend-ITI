@@ -29,16 +29,16 @@ import placeholderImg from "@/assets/placeholder.jpg";
 const TeacherCoursesPage = () => {
   const navigate = useNavigate();
   const { data: response, isLoading, isError } = useTeacherCourses();
-  const { mutate: deleteCourse, isPending: isDeleting } = useDeleteCourse();
+  const { mutateAsync: deleteCourse, isPending: isDeleting } =
+    useDeleteCourse();
   const [courseToDelete, setCourseToDelete] = useState(null);
 
   const courses = response?.data || [];
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (courseToDelete) {
-      deleteCourse(courseToDelete._id, {
-        onSuccess: () => setCourseToDelete(null),
-      });
+      await deleteCourse(courseToDelete._id);
+      setCourseToDelete(null);
     }
   };
 

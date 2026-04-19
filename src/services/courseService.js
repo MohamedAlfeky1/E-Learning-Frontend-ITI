@@ -109,11 +109,6 @@ export const getAllCoursesOfLoggedInTeacher = async () => {
  * @param {string} id - The course ID
  */
 export const deleteCourse = async (id) => {
-  try {
-    const response = await axiosInstance.delete(ENDPOINTS.COURSES_UPDATE(id));
-    return response.data;
-  } catch (error) {
-    console.error("Error deleting course:", error);
-    throw error;
-  }
+  const response = await axiosInstance.delete(ENDPOINTS.COURSES_UPDATE(id));
+  return response.data;
 };
