@@ -197,7 +197,7 @@ const StudentDashboardPage = () => {
 
                     </div>
                     <div className="flex gap-3 mt-1">
-                      <Button onClick={() => { navigate(`/my-courses/${course._id}/learn`) }}
+                      <Button onClick={() => navigate(`/my-courses/${course?.courseId?._id}/learn`)}
                         className='rounded-md'>
                         Resume Lesson
                       </Button>
