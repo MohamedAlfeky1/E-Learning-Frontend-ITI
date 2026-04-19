@@ -62,6 +62,7 @@ export const ENDPOINTS = {
     `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_PROGRESS: (courseId) => `/enrollments/${courseId}/progress`,
   // ─── Assignments ─────────────────────────────────────────────────────────────
+  ASSIGNMENTS_MY: '/assignment/my',
   ASSIGNMENTS_LIST: (courseId) => `/courses/${courseId}/assignments`,
   ASSIGNMENTS_CREATE: (courseId) => `/courses/${courseId}/assignments`,
   ASSIGNMENTS_UPDATE: (id) => `/assignments/${id}`,
