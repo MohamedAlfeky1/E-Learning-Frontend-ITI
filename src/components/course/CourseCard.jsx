@@ -53,7 +53,10 @@ function CourseCard({ course }) {
 
   return (
     <>
-      <div className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
+      <Link
+        to={`/courses/${course._id}`}
+        className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl"
+      >
         {/* Thumbnail */}
         <div className="relative w-full h-32 overflow-hidden ">
           <img
@@ -81,7 +84,7 @@ function CourseCard({ course }) {
               )}
             </Button>
           )}
-          <Link to={`/courses/${course._id}`}>
+          {/* <Link to={`/courses/${course._id}`}>
             <Button
               size="icon-sm"
               variant="primary"
@@ -89,7 +92,7 @@ function CourseCard({ course }) {
             >
               <IoEyeOutline color="#3525CD" />
             </Button>
-          </Link>
+          </Link> */}
         </div>
 
         {/* Content */}
@@ -167,7 +170,7 @@ function CourseCard({ course }) {
             )}
           </div>
         </div>
-      </div>
+      </Link>
     </>
   );
 }
