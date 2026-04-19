@@ -17,9 +17,30 @@ export const enrollmentService = {
 
   },
 
+  getTeacherCourses: async () => {
+    try {
+      const { data } = await axiosInstance.get(ENDPOINTS.COURSES_MY);
+      return data.data;
+    } catch (error) {
+      console.error("Error Get Teacher Enrollments:", error);
+      throw error;
+    }
+
+  },
+
   getEnrollmentByCourseId: async (courseId) => {
     try {
       const { data } = await axiosInstance.get(ENDPOINTS.ENROLLMENTS_GET(courseId));
+      return data.data;
+    } catch (error) {
+      console.error("Error Get Enrollments By Id:", error);
+      throw error;
+    }
+  },
+
+   getTeacherEnrollmentByCourseId: async (courseId) => {
+    try {
+      const { data } = await axiosInstance.get(ENDPOINTS.ENROLLMENT_TEACHER_GET(courseId));
       return data.data;
     } catch (error) {
       console.error("Error Get Enrollments By Id:", error);
@@ -54,3 +75,5 @@ export const getAllCoursesOfUser = async () => {
     throw error;
   }
 }
+
+

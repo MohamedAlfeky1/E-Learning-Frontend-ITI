@@ -1,7 +1,7 @@
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { FaStar } from "react-icons/fa6";
-import { MdOutlineAddShoppingCart } from "react-icons/md";
+import { MdOndemandVideo, MdOutlineAddShoppingCart, MdOutlineOndemandVideo } from "react-icons/md";
 import { IoEyeOutline } from "react-icons/io5";
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -14,15 +14,19 @@ function CourseCard({ course }) {
             <Link to={`/courses/${course._id}`} className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
 
                 {/* Thumbnail */}
-                <div className="relative w-full h-32 overflow-hidden ">
-                    <img
-                        src={course.thumbnail}
-                        alt="Course Thumbnail"
-                        className="w-full h-full object-cover"
-                    />
-                    {/* <Link to={`/courses/${course._id}`} className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full">
-                        <IoEyeOutline color='#3525CD'/>
-                    </Link> */}
+                <div className="relative w-full h-[192px] overflow-hidden">
+                    {course.thumbnail ? (
+                        <img
+                            src={course.thumbnail}
+                            alt="Course Thumbnail"
+                            className="w-full h-[192px] object-cover"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex flex-col items-center justify-center gap-2">
+                            <MdOutlineOndemandVideo size={40} color="white" />
+                            <p className="text-white text-sm font-medium">No Thumbnail</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Content */}
