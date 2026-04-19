@@ -1,3 +1,4 @@
+
 import axiosInstance from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
 
@@ -5,7 +6,7 @@ import { ENDPOINTS } from "../api/endpoints";
 export const getCourseById = async (id) => {
   try {
     const response = await axiosInstance.get(ENDPOINTS.COURSES_GET(id));
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error("Error fetching course:", error);
     throw error;
