@@ -59,6 +59,10 @@ export const ENDPOINTS = {
   ENROLLMENT_TEACHER_GET: (courseId) => `/enrollments/course/${courseId}`,
   ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) => `/enrollments/update-progress/${enrollmentId}`,
   ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) => `/enrollments/${courseId}/videos/${videoId}/complete`,
+  ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) =>
+    `/enrollments/update-progress/${enrollmentId}`,
+  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) =>
+    `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_PROGRESS: (courseId) => `/enrollments/${courseId}/progress`,
   // ─── Assignments ─────────────────────────────────────────────────────────────
   ASSIGNMENTS_LIST: (courseId) => `/courses/${courseId}/assignments`,
@@ -118,6 +122,7 @@ export const ENDPOINTS = {
   CHAT_SEND: (courseId) => `/chat/${courseId}`,
   CHAT_MARK_READ: (courseId) => `/chat/${courseId}/read`,
   CHAT_UNREAD_COUNT: "/chat/unread-count",
+  CONVERSATIONS: "/chat/conversations",
 
   // ─── AI Reports ───────────────────────────────────────────────────────────────
   REPORTS_GENERATE: (courseId) => `/reports/${courseId}/generate`,
