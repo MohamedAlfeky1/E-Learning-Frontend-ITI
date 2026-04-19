@@ -3,6 +3,7 @@ import { ENDPOINTS } from "../api/endpoints";
 
 export const getTeacherBalance = async () => {
     const response = await axiosInstance.get(ENDPOINTS.TEACHER_EARNINGS);
+     console.log("RAW BALANCE RESPONSE:", response.data); 
     return response.data.data;
 };
 
