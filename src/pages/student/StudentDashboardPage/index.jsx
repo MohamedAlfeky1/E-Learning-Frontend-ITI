@@ -92,7 +92,7 @@ const StudentDashboardPage = () => {
             going to ace your upcoming physics quiz!</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 -mt-6 px-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 -mt-6 px-5">
 
           <StudentDashboardCart
             icon={<MdOutlineMenuBook color="text-[var(--primary)]" />}
@@ -121,13 +121,7 @@ const StudentDashboardPage = () => {
             length={estimatedHours > 0 ? estimatedHours.toFixed(1) : null}
           />
 
-          {/* <StudentDashboardCart icon={<TbClockHour10 />} spanNum='' word='' title='Overall Progress' length={`${averageProgress}%`} /> */}
 
-          <div className="bg-white rounded-md p-4 flex flex-col justify-center gap-3 w-[220px]">
-
-
-            <h3 className="text-[var(--chart-3)] text-sm">Learning Hours</h3>
-          </div>
 
         </div>
 

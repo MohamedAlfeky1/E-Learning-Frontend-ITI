@@ -2,7 +2,7 @@ import React from 'react'
 
 function StudentDashboardCart({ icon, spanNum, word, title, length, wordColor="text-green-900" , badgeColor='bg-[#dbc8fa]' }) {
     return (
-        <div className="bg-white rounded-md p-4 flex flex-col justify-center gap-3 w-[220px]">
+        <div className="bg-white rounded-md p-4 flex flex-col justify-center gap-3 w-full">
             <div className="flex justify-between items-start">
                 <div className={`w-10 flex justify-center ${badgeColor} p-2 rounded-md text-[var(--primary)]`}>
                     {icon}
