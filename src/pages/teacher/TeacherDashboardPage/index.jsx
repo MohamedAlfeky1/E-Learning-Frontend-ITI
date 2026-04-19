@@ -442,6 +442,7 @@ const TeacherDashboardPage = () => {
         </div>
       </section>
     </div>
+
   );
 };
 

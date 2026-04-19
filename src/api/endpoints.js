@@ -57,20 +57,24 @@ export const ENDPOINTS = {
   ENROLLMENTS_CREATE: "/enrollments",
   ENROLLMENTS_MY: "/enrollments/my-courses",
   ENROLLMENTS_GET: (courseId) => `/enrollments/${courseId}`,
+  ENROLLMENT_TEACHER_GET: (courseId) => `/enrollments/course/${courseId}`,
+  ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) => `/enrollments/update-progress/${enrollmentId}`,
+  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) => `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) =>
     `/enrollments/update-progress/${enrollmentId}`,
   ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) =>
     `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_PROGRESS: (courseId) => `/enrollments/${courseId}/progress`,
   // ─── Assignments ─────────────────────────────────────────────────────────────
-  ASSIGNMENTS_LIST: (courseId) => `/assignment/courses/${courseId}`,
-  ASSIGNMENTS_CREATE: (courseId) => `/assignment/courses/${courseId}`,
-  ASSIGNMENTS_UPDATE: (id) => `/assignment/${id}`,
-  ASSIGNMENTS_DELETE: (id) => `/assignment/${id}`,
-  ASSIGNMENTS_SUBMIT: (id) => `/assignment/${id}/submit`,
-  ASSIGNMENTS_MY_SUBMISSION: (id) => `/assignment/${id}/my-submission`,
-  ASSIGNMENTS_SUBMISSIONS_LIST: (id) => `/assignment/${id}/submissions`,
-  ASSIGNMENTS_GRADE: (id, sid) => `/assignment/${id}/submissions/${sid}`,
+  ASSIGNMENTS_MY: '/assignment/my',
+  ASSIGNMENTS_LIST: (courseId) => `/courses/${courseId}/assignments`,
+  ASSIGNMENTS_CREATE: (courseId) => `/courses/${courseId}/assignments`,
+  ASSIGNMENTS_UPDATE: (id) => `/assignments/${id}`,
+  ASSIGNMENTS_DELETE: (id) => `/assignments/${id}`,
+  ASSIGNMENTS_SUBMIT: (id) => `/assignments/${id}/submit`,
+  ASSIGNMENTS_MY_SUBMISSION: (id) => `/assignments/${id}/my`,
+  ASSIGNMENTS_SUBMISSIONS_LIST: (id) => `/assignments/${id}/submissions`,
+  ASSIGNMENTS_GRADE: (id, sid) => `/assignments/${id}/submissions/${sid}`,
 
   // ─── Quizzes ──────────────────────────────────────────────────────────────────
   QUIZZES_LIST: (courseId) => `/quizzes/course/${courseId}`,
@@ -107,9 +111,8 @@ export const ENDPOINTS = {
   // ─── Reviews ──────────────────────────────────────────────────────────────────
   REVIEWS_LIST: (courseId) => `/courseReviews/${courseId}/reviews`,
   REVIEW_COURSE_BY_ID: (courseId) => `/courseReviews/${courseId}`,
-  MY_REVIEW_COURSE_BY_ID: (courseId, studentId) =>
-    `/courseReviews/${courseId}/${studentId}`,
-  REVIEWS_CREATE: "/courseReviews",
+  MY_REVIEW_COURSE_BY_ID: (courseId, studentId) => `/courseReviews/${courseId}/${studentId}`,
+  REVIEWS_CREATE: '/courseReviews',
   REVIEWS_DELETE: (id) => `/reviews/${id}`,
 
   // ─── Favorites ────────────────────────────────────────────────────────────────

@@ -39,7 +39,7 @@ const CoursePlayerPage = () => {
 
   const { courseId } = useParams();
   const { data: studentData } = useUserQuery();
-  const studentId = studentData._id
+  const studentId = studentData?._id
   const { data: course, isLoading, error } = useGetCoursesById(courseId);
   const { data: lessons, isLoading: lessonsLoading, error: lessonsError } = useGetAllLessonsByCourse(courseId);
   const { data: enrollments } = useMyCoursesQuery();
@@ -50,7 +50,7 @@ const CoursePlayerPage = () => {
   const enrollmentId = enrollmentsDetails?._id
   const myReview = reviewsData?.data
 
-  console.log("myReview", myReview);
+  console.log("reviewsData", reviewsData);
 
 
   const handleSubmitReview = (formData) => {
@@ -294,7 +294,7 @@ const CoursePlayerPage = () => {
               <h2 className="text-lg font-semibold mb-3">My Reviews</h2>
 
               <div className="flex flex-col gap-3">
-                {myReview.map((item) => (
+                {myReview?.map((item) => (
                   <div
                     key={item._id}
                     className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition"
@@ -465,95 +465,3 @@ const CoursePlayerPage = () => {
 
 export default CoursePlayerPage;
 
-
-// [{…}]
-// 0
-// : 
-// courseId
-// : 
-// {_id: '69d6a5fb3940a1c77a47fe55', title: 'Teaching English'}
-// createdAt
-// : 
-// "2026-04-08T20:05:47.352Z"
-// description
-// : 
-// "learn the alphabet for begginers learn the alphabet for begginers "
-// materials
-// : 
-// []
-// orderIndex
-// : 
-// 1
-// teacherId
-// : 
-// "69d3f77927768c09bdb61add"
-// title
-// : 
-// "learn the alpahet"
-// updatedAt
-// : 
-// "2026-04-08T20:05:47.352Z"
-// videos
-// : 
-// (2) [{…}, {…}]
-// __v
-// : 
-// 0
-// _id
-// : 
-// "69d6b51b0b026f5877d57cc6"
-// [[Prototype]]
-// : 
-// Object
-// length
-// : 
-// 1
-// [[Prototype]]
-// : 
-// Array(0)
-
-// [{…}]
-// 0
-// : 
-// courseId
-// : 
-// {_id: '69d6a5fb3940a1c77a47fe55', title: 'Teaching English'}
-// createdAt
-// : 
-// "2026-04-08T20:05:47.352Z"
-// description
-// : 
-// "learn the alphabet for begginers learn the alphabet for begginers "
-// materials
-// : 
-// []
-// orderIndex
-// : 
-// 1
-// teacherId
-// : 
-// "69d3f77927768c09bdb61add"
-// title
-// : 
-// "learn the alpahet"
-// updatedAt
-// : 
-// "2026-04-08T20:05:47.352Z"
-// videos
-// : 
-// (2) [{…}, {…}]
-// __v
-// : 
-// 0
-// _id
-// : 
-// "69d6b51b0b026f5877d57cc6"
-// [[Prototype]]
-// : 
-// Object
-// length
-// : 
-// 1
-// [[Prototype]]
-// : 
-// Array(0)

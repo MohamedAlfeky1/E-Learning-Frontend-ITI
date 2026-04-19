@@ -81,6 +81,8 @@ const CourseDetailsPage = () => {
   const navigate = useNavigate();
   const isLoggedIn = !!userData;
   const course = data?.data;
+  console.log('course ', course);
+
 
   let cartItem = null;
   if (!cartLoading && !cartError && !isLoading && !error) {
@@ -147,12 +149,17 @@ const CourseDetailsPage = () => {
             <p className="text-[#141B2B] text-5xl font-extrabold">
               {course.title}
             </p>
-            <p className="text-[#363642] font-medium text-xs">
+            {course.createdAt ? <p className="text-[#363642] font-medium text-xs">
               Created At :
               <span className="text-[#464555] font-light text-xs">
-                {course.createdAt}
+                {new Date(course.createdAt).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric"
+                })}
               </span>
-            </p>
+            </p> : ''}
+
             <p className="text-md text-[#464555]">{course.description}</p>
             <div className="flex gap-3 items-center">
               <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
@@ -181,11 +188,18 @@ const CourseDetailsPage = () => {
         </div>
 
         <div className="col-span-1">
-          <img
-            src={course.thumbnail || placeholderImg}
-            alt="Course Thumbnail"
-            className="w-full h-auto object-cover rounded-lg transform rotate-3 shadow-2xl shadow-indigo-300"
-          />
+          {course.thumbnail ? (
+            <img
+              src={course.thumbnail}
+              alt="Course Thumbnail"
+              className="w-full h-auto object-cover rounded-lg transform rotate-3 shadow-2xl shadow-indigo-300"
+            />
+          ) : (
+            <div className="w-full h-48 bg-gradient-to-br from-[#3525CD] to-[#6D28D9] rounded-lg transform rotate-3 shadow-2xl shadow-indigo-300 flex flex-col items-center justify-center gap-2">
+              <MdOndemandVideo size={40} color="white" />
+              <p className="text-white text-sm font-medium">{course.title}</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -347,7 +361,16 @@ const CourseDetailsPage = () => {
             ) : (
               <h1 className="text-[#141B2B] font-semibold text-4xl">Free</h1>
             )}
-            <p>{course.updatedAt}</p>
+            {course?.updatedAt?
+            <p className="text-xs text-gray-500">
+              Last updated: {new Date(course.updatedAt).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+              })}
+            </p>
+            :''}
+
 
             <Popover open={openPopover} onOpenChange={setOpenPopover}>
               <PopoverTrigger asChild>
@@ -371,6 +394,7 @@ const CourseDetailsPage = () => {
                 </Button>
               </PopoverTrigger>
             </Popover>
+
 
             <Dialog open={openPopover} onOpenChange={setOpenPopover}>
               <DialogContent showCloseButton={true}>
@@ -464,7 +488,7 @@ const CourseDetailsPage = () => {
                 <Button
                   variant="outline"
                   className="rounded-md text-[#464555] flex-1 py-2"
-                  // onClick={()=>{navigate('./')}}
+                // onClick={()=>{navigate('./')}}
                 >
                   Profile
                 </Button>
