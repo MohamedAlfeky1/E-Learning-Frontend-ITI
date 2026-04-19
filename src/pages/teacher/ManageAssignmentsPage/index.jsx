@@ -1,68 +1,169 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Filter, Plus } from "lucide-react";
-import { ClipboardList, Sparkles } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { ClipboardList, Plus, BookOpen } from "lucide-react";
 import AssignmentStatsCard from "@/components/teacher/assignments/AssignmentStatsCard";
-import QuickActionCard from "@/components/teacher/assignments/QuickActionCard";
 import AssignmentList from "@/components/teacher/assignments/AssignmentList";
-import FocusBanner from "@/components/teacher/assignments/FocusBanner";
-
-const mockAssignments = [
-  {
-    id: 1,
-    name: "Advanced Calculus Review",
-    module: "Module 4: Integration",
-    courseCode: "MAT-402",
-    dueDate: "Oct 24, 2023",
-    relativeDueDate: "IN 2 DAYS",
-    statusColor: "red",
-    pendingReview: 12,
-    graded: 45,
-    iconType: "document",
-    iconColorType: "indigo",
-  },
-  {
-    id: 2,
-    name: "Quantum Mechanics Essay",
-    module: "Final Term Paper",
-    courseCode: "PHY-510",
-    dueDate: "Nov 02, 2023",
-    relativeDueDate: "IN 11 DAYS",
-    statusColor: "gray",
-    pendingReview: 5,
-    graded: 22,
-    iconType: "flask",
-    iconColorType: "purple",
-  },
-  {
-    id: 3,
-    name: "Late Medieval History Quiz",
-    module: "Module 2 Assessment",
-    courseCode: "HIS-202",
-    dueDate: "Oct 20, 2023",
-    relativeDueDate: "COMPLETED",
-    statusColor: "green",
-    pendingReview: 0,
-    graded: 68,
-    iconType: "quiz",
-    iconColorType: "green",
-  },
-  {
-    id: 4,
-    name: "Data Structures: Linked Lists",
-    module: "Practical Lab 3",
-    courseCode: "CS-301",
-    dueDate: "Oct 28, 2023",
-    relativeDueDate: "IN 6 DAYS",
-    statusColor: "gray",
-    pendingReview: 32,
-    graded: 12,
-    iconType: "code",
-    iconColorType: "indigo",
-  },
-];
+import { useTeacherCourses } from "@/queries/teacherCoursesQueries";
+import { useAssignments } from "@/queries/assignmentQueries";
+import {
+  useCreateAssignment,
+  useUpdateAssignment,
+  useDeleteAssignment,
+} from "@/mutations/assignmentMutations";
+import { toast } from "sonner";
 
 const ManageAssignmentsPage = () => {
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingAssignment, setEditingAssignment] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+
+  // Form state
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    dueDate: "",
+    maxScore: "100",
+  });
+  const [attachments, setAttachments] = useState(null);
+
+  // Queries
+  const { data: coursesData, isLoading: coursesLoading } = useTeacherCourses();
+  const { data: assignmentsData, isLoading: assignmentsLoading } =
+    useAssignments(selectedCourseId);
+
+  // Mutations
+  const createMutation = useCreateAssignment();
+  const updateMutation = useUpdateAssignment();
+  const deleteMutation = useDeleteAssignment();
+
+  const courses = coursesData?.data || [];
+  const assignments = assignmentsData?.data?.assignments || [];
+
+  // Stats
+  const totalAssignments = assignments.length;
+  const dueSoon = assignments.filter((a) => {
+    const diff = new Date(a.dueDate) - new Date();
+    return diff > 0 && diff < 3 * 24 * 60 * 60 * 1000;
+  }).length;
+
+  // Handlers
+  const resetForm = () => {
+    setFormData({ title: "", description: "", dueDate: "", maxScore: "100" });
+    setAttachments(null);
+    setEditingAssignment(null);
+  };
+
+  const handleOpenCreate = () => {
+    if (!selectedCourseId) {
+      toast.error("Please select a course first");
+      return;
+    }
+    resetForm();
+    setIsCreateOpen(true);
+  };
+
+  const handleOpenEdit = (assignment) => {
+    setEditingAssignment(assignment);
+    setFormData({
+      title: assignment.title,
+      description: assignment.description,
+      dueDate: assignment.dueDate
+        ? new Date(assignment.dueDate).toISOString().slice(0, 16)
+        : "",
+      maxScore: String(assignment.maxScore || 100),
+    });
+    setIsCreateOpen(true);
+  };
+
+  const handleSubmitForm = (e) => {
+    e.preventDefault();
+
+    if (!formData.title || !formData.description || !formData.dueDate) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    if (editingAssignment) {
+      updateMutation.mutate(
+        {
+          id: editingAssignment._id,
+          data: {
+            title: formData.title,
+            description: formData.description,
+            dueDate: formData.dueDate,
+            maxScore: Number(formData.maxScore),
+          },
+        },
+        {
+          onSuccess: () => {
+            setIsCreateOpen(false);
+            resetForm();
+          },
+        }
+      );
+    } else {
+      createMutation.mutate(
+        {
+          courseId: selectedCourseId,
+          data: {
+            title: formData.title,
+            description: formData.description,
+            dueDate: formData.dueDate,
+            maxScore: Number(formData.maxScore),
+            attachments: attachments ? Array.from(attachments) : [],
+          },
+        },
+        {
+          onSuccess: () => {
+            setIsCreateOpen(false);
+            resetForm();
+          },
+        }
+      );
+    }
+  };
+
+  const handleDelete = (id) => {
+    setDeleteId(id);
+  };
+
+  const confirmDelete = () => {
+    if (deleteId) {
+      deleteMutation.mutate(deleteId, {
+        onSuccess: () => setDeleteId(null),
+      });
+    }
+  };
+
   return (
     <div className="max-w-[1200px] mx-auto w-full">
       {/* Header Section */}
@@ -81,39 +182,200 @@ const ManageAssignmentsPage = () => {
         </div>
         <div className="flex items-center gap-3 self-start">
           <Button
-            variant="secondary"
-            className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-0 h-12 px-6 rounded-xl font-semibold"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white border-0 h-12 px-6 rounded-xl font-semibold shadow-sm shadow-indigo-200"
+            onClick={handleOpenCreate}
           >
-            <Filter className="w-5 h-5 mr-2" />
-            Filter View
-          </Button>
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white border-0 h-12 px-6 rounded-xl font-semibold shadow-sm shadow-indigo-200">
             <Plus className="w-5 h-5 mr-2" />
             New Assignment
           </Button>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <AssignmentStatsCard
-          title="Pending Review"
-          count="84"
-          icon={ClipboardList}
-          iconColor="text-indigo-600 bg-indigo-50"
-          className="md:col-span-1 shadow-sm border-0"
-        />
-        <AssignmentStatsCard
-          title="Due Today"
-          count="12"
-          icon={Sparkles}
-          iconColor="text-purple-600 bg-purple-50"
-          className="md:col-span-1 shadow-sm border-0"
-        />
+      {/* Course Selector */}
+      <div className="mb-8">
+        <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+          Select Course
+        </Label>
+        <Select value={selectedCourseId} onValueChange={setSelectedCourseId}>
+          <SelectTrigger className="w-full md:w-80 h-12 rounded-xl border-gray-200 bg-white text-base">
+            <SelectValue placeholder={coursesLoading ? "Loading courses..." : "Choose a course"} />
+          </SelectTrigger>
+          <SelectContent>
+            {courses.map((course) => (
+              <SelectItem key={course._id} value={course._id}>
+                {course.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
+      {/* Stats Grid - only show when a course is selected */}
+      {selectedCourseId && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <AssignmentStatsCard
+            title="Total Assignments"
+            count={totalAssignments}
+            icon={ClipboardList}
+            iconColor="text-indigo-600 bg-indigo-50"
+            className="md:col-span-1 shadow-sm border-0"
+          />
+          <AssignmentStatsCard
+            title="Due Soon"
+            count={dueSoon}
+            icon={BookOpen}
+            iconColor="text-purple-600 bg-purple-50"
+            className="md:col-span-1 shadow-sm border-0"
+          />
+        </div>
+      )}
+
       {/* Assignment List */}
-      <AssignmentList assignments={mockAssignments} />
+      {selectedCourseId ? (
+        <AssignmentList
+          assignments={assignments}
+          isLoading={assignmentsLoading}
+          onDelete={handleDelete}
+          onEdit={handleOpenEdit}
+        />
+      ) : (
+        <div className="mt-12 flex flex-col items-center justify-center text-center py-16 bg-white rounded-2xl border border-dashed border-gray-200">
+          <div className="size-20 rounded-2xl bg-indigo-50 flex items-center justify-center mb-5">
+            <BookOpen className="w-10 h-10 text-indigo-400" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">
+            Select a Course
+          </h3>
+          <p className="text-gray-500 max-w-sm">
+            Choose a course from the dropdown above to view and manage its
+            assignments.
+          </p>
+        </div>
+      )}
+
+      {/* Create / Edit Assignment Dialog */}
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              {editingAssignment ? "Edit Assignment" : "Create Assignment"}
+            </DialogTitle>
+            <DialogDescription>
+              {editingAssignment
+                ? "Update the assignment details below."
+                : "Fill in the details to create a new assignment."}
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmitForm} className="space-y-4 mt-2">
+            <div>
+              <Label htmlFor="title">Title *</Label>
+              <Input
+                id="title"
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+                placeholder="e.g. Advanced Calculus Review"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="description">Description *</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                placeholder="Describe the assignment..."
+                className="mt-1 min-h-[80px]"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="dueDate">Due Date *</Label>
+                <Input
+                  id="dueDate"
+                  type="datetime-local"
+                  value={formData.dueDate}
+                  onChange={(e) =>
+                    setFormData({ ...formData, dueDate: e.target.value })
+                  }
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="maxScore">Max Score</Label>
+                <Input
+                  id="maxScore"
+                  type="number"
+                  min="0"
+                  value={formData.maxScore}
+                  onChange={(e) =>
+                    setFormData({ ...formData, maxScore: e.target.value })
+                  }
+                  className="mt-1"
+                />
+              </div>
+            </div>
+
+            {!editingAssignment && (
+              <div>
+                <Label htmlFor="attachments">
+                  Attachments (optional, max 5)
+                </Label>
+                <Input
+                  id="attachments"
+                  type="file"
+                  multiple
+                  onChange={(e) => setAttachments(e.target.files)}
+                  className="mt-1"
+                />
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button
+                type="submit"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                disabled={createMutation.isPending || updateMutation.isPending}
+              >
+                {createMutation.isPending || updateMutation.isPending
+                  ? "Saving..."
+                  : editingAssignment
+                  ? "Update Assignment"
+                  : "Create Assignment"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Assignment?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. If students have already submitted
+              work, the assignment cannot be deleted.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
