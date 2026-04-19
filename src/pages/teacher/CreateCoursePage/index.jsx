@@ -46,10 +46,14 @@ const INITIAL_ERRORS = {
 const CreateCoursePage = () => {
   const navigate = useNavigate();
   const { data: teacherData, isError: teacherError } = useUserQuery();
-  const { mutate: createCourse, isPending } = useCreateCourse();
   const { data: categoriesData, isLoading: categoriesLoading } =
     useCategories();
   const categories = categoriesData?.data ?? [];
+  const {
+    mutateAsync: createCourse,
+    isPending: creatingCourse,
+    error: errorCreatingCourse,
+  } = useCreateCourse();
 
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState(INITIAL_ERRORS);
@@ -140,7 +144,7 @@ const CreateCoursePage = () => {
     return valid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -159,20 +163,15 @@ const CreateCoursePage = () => {
     requirements.forEach((r) => payload.append("requirements[]", r));
     whatYouWillLearn.forEach((w) => payload.append("whatYouWillLearn[]", w));
 
-    createCourse(payload, {
-      onSuccess: () => {
-        toast.success("Course created successfully!");
-        navigate("/teacher/courses");
-      },
-      onError: (err) => {
-        setErrors((prev) => ({
-          ...prev,
-          api:
-            err.response?.data?.message ||
-            "Failed to create course. Please try again.",
-        }));
-      },
-    });
+    await createCourse(payload);
+    if (errorCreatingCourse) {
+      setErrors((prev) => ({
+        ...prev,
+        api:
+          err.response?.data?.message ||
+          "Failed to create course. Please try again.",
+      }));
+    }
   };
 
   return (
@@ -593,10 +592,10 @@ const CreateCoursePage = () => {
             <Button
               type="submit"
               variant="purpleBtnXl"
-              disabled={isPending}
+              disabled={creatingCourse}
               className="flex-1 sm:flex-none sm:min-w-[192px] mt-0"
             >
-              {isPending ? (
+              {creatingCourse ? (
                 <div className="flex items-center gap-2">
                   <Spinner className="w-5 h-5 border-white" /> Creating...
                 </div>

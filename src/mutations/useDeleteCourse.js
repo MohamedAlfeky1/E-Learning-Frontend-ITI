@@ -6,9 +6,9 @@ export const useDeleteCourse = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id) => deleteCourse(id),
+    mutationFn: deleteCourse,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      queryClient.invalidateQueries({ queryKey: ["teacher-courses"] });
       toast.success("Course deleted successfully");
     },
     onError: (error) => {
