@@ -10,6 +10,7 @@ import {
   UserCircle,
   Megaphone,
   LogOut,
+  MessageSquare,
 } from "lucide-react";
 
 export const teacherSidebarLinks = [
@@ -17,6 +18,11 @@ export const teacherSidebarLinks = [
     title: "Dashboard",
     href: "/teacher/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Chats",
+    href: "/teacher/chats",
+    icon: MessageSquare,
   },
   {
     title: "Create Course",
