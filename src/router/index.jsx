@@ -107,6 +107,11 @@ import ChatsPages from "@/pages/student/ChatsPage";
 import VideoCall from "@/pages/VideoCall";
 import AvailableSlotsPage from "@/pages/teacher/AvailableSlotsPage";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Chat
+// ─────────────────────────────────────────────────────────────────────────────
+import ChatPage from "@/pages/chatPage";
+
 // =============================================================================
 const router = createBrowserRouter([
   // ───────────────────────────────────────────────────────────────────────────
@@ -179,6 +184,7 @@ const router = createBrowserRouter([
       // Dashboard & profile
       { path: "dashboard", element: <StudentDashboardPage /> }, // /dashboard
       { path: "profile", element: <StudentProfilePage /> }, // /profile
+      { path: "chats", element: <ChatPage /> }, // /chat
 
       // Courses
       { path: "my-courses", element: <MyCoursesPage /> }, // /my-courses
@@ -299,8 +305,7 @@ const router = createBrowserRouter([
       }, // /teacher/assignments/:assignmentId/grade
 
       // Chat
-      { path: "chat/:courseId", element: <TeacherChatPage /> }, // /teacher/chat/:courseId
-
+      { path: "chats", element: <ChatPage /> }, // /chat
       // Earnings & Withdrawals
       { path: "earnings", element: <TeacherEarningsPage /> }, // /teacher/earnings
       { path: "withdrawals", element: <WithdrawalRequestPage /> }, // /teacher/withdrawals
