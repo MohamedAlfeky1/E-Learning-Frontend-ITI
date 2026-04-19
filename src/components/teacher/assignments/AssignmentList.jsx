@@ -15,21 +15,6 @@ const AssignmentList = ({ assignments }) => {
     <Card className="p-0 overflow-hidden border-gray-100 shadow-sm mt-6">
       <div className="p-6 pb-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-xl font-bold text-gray-900">Active Assignments</h2>
-
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
-            <span className="text-sm font-semibold text-gray-400">
-              High Priority
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-purple-400"></span>
-            <span className="text-sm font-semibold text-gray-400">
-              Standard
-            </span>
-          </div>
-        </div>
       </div>
 
       {/* Header Row */}

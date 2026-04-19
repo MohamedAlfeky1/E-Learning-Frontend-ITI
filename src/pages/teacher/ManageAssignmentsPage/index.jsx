@@ -19,7 +19,7 @@ const mockAssignments = [
     pendingReview: 12,
     graded: 45,
     iconType: "document",
-    iconColorType: "indigo"
+    iconColorType: "indigo",
   },
   {
     id: 2,
@@ -32,7 +32,7 @@ const mockAssignments = [
     pendingReview: 5,
     graded: 22,
     iconType: "flask",
-    iconColorType: "purple"
+    iconColorType: "purple",
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const mockAssignments = [
     pendingReview: 0,
     graded: 68,
     iconType: "quiz",
-    iconColorType: "green"
+    iconColorType: "green",
   },
   {
     id: 4,
@@ -58,8 +58,8 @@ const mockAssignments = [
     pendingReview: 32,
     graded: 12,
     iconType: "code",
-    iconColorType: "indigo"
-  }
+    iconColorType: "indigo",
+  },
 ];
 
 const ManageAssignmentsPage = () => {
@@ -68,12 +68,22 @@ const ManageAssignmentsPage = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 mt-4">
         <div className="max-w-xl">
-          <p className="text-sm font-bold text-indigo-600 uppercase tracking-widest mb-2">Management Dashboard</p>
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-3">Assignments</h1>
-          <p className="text-gray-500 text-lg">Track, review, and grade student submissions across all active courses.</p>
+          <p className="text-sm font-bold text-indigo-600 uppercase tracking-widest mb-2">
+            Management Dashboard
+          </p>
+          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-3">
+            Assignments
+          </h1>
+          <p className="text-gray-500 text-lg">
+            Track, review, and grade student submissions across all active
+            courses.
+          </p>
         </div>
         <div className="flex items-center gap-3 self-start">
-          <Button variant="secondary" className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-0 h-12 px-6 rounded-xl font-semibold">
+          <Button
+            variant="secondary"
+            className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-0 h-12 px-6 rounded-xl font-semibold"
+          >
             <Filter className="w-5 h-5 mr-2" />
             Filter View
           </Button>
@@ -86,43 +96,26 @@ const ManageAssignmentsPage = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <AssignmentStatsCard 
-          title="Pending Review" 
-          count="84" 
-          icon={ClipboardList} 
+        <AssignmentStatsCard
+          title="Pending Review"
+          count="84"
+          icon={ClipboardList}
           iconColor="text-indigo-600 bg-indigo-50"
           className="md:col-span-1 shadow-sm border-0"
         />
-        <AssignmentStatsCard 
-          title="Due Today" 
-          count="12" 
-          icon={Sparkles} 
+        <AssignmentStatsCard
+          title="Due Today"
+          count="12"
+          icon={Sparkles}
           iconColor="text-purple-600 bg-purple-50"
           className="md:col-span-1 shadow-sm border-0"
         />
-        <div className="md:col-span-2">
-          <QuickActionCard 
-            subtitle="Quick Action Needed"
-            title="Final Year Thesis submissions are 90% complete. Start final verification."
-            actionText="Open Thesis Module"
-            onAction={() => console.log('Open Thesis')}
-          />
-        </div>
       </div>
 
       {/* Assignment List */}
       <AssignmentList assignments={mockAssignments} />
-
-      {/* Focus Banner */}
-      <FocusBanner 
-        title="Ready for a grading session?"
-        description="Activate &quot;Prism Focus&quot; to hide notifications and use our side-by-side AI rubric assistant for faster grading."
-        buttonText="Start Focus Mode"
-        onStartFocus={() => console.log('Start Focus Mode')}
-      />
     </div>
   );
 };
 
 export default ManageAssignmentsPage;
-

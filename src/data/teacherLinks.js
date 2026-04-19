@@ -46,7 +46,7 @@ export const teacherSidebarLinks = [
   },
   {
     title: "Quizzes",
-    href: "courses/quizzes/create",// Ensure this route is correct in actual router
+    href: "courses/quizzes/create", // Ensure this route is correct in actual router
     icon: HelpCircle,
   },
   {
@@ -54,17 +54,17 @@ export const teacherSidebarLinks = [
     href: "/teacher/students", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
     icon: Users,
   },
-  {   
+  {
     title: "Add Avalabilty",
     href: "/teacher/availability", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
     icon: Users,
   },
-  {   
+  {
     title: "My Bookings",
     href: "/teacher/myBookings", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
     icon: Users,
   },
-  {   
+  {
     title: "My Availabilits",
     href: "/teacher/availableSlotsPage", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
     icon: Users,
