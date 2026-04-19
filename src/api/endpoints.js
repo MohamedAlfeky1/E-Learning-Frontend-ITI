@@ -122,6 +122,7 @@ export const ENDPOINTS = {
   CHAT_SEND: (courseId) => `/chat/${courseId}`,
   CHAT_MARK_READ: (courseId) => `/chat/${courseId}/read`,
   CHAT_UNREAD_COUNT: "/chat/unread-count",
+  CONVERSATIONS: "/chat/conversations",
 
   // ─── AI Reports ───────────────────────────────────────────────────────────────
   REPORTS_GENERATE: (courseId) => `/reports/${courseId}/generate`,
