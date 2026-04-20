@@ -15,70 +15,85 @@ import {
 import { Button } from "../../components/ui/button";
 import { useGetCourseReview } from "@/queries/useReviewQueries";
 import { useUserQuery } from "@/queries/authQueries";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAddToCart } from "@/mutations/cartMutations";
 import { toast } from "sonner";
+import { useGetCartItems } from "@/queries/useCartQueries";
 import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
+
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
-  const [errors, setErrors] = useState()
   const [openPopover, setOpenPopover] = useState(false);
 
-  const {
-    data: userData,
-    isLoading: useLoading,
-    error: useError,
-  } = useUserQuery(id);
+  const { data: userData, isLoading: useLoading, error: useError } = useUserQuery();
+  const { data: cartData } = useGetCartItems();
   const { data, isLoading, error } = useGetCoursesById(id);
   const { data: categoriesData, isLoading: loadingCategories, error: errorCategories } = useCategories();
   const { data: reviewsData, isLoading: loadingReviews, error: errorReviews } = useGetCourseReview(id);
   const { data: enrollmentData, isLoading: loadingEnrollment, error: errorEnrollment } = useEnrollmentDetailsQuery(id)
+
   const addToCartMutation = useAddToCart();
 
-  const navigate = useNavigate();
-  const isLoggedIn = !!userData;
-  const course = data?.data;
-  console.log('course ', course);
+  const isInCart = cartData?.data?.cart?.items?.some(
+    (item) => item.courseId === id || item.courseId?._id === id
+  );
 
+  console.log("cartData", cartData);
+  console.log("isInCart", isInCart);
+
+  console.log("data", data);
+
+  const navigate = useNavigate();
+  const isLoggedIn = !!userData?._id;
+
+
+  const course = data?.data;
 
   const categoryName =
-    categoriesData?.data?.find((cat) => cat._id === course?.categoryId)?.name ||
-    "Category";
+    categoriesData?.data?.find((cat) => cat._id === course?.categoryId)?.name || "Category";
   const totalVideos =
-    course?.lessons.reduce(
-      (total, lesson) => total + lesson.videos.length,
-      0,
-    ) || 0;
+    course?.lessons.reduce((total, lesson) => total + lesson.videos.length, 0) || 0;
   const totalMaterials =
-    course?.lessons.reduce(
-      (total, lesson) => total + lesson.materials.length,
-      0,
-    ) || 0;
-  console.log(totalVideos);
-  console.log(totalMaterials);
-  console.log("data", data, "categoriesData", categoriesData);
-  console.log("ID:", id);
-  console.log("reviewsData:", reviewsData);
-  console.log("loadingReviews:", loadingReviews);
-  console.log("errorReviews:", errorReviews);
+    course?.lessons.reduce((total, lesson) => total + lesson.materials.length, 0) || 0;
+
+  const handleAddToCart = () => {
+    addToCartMutation.mutate(
+      { courseId: course._id }
+      ,
+      {
+        onSuccess: (data) => {
+          toast.success('Course Added To Cart');
+          console.log('Course Added To Cart', data);
+
+        },
+        onError: (err) => {
+          toast.error('Error Add Course To Cart ')
+          console.log('Error Add Course To Cart ', err);
+        }
+      })
+  }
 
   const handleEnroll = () => {
-    if (!isLoggedIn) {
-      console.log("User not logged in. Redirecting to login page...");
-      setOpenPopover(true); //
-      return;
+    try {
+      if (!isLoggedIn) {
+        setOpenPopover(true);
+        return;
+      }
+      else if (course.type == 'paid') {
+        handleAddToCart()
+      } else if (course.type == 'free') {
+        navigate('/my-courses')
+      }
+    } catch (error) {
+      toast.error(error)
     }
 
-    // continue enroll logic
-    console.log("Enroll user...");
   };
+
+
 
   if (isLoading) {
     return (
@@ -88,52 +103,59 @@ const CourseDetailsPage = () => {
     );
   }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  if (error) return <div>Error: {error.message}</div>;
+  console.log("reviewsData", reviewsData);
+  console.log("userData", userData);
+  console.log("isLoggedIn", isLoggedIn);
 
   return (
     <div className="p-6">
-      <div className="bg-[#F1F3FF] px-5 py-5 md:py-20 grid grid-cols-1 md:grid-cols-3 gap-5 rounded-lg">
+
+      {/* Hero Banner */}
+      <div className="bg-[var(--secondary)] px-5 py-5 md:py-20 grid grid-cols-1 md:grid-cols-3 gap-5 rounded-lg">
         <div className="col-span-2">
           <div className="col-span-2 flex flex-col gap-4">
             <Badge variant="lightPruple">{categoryName}</Badge>
-            <p className="text-[#141B2B] text-5xl font-extrabold">
+
+            <p className="text-[var(--foreground)] text-5xl font-extrabold">
               {course.title}
             </p>
-            {course.createdAt ? <p className="text-[#363642] font-medium text-xs">
-              Created At :
-              <span className="text-[#464555] font-light text-xs">
-                {new Date(course.createdAt).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric"
-                })}
-              </span>
-            </p> : ''}
 
-            <p className="text-md text-[#464555]">{course.description}</p>
+            {course.createdAt && (
+              <p className="text-[var(--foreground)] font-medium text-xs">
+                Created At:{" "}
+                <span className="text-[var(--muted-foreground)] font-light text-xs">
+                  {new Date(course.createdAt).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </span>
+              </p>
+            )}
+
+            <p className="text-md text-[var(--muted-foreground)]">{course.description}</p>
+
             <div className="flex gap-3 items-center">
-              <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                <FaStar color="#3525CD" />
+              <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">
+                <FaStar color="var(--primary)" />
                 {course.totalReviews}
-                <span className="text-[#141B2B] font-normal">
-                  ({course.totalReviews})Reviews
+                <span className="text-[var(--foreground)] font-normal">
+                  ({course.totalReviews}) Reviews
                 </span>
               </div>
 
-              <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                <IoMdPeople color="#3525CD" />
+              <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">
+                <IoMdPeople color="var(--primary)" />
                 {course.totalStudents}
-                <span className="text-[#141B2B] font-normal">
-                  ({course.totalStudents})Students
+                <span className="text-[var(--foreground)] font-normal">
+                  ({course.totalStudents}) Students
                 </span>
               </div>
 
-              <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                <IoPricetags color="#3525CD" />
+              <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">
+                <IoPricetags color="var(--primary)" />
                 {course.type}
-                <span className="text-[#141B2B] font-normal"></span>
               </div>
             </div>
           </div>
@@ -144,12 +166,12 @@ const CourseDetailsPage = () => {
             <img
               src={course.thumbnail}
               alt="Course Thumbnail"
-              className="w-full h-auto object-cover rounded-lg transform rotate-3 shadow-2xl shadow-indigo-300"
+              className="w-full h-auto object-cover rounded-lg transform rotate-3 shadow-2xl shadow-[var(--primary)]/20"
             />
           ) : (
-            <div className="w-full h-48 bg-gradient-to-br from-[#3525CD] to-[#6D28D9] rounded-lg transform rotate-3 shadow-2xl shadow-indigo-300 flex flex-col items-center justify-center gap-2">
+            <div className="w-full h-48 bg-[var(--primary)] rounded-lg transform rotate-3 shadow-2xl shadow-[var(--primary)]/30 flex flex-col items-center justify-center gap-2">
               <MdOndemandVideo size={40} color="white" />
-              <p className="text-white text-sm font-medium">{course.title}</p>
+              <p className="text-[var(--primary-foreground)] text-sm font-medium">{course.title}</p>
             </div>
           )}
         </div>
@@ -160,232 +182,215 @@ const CourseDetailsPage = () => {
 
         {/* Left Column */}
         <div className="col-span-1 md:col-span-2 flex flex-col gap-5">
+
+          {/* What you'll learn */}
           <div>
-            <h2
-              className="text-2xl font-bold text-[#141B2B] mb-4
-              relative before:content-[''] before:absolute before:w-2 before:h-7 before:bg-[#3525CD] before:rounded-full before:left-0 before:top-1/2 before:-translate-y-1/2 pl-4"
-            >
+            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4
+              relative before:content-[''] before:absolute before:w-2 before:h-7 before:bg-[var(--primary)] before:rounded-full before:left-0 before:top-1/2 before:-translate-y-1/2 pl-4">
               What you'll learn
             </h2>
-            <ul
-              type="square"
-              className="list-disc list-inside text-[#464555] text-md"
-            >
+            <ul className="list-disc list-inside text-[var(--muted-foreground)] text-md">
               {course.whatYouWillLearn.map((outcome, index) => (
-                <li key={index} className="font-light ">
-                  {outcome}
-                </li>
+                <li key={index} className="font-light">{outcome}</li>
               ))}
             </ul>
           </div>
 
           {/* Feature cards */}
           <div className="flex flex-col md:flex-row gap-3">
-            <div className=" mt-5 bg-gray-200 rounded-md px-3 py-4 w-64">
-              <MdOutlineVerified color="#3525CD" size={20} />
-              <p className="text-[#141B2B] font-semibold">Certified </p>
-              <p className="text-[#464555]">Industry recognized certificate</p>
+            <div className="mt-5 bg-[var(--secondary)] rounded-md px-3 py-4 w-64">
+              <MdOutlineVerified color="var(--primary)" size={20} />
+              <p className="text-[var(--foreground)] font-semibold">Certified</p>
+              <p className="text-[var(--muted-foreground)]">Industry recognized certificate</p>
             </div>
 
-            <div className=" mt-5 bg-gray-200 rounded-md px-3 py-4 w-64">
-              <IoInfinite color="#3525CD" size={20} />
-              <p className="text-[#141B2B] font-semibold">Lifetime Access </p>
-              <p className="text-[#464555]">Learn at your own pace</p>
+            <div className="mt-5 bg-[var(--secondary)] rounded-md px-3 py-4 w-64">
+              <IoInfinite color="var(--primary)" size={20} />
+              <p className="text-[var(--foreground)] font-semibold">Lifetime Access</p>
+              <p className="text-[var(--muted-foreground)]">Learn at your own pace</p>
             </div>
-
-            {/* <div className=" mt-5 bg-gray-200 rounded-md px-3 py-4  w-64">
-              <MdOutlineVerified color='#3525CD' size={20}/>
-              <p className="text-[#141B2B] font-semibold">Certified </p>
-              <p className="text-[#464555]">Industry recognized certificate</p>
-            </div> */}
           </div>
 
           {/* Course Lessons */}
           <div className="flex flex-col">
-            <h2
-              className="text-2xl font-bold text-[#141B2B] mb-4
-              relative before:content-[''] before:absolute before:w-2 before:h-7 before:bg-[#3525CD] before:rounded-full before:left-0 before:top-1/2 before:-translate-y-1/2 pl-4"
-            >
+            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4
+              relative before:content-[''] before:absolute before:w-2 before:h-7 before:bg-[var(--primary)] before:rounded-full before:left-0 before:top-1/2 before:-translate-y-1/2 pl-4">
               Course Lessons
             </h2>
 
-            <div className="bg-[#F1F3FF] rounded-xl">
-              {course.lessons.map((lesson, index) => (
-                <div key={index} className="flex items-center gap-3 p-4 ">
-                  <div className="bg-[#4F46E5] text-white rounded-full p-1 font-semibold">
-                    0{lesson.orderIndex}
+            {course?.lessons?.length > 0 ? (
+              <div className="bg-[var(--secondary)] rounded-xl">
+                {course.lessons.map((lesson, index) => (
+                  <div key={index} className="flex items-center gap-3 p-4">
+                    <div className="bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full p-1 font-semibold">
+                      0{lesson.orderIndex}
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-[var(--foreground)] font-medium">{lesson.title}</p>
+                      <p className="text-[var(--muted-foreground)] text-xs">{lesson.videos.length} Videos</p>
+                    </div>
                   </div>
-                  <div className="flex flex-col">
-                    <p className="text-[#141B2B] font-medium">{lesson.title}</p>
-                    <p className="text-[#464555] text-xs  ">
-                      {lesson.videos.length} Videos
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="col-span-2 text-center text-red-500 text-sm">No Lessons Provided</p>
+            )
+            }
+
           </div>
 
           {/* Student Reviews */}
           <div className="flex flex-col gap-4">
             <div className="flex justify-between items-center">
               <div>
-                <h2
-                  className="text-2xl font-bold text-[#141B2B]
-              relative before:content-[''] before:absolute before:w-2 before:h-7 before:bg-[#3525CD] before:rounded-full before:left-0 before:top-1/2 before:-translate-y-1/2 pl-4"
-                >
+                <h2 className="text-2xl font-bold text-[var(--foreground)]
+                  relative before:content-[''] before:absolute before:w-2 before:h-7 before:bg-[var(--primary)] before:rounded-full before:left-0 before:top-1/2 before:-translate-y-1/2 pl-4">
                   Student Reviews
                 </h2>
-                <p className="text-[#464555] text-md">
-                  What our global community says
-                </p>
+                <p className="text-[var(--muted-foreground)] text-md">What our global community says</p>
               </div>
 
               <div className="flex flex-col gap-2">
-                <p>
+                <p className="text-[var(--foreground)]">
                   {course.averageRating}/{course.totalReviews}
                 </p>
                 {course.totalMaterials > 0 ? (
-                  <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                    <FaStar color="#3525CD" />
+                  <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">
+                    <FaStar color="var(--primary)" />
                     {course.totalMaterials}
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                    <MdOutlineStarBorder color="#3525CD" />
+                  <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">
+                    <MdOutlineStarBorder color="var(--primary)" />
                   </div>
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {(reviewsData?.data) ? (<p className="col-span-2 text-center text-red-500 text-sm ">No Review Provided</p>) : (reviewsData?.data?.map((review, index) => (
-                <div key={index} className="bg-[#f4f4f4] rounded-md p-3">
-                  <div className="flex gap-2 justify-between items-start w-full">
-                    <div className="flex items-center gap-2">
-                      <div className="w-12 h-12 bg-[#cccccc] rounded-full flex items-center justify-center">
-                        {review.studentId?.avatar ? (
-                          <img
-                            src={review.studentId.avatar}
-                            alt={review.studentId.name}
-                            className="w-12 h-12 rounded-full"
-                          />
-                        ) : (
-                          <span className="text-white text-sm font-medium">
-                            {`${review.studentId.firstName?.[0] || ""}${review.studentId.lastName?.[0] || ""}`}
-                          </span>
-                        )}
+              {reviewsData?.data?.length === 0 ? (
+                <p className="col-span-2 text-center text-red-500 text-sm">No Review Provided</p>
+              ) : (
+                reviewsData?.data?.map((review, index) => (
+                  <div key={index} className="bg-[var(--secondary)] rounded-md p-3">
+                    <div className="flex gap-2 justify-between items-start w-full">
+                      <div className="flex items-center gap-2">
+                        <div className="w-12 h-12 bg-[var(--muted)] rounded-full flex items-center justify-center">
+                          {review.studentId?.avatar ? (
+                            <img
+                              src={review.studentId.avatar}
+                              alt={review.studentId.name}
+                              className="w-12 h-12 rounded-full"
+                            />
+                          ) : (
+                            <span className="text-[var(--foreground)] text-sm font-medium">
+                              {`${review.studentId.firstName?.[0] || ""}${review.studentId.lastName?.[0] || ""}`}
+                            </span>
+                          )}
+                        </div>
+                        <p className="font-semibold text-[var(--foreground)]">
+                          {review.studentId?.firstName + " " + review.studentId?.lastName}
+                        </p>
                       </div>
-                      <p className="font-semibold">
-                        {review.studentId?.firstName +
-                          " " +
-                          review.studentId?.lastName}
-                      </p>
+                      <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)] mt-2">
+                        {review.rating}
+                        <FaStar color="var(--primary)" />
+                      </div>
                     </div>
-
-                    <div></div>
-                    <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mt-2">
-                      {review.rating}
-                      <FaStar color="#3525CD" />
-                    </div>
+                    <p className="text-[var(--muted-foreground)] text-sm italic">"{review.comment}"</p>
                   </div>
-                  <p className="text-[#464555] text-sm italic">
-                    "{review.comment}"
-                  </p>
-                </div>
-              )))}
+                ))
+              )}
             </div>
           </div>
         </div>
 
         {/* Right Column */}
         <div className="col-span-1 flex flex-col gap-4">
-          <div className="bg-gray-200 py-4 px-6 rounded-xl flex flex-col gap-4">
-            {course.type === "paid" ? (
-              <h1 className="text-[#141B2B] font-semibold text-4xl">
-                ${course.price}
-              </h1>
-            ) : (
-              <h1 className="text-[#141B2B] font-semibold text-4xl">Free</h1>
-            )}
-            {course?.updatedAt?
-            <p className="text-xs text-gray-500">
-              Last updated: {new Date(course.updatedAt).toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-              })}
-            </p>
-            :''}
+
+          {/* Enroll card */}
+          <div className="bg-[var(--secondary)] py-4 px-6 rounded-xl flex flex-col gap-4">
+            {enrollmentData ?
+              <p>You Already Enrolled In This Course</p> :
+              <>
+                {course.type === "paid" ? (
+                  <h1 className="text-[var(--foreground)] font-semibold text-4xl">${course.price}</h1>
+                ) : (
+                  <h1 className="text-[var(--foreground)] font-semibold text-4xl">Free</h1>
+                )}
+
+                {course?.updatedAt && (
+                  <p className="text-xs text-[var(--muted-foreground)]">
+                    Last updated:{" "}
+                    {new Date(course.updatedAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                )}
 
 
-            <Popover open={openPopover} onOpenChange={setOpenPopover}>
-              <PopoverTrigger asChild>
-                <Button variant="success" onClick={handleEnroll}>
+                <Button
+                  variant="default"
+                  onClick={handleEnroll}
+                  disabled={useLoading || isInCart}
+                  className={isInCart ? "bg-[var(--muted-foreground)]" : ""}
+                >
                   <MdOutlineAddShoppingCart color="white" />
-                  Enroll Now
+                  {useLoading ? "Loading..." : isInCart ? "Added to Cart ✓" : "Enroll Now"}
                 </Button>
-              </PopoverTrigger>
-            </Popover>
 
+                <Dialog open={openPopover} onOpenChange={setOpenPopover}>
+                  <DialogContent showCloseButton={true}>
+                    <DialogHeader>
+                      <DialogTitle>Login Required</DialogTitle>
+                      <DialogDescription>
+                        You need to be logged in to enroll in this course.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <Button
+                        variant="purpleBtnDefault"
+                        className="w-full"
+                        onClick={() => navigate("/login")}
+                      >
+                        Go to Login
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
 
-            <Dialog open={openPopover} onOpenChange={setOpenPopover}>
-              <DialogContent showCloseButton={true}>
-                <DialogHeader>
-                  <DialogTitle>Login Required</DialogTitle>
-                  <DialogDescription>
-                    You need to be logged in to enroll in this course.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <Button
-                    variant="purpleBtnDefault"
-                    className="w-full"
-                    onClick={() => navigate("/login")}
-                  >
-                    Go to Login
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                <Button variant="secondary" className="text-[var(--primary)]">
+                  Try Free Preview
+                </Button>
+              </>
+            }
 
-            <Button variant="secondary" className="text-[#3525CD]">
-              Try Free Preview
-            </Button>
-
-
-            <hr className="border-[#c7d2fe]" />
+            <hr className="border-[var(--border)]" />
 
             <div>
-              <p className="text-[#141B2B] font-semibold text-lg ">
-                This course includes:
-              </p>
-              <ul className="list-none list-inside text-[#464555] text-sm gap-2 flex flex-col mt-2">
+              <p className="text-[var(--foreground)] font-semibold text-lg">This course includes:</p>
+              <ul className="list-none list-inside text-[var(--muted-foreground)] text-sm gap-2 flex flex-col mt-2">
                 <li className="flex gap-2">
-                  {" "}
-                  <MdPlayLesson color="#3525CD" /> {course.lessons.length}{" "}
-                  Lessons
+                  <MdPlayLesson color="var(--primary)" /> {course.lessons.length} Lessons
                 </li>
                 <li className="flex gap-2">
-                  {" "}
-                  <MdOndemandVideo color="#3525CD" /> {totalVideos} Videos
+                  <MdOndemandVideo color="var(--primary)" /> {totalVideos} Videos
                 </li>
                 <li className="flex gap-2">
-                  {" "}
-                  <IoFileTrayFullSharp color="#3525CD" /> {totalMaterials}{" "}
-                  Materials
+                  <IoFileTrayFullSharp color="var(--primary)" /> {totalMaterials} Materials
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="bg-gray-200 py-4 px-6 rounded-xl flex flex-col gap-4">
-            <h1 className="text-[#141B2B] font-bold text-md">
-              Meet Your Instructor
-            </h1>
+          {/* Instructor card */}
+          <div className="bg-[var(--secondary)] py-4 px-6 rounded-xl flex flex-col gap-4">
+            <h1 className="text-[var(--foreground)] font-bold text-md">Meet Your Instructor</h1>
 
             <div className="flex gap-2 items-start">
-              <div className="w-12 h-12 bg-[#4f46e5] rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-[var(--primary)] rounded-full flex items-center justify-center">
                 {course.teacherId?.avatar ? (
                   <img
                     src={course.teacherId.avatar}
@@ -393,37 +398,26 @@ const CourseDetailsPage = () => {
                     className="w-12 h-12 rounded-full"
                   />
                 ) : (
-                  <span className="text-white text-sm font-medium">
+                  <span className="text-[var(--primary-foreground)] text-sm font-medium">
                     {`${course.teacherId.firstName?.[0] || ""}${course.teacherId.lastName?.[0] || ""}`}
                   </span>
                 )}
               </div>
               <div>
-                <p className="font-semibold">
-                  {course.teacherId?.firstName +
-                    " " +
-                    course.teacherId?.lastName}
+                <p className="font-semibold text-[var(--foreground)]">
+                  {course.teacherId?.firstName + " " + course.teacherId?.lastName}
                 </p>
-                <p className="text-sm text-[#464555]">
-                  {course.teacherId?.email}
-                </p>
+                <p className="text-sm text-[var(--muted-foreground)]">{course.teacherId?.email}</p>
               </div>
             </div>
 
-            <div className="flex flex-col gap-1 items-center justify-center ">
-              <p className="text-[#464555] text-xs">{course.teacherId?.bio}</p>
-              <div className="w-full flex flex-col md:flex-row gap-3 ">
-                <Button
-                  variant="secondary"
-                  className="rounded-md text-[#3525CD] flex-1 py-2"
-                >
+            <div className="flex flex-col gap-1 items-center justify-center">
+              <p className="text-[var(--muted-foreground)] text-xs">{course.teacherId?.bio}</p>
+              <div className="w-full flex flex-col md:flex-row gap-3">
+                <Button variant="secondary" className="rounded-md text-[var(--primary)] flex-1 py-2">
                   Book Appointment
                 </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-md text-[#464555] flex-1 py-2"
-                // onClick={()=>{navigate('./')}}
-                >
+                <Button variant="outline" className="rounded-md text-[var(--muted-foreground)] flex-1 py-2">
                   Profile
                 </Button>
               </div>
@@ -434,6 +428,6 @@ const CourseDetailsPage = () => {
       </div>
     </div>
   );
-}
+};
 
 export default CourseDetailsPage;
