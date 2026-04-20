@@ -101,3 +101,25 @@ export const uploadLessonMaterials = async ({ lessonId, files }) => {
     throw error.response.data;
   }
 };
+
+export const deleteLessonVideo = async ({ lessonId, videoId }) => {
+  try {
+    const response = await axiosInstance.delete(
+      ENDPOINTS.LESSONS_VIDEO_DELETE(lessonId, videoId),
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const deleteLessonMaterial = async ({ lessonId, materialId }) => {
+  try {
+    const response = await axiosInstance.delete(
+      ENDPOINTS.LESSONS_MATERIAL_DELETE(lessonId, materialId),
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
