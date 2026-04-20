@@ -22,17 +22,39 @@ import { LEVELS, SORT_OPTIONS, TYPES } from "@/data/courseFilters";
 
 const CoursesPage = () => {
   const { data, isLoading, error } = useGetAllCourses();
+  const allCourses = data?.data ?? [];
+  console.log('mapped', allCourses.map(c => ({ title: c.title, updatedAt: c.updatedAt, createdAt: c.createdAt })));
+
+  const publishedCourses = allCourses
+    .filter(course => course.status === "published")
+    .sort((a, b) => {
+      // Try updatedAt first, fall back to createdAt, then _id
+      const dateA = new Date(b.updatedAt || b.createdAt || 0);
+      const dateB = new Date(a.updatedAt || a.createdAt || 0);
+
+      // Last resort: compare MongoDB _id (contains timestamp)
+      if (!b.updatedAt && !b.createdAt) {
+        return b._id > a._id ? 1 : -1;
+      }
+
+      return dateA - dateB;
+    });
+
+  // const searchCourses = results?.data?.courses ?? [];
+  // const publishedSearchCourses = searchCourses.filter(course => course.status === "published");
+
+
   const {
     data: categoriesData,
     isLoading: loadingCategories,
     error: errorCategories,
   } = useCategories();
   const {
-    mutate: searchCourses,
+    mutate: triggerSearch,
     data: results,
     isPending,
   } = useSearchCourses();
-  
+
   console.log(categoriesData?.data);
   console.log(data);
 
@@ -60,12 +82,17 @@ const CoursesPage = () => {
   const hasFilters = Object.values(filters).some(
     (v) => v !== null && v !== "" && v !== undefined,
   );
-  const coursesToShow = hasFilters ? results?.data?.courses : data?.data;
-  const loading = hasFilters ? isPending : isLoading;
+
+  const searchCourses = results?.data?.courses ?? [];
+  const publishedSearchCourses = searchCourses.filter(course => course.status === "published");
+
+  const coursesToShow = hasFilters ? publishedSearchCourses : publishedCourses;
+  console.log("coursesToShow", coursesToShow);
+
 
   useEffect(() => {
     if (!hasFilters) return;
-    searchCourses({ filters, sort, page });
+    triggerSearch({ filters, sort, page });
   }, [filters, sort, page]);
 
   return (
@@ -254,7 +281,7 @@ const CoursesPage = () => {
 
 
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
-        {loading ? (
+        {isLoading ? (
           <div className="col-span-4 flex justify-center items-center min-h-40">
             <Loader />
           </div>

@@ -34,7 +34,11 @@ function NewCourseCard({ course }) {
                     <span className="flex items-center gap-1 text-sm font-medium text-gray-700">
                         <FaStar className="text-green-600 w-3.5 h-3.5" />
                         {course.totalReviews ?? "4.9"}
-                        <span className="text-gray-400 font-normal">({course.ratingCount ?? "2.1k"})</span>
+                        {course.ratingCount ? (
+                            <span className="text-gray-400 font-normal">({course.ratingCount})</span>
+                        )
+                            : ''}
+
                     </span>
                 </div>
 
@@ -82,7 +86,7 @@ function NewCourseCard({ course }) {
                             </button>
                         </div> :
                         <button onClick={(e) => {
-                             e.stopPropagation();
+                            e.stopPropagation();
                             e.preventDefault();
                             navigate('/cart')
                         }} className="bg-green-600 hover:bg-green-700 hover:cursor:pointer text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200">
