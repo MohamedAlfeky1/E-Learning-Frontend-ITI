@@ -8,7 +8,14 @@ import {
   Users,
   BookOpen,
   AlertCircle,
+  MoreVertical,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useTeacherCourses } from "@/queries/teacherCoursesQueries";
 import { useDeleteCourse } from "@/mutations/useDeleteCourse";
 import { Badge } from "@/components/ui/badge";
@@ -120,7 +127,8 @@ const TeacherCoursesPage = () => {
           {courses.map((course) => (
             <div
               key={course._id}
-              className="group bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 overflow-hidden flex flex-col"
+              onClick={() => navigate(`/teacher/courses/${course._id}/lessons`)}
+              className="group bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer relative"
             >
               {/* Thumbnail Area */}
               <div className="relative h-56 overflow-hidden">
@@ -129,22 +137,61 @@ const TeacherCoursesPage = () => {
                   alt={course.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute top-4 left-4">
+                <div className="absolute top-4 left-4 z-10">
                   <Badge className="bg-white/90 backdrop-blur-md text-gray-900 border-none shadow-sm font-bold uppercase tracking-wider text-[10px] px-3 py-1">
                     {course.level || "ALL LEVELS"}
                   </Badge>
                 </div>
+
+                {/* Options Menu */}
+                <div className="absolute top-4 right-4 z-20">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="bg-white/90 backdrop-blur-md hover:bg-white text-gray-900 rounded-full shadow-sm h-8 w-8"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="rounded-2xl p-2 w-48 border-none shadow-xl">
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/courses/${course._id}`);
+                        }}
+                        className="rounded-xl py-3 cursor-pointer font-bold gap-3"
+                      >
+                        <Eye className="w-4 h-4 text-gray-400" /> View Public Page
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/teacher/courses/${course._id}/edit`);
+                        }}
+                        className="rounded-xl py-3 cursor-pointer font-bold gap-3"
+                      >
+                        <Pencil className="w-4 h-4 text-purple-500" /> Edit Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCourseToDelete(course);
+                        }}
+                        className="rounded-xl py-3 cursor-pointer font-bold gap-3 text-red-500 focus:text-red-500"
+                      >
+                        <Trash2 className="w-4 h-4" /> Delete Course
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
                 {/* Overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                  <div className="flex gap-2 w-full">
-                    <Button
-                      onClick={() => navigate(`/courses/${course._id}`)}
-                      variant="secondary"
-                      className="flex-1 bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/40 rounded-xl"
-                    >
-                      <Eye className="mr-2" /> View
-                    </Button>
-                  </div>
+                  <span className="text-white font-black text-sm uppercase tracking-widest flex items-center gap-2">
+                    Manage Lessons <BookOpen className="w-4 h-4" />
+                  </span>
                 </div>
               </div>
 
@@ -184,24 +231,6 @@ const TeacherCoursesPage = () => {
                   </div>
                 </div>
 
-                {/* Footer Actions */}
-                <div className="grid grid-cols-2 gap-3 mt-6">
-                  <Button
-                    onClick={() =>
-                      navigate(`/teacher/courses/${course._id}/edit`)
-                    }
-                    className="bg-gray-900 hover:bg-black text-white rounded-xl py-6 font-bold flex items-center justify-center gap-2"
-                  >
-                    <Pencil /> Edit
-                  </Button>
-                  <Button
-                    onClick={() => setCourseToDelete(course)}
-                    variant="outline"
-                    className="border-red-100 text-red-500 hover:bg-red-50 hover:border-red-200 rounded-xl py-6 font-bold flex items-center justify-center gap-2"
-                  >
-                    <Trash2 /> Delete
-                  </Button>
-                </div>
               </div>
             </div>
           ))}
