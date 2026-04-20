@@ -214,6 +214,7 @@ const TeacherLessonsPage = () => {
 };
 
 const LessonItem = ({ lesson, courseId, onDelete }) => {
+  const navigate = useNavigate();
   const controls = useDragControls();
 
   return (
@@ -226,11 +227,17 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
         boxShadow:
           "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
       }}
-      className="bg-white p-6 rounded-[2.5rem] border border-gray-100 flex flex-col md:flex-row items-center gap-8 transition-shadow duration-300 group relative z-0 hover:z-10 hover:border-purple-100"
+      onClick={() =>
+        navigate(`/teacher/courses/${courseId}/lessons/${lesson._id}`)
+      }
+      className="bg-white p-6 rounded-[2.5rem] border border-gray-100 flex flex-col md:flex-row items-center gap-8 transition-shadow duration-300 group relative z-0 hover:z-10 hover:border-purple-100 cursor-pointer"
     >
       {/* Drag Handle */}
       <div
-        onPointerDown={(e) => controls.start(e)}
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          controls.start(e);
+        }}
         className="cursor-grab active:cursor-grabbing p-3 hover:bg-purple-50 rounded-2xl text-gray-300 hover:text-purple-600 transition-all flex-shrink-0"
       >
         <GripVertical className="size-6" />
@@ -276,13 +283,19 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div
+        className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={(e) => e.stopPropagation()}
+      >
         <EditLessonDialog lesson={lesson} courseId={courseId} />
         <Button
           variant="outline"
           size="icon"
           className="rounded-2xl border-red-50 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all w-12 h-12"
-          onClick={onDelete}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
         >
           <Trash2 className="size-5" />
         </Button>

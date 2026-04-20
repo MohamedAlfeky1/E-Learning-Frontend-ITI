@@ -7,8 +7,9 @@ export const useUploadMaterialsMutation = (courseId) => {
 
   return useMutation({
     mutationFn: uploadLessonMaterials,
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries(["lessons", courseId]);
+      queryClient.invalidateQueries(["lesson", courseId, variables.lessonId]);
       toast.success("Materials uploaded successfully");
     },
     onError: (error) => {
