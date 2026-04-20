@@ -1,16 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLessonsByCourse } from "@/queries/lessonsQueries";
 import { useDeleteLessonMutation } from "@/mutations/useDeleteLessonMutation";
+import { useReorderLessonsMutation } from "@/mutations/useReorderLessonsMutation";
 import AddLessonDialog from "@/components/teacher/lessons/AddLessonDialog";
 import EditLessonDialog from "@/components/teacher/lessons/EditLessonDialog";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyTitle,
-} from "@/components/ui/empty";
+import { Reorder, useDragControls } from "framer-motion";
 import {
   Trash2,
   BookOpen,
@@ -18,6 +14,7 @@ import {
   FileText,
   ChevronLeft,
   Calendar,
+  GripVertical,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -36,11 +33,30 @@ const TeacherLessonsPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError } = useLessonsByCourse(courseId);
-  const lessons = data?.data || [];
+  const lessonsData = data?.data || [];
+  const [items, setItems] = useState([]);
 
   const { mutateAsync: deleteLesson, isPending: isDeleting } =
     useDeleteLessonMutation(courseId);
-  const [lessonToDelete, setLessonToDelete] = React.useState(null);
+  const { mutate: reorderLessons } = useReorderLessonsMutation(courseId);
+  const [lessonToDelete, setLessonToDelete] = useState(null);
+
+  useEffect(() => {
+    if (lessonsData.length > 0) {
+      setItems(lessonsData.sort((a, b) => a.orderIndex - b.orderIndex));
+    } else {
+      setItems([]);
+    }
+  }, [lessonsData]);
+
+  const handleReorder = (newItems) => {
+    setItems(newItems);
+    const updatedOrder = newItems.map((item, index) => ({
+      id: item._id,
+      orderIndex: index,
+    }));
+    reorderLessons({ courseId, lessons: updatedOrder });
+  };
 
   const handleDelete = async () => {
     if (lessonToDelete) {
@@ -54,9 +70,9 @@ const TeacherLessonsPage = () => {
   };
 
   return (
-    <div className="bg-[#F8F9FD] min-h-screen p-4 md:p-8">
+    <div className="bg-[#F8F9FD] min-h-screen p-4 md:p-8 font-['Plus Jakarta Sans']">
       {/* Header */}
-      <header className="max-w-6xl mx-auto mb-10 flex flex-col md:flex-row gap-6 justify-between md:items-center">
+      <header className="max-w-6xl mx-auto mb-10 flex flex-col md:flex-row gap-6 justify-between md:items-center bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
         <div className="space-y-4">
           <Button
             variant="ghost"
@@ -105,7 +121,7 @@ const TeacherLessonsPage = () => {
               Try Again
             </Button>
           </div>
-        ) : lessons.length === 0 ? (
+        ) : items.length === 0 ? (
           <div className="py-24 flex flex-col items-center justify-center bg-white rounded-[3rem] border-2 border-dashed border-gray-100 gap-8 shadow-sm">
             <div className="w-24 h-24 bg-purple-50 rounded-[2rem] flex items-center justify-center transform rotate-6 border border-purple-100">
               <BookOpen className="w-12 h-12 text-purple-300 transform -rotate-6" />
@@ -121,8 +137,13 @@ const TeacherLessonsPage = () => {
             <AddLessonDialog courseId={courseId} />
           </div>
         ) : (
-          <div className="space-y-4">
-            {lessons.map((lesson) => (
+          <Reorder.Group
+            axis="y"
+            values={items}
+            onReorder={handleReorder}
+            className="space-y-4"
+          >
+            {items.map((lesson) => (
               <LessonItem
                 key={lesson._id}
                 lesson={lesson}
@@ -130,9 +151,19 @@ const TeacherLessonsPage = () => {
                 onDelete={() => setLessonToDelete(lesson)}
               />
             ))}
-          </div>
+          </Reorder.Group>
         )}
       </div>
+
+      {/* Helper Legend */}
+      {!isLoading && items.length > 0 && (
+        <div className="mt-12 flex justify-center">
+          <p className="text-xs text-gray-400 flex items-center gap-2 bg-white px-6 py-3 rounded-full border border-gray-100 shadow-sm font-bold uppercase tracking-widest">
+            <GripVertical className="size-4 text-purple-400" />
+            Drag handle on the left to reorder curriculum
+          </p>
+        </div>
+      )}
 
       {/* Delete Confirmation */}
       <AlertDialog
@@ -177,11 +208,31 @@ const TeacherLessonsPage = () => {
 };
 
 const LessonItem = ({ lesson, courseId, onDelete }) => {
+  const controls = useDragControls();
+
   return (
-    <div className="bg-white p-6 rounded-[2rem] border border-gray-100 flex flex-col md:flex-row items-center gap-8 hover:shadow-2xl hover:shadow-purple-500/5 transition-all duration-300 group">
+    <Reorder.Item
+      value={lesson}
+      dragListener={false}
+      dragControls={controls}
+      whileDrag={{
+        scale: 1.01,
+        boxShadow:
+          "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+      }}
+      className="bg-white p-6 rounded-[2.5rem] border border-gray-100 flex flex-col md:flex-row items-center gap-8 transition-shadow duration-300 group relative z-0 hover:z-10 hover:border-purple-100"
+    >
+      {/* Drag Handle */}
+      <div
+        onPointerDown={(e) => controls.start(e)}
+        className="cursor-grab active:cursor-grabbing p-3 hover:bg-purple-50 rounded-2xl text-gray-300 hover:text-purple-600 transition-all flex-shrink-0"
+      >
+        <GripVertical className="size-6" />
+      </div>
+
       {/* Index Badge */}
-      <div className="w-16 h-16 rounded-2xl bg-gray-50 flex flex-col items-center justify-center border border-gray-100 group-hover:bg-purple-600 group-hover:border-purple-600 transition-colors duration-300">
-        <span className="text-[10px] font-black text-gray-400 group-hover:text-purple-200">
+      <div className="w-16 h-16 rounded-3xl bg-gray-50 flex flex-col items-center justify-center border border-gray-100 group-hover:bg-purple-600 group-hover:border-purple-600 transition-colors duration-300 flex-shrink-0 shadow-inner">
+        <span className="text-[10px] font-black text-gray-400 group-hover:text-purple-200 uppercase tracking-tighter">
           ORDER
         </span>
         <span className="text-xl font-black text-gray-900 group-hover:text-white">
@@ -190,8 +241,8 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
       </div>
 
       {/* Info */}
-      <div className="flex-1 text-center md:text-left">
-        <h3 className="text-xl font-extrabold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+      <div className="flex-1 text-center md:text-left min-w-0">
+        <h3 className="text-xl font-extrabold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors truncate">
           {lesson.title}
         </h3>
         <p className="text-gray-500 line-clamp-1 mb-4 font-medium max-w-lg">
@@ -199,22 +250,22 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
         </p>
 
         {/* Stats */}
-        <div className="flex items-center justify-center md:justify-start gap-6">
-          <div className="flex items-center gap-2 text-gray-400">
-            <Video className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-widest">
+        <div className="flex flex-wrap items-center justify-center md:justify-start gap-y-2 gap-x-6">
+          <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 group-hover:bg-purple-50 group-hover:text-purple-400 group-hover:border-purple-100 transition-colors">
+            <Video className="w-3.5 h-3.5" />
+            <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
               {lesson.videos?.length || 0} Videos
             </span>
           </div>
-          <div className="flex items-center gap-2 text-gray-400">
-            <FileText className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-widest">
+          <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 group-hover:bg-purple-50 group-hover:text-purple-400 group-hover:border-purple-100 transition-colors">
+            <FileText className="w-3.5 h-3.5" />
+            <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
               {lesson.materials?.length || 0} Materials
             </span>
           </div>
-          <div className="flex items-center gap-2 text-gray-400">
-            <Calendar className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-widest">
+          <div className="flex items-center gap-2 text-gray-400 ml-auto md:ml-0">
+            <Calendar className="w-3.5 h-3.5" />
+            <span className="text-[10px] font-black uppercase tracking-widest">
               {new Date(lesson.createdAt).toLocaleDateString()}
             </span>
           </div>
@@ -222,18 +273,18 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
         <EditLessonDialog lesson={lesson} courseId={courseId} />
         <Button
           variant="outline"
           size="icon"
-          className="rounded-xl border-red-50 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all"
+          className="rounded-2xl border-red-50 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all w-12 h-12"
           onClick={onDelete}
         >
-          <Trash2 className="size-4" />
+          <Trash2 className="size-5" />
         </Button>
       </div>
-    </div>
+    </Reorder.Item>
   );
 };
 

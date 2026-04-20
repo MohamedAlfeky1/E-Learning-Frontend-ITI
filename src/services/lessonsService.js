@@ -33,6 +33,18 @@ export const createLesson = async ({ courseId, data }) => {
   }
 };
 
+export const reorderLessons = async ({ courseId, lessons }) => {
+  try {
+    const response = await axiosInstance.patch(
+      ENDPOINTS.LESSONS_REORDER(courseId),
+      { lessons },
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export const updateLesson = async ({ courseId, lessonId, data }) => {
   try {
     const response = await axiosInstance.put(

@@ -30,6 +30,7 @@ export const ENDPOINTS = {
   LESSONS_CREATE: (courseId) => `/lessons/${courseId}`,
   LESSONS_UPDATE: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
   LESSONS_DELETE: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
+  LESSONS_REORDER: (courseId) => `/lessons/${courseId}/reorder`,
   LESSONS_UPLOAD_VIDEO: (lessonId) => `/lessons/${lessonId}/videos`,
   LESSONS_UPLOAD_MATERIAL: (lessonId) => `/lessons/${lessonId}/materials`,
 
