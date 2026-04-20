@@ -69,6 +69,9 @@ const TeacherLessonsPage = () => {
     }
   };
 
+  const nextOrderIndex =
+    items.length > 0 ? Math.max(...items.map((i) => i.orderIndex)) + 1 : 0;
+
   return (
     <div className="bg-[#F8F9FD] min-h-screen p-4 md:p-8 font-['Plus Jakarta Sans']">
       {/* Header */}
@@ -91,7 +94,7 @@ const TeacherLessonsPage = () => {
             </p>
           </div>
         </div>
-        <AddLessonDialog courseId={courseId} />
+        <AddLessonDialog courseId={courseId} nextOrderIndex={nextOrderIndex} />
       </header>
 
       {/* Main Content */}
@@ -134,7 +137,10 @@ const TeacherLessonsPage = () => {
                 Start building your curriculum by adding your first lesson.
               </p>
             </div>
-            <AddLessonDialog courseId={courseId} />
+            <AddLessonDialog
+              courseId={courseId}
+              nextOrderIndex={nextOrderIndex}
+            />
           </div>
         ) : (
           <Reorder.Group
@@ -232,11 +238,8 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
 
       {/* Index Badge */}
       <div className="w-16 h-16 rounded-3xl bg-gray-50 flex flex-col items-center justify-center border border-gray-100 group-hover:bg-purple-600 group-hover:border-purple-600 transition-colors duration-300 flex-shrink-0 shadow-inner">
-        <span className="text-[10px] font-black text-gray-400 group-hover:text-purple-200 uppercase tracking-tighter">
-          ORDER
-        </span>
         <span className="text-xl font-black text-gray-900 group-hover:text-white">
-          #{lesson.orderIndex}
+          {lesson.orderIndex + 1}
         </span>
       </div>
 

@@ -23,12 +23,12 @@ import { Spinner } from "@/components/ui/spinner";
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
-  orderIndex: z.coerce.number().min(0).default(0),
 });
 
 const EditLessonDialog = ({ courseId, lesson }) => {
   const [open, setOpen] = useState(false);
-  const { mutateAsync: updateLesson, isPending } = useUpdateLessonMutation(courseId);
+  const { mutateAsync: updateLesson, isPending } =
+    useUpdateLessonMutation(courseId);
 
   const {
     control,
@@ -40,7 +40,6 @@ const EditLessonDialog = ({ courseId, lesson }) => {
     defaultValues: {
       title: lesson?.title || "",
       description: lesson?.description || "",
-      orderIndex: lesson?.orderIndex || 0,
     },
   });
 
@@ -49,14 +48,17 @@ const EditLessonDialog = ({ courseId, lesson }) => {
       reset({
         title: lesson.title,
         description: lesson.description,
-        orderIndex: lesson.orderIndex,
       });
     }
   }, [lesson, reset]);
 
   const onSubmit = async (data) => {
     try {
-      await updateLesson({ courseId, lessonId: lesson._id, data });
+      await updateLesson({
+        courseId,
+        lessonId: lesson._id,
+        data: { ...data, orderIndex: lesson.orderIndex },
+      });
       toast.success("Lesson updated successfully!");
       setOpen(false);
     } catch (err) {
@@ -67,7 +69,11 @@ const EditLessonDialog = ({ courseId, lesson }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" className="rounded-xl border-purple-100 text-purple-600 hover:bg-purple-50">
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-xl border-purple-100 text-purple-600 hover:bg-purple-50"
+        >
           <FiEdit3 className="size-4" />
         </Button>
       </DialogTrigger>
@@ -113,30 +119,6 @@ const EditLessonDialog = ({ courseId, lesson }) => {
                   {errors.title.message}
                 </p>
               )}
-            </div>
-
-            {/* Order Index */}
-            <div className="flex flex-col gap-2">
-              <Label className="text-sm font-bold text-gray-700 ml-1">
-                Order Index
-              </Label>
-              <div className="relative group">
-                <FiHash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors" />
-                <Controller
-                  name="orderIndex"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="0"
-                      className={`pl-12 h-14 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-purple-600/10 transition-all font-medium ${
-                        errors.orderIndex ? "ring-2 ring-red-500" : ""
-                      }`}
-                    />
-                  )}
-                />
-              </div>
             </div>
 
             {/* Description */}

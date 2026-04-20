@@ -23,12 +23,12 @@ import { Spinner } from "@/components/ui/spinner";
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
-  orderIndex: z.coerce.number().min(0).default(0),
 });
 
-const AddLessonDialog = ({ courseId }) => {
+const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
   const [open, setOpen] = useState(false);
-  const { mutateAsync: createLesson, isPending } = useCreateLessonMutation(courseId);
+  const { mutateAsync: createLesson, isPending } =
+    useCreateLessonMutation(courseId);
 
   const {
     control,
@@ -40,13 +40,15 @@ const AddLessonDialog = ({ courseId }) => {
     defaultValues: {
       title: "",
       description: "",
-      orderIndex: 0,
     },
   });
 
   const onSubmit = async (data) => {
     try {
-      await createLesson({ courseId, data });
+      await createLesson({
+        courseId,
+        data: { ...data, orderIndex: nextOrderIndex },
+      });
       toast.success("Lesson created successfully!");
       setOpen(false);
       reset();
@@ -73,7 +75,8 @@ const AddLessonDialog = ({ courseId }) => {
             Add New Lesson
           </DialogTitle>
           <DialogDescription className="text-gray-500 font-medium">
-            Create a new lesson for this course. You can add videos and materials later.
+            Create a new lesson for this course. You can add videos and
+            materials later.
           </DialogDescription>
         </DialogHeader>
 
@@ -105,33 +108,6 @@ const AddLessonDialog = ({ courseId }) => {
                   {errors.title.message}
                 </p>
               )}
-            </div>
-
-            {/* Order Index */}
-            <div className="flex flex-col gap-2">
-              <Label className="text-sm font-bold text-gray-700 ml-1">
-                Order Index
-              </Label>
-              <div className="relative group">
-                <FiHash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors" />
-                <Controller
-                  name="orderIndex"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="0"
-                      className={`pl-12 h-14 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-purple-600/10 transition-all font-medium ${
-                        errors.orderIndex ? "ring-2 ring-red-500" : ""
-                      }`}
-                    />
-                  )}
-                />
-              </div>
-              <p className="text-[10px] text-gray-400 font-bold ml-2">
-                Lessons will be sorted by this index.
-              </p>
             </div>
 
             {/* Description */}
