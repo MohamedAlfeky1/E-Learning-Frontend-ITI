@@ -80,7 +80,7 @@ const TeacherLessonsPage = () => {
           <Button
             variant="ghost"
             onClick={() => navigate("/teacher/courses")}
-            className="text-gray-500 hover:text-purple-600 font-bold p-0 flex items-center gap-2"
+            className="text-gray-500 hover:text-indigo-600 font-bold p-0 flex items-center gap-2"
           >
             <ChevronLeft className="w-5 h-5" /> Back to My Courses
           </Button>
@@ -89,7 +89,7 @@ const TeacherLessonsPage = () => {
               Course Content
             </h1>
             <p className="text-gray-500 font-medium flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+              <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
               Manage your lessons, videos and materials
             </p>
           </div>
@@ -101,7 +101,7 @@ const TeacherLessonsPage = () => {
       <div className="max-w-5xl mx-auto">
         {isLoading ? (
           <div className="w-full py-24 flex flex-col justify-center items-center gap-5 bg-white rounded-[2.5rem] border border-dashed border-gray-200">
-            <Spinner className="w-12 h-12 border-purple-600" />
+            <Spinner className="w-12 h-12 border-indigo-600" />
             <p className="text-gray-400 font-black animate-pulse uppercase tracking-widest text-xs">
               Loading lessons...
             </p>
@@ -126,8 +126,8 @@ const TeacherLessonsPage = () => {
           </div>
         ) : items.length === 0 ? (
           <div className="py-24 flex flex-col items-center justify-center bg-white rounded-[3rem] border-2 border-dashed border-gray-100 gap-8 shadow-sm">
-            <div className="w-24 h-24 bg-purple-50 rounded-[2rem] flex items-center justify-center transform rotate-6 border border-purple-100">
-              <BookOpen className="w-12 h-12 text-purple-300 transform -rotate-6" />
+            <div className="w-24 h-24 bg-indigo-50 rounded-[2rem] flex items-center justify-center transform rotate-6 border border-indigo-100">
+              <BookOpen className="w-12 h-12 text-indigo-300 transform -rotate-6" />
             </div>
             <div className="text-center space-y-2">
               <h3 className="text-2xl font-black text-gray-900">
@@ -165,7 +165,7 @@ const TeacherLessonsPage = () => {
       {!isLoading && items.length > 0 && (
         <div className="mt-12 flex justify-center">
           <p className="text-xs text-gray-400 flex items-center gap-2 bg-white px-6 py-3 rounded-full border border-gray-100 shadow-sm font-bold uppercase tracking-widest">
-            <GripVertical className="size-4 text-purple-400" />
+            <GripVertical className="size-4 text-indigo-400" />
             Drag handle on the left to reorder curriculum
           </p>
         </div>
@@ -230,7 +230,7 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
       onClick={() =>
         navigate(`/teacher/courses/${courseId}/lessons/${lesson._id}`)
       }
-      className="bg-white p-6 rounded-[2.5rem] border border-gray-100 flex flex-col md:flex-row items-center gap-8 transition-shadow duration-300 group relative z-0 hover:z-10 hover:border-purple-100 cursor-pointer"
+      className="bg-white p-6 rounded-[2.5rem] border border-gray-100 flex flex-col md:flex-row items-center gap-8 transition-shadow duration-300 group relative z-0 hover:z-10 hover:border-indigo-100 cursor-pointer"
     >
       {/* Drag Handle */}
       <div
@@ -238,13 +238,13 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
           e.stopPropagation();
           controls.start(e);
         }}
-        className="cursor-grab active:cursor-grabbing p-3 hover:bg-purple-50 rounded-2xl text-gray-300 hover:text-purple-600 transition-all flex-shrink-0"
+        className="cursor-grab active:cursor-grabbing p-3 hover:bg-indigo-50 rounded-2xl text-gray-300 hover:text-indigo-600 transition-all flex-shrink-0"
       >
         <GripVertical className="size-6" />
       </div>
 
       {/* Index Badge */}
-      <div className="w-16 h-16 rounded-3xl bg-gray-50 flex flex-col items-center justify-center border border-gray-100 group-hover:bg-purple-600 group-hover:border-purple-600 transition-colors duration-300 flex-shrink-0 shadow-inner">
+      <div className="w-16 h-16 rounded-3xl bg-gray-50 flex flex-col items-center justify-center border border-gray-100 group-hover:bg-indigo-600 group-hover:border-indigo-600 transition-colors duration-300 flex-shrink-0 shadow-inner">
         <span className="text-xl font-black text-gray-900 group-hover:text-white">
           {lesson.orderIndex + 1}
         </span>
@@ -252,7 +252,7 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
 
       {/* Info */}
       <div className="flex-1 text-center md:text-left min-w-0">
-        <h3 className="text-xl font-extrabold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors truncate">
+        <h3 className="text-xl font-extrabold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors truncate">
           {lesson.title}
         </h3>
         <p className="text-gray-500 line-clamp-1 mb-4 font-medium max-w-lg">
@@ -261,13 +261,13 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
 
         {/* Stats */}
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-y-2 gap-x-6">
-          <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 group-hover:bg-purple-50 group-hover:text-purple-400 group-hover:border-purple-100 transition-colors">
+          <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 group-hover:bg-indigo-50 group-hover:text-indigo-400 group-hover:border-indigo-100 transition-colors">
             <Video className="w-3.5 h-3.5" />
             <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
               {lesson.videos?.length || 0} Videos
             </span>
           </div>
-          <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 group-hover:bg-purple-50 group-hover:text-purple-400 group-hover:border-purple-100 transition-colors">
+          <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 group-hover:bg-indigo-50 group-hover:text-indigo-400 group-hover:border-indigo-100 transition-colors">
             <FileText className="w-3.5 h-3.5" />
             <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
               {lesson.materials?.length || 0} Materials
