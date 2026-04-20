@@ -1,6 +1,7 @@
+
 import axiosInstance from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
-/**
+/*
  * Service for handling course enrollments and progress updates.
  * @namespace enrollmentService
  */
@@ -31,7 +32,7 @@ export const enrollmentService = {
   getEnrollmentByCourseId: async (courseId) => {
     try {
       const { data } = await axiosInstance.get(ENDPOINTS.ENROLLMENTS_GET(courseId));
-      return data.data;
+      return data?.data;
     } catch (error) {
       console.error("Error Get Enrollments By Id:", error);
       throw error;
@@ -62,7 +63,7 @@ export const enrollmentService = {
   }
 };
 
-/**
+/*
  * Get All Courses That all student enroll
  * 
  */
@@ -75,5 +76,3 @@ export const getAllCoursesOfUser = async () => {
     throw error;
   }
 }
-
-

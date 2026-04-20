@@ -1,14 +1,11 @@
 import { usePaymentHistory } from "@/queries/usePaymentQueries";
 import { Badge } from "@/components/ui/badge";
 import {
-  Loader2,
-  AlertCircle,
   Receipt,
   CreditCard,
   Calendar,
-  ChevronRight,
-  ArrowUpRight,
   Wallet,
+  BookOpen,
 } from "lucide-react";
 import Loader from "@/components/ui/Loader";
 import {
@@ -53,8 +50,7 @@ const PaymentHistoryPage = () => {
               Total Spent
             </p>
             <p className="text-xl font-black text-primary">
-              ${" "}
-              {payments
+              $ {payments
                 ?.reduce(
                   (acc, curr) =>
                     acc +
@@ -73,20 +69,19 @@ const PaymentHistoryPage = () => {
         <Table>
           <TableHeader className="bg-muted/40">
             <TableRow className="hover:bg-transparent border-none">
-              <TableHead className="py-6 px-8 text-foreground font-bold uppercase text-[11px] tracking-widest">
+              <TableHead className="py-6 px-8 text-primary font-bold uppercase text-[13px] tracking-widest">
                 Transaction Details
               </TableHead>
-              <TableHead className="text-foreground font-bold uppercase text-[11px] tracking-widest">
+              <TableHead className="text-primary font-bold uppercase text-[13px] tracking-widest">
                 Date
               </TableHead>
-              <TableHead className="text-foreground font-bold uppercase text-[11px] tracking-widest text-right">
+              <TableHead className="text-primary font-bold uppercase text-[13px] tracking-widest text-right">
                 Amount
               </TableHead>
-              <TableHead className="text-foreground font-bold uppercase text-[11px] tracking-widest text-center">
+              <TableHead className="text-primary font-bold uppercase text-[13px] tracking-widest text-center">
                 Status
               </TableHead>
-              <TableHead className="w-[80px]" />
-            </TableRow>
+د            </TableRow>
           </TableHeader>
           <TableBody>
             {payments?.map((payment) => (
@@ -95,35 +90,43 @@ const PaymentHistoryPage = () => {
                 className="group border-border hover:bg-accent/40 transition-all duration-300"
               >
                 <TableCell className="py-6 px-8">
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-2">
                     {payment.type === "course_sale" ? (
-                      payment.courses?.map((c) => (
-                        <span
-                          key={c._id}
-                          className="font-bold text-foreground group-hover:text-primary transition-colors"
-                        >
-                          {c.title}
-                        </span>
-                      ))
+                      <div className="flex flex-wrap gap-1.5">
+                        {payment.courses?.map((c) => (
+                          <Badge 
+                            key={c._id} 
+                            variant="secondary" 
+                            className="bg-primary/10 text-foreground border-border hover:bg-primary/10 hover:text-primary transition-colors py-1 px-3 rounded-lg font-bold"
+                          >
+                            <BookOpen className="w-3 h-3 mr-1.5 opacity-60" />
+                            {c.title}
+                          </Badge>
+                        ))}
+                      </div>
                     ) : (
-                      <div className="flex flex-col">
-                        <span className="font-bold text-foreground group-hover:text-primary transition-colors">
-                          Private Session:{" "}
-                          {payment.sessionId?.teacherId?.firstName}{" "}
-                          {payment.sessionId?.teacherId?.lastName}
-                        </span>
-                        <span className="text-[10px] text-primary font-bold uppercase">
-                          1-on-1 Mentorship
-                        </span>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                          <Calendar className="w-5 h-5" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-foreground group-hover:text-primary transition-colors">
+                            Private Session: {payment.sessionId?.teacherId?.firstName} {payment.sessionId?.teacherId?.lastName}
+                          </span>
+                          <span className="text-[10px] text-primary font-bold uppercase tracking-widest">
+                            1-on-1 Mentorship
+                          </span>
+                        </div>
                       </div>
                     )}
 
-                    <div className="flex items-center text-[10px] text-muted-foreground font-mono tracking-tighter mt-1">
-                      <CreditCard className="w-3 h-3 mr-1" />
-                      ID: {payment._id.toUpperCase()}
+                    <div className="flex items-center text-[9px] text-muted-foreground/90  font-bold font-mono mt-1 ml-1">
+                      <CreditCard className="w-3 h-3 mr-1 text-primary/50" />
+                      REF: {payment._id.toUpperCase()}
                     </div>
                   </div>
                 </TableCell>
+                
                 <TableCell>
                   <div className="flex items-center gap-2 text-muted-foreground font-medium">
                     <Calendar className="w-4 h-4 opacity-60" />
@@ -131,8 +134,9 @@ const PaymentHistoryPage = () => {
                   </div>
                 </TableCell>
 
-                <TableCell className="text-right font-black text-foreground">
-                  ${(Number(payment.amount) || 0).toFixed(2)}
+                <TableCell className="text-right font-black text-foreground text-lg tracking-tighter">
+                  <span className="text-primary/50 text-sm mr-0.5">$</span>
+                  {(Number(payment.amount) || 0).toFixed(2)}
                 </TableCell>
 
                 <TableCell className="text-center">
@@ -147,13 +151,7 @@ const PaymentHistoryPage = () => {
                   </Badge>
                 </TableCell>
 
-                <TableCell>
-                  <div className="flex justify-center opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
-                    <div className="p-2 bg-primary text-primary-foreground rounded-full">
-                      <ArrowUpRight className="w-4 h-4" />
-                    </div>
-                  </div>
-                </TableCell>
+                
               </TableRow>
             ))}
           </TableBody>
@@ -168,25 +166,25 @@ const PaymentHistoryPage = () => {
           >
             <CardContent className="p-6 space-y-6">
               <div className="flex justify-between items-start">
-                <div className="space-y-1">
+                <div className="space-y-3">
                   {payment.type === "course_sale" ? (
-                    payment.courses?.map((c) => (
-                      <h3
-                        key={c._id}
-                        className="font-black text-foreground leading-tight text-lg"
-                      >
-                        {c.title}
-                      </h3>
-                    ))
+                    <div className="space-y-2">
+                      {payment.courses?.map((c) => (
+                        <div key={c._id} className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                          <h3 className="font-bold text-foreground leading-tight text-base">
+                            {c.title}
+                          </h3>
+                        </div>
+                      ))}
+                    </div>
                   ) : (
                     <h3 className="font-black text-foreground leading-tight text-lg">
-                      Session with{" "}
-                      {payment.sessionId?.teacherId?.firstName || "Teacher"}
+                      Session with {payment.sessionId?.teacherId?.firstName || "Teacher"}
                     </h3>
                   )}
                   <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px] font-bold uppercase tracking-tighter">
-                    {payment.type === "course_sale" ? "Course" : "Session"} •{" "}
-                    {payment.status}
+                    {payment.type === "course_sale" ? "Course Bundle" : "Session"} • {payment.status}
                   </Badge>
                 </div>
                 <div className="p-3 bg-muted rounded-2xl">
@@ -194,9 +192,9 @@ const PaymentHistoryPage = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-muted-foreground">
+              <div className="flex items-center justify-between text-muted-foreground pt-4 border-t border-border">
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-bold tracking-widest">
+                  <span className="text-[10px] uppercase font-bold tracking-widest opacity-60">
                     Date
                   </span>
                   <span className="text-sm font-bold text-foreground">
@@ -204,7 +202,7 @@ const PaymentHistoryPage = () => {
                   </span>
                 </div>
                 <div className="text-right flex flex-col">
-                  <span className="text-[10px] uppercase font-bold tracking-widest">
+                  <span className="text-[10px] uppercase font-bold tracking-widest opacity-60">
                     Total
                   </span>
                   <span className="text-2xl font-black text-primary">
@@ -223,7 +221,7 @@ const PaymentHistoryPage = () => {
             <Receipt className="w-12 h-12 text-muted-foreground" />
           </div>
           <h2 className="text-xl font-bold text-foreground">No History Yet</h2>
-          <p className="text-muted-foreground">
+          <p className="text-primary/80 mt-2">
             Your future enrollments and bookings will appear here.
           </p>
         </div>
