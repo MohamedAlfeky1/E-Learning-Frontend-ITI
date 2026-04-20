@@ -7,8 +7,9 @@ export const useUploadVideosMutation = (courseId) => {
 
   return useMutation({
     mutationFn: uploadLessonVideos,
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries(["lessons", courseId]);
+      queryClient.invalidateQueries(["lesson", courseId, variables.lessonId]);
       toast.success("Videos uploaded successfully");
     },
     onError: (error) => {

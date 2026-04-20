@@ -60,6 +60,7 @@ import EditCoursePage from "@/pages/teacher/EditCoursePage";
 import CourseDetailManagePage from "@/pages/teacher/CourseDetailManagePage";
 import AddLessonPage from "@/pages/teacher/AddLessonPage";
 import TeacherLessonsPage from "@/pages/teacher/TeacherLessonsPage";
+import LessonDetailsPage from "@/pages/teacher/LessonDetailsPage";
 import UploadMaterialPage from "@/pages/teacher/UploadMaterialPage";
 import ManageQuizzesPage from "@/pages/teacher/ManageQuizzesPage";
 import CreateQuizPage from "@/pages/teacher/CreateQuizPage";
@@ -281,6 +282,10 @@ const router = createBrowserRouter([
       { path: "courses/:courseId", element: <CourseDetailManagePage /> }, // /teacher/courses/:courseId
       { path: "courses/:courseId/edit", element: <EditCoursePage /> }, // /teacher/courses/:courseId/edit
       { path: "courses/:courseId/lessons", element: <TeacherLessonsPage /> }, // /teacher/courses/:courseId/lessons
+      {
+        path: "courses/:courseId/lessons/:lessonId",
+        element: <LessonDetailsPage />,
+      }, // /teacher/courses/:courseId/lessons/:lessonId
       { path: "courses/:courseId/lessons/add", element: <AddLessonPage /> }, // /teacher/courses/:courseId/lessons/add
       {
         path: "courses/:courseId/materials/upload",
