@@ -71,7 +71,7 @@ const LessonDetailsPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8F9FD]">
-        <Spinner className="w-12 h-12 border-purple-600" />
+        <Spinner className="w-12 h-12 border-indigo-600" />
       </div>
     );
   }
@@ -84,7 +84,7 @@ const LessonDetailsPage = () => {
         </h2>
         <Button
           onClick={() => navigate(-1)}
-          className="rounded-xl bg-purple-600 h-12 px-8"
+          className="rounded-xl bg-indigo-600 h-12 px-8"
         >
           Go Back
         </Button>
@@ -97,24 +97,24 @@ const LessonDetailsPage = () => {
       <div className="max-w-6xl mx-auto space-y-10">
         {/* Header */}
         <header className="bg-white p-8 md:p-12 rounded-[3rem] shadow-sm border border-gray-100 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full -mr-32 -mt-32 opacity-50 blur-3xl"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full -mr-32 -mt-32 opacity-50 blur-3xl"></div>
           <div className="relative z-10 flex flex-col gap-6">
             <Button
               variant="ghost"
               onClick={() => navigate(`/teacher/courses/${courseId}/lessons`)}
-              className="w-fit text-gray-500 hover:text-purple-600 font-bold p-0 flex items-center gap-2 group"
+              className="w-fit text-gray-500 hover:text-indigo-600 font-bold p-0 flex items-center gap-2 group"
             >
               <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
               Back to Curriculum
             </Button>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span className="bg-purple-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest leading-none">
+                <span className="bg-indigo-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest leading-none">
                   Lesson Details
                 </span>
                 <span className="text-gray-300 font-black">•</span>
                 <span className="text-gray-400 font-black text-[10px] uppercase tracking-widest">
-                  Order Index: #{lesson.orderIndex + 1}
+                  Lesson {lesson.orderIndex + 1}
                 </span>
               </div>
               <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-[1.1]">
