@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useLesson } from "@/queries/lessonsQueries";
 import { useUploadVideosMutation } from "@/mutations/useUploadVideosMutation";
 import { useUploadMaterialsMutation } from "@/mutations/useUploadMaterialsMutation";
+import { useDeleteLessonVideoMutation } from "@/mutations/useDeleteLessonVideoMutation";
+import { useDeleteLessonMaterialMutation } from "@/mutations/useDeleteLessonMaterialMutation";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +36,14 @@ const LessonDetailsPage = () => {
     useUploadVideosMutation(courseId);
   const { mutate: uploadMaterials, isPending: isUploadingMaterials } =
     useUploadMaterialsMutation(courseId);
+  const { mutate: deleteVideo } = useDeleteLessonVideoMutation(
+    courseId,
+    lessonId,
+  );
+  const { mutate: deleteMaterial } = useDeleteLessonMaterialMutation(
+    courseId,
+    lessonId,
+  );
 
   const [videoFiles, setVideoFiles] = useState([]);
   const [materialFiles, setMaterialFiles] = useState([]);
@@ -210,10 +220,20 @@ const LessonDetailsPage = () => {
                       href={vid.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="p-3 text-gray-400 hover:text-blue-600 transition-colors"
+                      className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
                     >
                       <ExternalLink className="w-5 h-5" />
                     </a>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        deleteVideo({ lessonId, videoId: vid._id })
+                      }
+                      className="text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded-xl"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </Button>
                   </div>
                 ))
               ) : (
@@ -308,10 +328,20 @@ const LessonDetailsPage = () => {
                       download={mat.title}
                       target="_blank"
                       rel="noreferrer"
-                      className="p-3 text-gray-400 hover:text-orange-600 transition-colors"
+                      className="p-2 text-gray-400 hover:text-orange-600 transition-colors"
                     >
                       <ExternalLink className="w-5 h-5" />
                     </a>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        deleteMaterial({ lessonId, materialId: mat._id })
+                      }
+                      className="text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded-xl"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </Button>
                   </div>
                 ))
               ) : (
