@@ -60,7 +60,7 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="inline-flex items-center gap-2 rounded-2xl bg-purple-600 px-6 py-6 text-white hover:bg-purple-700 transition-all shadow-lg shadow-purple-100 transform hover:scale-[1.02]">
+        <Button className="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-6 text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 transform hover:scale-[1.02]">
           <FiPlus className="text-xl" />
           <span className="font-bold">Add New Lesson</span>
         </Button>
@@ -69,8 +69,8 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
       <DialogContent className="sm:max-w-xl rounded-3xl border-none shadow-2xl">
         <DialogHeader>
           <DialogTitle className="text-2xl font-black text-gray-900 flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
-              <FiPlus className="text-purple-600" />
+            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+              <FiPlus className="text-indigo-600" />
             </div>
             Add New Lesson
           </DialogTitle>
@@ -88,7 +88,7 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
                 Lesson Title
               </Label>
               <div className="relative group">
-                <FiType className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors" />
+                <FiType className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
                 <Controller
                   name="title"
                   control={control}
@@ -96,7 +96,7 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
                     <Input
                       {...field}
                       placeholder="e.g. Introduction to React"
-                      className={`pl-12 h-14 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-purple-600/10 transition-all font-medium ${
+                      className={`pl-12 h-14 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-600/10 transition-all font-medium ${
                         errors.title ? "ring-2 ring-red-500" : ""
                       }`}
                     />
@@ -116,7 +116,7 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
                 Description
               </Label>
               <div className="relative group">
-                <FiFileText className="absolute left-4 top-4 text-gray-400 group-focus-within:text-purple-600 transition-colors" />
+                <FiFileText className="absolute left-4 top-4 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
                 <Controller
                   name="description"
                   control={control}
@@ -124,7 +124,7 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
                     <Textarea
                       {...field}
                       placeholder="What will students learn in this lesson?"
-                      className={`pl-12 pt-4 min-h-[120px] rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-purple-600/10 transition-all font-medium resize-none ${
+                      className={`pl-12 pt-4 min-h-[120px] rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-600/10 transition-all font-medium resize-none ${
                         errors.description ? "ring-2 ring-red-500" : ""
                       }`}
                     />
@@ -151,7 +151,7 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
           <Button
             onClick={handleSubmit(onSubmit)}
             disabled={isPending}
-            className="rounded-2xl bg-purple-600 px-8 h-12 text-white hover:bg-purple-700 font-bold shadow-lg shadow-purple-100 disabled:opacity-70"
+            className="rounded-2xl bg-indigo-600 px-8 h-12 text-white hover:bg-indigo-700 font-bold shadow-lg shadow-indigo-100 disabled:opacity-70"
           >
             {isPending ? (
               <div className="flex items-center gap-2">

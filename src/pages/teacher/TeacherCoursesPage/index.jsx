@@ -52,7 +52,7 @@ const TeacherCoursesPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <Spinner className="w-10 h-10 border-purple-600" />
+        <Spinner className="w-10 h-10 border-indigo-600" />
         <p className="text-gray-500 font-medium animate-pulse">
           Loading your courses...
         </p>
@@ -89,13 +89,13 @@ const TeacherCoursesPage = () => {
             Manage Your Courses
           </h1>
           <p className="text-gray-500 mt-1.5 font-medium flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+            <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
             Total {courses.length} courses active on the platform
           </p>
         </div>
         <Button
           onClick={() => navigate("/teacher/courses/create")}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-6 rounded-2xl shadow-lg shadow-purple-200 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-6 rounded-2xl shadow-lg shadow-indigo-200 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
         >
           <Plus className="text-xl" />
           <span className="font-bold">Create New Course</span>
@@ -104,8 +104,8 @@ const TeacherCoursesPage = () => {
 
       {courses.length === 0 ? (
         <div className="bg-white border-2 border-dashed border-gray-200 rounded-[2.5rem] p-16 text-center flex flex-col items-center gap-6 shadow-sm">
-          <div className="w-24 h-24 bg-purple-50 rounded-full flex items-center justify-center">
-            <BookOpen className="text-4xl text-purple-300" />
+          <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center">
+            <BookOpen className="text-4xl text-indigo-300" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-gray-900">No courses yet</h3>
@@ -117,7 +117,7 @@ const TeacherCoursesPage = () => {
           <Button
             onClick={() => navigate("/teacher/courses/create")}
             variant="outline"
-            className="rounded-xl px-8 border-purple-200 text-purple-600 hover:bg-purple-50"
+            className="rounded-xl px-8 border-indigo-200 text-indigo-600 hover:bg-indigo-50"
           >
             Get Started
           </Button>
@@ -128,7 +128,7 @@ const TeacherCoursesPage = () => {
             <div
               key={course._id}
               onClick={() => navigate(`/teacher/courses/${course._id}/lessons`)}
-              className="group bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer relative"
+              className="group bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer relative"
             >
               {/* Thumbnail Area */}
               <div className="relative h-56 overflow-hidden">
@@ -146,7 +146,10 @@ const TeacherCoursesPage = () => {
                 {/* Options Menu */}
                 <div className="absolute top-4 right-4 z-20">
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenuTrigger
+                      asChild
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <Button
                         variant="ghost"
                         size="icon"
@@ -155,7 +158,10 @@ const TeacherCoursesPage = () => {
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="rounded-2xl p-2 w-48 border-none shadow-xl">
+                    <DropdownMenuContent
+                      align="end"
+                      className="rounded-2xl p-2 w-48 border-none shadow-xl"
+                    >
                       <DropdownMenuItem
                         onClick={(e) => {
                           e.stopPropagation();
@@ -163,7 +169,8 @@ const TeacherCoursesPage = () => {
                         }}
                         className="rounded-xl py-3 cursor-pointer font-bold gap-3"
                       >
-                        <Eye className="w-4 h-4 text-gray-400" /> View Public Page
+                        <Eye className="w-4 h-4 text-gray-400" /> View Public
+                        Page
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={(e) => {
@@ -172,7 +179,8 @@ const TeacherCoursesPage = () => {
                         }}
                         className="rounded-xl py-3 cursor-pointer font-bold gap-3"
                       >
-                        <Pencil className="w-4 h-4 text-purple-500" /> Edit Details
+                        <Pencil className="w-4 h-4 text-indigo-500" /> Edit
+                        Details
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={(e) => {
@@ -199,8 +207,8 @@ const TeacherCoursesPage = () => {
               <div className="p-6 flex-1 flex flex-col">
                 <div className="flex items-center justify-between mb-3 text-xs font-bold text-gray-400 uppercase tracking-widest">
                   <span>{course.categoryId?.name || "General"}</span>
-                  <span className="flex items-center gap-1.5 text-purple-600 font-black">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+                  <span className="flex items-center gap-1.5 text-indigo-600 font-black">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
                     {course.status || "Published"}
                   </span>
                 </div>
@@ -216,7 +224,7 @@ const TeacherCoursesPage = () => {
                         Enrolled
                       </span>
                       <span className="text-sm font-bold text-gray-900 flex items-center gap-1">
-                        <Users className="text-purple-400" />{" "}
+                        <Users className="text-indigo-400" />{" "}
                         {course.totalStudents || 0}
                       </span>
                     </div>
@@ -225,12 +233,11 @@ const TeacherCoursesPage = () => {
                     <span className="text-[10px] font-black uppercase tracking-tighter text-gray-400 block">
                       Price
                     </span>
-                    <span className="text-lg font-black text-purple-600">
+                    <span className="text-lg font-black text-indigo-600">
                       {course.type === "free" ? "FREE" : `$${course.price}`}
                     </span>
                   </div>
                 </div>
-
               </div>
             </div>
           ))}
