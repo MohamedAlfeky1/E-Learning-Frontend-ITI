@@ -11,9 +11,10 @@ export const useCreateCourse = () => {
 
   return useMutation({
     mutationFn: createCourse,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       toast.success("Course created successfully!");
+      return data;
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Failed to create course!");
