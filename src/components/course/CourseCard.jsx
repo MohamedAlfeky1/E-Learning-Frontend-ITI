@@ -17,6 +17,7 @@ import { useAddCartMutation } from "@/mutations/useAddCartMutation";
 import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
 import placeholderImg from "@/assets/placeholder.jpg";
 import { Spinner } from "../ui/spinner";
+import { MdOndemandVideo, MdOutlineOndemandVideo } from "react-icons/md";
 
 function CourseCard({ course }) {
   const { data: user } = useUserQuery();
@@ -44,11 +45,11 @@ function CourseCard({ course }) {
   let cartItem = null;
 
   if (!favoritesLoading && !favoritesError) {
-    favorite = favorites.find((fav) => fav.courseId._id === course._id);
+    favorite = favorites?.find((fav) => fav?.courseId?._id === course?._id);
   }
 
   if (!cartLoading && !cartError) {
-    cartItem = cartItems.find((item) => item.courseId._id === course._id);
+    cartItem = cartItems?.find((item) => item?.courseId?._id === course?._id);
   }
 
   return (
@@ -73,7 +74,7 @@ function CourseCard({ course }) {
                   ? removeFavorite(favorite._id)
                   : addFavorite(course._id)
               }
-              className="absolute top-3 right-14 bg-gray-300 text-gray-200 p-1 rounded-full"
+              className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full"
             >
               {isAddingFavorite || isRemovingFavorite ? (
                 <Spinner className="text-red-500 size-4" />
