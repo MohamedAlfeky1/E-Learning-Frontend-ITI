@@ -6,9 +6,11 @@ import { FaStar } from "react-icons/fa6";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoMdPeople } from "react-icons/io";
 import { IoPricetags, IoInfinite, IoFileTrayFullSharp } from "react-icons/io5";
-import { MdPlayLesson, MdOutlineStarBorder } from "react-icons/md";
 import {
+  MdPlayLesson,
+  MdOutlineStarBorder,
   MdOutlineAddShoppingCart,
+  MdOutlineRemoveShoppingCart,
   MdOutlineVerified,
   MdOndemandVideo,
 } from "react-icons/md";
@@ -21,32 +23,71 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useAddToCart } from "@/mutations/cartMutations";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
 
+import placeholderImg from "@/assets/placeholder.jpg";
+import { useCart } from "@/queries/cartQueries";
+import { useAddCartMutation } from "@/mutations/useAddCartMutation";
+import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
+import { Spinner } from "@/components/ui/spinner";
+
 const CourseDetailsPage = () => {
   const { id } = useParams();
-  const [errors, setErrors] = useState()
+  const [errors, setErrors] = useState();
   const [openPopover, setOpenPopover] = useState(false);
 
   const {
     data: userData,
-    isLoading: useLoading,
-    error: useError,
+    isLoading: userLoading,
+    error: userError,
   } = useUserQuery(id);
   const { data, isLoading, error } = useGetCoursesById(id);
-  const { data: categoriesData, isLoading: loadingCategories, error: errorCategories } = useCategories();
-  const { data: reviewsData, isLoading: loadingReviews, error: errorReviews } = useGetCourseReview(id);
-  const { data: enrollmentData, isLoading: loadingEnrollment, error: errorEnrollment } = useEnrollmentDetailsQuery(id)
-  const addToCartMutation = useAddToCart();
+  const {
+    data: categoriesData,
+    isLoading: loadingCategories,
+    error: errorCategories,
+  } = useCategories();
+  const {
+    data: reviewsData,
+    isLoading: loadingReviews,
+    error: errorReviews,
+  } = useGetCourseReview(id);
+  const {
+    data: enrollmentData,
+    isLoading: loadingEnrollment,
+    error: errorEnrollment,
+  } = useEnrollmentDetailsQuery(id);
+
+  const {
+    data: cartData,
+    isLoading: cartLoading,
+    error: cartError,
+  } = useCart();
+  const { mutateAsync: addToCart, isPending: isAddingToCart } =
+    useAddCartMutation();
+  const { mutateAsync: removeFromCart, isPending: isRemovingFromCart } =
+    useDeleteCartMutation();
+  const cartItems = cartData?.data?.cart?.items || [];
 
   const navigate = useNavigate();
   const isLoggedIn = !!userData;
   const course = data?.data;
   console.log('course ', course);
 
+
+  let cartItem = null;
+  if (!cartLoading && !cartError && !isLoading && !error) {
+    cartItem = cartItems.find((item) => item.courseId._id === course._id);
+  }
 
   const categoryName =
     categoriesData?.data?.find((cat) => cat._id === course?.categoryId)?.name ||
@@ -76,7 +117,14 @@ const CourseDetailsPage = () => {
       return;
     }
 
+    console.log("cartItem:", cartItem);
+
     // continue enroll logic
+    if (cartItem) {
+      removeFromCart(course._id);
+    } else {
+      addToCart(course._id);
+    }
     console.log("Enroll user...");
   };
 
@@ -157,7 +205,6 @@ const CourseDetailsPage = () => {
 
       {/* Main Content */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
-
         {/* Left Column */}
         <div className="col-span-1 md:col-span-2 flex flex-col gap-5">
           <div>
@@ -259,41 +306,47 @@ const CourseDetailsPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {(reviewsData?.data) ? (<p className="col-span-2 text-center text-red-500 text-sm ">No Review Provided</p>) : (reviewsData?.data?.map((review, index) => (
-                <div key={index} className="bg-[#f4f4f4] rounded-md p-3">
-                  <div className="flex gap-2 justify-between items-start w-full">
-                    <div className="flex items-center gap-2">
-                      <div className="w-12 h-12 bg-[#cccccc] rounded-full flex items-center justify-center">
-                        {review.studentId?.avatar ? (
-                          <img
-                            src={review.studentId.avatar}
-                            alt={review.studentId.name}
-                            className="w-12 h-12 rounded-full"
-                          />
-                        ) : (
-                          <span className="text-white text-sm font-medium">
-                            {`${review.studentId.firstName?.[0] || ""}${review.studentId.lastName?.[0] || ""}`}
-                          </span>
-                        )}
+              {reviewsData?.data ? (
+                <p className="col-span-2 text-center text-red-500 text-sm ">
+                  No Review Provided
+                </p>
+              ) : (
+                reviewsData?.data?.map((review, index) => (
+                  <div key={index} className="bg-[#f4f4f4] rounded-md p-3">
+                    <div className="flex gap-2 justify-between items-start w-full">
+                      <div className="flex items-center gap-2">
+                        <div className="w-12 h-12 bg-[#cccccc] rounded-full flex items-center justify-center">
+                          {review.studentId?.avatar ? (
+                            <img
+                              src={review.studentId.avatar}
+                              alt={review.studentId.name}
+                              className="w-12 h-12 rounded-full"
+                            />
+                          ) : (
+                            <span className="text-white text-sm font-medium">
+                              {`${review.studentId.firstName?.[0] || ""}${review.studentId.lastName?.[0] || ""}`}
+                            </span>
+                          )}
+                        </div>
+                        <p className="font-semibold">
+                          {review.studentId?.firstName +
+                            " " +
+                            review.studentId?.lastName}
+                        </p>
                       </div>
-                      <p className="font-semibold">
-                        {review.studentId?.firstName +
-                          " " +
-                          review.studentId?.lastName}
-                      </p>
-                    </div>
 
-                    <div></div>
-                    <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mt-2">
-                      {review.rating}
-                      <FaStar color="#3525CD" />
+                      <div></div>
+                      <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mt-2">
+                        {review.rating}
+                        <FaStar color="#3525CD" />
+                      </div>
                     </div>
+                    <p className="text-[#464555] text-sm italic">
+                      "{review.comment}"
+                    </p>
                   </div>
-                  <p className="text-[#464555] text-sm italic">
-                    "{review.comment}"
-                  </p>
-                </div>
-              )))}
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -321,9 +374,23 @@ const CourseDetailsPage = () => {
 
             <Popover open={openPopover} onOpenChange={setOpenPopover}>
               <PopoverTrigger asChild>
-                <Button variant="success" onClick={handleEnroll}>
-                  <MdOutlineAddShoppingCart color="white" />
-                  Enroll Now
+                <Button
+                  variant={cartItem ? "destructive" : "success"}
+                  onClick={handleEnroll}
+                >
+                  {isAddingToCart || isRemovingFromCart ? (
+                    <Spinner className="size-4" />
+                  ) : cartItem ? (
+                    <>
+                      <MdOutlineRemoveShoppingCart color="red" />
+                      Unenroll
+                    </>
+                  ) : (
+                    <>
+                      <MdOutlineAddShoppingCart color="white" />
+                      Enroll Now
+                    </>
+                  )}
                 </Button>
               </PopoverTrigger>
             </Popover>
@@ -352,7 +419,6 @@ const CourseDetailsPage = () => {
             <Button variant="secondary" className="text-[#3525CD]">
               Try Free Preview
             </Button>
-
 
             <hr className="border-[#c7d2fe]" />
 
@@ -429,11 +495,10 @@ const CourseDetailsPage = () => {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default CourseDetailsPage;
