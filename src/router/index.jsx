@@ -293,7 +293,7 @@ const router = createBrowserRouter([
 
       // Assignments
       {
-        path: "assignments",
+        path: "courses/ssignments",
         element: <ManageAssignmentsPage />,
       }, // /teacher/courses/:courseId/assignments
       {
