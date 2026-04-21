@@ -54,6 +54,7 @@ export const ENDPOINTS = {
   COURSES_UPDATE: (id) => `/courses/${id}`,
   COURSES_STATUS: (id) => `/courses/${id}/status`,
   COURSES_PUBLISH: (id) => `/courses/${id}/publish`,
+  COURSES_ARCHIVE: (id) => `/courses/${id}/archive`,
   COURSES_SET_STREAK_REQUIREMENT: (id) =>
     `/admin/courses/${id}/streak-requirement`,
 
