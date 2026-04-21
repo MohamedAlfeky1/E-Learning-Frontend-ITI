@@ -6,9 +6,11 @@ import { FaStar } from "react-icons/fa6";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoMdPeople } from "react-icons/io";
 import { IoPricetags, IoInfinite, IoFileTrayFullSharp } from "react-icons/io5";
-import { MdPlayLesson, MdOutlineStarBorder } from "react-icons/md";
 import {
+  MdPlayLesson,
+  MdOutlineStarBorder,
   MdOutlineAddShoppingCart,
+  MdOutlineRemoveShoppingCart,
   MdOutlineVerified,
   MdOndemandVideo,
 } from "react-icons/md";
@@ -21,30 +23,71 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useAddToCart } from "@/mutations/cartMutations";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
 
+import placeholderImg from "@/assets/placeholder.jpg";
+import { useCart } from "@/queries/cartQueries";
+import { useAddCartMutation } from "@/mutations/useAddCartMutation";
+import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
+import { Spinner } from "@/components/ui/spinner";
+
 const CourseDetailsPage = () => {
   const { id } = useParams();
-  const [errors, setErrors] = useState()
+  const [errors, setErrors] = useState();
   const [openPopover, setOpenPopover] = useState(false);
 
   const {
     data: userData,
-    isLoading: useLoading,
-    error: useError,
+    isLoading: userLoading,
+    error: userError,
   } = useUserQuery(id);
   const { data, isLoading, error } = useGetCoursesById(id);
-  const { data: categoriesData, isLoading: loadingCategories, error: errorCategories } = useCategories();
-  const { data: reviewsData, isLoading: loadingReviews, error: errorReviews } = useGetCourseReview(id);
-  const { data: enrollmentData, isLoading: loadingEnrollment, error: errorEnrollment } = useEnrollmentDetailsQuery(id)
-  const addToCartMutation = useAddToCart();
+  const {
+    data: categoriesData,
+    isLoading: loadingCategories,
+    error: errorCategories,
+  } = useCategories();
+  const {
+    data: reviewsData,
+    isLoading: loadingReviews,
+    error: errorReviews,
+  } = useGetCourseReview(id);
+  const {
+    data: enrollmentData,
+    isLoading: loadingEnrollment,
+    error: errorEnrollment,
+  } = useEnrollmentDetailsQuery(id);
+
+  const {
+    data: cartData,
+    isLoading: cartLoading,
+    error: cartError,
+  } = useCart();
+  const { mutateAsync: addToCart, isPending: isAddingToCart } =
+    useAddCartMutation();
+  const { mutateAsync: removeFromCart, isPending: isRemovingFromCart } =
+    useDeleteCartMutation();
+  const cartItems = cartData?.data?.cart?.items || [];
 
   const navigate = useNavigate();
   const isLoggedIn = !!userData;
   const course = data?.data;
+  console.log('course ', course);
+
+
+  let cartItem = null;
+  if (!cartLoading && !cartError && !isLoading && !error) {
+    cartItem = cartItems.find((item) => item.courseId._id === course._id);
+  }
 
   const categoryName =
     categoriesData?.data?.find((cat) => cat._id === course?.categoryId)?.name ||
@@ -74,7 +117,14 @@ const CourseDetailsPage = () => {
       return;
     }
 
+    console.log("cartItem:", cartItem);
+
     // continue enroll logic
+    if (cartItem) {
+      removeFromCart(course._id);
+    } else {
+      addToCart(course._id);
+    }
     console.log("Enroll user...");
   };
 
@@ -99,12 +149,17 @@ const CourseDetailsPage = () => {
             <p className="text-[#141B2B] text-5xl font-extrabold">
               {course.title}
             </p>
-            <p className="text-[#363642] font-medium text-xs">
+            {course.createdAt ? <p className="text-[#363642] font-medium text-xs">
               Created At :
               <span className="text-[#464555] font-light text-xs">
-                {course.createdAt}
+                {new Date(course.createdAt).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric"
+                })}
               </span>
-            </p>
+            </p> : ''}
+
             <p className="text-md text-[#464555]">{course.description}</p>
             <div className="flex gap-3 items-center">
               <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
@@ -133,17 +188,23 @@ const CourseDetailsPage = () => {
         </div>
 
         <div className="col-span-1">
-          <img
-            src={course.thumbnail}
-            alt="Course Thumbnail"
-            className="w-full h-auto object-cover rounded-lg transform rotate-3 shadow-2xl shadow-indigo-300"
-          />
+          {course.thumbnail ? (
+            <img
+              src={course.thumbnail}
+              alt="Course Thumbnail"
+              className="w-full h-auto object-cover rounded-lg transform rotate-3 shadow-2xl shadow-indigo-300"
+            />
+          ) : (
+            <div className="w-full h-48 bg-gradient-to-br from-[#3525CD] to-[#6D28D9] rounded-lg transform rotate-3 shadow-2xl shadow-indigo-300 flex flex-col items-center justify-center gap-2">
+              <MdOndemandVideo size={40} color="white" />
+              <p className="text-white text-sm font-medium">{course.title}</p>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Main Content */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
-
         {/* Left Column */}
         <div className="col-span-1 md:col-span-2 flex flex-col gap-5">
           <div>
@@ -245,41 +306,47 @@ const CourseDetailsPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {(reviewsData?.data) ? (<p className="col-span-2 text-center text-red-500 text-sm ">No Review Provided</p>) : (reviewsData?.data?.map((review, index) => (
-                <div key={index} className="bg-[#f4f4f4] rounded-md p-3">
-                  <div className="flex gap-2 justify-between items-start w-full">
-                    <div className="flex items-center gap-2">
-                      <div className="w-12 h-12 bg-[#cccccc] rounded-full flex items-center justify-center">
-                        {review.studentId?.avatar ? (
-                          <img
-                            src={review.studentId.avatar}
-                            alt={review.studentId.name}
-                            className="w-12 h-12 rounded-full"
-                          />
-                        ) : (
-                          <span className="text-white text-sm font-medium">
-                            {`${review.studentId.firstName?.[0] || ""}${review.studentId.lastName?.[0] || ""}`}
-                          </span>
-                        )}
+              {reviewsData?.data ? (
+                <p className="col-span-2 text-center text-red-500 text-sm ">
+                  No Review Provided
+                </p>
+              ) : (
+                reviewsData?.data?.map((review, index) => (
+                  <div key={index} className="bg-[#f4f4f4] rounded-md p-3">
+                    <div className="flex gap-2 justify-between items-start w-full">
+                      <div className="flex items-center gap-2">
+                        <div className="w-12 h-12 bg-[#cccccc] rounded-full flex items-center justify-center">
+                          {review.studentId?.avatar ? (
+                            <img
+                              src={review.studentId.avatar}
+                              alt={review.studentId.name}
+                              className="w-12 h-12 rounded-full"
+                            />
+                          ) : (
+                            <span className="text-white text-sm font-medium">
+                              {`${review.studentId.firstName?.[0] || ""}${review.studentId.lastName?.[0] || ""}`}
+                            </span>
+                          )}
+                        </div>
+                        <p className="font-semibold">
+                          {review.studentId?.firstName +
+                            " " +
+                            review.studentId?.lastName}
+                        </p>
                       </div>
-                      <p className="font-semibold">
-                        {review.studentId?.firstName +
-                          " " +
-                          review.studentId?.lastName}
-                      </p>
-                    </div>
 
-                    <div></div>
-                    <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mt-2">
-                      {review.rating}
-                      <FaStar color="#3525CD" />
+                      <div></div>
+                      <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mt-2">
+                        {review.rating}
+                        <FaStar color="#3525CD" />
+                      </div>
                     </div>
+                    <p className="text-[#464555] text-sm italic">
+                      "{review.comment}"
+                    </p>
                   </div>
-                  <p className="text-[#464555] text-sm italic">
-                    "{review.comment}"
-                  </p>
-                </div>
-              )))}
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -294,46 +361,64 @@ const CourseDetailsPage = () => {
             ) : (
               <h1 className="text-[#141B2B] font-semibold text-4xl">Free</h1>
             )}
-            <p>{course.updatedAt}</p>
+            {course?.updatedAt?
+            <p className="text-xs text-gray-500">
+              Last updated: {new Date(course.updatedAt).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+              })}
+            </p>
+            :''}
+
 
             <Popover open={openPopover} onOpenChange={setOpenPopover}>
               <PopoverTrigger asChild>
-                <Button variant="success" onClick={handleEnroll}>
-                  <MdOutlineAddShoppingCart color="white" />
-                  Enroll Now
+                <Button
+                  variant={cartItem ? "destructive" : "success"}
+                  onClick={handleEnroll}
+                >
+                  {isAddingToCart || isRemovingFromCart ? (
+                    <Spinner className="size-4" />
+                  ) : cartItem ? (
+                    <>
+                      <MdOutlineRemoveShoppingCart color="red" />
+                      Unenroll
+                    </>
+                  ) : (
+                    <>
+                      <MdOutlineAddShoppingCart color="white" />
+                      Enroll Now
+                    </>
+                  )}
                 </Button>
               </PopoverTrigger>
-              </Popover>
+            </Popover>
 
-                  <Button variant="success" onClick={handleEnroll}>
-                    <MdOutlineAddShoppingCart color="white" />
-                    Enroll Now
+
+            <Dialog open={openPopover} onOpenChange={setOpenPopover}>
+              <DialogContent showCloseButton={true}>
+                <DialogHeader>
+                  <DialogTitle>Login Required</DialogTitle>
+                  <DialogDescription>
+                    You need to be logged in to enroll in this course.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button
+                    variant="purpleBtnDefault"
+                    className="w-full"
+                    onClick={() => navigate("/login")}
+                  >
+                    Go to Login
                   </Button>
-
-                  <Dialog open={openPopover} onOpenChange={setOpenPopover}>
-                    <DialogContent showCloseButton={true}>
-                      <DialogHeader>
-                        <DialogTitle>Login Required</DialogTitle>
-                        <DialogDescription>
-                          You need to be logged in to enroll in this course.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
-                        <Button
-                          variant="purpleBtnDefault"
-                          className="w-full"
-                          onClick={() => navigate("/login")}
-                        >
-                          Go to Login
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             <Button variant="secondary" className="text-[#3525CD]">
               Try Free Preview
             </Button>
-
 
             <hr className="border-[#c7d2fe]" />
 
@@ -403,18 +488,17 @@ const CourseDetailsPage = () => {
                 <Button
                   variant="outline"
                   className="rounded-md text-[#464555] flex-1 py-2"
-                  // onClick={()=>{navigate('./')}}
+                // onClick={()=>{navigate('./')}}
                 >
                   Profile
                 </Button>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default CourseDetailsPage;
