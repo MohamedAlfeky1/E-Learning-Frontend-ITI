@@ -1,6 +1,5 @@
 import axiosInstance from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
-import { ENDPOINTS } from "../api/endpoints";
 /**
  * Service object for handling Voucher-related API requests.
  */
@@ -16,17 +15,10 @@ export const voucherService = {
       ENDPOINTS.ADMIN_VOUCHERS_CREATE,
       voucherData,
     );
-    const response = await axiosInstance.post(
-      ENDPOINTS.ADMIN_VOUCHERS_CREATE,
-      voucherData,
-    );
     return response.data.data;
   },
 
   deleteVoucher: async (id) => {
-    const response = await axiosInstance.delete(
-      ENDPOINTS.ADMIN_VOUCHERS_DELETE(id),
-    );
     const response = await axiosInstance.delete(
       ENDPOINTS.ADMIN_VOUCHERS_DELETE(id),
     );

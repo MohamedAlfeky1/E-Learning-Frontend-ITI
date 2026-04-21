@@ -1,194 +1,73 @@
-import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { FaStar } from "react-icons/fa6";
-import {
-  MdOutlineAddShoppingCart,
-  MdOutlineRemoveShoppingCart,
-} from "react-icons/md";
-import { IoEyeOutline, IoHeart, IoHeartOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
-import { useUserQuery } from "@/queries/authQueries";
-import { useFavorites } from "@/queries/favoritesQueries";
-import { useAddFavoriteMutation } from "@/mutations/useAddFavoriteMutation";
-import { useDeleteFavoriteMutation } from "@/mutations/useDeleteFavoriteMutation";
-import { useCart } from "@/queries/cartQueries";
-import { useAddCartMutation } from "@/mutations/useAddCartMutation";
-import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 import placeholderImg from "@/assets/placeholder.jpg";
-import { Spinner } from "../ui/spinner";
-<<<<<<< HEAD
-=======
-import { MdOndemandVideo, MdOutlineOndemandVideo } from "react-icons/md";
->>>>>>> development
+import { useGetCategoryById } from "@/queries/categoryQueries";
+import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
+import { Spinner } from "@/components/ui/spinner";
+import { Link } from "react-router-dom";
 
-function CourseCard({ course }) {
-  const { data: user } = useUserQuery();
-  const {
-    data: favoritesData,
-    isLoading: favoritesLoading,
-    error: favoritesError,
-  } = useFavorites();
-  const {
-    data: cartData,
-    isLoading: cartLoading,
-    error: cartError,
-  } = useCart();
-  const { mutateAsync: addFavorite, isPending: isAddingFavorite } =
-    useAddFavoriteMutation();
-  const { mutateAsync: removeFavorite, isPending: isRemovingFavorite } =
-    useDeleteFavoriteMutation();
-  const { mutateAsync: addToCart, isPending: isAddingToCart } =
-    useAddCartMutation();
-  const { mutateAsync: removeFromCart, isPending: isRemovingFromCart } =
+const CourseCard = ({ course }) => {
+  const { mutateAsync: removeFromCart, isPending: removePending } =
     useDeleteCartMutation();
-  const favorites = favoritesData?.data || [];
-  const cartItems = cartData?.data?.cart?.items || [];
-  let favorite = null;
-  let cartItem = null;
-
-  if (!favoritesLoading && !favoritesError) {
-<<<<<<< HEAD
-    favorite = favorites.find((fav) => fav.courseId._id === course._id);
-  }
-
-  if (!cartLoading && !cartError) {
-    cartItem = cartItems.find((item) => item.courseId._id === course._id);
-=======
-    favorite = favorites?.find((fav) => fav?.courseId?._id === course?._id);
-  }
-
-  if (!cartLoading && !cartError) {
-    cartItem = cartItems?.find((item) => item?.courseId?._id === course?._id);
->>>>>>> development
-  }
+  const { data: categoryData } = useGetCategoryById(course.categoryId);
+  const category = categoryData?.data ?? {};
 
   return (
-    <>
-      <Link
-        to={`/courses/${course._id}`}
-        className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl"
-      >
-        {/* Thumbnail */}
-        <div className="relative w-full h-32 overflow-hidden ">
-          <img
-            src={course.thumbnail || placeholderImg}
-            alt="Course Thumbnail"
-            className="w-full h-full object-cover"
-          />
-          {user?.role === "student" && !favoritesLoading && (
-            <Button
-              variant="primary"
-              size="icon-sm"
-              onClick={() =>
-                favorite
-                  ? removeFavorite(favorite._id)
-                  : addFavorite(course._id)
-              }
-<<<<<<< HEAD
-              className="absolute top-3 right-14 bg-gray-300 text-gray-200 p-1 rounded-full"
-=======
-              className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full"
->>>>>>> development
+    <div className="p-5 bg-white rounded-3xl flex flex-col lg:flex-row gap-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 group">
+      <div className="size-[140px] self-center lg:self-start rounded-2xl overflow-hidden bg-gray-50 flex-shrink-0">
+        <img
+          src={course.thumbnail || placeholderImg}
+          alt="Course Image"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      </div>
+      <div className="grow flex flex-col justify-between py-1">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <Badge
+              variant="secondary"
+              className="uppercase text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-md bg-[#F1F3FF] text-[#3525CD] border-none"
             >
-              {isAddingFavorite || isRemovingFavorite ? (
-                <Spinner className="text-red-500 size-4" />
-              ) : favorite ? (
-                <IoHeart color="red" />
-              ) : (
-                <IoHeartOutline color="red" />
-              )}
-            </Button>
-          )}
-          {/* <Link to={`/courses/${course._id}`}>
-            <Button
-              size="icon-sm"
-              variant="primary"
-              className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full"
-            >
-              <IoEyeOutline color="#3525CD" />
-            </Button>
-          </Link> */}
-        </div>
-
-        {/* Content */}
-        <div className="flex flex-col gap-3 p-5 flex-1">
-          {/* Badge + Rating */}
-          <div className="flex items-center justify-between ">
-            <p className="flex items-center gap-1 text-sm font-medium text-gray-700">
-              {course.language === "none" ? "" : course.language}
-            </p>
-            <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
-              <FaStar color="#005523" />
-              {course.totalReviews ?? "4.9"}
-              <span className="text-[#005523] font-normal">
-                ({course.ratingCount ?? course.totalReviews})
-              </span>
-            </div>
-          </div>
-
-          {/* Title */}
-          <h2 className="text-xl font-bold text-gray-900 leading-snug">
-            {course.title}
-          </h2>
-
-          {/* Instructor */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-light text-[#464555] rounded-md">
+              {category.name || "General"}
+            </Badge>
+            <h3 className="text-lg font-extrabold text-[#141B2B] font-['Plus Jakarta Sans'] line-clamp-1 leading-tight">
+              {course.title}
+            </h3>
+            <p className="text-[#464555] text-xs font-medium opacity-70">
               Instructor: {course.teacherId?.firstName}{" "}
               {course.teacherId?.lastName}
-            </span>
+            </p>
           </div>
-
-          {/* Price + Enroll */}
-          <div className="flex flex-col md:flex-row items-center gap-5 mt-auto pt-2">
-            {course.type === "paid" ? (
-              <div className="flex flex-row items-center justify-between gap-3 w-full">
-                <p className="text-2xl font-bold text-[#3525CD]">
-                  ${course.price}
-                </p>
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  className="cursor-pointer rounded-full py-3 px-3"
-                  onClick={() =>
-                    cartItem
-                      ? removeFromCart(course._id)
-                      : addToCart(course._id)
-                  }
-                >
-                  {isAddingToCart || isRemovingFromCart ? (
-                    <Spinner className="size-4" />
-                  ) : cartItem ? (
-                    <MdOutlineRemoveShoppingCart color="#3525CD" />
-                  ) : (
-                    <MdOutlineAddShoppingCart color="#3525CD" />
-                  )}
-                </Button>
-              </div>
+          <Button
+            onClick={() => removeFromCart(course._id)}
+            size="icon"
+            variant="ghost"
+            className="rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+          >
+            {removePending ? (
+              <Spinner className="size-4" />
             ) : (
-              <Button
-                size="icon-sm"
-                variant="secondary"
-                className="cursor-pointer rounded-full py-3 px-3"
-                onClick={() =>
-                  cartItem ? removeFromCart(course._id) : addToCart(course._id)
-                }
-              >
-                {isAddingToCart || isRemovingFromCart ? (
-                  <Spinner className="size-4" />
-                ) : cartItem ? (
-                  <MdOutlineRemoveShoppingCart color="#3525CD" />
-                ) : (
-                  <MdOutlineAddShoppingCart color="#3525CD" />
-                )}
-              </Button>
+              <Trash2 className="size-5" />
             )}
-          </div>
+          </Button>
         </div>
-      </Link>
-    </>
+        <div className="pt-4 flex justify-between items-center border-t border-gray-50 mt-4">
+          <p className="text-xl font-black text-[#3525CD] font-['Plus Jakarta Sans']">
+            ${course.price}
+          </p>
+          <Link to={`/courses/${course._id}`}>
+            <Button
+              variant="outline"
+              className="rounded-xl px-5 py-2 text-xs font-bold border-gray-200 hover:bg-gray-50 hover:text-[#3525CD] transition-all"
+            >
+              View Details
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </div>
   );
-}
+};
 
 export default CourseCard;
