@@ -210,7 +210,7 @@ const CreateCoursePage = () => {
                 className={`text-sm font-600 transition-colors ${
                   errors.title
                     ? "text-red-600"
-                    : "text-gray-700 group-focus-within:text-purple-600"
+                    : "text-gray-700 group-focus-within:text-indigo-600"
                 }`}
               >
                 Course Title <span className="text-red-500">*</span>
@@ -220,7 +220,7 @@ const CreateCoursePage = () => {
                   className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${
                     errors.title
                       ? "text-red-400"
-                      : "text-gray-400 group-focus-within:text-purple-500"
+                      : "text-gray-400 group-focus-within:text-indigo-500"
                   }`}
                 />
                 <Input
@@ -233,7 +233,7 @@ const CreateCoursePage = () => {
                   className={
                     errors.title
                       ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                      : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
+                      : "border-gray-200 bg-gray-50/50 focus:ring-indigo-50 focus:border-indigo-500"
                   }
                 />
               </div>
@@ -250,7 +250,7 @@ const CreateCoursePage = () => {
                 className={`text-sm font-600 transition-colors ${
                   errors.description
                     ? "text-red-600"
-                    : "text-gray-700 group-focus-within:text-purple-600"
+                    : "text-gray-700 group-focus-within:text-indigo-600"
                 }`}
               >
                 Description <span className="text-red-500">*</span>
@@ -264,7 +264,7 @@ const CreateCoursePage = () => {
                 className={
                   errors.description
                     ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                    : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
+                    : "border-gray-200 bg-gray-50/50 focus:ring-indigo-50 focus:border-indigo-500"
                 }
               />
               {errors.description && (
@@ -281,7 +281,7 @@ const CreateCoursePage = () => {
                   className={`text-sm font-600 transition-colors ${
                     errors.category
                       ? "text-red-600"
-                      : "text-gray-700 group-focus-within:text-purple-600"
+                      : "text-gray-700 group-focus-within:text-indigo-600"
                   }`}
                 >
                   Category <span className="text-red-500">*</span>
@@ -295,7 +295,7 @@ const CreateCoursePage = () => {
                     className={`w-full appearance-none px-3.5 py-2.5 rounded-xl border text-sm bg-transparent outline-none cursor-pointer transition-all focus:ring-4 ${
                       errors.category
                         ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                        : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
+                        : "border-gray-200 bg-gray-50/50 focus:ring-indigo-50 focus:border-indigo-500"
                     }`}
                   >
                     <option value="">
@@ -322,7 +322,7 @@ const CreateCoursePage = () => {
                   className={`text-sm font-600 transition-colors ${
                     errors.level
                       ? "text-red-600"
-                      : "text-gray-700 group-focus-within:text-purple-600"
+                      : "text-gray-700 group-focus-within:text-indigo-600"
                   }`}
                 >
                   Level <span className="text-red-500">*</span>
@@ -335,7 +335,7 @@ const CreateCoursePage = () => {
                     className={`w-full appearance-none px-3.5 py-2.5 rounded-xl border text-sm bg-transparent outline-none cursor-pointer transition-all focus:ring-4 ${
                       errors.level
                         ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                        : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
+                        : "border-gray-200 bg-gray-50/50 focus:ring-indigo-50 focus:border-indigo-500"
                     }`}
                   >
                     <option value="">Select level</option>
@@ -362,7 +362,7 @@ const CreateCoursePage = () => {
                   className={`text-sm font-600 transition-colors ${
                     errors.price
                       ? "text-red-600"
-                      : "text-gray-700 group-focus-within:text-purple-600"
+                      : "text-gray-700 group-focus-within:text-indigo-600"
                   }`}
                 >
                   Price (USD) <span className="text-red-500">*</span>
@@ -372,7 +372,7 @@ const CreateCoursePage = () => {
                     className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${
                       errors.price
                         ? "text-red-400"
-                        : "text-gray-400 group-focus-within:text-purple-500"
+                        : "text-gray-400 group-focus-within:text-indigo-500"
                     }`}
                   />
                   <Input
@@ -387,7 +387,7 @@ const CreateCoursePage = () => {
                     className={
                       errors.price
                         ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                        : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
+                        : "border-gray-200 bg-gray-50/50 focus:ring-indigo-50 focus:border-indigo-500"
                     }
                   />
                 </div>
@@ -404,7 +404,7 @@ const CreateCoursePage = () => {
                   className={`text-sm font-600 transition-colors ${
                     errors.language
                       ? "text-red-600"
-                      : "text-gray-700 group-focus-within:text-purple-600"
+                      : "text-gray-700 group-focus-within:text-indigo-600"
                   }`}
                 >
                   Language <span className="text-red-500">*</span>
@@ -414,7 +414,7 @@ const CreateCoursePage = () => {
                     className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${
                       errors.language
                         ? "text-red-400"
-                        : "text-gray-400 group-focus-within:text-purple-500"
+                        : "text-gray-400 group-focus-within:text-indigo-500"
                     }`}
                   />
                   <Input
@@ -427,7 +427,7 @@ const CreateCoursePage = () => {
                     className={
                       errors.language
                         ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                        : "border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
+                        : "border-gray-200 bg-gray-50/50 focus:ring-indigo-50 focus:border-indigo-500"
                     }
                   />
                 </div>
@@ -450,7 +450,7 @@ const CreateCoursePage = () => {
               className={`w-full min-h-[180px] border-2 border-dashed rounded-2xl cursor-pointer transition-all overflow-hidden flex items-center justify-center ${
                 errors.thumbnail
                   ? "border-red-300 bg-red-50"
-                  : "border-gray-200 bg-gray-50/50 hover:border-purple-400 hover:bg-purple-50/30"
+                  : "border-gray-200 bg-gray-50/50 hover:border-indigo-400 hover:bg-indigo-50/30"
               }`}
             >
               {thumbnailPreview ? (
@@ -511,7 +511,7 @@ const CreateCoursePage = () => {
               <button
                 type="button"
                 onClick={() => addListItem("requirements")}
-                className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-purple-600 border-1.5 border-purple-100 bg-purple-50 px-3.5 py-1.5 rounded-full hover:bg-purple-100 hover:border-purple-300 transition-all"
+                className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-indigo-600 border-1.5 border-indigo-100 bg-indigo-50 px-3.5 py-1.5 rounded-full hover:bg-indigo-100 hover:border-indigo-300 transition-all"
               >
                 <FiPlus /> Add
               </button>
@@ -526,7 +526,7 @@ const CreateCoursePage = () => {
                       handleListChange("requirements", index, e.target.value)
                     }
                     placeholder={`Requirement ${index + 1}`}
-                    className="border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
+                    className="border-gray-200 bg-gray-50/50 focus:ring-indigo-50 focus:border-indigo-500"
                   />
                   {formData.requirements.length > 1 && (
                     <button
@@ -556,7 +556,7 @@ const CreateCoursePage = () => {
               <button
                 type="button"
                 onClick={() => addListItem("whatYouWillLearn")}
-                className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-purple-600 border-1.5 border-purple-100 bg-purple-50 px-3.5 py-1.5 rounded-full hover:bg-purple-100 hover:border-purple-300 transition-all"
+                className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-indigo-600 border-1.5 border-indigo-100 bg-indigo-50 px-3.5 py-1.5 rounded-full hover:bg-indigo-100 hover:border-indigo-300 transition-all"
               >
                 <FiPlus /> Add
               </button>
@@ -575,7 +575,7 @@ const CreateCoursePage = () => {
                       )
                     }
                     placeholder={`Learning outcome ${index + 1}`}
-                    className="border-gray-200 bg-gray-50/50 focus:ring-purple-50 focus:border-purple-500"
+                    className="border-gray-200 bg-gray-50/50 focus:ring-indigo-50 focus:border-indigo-500"
                   />
                   {formData.whatYouWillLearn.length > 1 && (
                     <button
@@ -595,7 +595,6 @@ const CreateCoursePage = () => {
           <div className="flex flex-col gap-4 pb-10">
             <Button
               type="submit"
-              variant="purpleBtnXl"
               disabled={creatingCourse}
               className="flex-1 sm:flex-none sm:min-w-[192px] mt-0"
             >
