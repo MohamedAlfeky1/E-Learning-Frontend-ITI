@@ -27,6 +27,14 @@ export const ENDPOINTS = {
   // ─── Lessons ─────────────────────────────────────────────────────────────────
   LESSONS_LIST: (courseId) => `/lessons/${courseId}`,
   LESSONS_GET: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
+  LESSONS_CREATE: (courseId) => `/lessons/${courseId}`,
+  LESSONS_UPDATE: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
+  LESSONS_DELETE: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
+  LESSONS_REORDER: (courseId) => `/lessons/${courseId}/reorder`,
+  LESSONS_UPLOAD_VIDEO: (lessonId) => `/lessons/${lessonId}/videos`,
+  LESSONS_VIDEO_DELETE: (lessonId, videoId) => `/lessons/${lessonId}/videos/${videoId}`,
+  LESSONS_UPLOAD_MATERIAL: (lessonId) => `/lessons/${lessonId}/materials`,
+  LESSONS_MATERIAL_DELETE: (lessonId, materialId) => `/lessons/${lessonId}/materials/${materialId}`,
 
   // ─── Categories ─────────────────────────────────────────────────────────────
   CATEGORIES_LIST: "/categories",
