@@ -163,7 +163,8 @@ const CreateCoursePage = () => {
     requirements.forEach((r) => payload.append("requirements[]", r));
     whatYouWillLearn.forEach((w) => payload.append("whatYouWillLearn[]", w));
 
-    await createCourse(payload);
+    const course = await createCourse(payload).then((res) => res.data);
+
     if (errorCreatingCourse) {
       setErrors((prev) => ({
         ...prev,
@@ -171,6 +172,9 @@ const CreateCoursePage = () => {
           err.response?.data?.message ||
           "Failed to create course. Please try again.",
       }));
+    } else {
+      // navigate to course's lessons page
+      navigate(`/teacher/courses/${course?._id}/lessons`);
     }
   };
 
