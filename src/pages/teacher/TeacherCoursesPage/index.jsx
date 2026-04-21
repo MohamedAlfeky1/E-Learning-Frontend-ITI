@@ -8,7 +8,14 @@ import {
   Users,
   BookOpen,
   AlertCircle,
+  MoreVertical,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useTeacherCourses } from "@/queries/teacherCoursesQueries";
 import { useDeleteCourse } from "@/mutations/useDeleteCourse";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +52,7 @@ const TeacherCoursesPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <Spinner className="w-10 h-10 border-purple-600" />
+        <Spinner className="w-10 h-10 border-indigo-600" />
         <p className="text-gray-500 font-medium animate-pulse">
           Loading your courses...
         </p>
@@ -82,13 +89,13 @@ const TeacherCoursesPage = () => {
             Manage Your Courses
           </h1>
           <p className="text-gray-500 mt-1.5 font-medium flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+            <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
             Total {courses.length} courses active on the platform
           </p>
         </div>
         <Button
           onClick={() => navigate("/teacher/courses/create")}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-6 rounded-2xl shadow-lg shadow-purple-200 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-6 rounded-2xl shadow-lg shadow-indigo-200 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
         >
           <Plus className="text-xl" />
           <span className="font-bold">Create New Course</span>
@@ -97,8 +104,8 @@ const TeacherCoursesPage = () => {
 
       {courses.length === 0 ? (
         <div className="bg-white border-2 border-dashed border-gray-200 rounded-[2.5rem] p-16 text-center flex flex-col items-center gap-6 shadow-sm">
-          <div className="w-24 h-24 bg-purple-50 rounded-full flex items-center justify-center">
-            <BookOpen className="text-4xl text-purple-300" />
+          <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center">
+            <BookOpen className="text-4xl text-indigo-300" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-gray-900">No courses yet</h3>
@@ -110,7 +117,7 @@ const TeacherCoursesPage = () => {
           <Button
             onClick={() => navigate("/teacher/courses/create")}
             variant="outline"
-            className="rounded-xl px-8 border-purple-200 text-purple-600 hover:bg-purple-50"
+            className="rounded-xl px-8 border-indigo-200 text-indigo-600 hover:bg-indigo-50"
           >
             Get Started
           </Button>
@@ -120,7 +127,8 @@ const TeacherCoursesPage = () => {
           {courses.map((course) => (
             <div
               key={course._id}
-              className="group bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 overflow-hidden flex flex-col"
+              onClick={() => navigate(`/teacher/courses/${course._id}/lessons`)}
+              className="group bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer relative"
             >
               {/* Thumbnail Area */}
               <div className="relative h-56 overflow-hidden">
@@ -129,22 +137,69 @@ const TeacherCoursesPage = () => {
                   alt={course.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute top-4 left-4">
+                <div className="absolute top-4 left-4 z-10">
                   <Badge className="bg-white/90 backdrop-blur-md text-gray-900 border-none shadow-sm font-bold uppercase tracking-wider text-[10px] px-3 py-1">
                     {course.level || "ALL LEVELS"}
                   </Badge>
                 </div>
+
+                {/* Options Menu */}
+                <div className="absolute top-4 right-4 z-20">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      asChild
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="bg-white/90 backdrop-blur-md hover:bg-white text-gray-900 rounded-full shadow-sm h-8 w-8"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="rounded-2xl p-2 w-48 border-none shadow-xl"
+                    >
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/courses/${course._id}`);
+                        }}
+                        className="rounded-xl py-3 cursor-pointer font-bold gap-3"
+                      >
+                        <Eye className="w-4 h-4 text-gray-400" /> View Public
+                        Page
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/teacher/courses/${course._id}/edit`);
+                        }}
+                        className="rounded-xl py-3 cursor-pointer font-bold gap-3"
+                      >
+                        <Pencil className="w-4 h-4 text-indigo-500" /> Edit
+                        Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCourseToDelete(course);
+                        }}
+                        className="rounded-xl py-3 cursor-pointer font-bold gap-3 text-red-500 focus:text-red-500"
+                      >
+                        <Trash2 className="w-4 h-4" /> Delete Course
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
                 {/* Overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                  <div className="flex gap-2 w-full">
-                    <Button
-                      onClick={() => navigate(`/courses/${course._id}`)}
-                      variant="secondary"
-                      className="flex-1 bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/40 rounded-xl"
-                    >
-                      <Eye className="mr-2" /> View
-                    </Button>
-                  </div>
+                  <span className="text-white font-black text-sm uppercase tracking-widest flex items-center gap-2">
+                    Manage Lessons <BookOpen className="w-4 h-4" />
+                  </span>
                 </div>
               </div>
 
@@ -152,8 +207,8 @@ const TeacherCoursesPage = () => {
               <div className="p-6 flex-1 flex flex-col">
                 <div className="flex items-center justify-between mb-3 text-xs font-bold text-gray-400 uppercase tracking-widest">
                   <span>{course.categoryId?.name || "General"}</span>
-                  <span className="flex items-center gap-1.5 text-purple-600 font-black">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+                  <span className="flex items-center gap-1.5 text-indigo-600 font-black">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
                     {course.status || "Published"}
                   </span>
                 </div>
@@ -169,7 +224,7 @@ const TeacherCoursesPage = () => {
                         Enrolled
                       </span>
                       <span className="text-sm font-bold text-gray-900 flex items-center gap-1">
-                        <Users className="text-purple-400" />{" "}
+                        <Users className="text-indigo-400" />{" "}
                         {course.totalStudents || 0}
                       </span>
                     </div>
@@ -178,29 +233,10 @@ const TeacherCoursesPage = () => {
                     <span className="text-[10px] font-black uppercase tracking-tighter text-gray-400 block">
                       Price
                     </span>
-                    <span className="text-lg font-black text-purple-600">
+                    <span className="text-lg font-black text-indigo-600">
                       {course.type === "free" ? "FREE" : `$${course.price}`}
                     </span>
                   </div>
-                </div>
-
-                {/* Footer Actions */}
-                <div className="grid grid-cols-2 gap-3 mt-6">
-                  <Button
-                    onClick={() =>
-                      navigate(`/teacher/courses/${course._id}/edit`)
-                    }
-                    className="bg-gray-900 hover:bg-black text-white rounded-xl py-6 font-bold flex items-center justify-center gap-2"
-                  >
-                    <Pencil /> Edit
-                  </Button>
-                  <Button
-                    onClick={() => setCourseToDelete(course)}
-                    variant="outline"
-                    className="border-red-100 text-red-500 hover:bg-red-50 hover:border-red-200 rounded-xl py-6 font-bold flex items-center justify-center gap-2"
-                  >
-                    <Trash2 /> Delete
-                  </Button>
                 </div>
               </div>
             </div>

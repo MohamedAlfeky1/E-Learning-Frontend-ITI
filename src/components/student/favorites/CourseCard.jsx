@@ -13,13 +13,12 @@ const CourseCard = ({ favorite }) => {
     data: courseData,
     isLoading,
     error,
-  } = useCourse(favorite.courseId._id);
+  } = useCourse(favorite?.courseId?._id);
   const course = courseData?.data ?? {};
+  console.log("Course:", course);
 
-  const {
-    mutateAsync: removeFromFavorites,
-    isPending: isRemoving,
-  } = useDeleteFavoriteMutation();
+  const { mutateAsync: removeFromFavorites, isPending: isRemoving } =
+    useDeleteFavoriteMutation();
 
   const { data: categoryData } = useGetCategoryById(course.categoryId);
   const category = categoryData?.data ?? {};
@@ -75,7 +74,7 @@ const CourseCard = ({ favorite }) => {
               Price
             </span>
             <span className="text-xl font-black text-[#3525CD] font-['Plus Jakarta Sans']">
-              {course.type === "free" ? "FREE" : `$${course.price}`}
+              {course.type === "free" ? "FREE" : `$${course?.price}`}
             </span>
           </div>
           <Link to={`/courses/${course._id}`}>
