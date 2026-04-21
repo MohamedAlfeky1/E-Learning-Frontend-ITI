@@ -125,7 +125,10 @@ const TeacherLessonsPage = () => {
             disabled={course.status === "published" || items.length === 0}
           >
             {course.status === "published" ? (
-              "Published"
+              <>
+                <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                Published
+              </>
             ) : publishingCourse ? (
               <Spinner className="w-4 h-4" />
             ) : (
@@ -139,7 +142,10 @@ const TeacherLessonsPage = () => {
             disabled={course.status === "archived" || items.length === 0}
           >
             {course.status === "archived" ? (
-              "Archived"
+              <>
+                <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                Archived
+              </>
             ) : archivingCourse ? (
               <Spinner className="w-4 h-4" />
             ) : (
