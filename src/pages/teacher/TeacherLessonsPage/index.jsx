@@ -105,11 +105,11 @@ const TeacherLessonsPage = () => {
           </Button>
           <div className="space-y-1">
             <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
-              Course Content
+              {course.title}
             </h1>
             <p className="text-gray-500 font-medium flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-              Manage your lessons, videos and materials
+              {/* <span className="w-2 h-2 rounded-full bg-indigo-500"></span> */}
+              {course.description}
             </p>
           </div>
         </div>
