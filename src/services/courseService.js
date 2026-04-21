@@ -72,6 +72,16 @@ export const publishCourse = async (id) => {
   }
 };
 
+export const archiveCourse = async (id) => {
+  try {
+    const response = await axiosInstance.patch(ENDPOINTS.COURSES_ARCHIVE(id));
+    return response.data;
+  } catch (error) {
+    console.error("Error archiving course:", error);
+    throw error.response.data;
+  }
+};
+
 //list all courses (using GET)
 export const getAllCourses = async () => {
   try {

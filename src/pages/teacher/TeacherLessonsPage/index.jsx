@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useCourse } from "@/queries/useCourse";
 import { usePublishCourseMutation } from "@/mutations/usePublishCourseMutation";
+import { useArchiveCourseMutation } from "@/mutations/useArchiveCourseMutation";
 
 const TeacherLessonsPage = () => {
   const { courseId } = useParams();
@@ -50,6 +51,8 @@ const TeacherLessonsPage = () => {
   console.log(lessons);
   const { mutateAsync: publishCourse, isPending: publishingCourse } =
     usePublishCourseMutation();
+  const { mutateAsync: archiveCourse, isPending: archivingCourse } =
+    useArchiveCourseMutation();
   const [items, setItems] = useState([]);
 
   const { mutateAsync: deleteLesson, isPending: isDeleting } =
@@ -127,6 +130,20 @@ const TeacherLessonsPage = () => {
               <Spinner className="w-4 h-4" />
             ) : (
               "Publish Course"
+            )}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => archiveCourse(courseId)}
+            className="text-gray-500 hover:text-indigo-600 font-bold p-0 flex items-center gap-2"
+            disabled={course.status === "archived" || items.length === 0}
+          >
+            {course.status === "archived" ? (
+              "Archived"
+            ) : archivingCourse ? (
+              <Spinner className="w-4 h-4" />
+            ) : (
+              "Archive Course"
             )}
           </Button>
         </div>
