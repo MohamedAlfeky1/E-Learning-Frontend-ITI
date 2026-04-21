@@ -32,9 +32,11 @@ export const ENDPOINTS = {
   LESSONS_DELETE: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
   LESSONS_REORDER: (courseId) => `/lessons/${courseId}/reorder`,
   LESSONS_UPLOAD_VIDEO: (lessonId) => `/lessons/${lessonId}/videos`,
-  LESSONS_VIDEO_DELETE: (lessonId, videoId) => `/lessons/${lessonId}/videos/${videoId}`,
+  LESSONS_VIDEO_DELETE: (lessonId, videoId) =>
+    `/lessons/${lessonId}/videos/${videoId}`,
   LESSONS_UPLOAD_MATERIAL: (lessonId) => `/lessons/${lessonId}/materials`,
-  LESSONS_MATERIAL_DELETE: (lessonId, materialId) => `/lessons/${lessonId}/materials/${materialId}`,
+  LESSONS_MATERIAL_DELETE: (lessonId, materialId) =>
+    `/lessons/${lessonId}/materials/${materialId}`,
 
   // ─── Categories ─────────────────────────────────────────────────────────────
   CATEGORIES_LIST: "/categories",
@@ -51,6 +53,7 @@ export const ENDPOINTS = {
   COURSES_CREATE: "/courses",
   COURSES_UPDATE: (id) => `/courses/${id}`,
   COURSES_STATUS: (id) => `/courses/${id}/status`,
+  COURSES_PUBLISH: (id) => `/courses/${id}/publish`,
   COURSES_SET_STREAK_REQUIREMENT: (id) =>
     `/admin/courses/${id}/streak-requirement`,
 
@@ -66,15 +69,17 @@ export const ENDPOINTS = {
   ENROLLMENTS_MY: "/enrollments/my-courses",
   ENROLLMENTS_GET: (courseId) => `/enrollments/${courseId}`,
   ENROLLMENT_TEACHER_GET: (courseId) => `/enrollments/course/${courseId}`,
-  ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) => `/enrollments/update-progress/${enrollmentId}`,
-  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) => `/enrollments/${courseId}/videos/${videoId}/complete`,
+  ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) =>
+    `/enrollments/update-progress/${enrollmentId}`,
+  ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) =>
+    `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_UPDATE_PROGRESS: (enrollmentId) =>
     `/enrollments/update-progress/${enrollmentId}`,
   ENROLLMENTS_VIDEO_COMPLETE: (courseId, videoId) =>
     `/enrollments/${courseId}/videos/${videoId}/complete`,
   ENROLLMENTS_PROGRESS: (courseId) => `/enrollments/${courseId}/progress`,
   // ─── Assignments ─────────────────────────────────────────────────────────────
-  ASSIGNMENTS_MY: '/assignment/my',
+  ASSIGNMENTS_MY: "/assignment/my",
   ASSIGNMENTS_LIST: (courseId) => `/courses/${courseId}/assignments`,
   ASSIGNMENTS_CREATE: (courseId) => `/courses/${courseId}/assignments`,
   ASSIGNMENTS_UPDATE: (id) => `/assignments/${id}`,
@@ -119,8 +124,9 @@ export const ENDPOINTS = {
   // ─── Reviews ──────────────────────────────────────────────────────────────────
   REVIEWS_LIST: (courseId) => `/courseReviews/${courseId}/reviews`,
   REVIEW_COURSE_BY_ID: (courseId) => `/courseReviews/${courseId}`,
-  MY_REVIEW_COURSE_BY_ID: (courseId, studentId) => `/courseReviews/${courseId}/${studentId}`,
-  REVIEWS_CREATE: '/courseReviews',
+  MY_REVIEW_COURSE_BY_ID: (courseId, studentId) =>
+    `/courseReviews/${courseId}/${studentId}`,
+  REVIEWS_CREATE: "/courseReviews",
   REVIEWS_DELETE: (id) => `/reviews/${id}`,
 
   // ─── Favorites ────────────────────────────────────────────────────────────────

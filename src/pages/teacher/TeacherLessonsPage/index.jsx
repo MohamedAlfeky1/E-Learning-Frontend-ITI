@@ -28,12 +28,28 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useCourse } from "@/queries/useCourse";
+import { usePublishCourseMutation } from "@/mutations/usePublishCourseMutation";
 
 const TeacherLessonsPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const { data, isLoading, isError } = useLessonsByCourse(courseId);
-  const lessonsData = data?.data || [];
+  const {
+    data: courseData,
+    isLoading: courseLoading,
+    error: courseError,
+  } = useCourse(courseId);
+  const course = courseData?.data || {};
+  const {
+    data: lessonsData,
+    isLoading: lessonsLoading,
+    error: lessonsError,
+  } = useLessonsByCourse(courseId);
+  const lessons = lessonsData?.data || [];
+  console.log(course);
+  console.log(lessons);
+  const { mutateAsync: publishCourse, isPending: publishingCourse } =
+    usePublishCourseMutation();
   const [items, setItems] = useState([]);
 
   const { mutateAsync: deleteLesson, isPending: isDeleting } =
@@ -42,12 +58,12 @@ const TeacherLessonsPage = () => {
   const [lessonToDelete, setLessonToDelete] = useState(null);
 
   useEffect(() => {
-    if (lessonsData.length > 0) {
-      setItems(lessonsData.sort((a, b) => a.orderIndex - b.orderIndex));
+    if (lessons.length > 0) {
+      setItems(lessons.sort((a, b) => a.orderIndex - b.orderIndex));
     } else {
       setItems([]);
     }
-  }, [lessonsData]);
+  }, [lessons]);
 
   const handleReorder = (newItems) => {
     setItems(newItems);
@@ -94,19 +110,38 @@ const TeacherLessonsPage = () => {
             </p>
           </div>
         </div>
-        <AddLessonDialog courseId={courseId} nextOrderIndex={nextOrderIndex} />
+        <div className="flex flex-col gap-4">
+          <AddLessonDialog
+            courseId={courseId}
+            nextOrderIndex={nextOrderIndex}
+          />
+          <Button
+            variant="outline"
+            onClick={() => publishCourse(courseId)}
+            className="text-gray-500 hover:text-indigo-600 font-bold p-0 flex items-center gap-2"
+            disabled={course.status === "published" || items.length === 0}
+          >
+            {course.status === "published" ? (
+              "Published"
+            ) : publishingCourse ? (
+              <Spinner className="w-4 h-4" />
+            ) : (
+              "Publish Course"
+            )}
+          </Button>
+        </div>
       </header>
 
       {/* Main Content */}
       <div className="max-w-5xl mx-auto">
-        {isLoading ? (
+        {lessonsLoading ? (
           <div className="w-full py-24 flex flex-col justify-center items-center gap-5 bg-white rounded-[2.5rem] border border-dashed border-gray-200">
             <Spinner className="w-12 h-12 border-indigo-600" />
             <p className="text-gray-400 font-black animate-pulse uppercase tracking-widest text-xs">
               Loading lessons...
             </p>
           </div>
-        ) : isError ? (
+        ) : lessonsError ? (
           <div className="py-20 text-center bg-white rounded-[2.5rem] border-2 border-red-50 p-10">
             <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <Trash2 className="w-10 h-10 text-red-300" />
@@ -162,7 +197,7 @@ const TeacherLessonsPage = () => {
       </div>
 
       {/* Helper Legend */}
-      {!isLoading && items.length > 0 && (
+      {!lessonsLoading && items.length > 0 && (
         <div className="mt-12 flex justify-center">
           <p className="text-xs text-gray-400 flex items-center gap-2 bg-white px-6 py-3 rounded-full border border-gray-100 shadow-sm font-bold uppercase tracking-widest">
             <GripVertical className="size-4 text-indigo-400" />
