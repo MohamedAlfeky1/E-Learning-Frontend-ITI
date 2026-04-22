@@ -1,0 +1,85 @@
+/* Favorites Page Styles */
+
+/* CSS Custom Properties for common values */
+:root {
+  --color-primary: #3525cd;
+  --color-secondary: #464555;
+  --color-dark: #141b2b;
+  --font-inter: "Inter";
+  --font-plus-jakarta: "Plus Jakarta Sans";
+  --font-weight-light: 400;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-size-xs: 10px;
+  --font-size-base: 16px;
+  --font-size-3xl: 48px;
+  --badge-font-family: "Inter";
+  --badge-font-weight: 700;
+  --badge-font-size: 10px;
+}
+
+/* Base utility classes */
+.font-inter {
+  font-family: var(--font-inter);
+}
+
+.font-plus-jakarta {
+  font-family: var(--font-plus-jakarta);
+}
+
+.font-weight-400 {
+  font-weight: var(--font-weight-light);
+}
+
+.font-weight-700 {
+  font-weight: var(--font-weight-bold);
+}
+
+.font-weight-800 {
+  font-weight: var(--font-weight-extrabold);
+}
+
+.background-color-primary {
+  background-color: var(--color-primary);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.text-dark {
+  color: var(--color-dark);
+}
+
+.text-size-xs {
+  font-size: var(--font-size-xs);
+}
+
+.text-size-base {
+  font-size: var(--font-size-base);
+}
+
+.text-size-3xl {
+  font-size: var(--font-size-3xl);
+}
+
+/* Component styles */
+.page-bg {
+  background-color: #f9f9ff;
+}
+
+.badge {
+  background-color: #6bff8f;
+  color: #002109;
+  font-family: var(--badge-font-family);
+  font-size: var(--badge-font-size);
+  font-weight: var(--badge-font-weight);
+}
+
+.uploading-card-bg-color {
+  background-color: #f1f3ff;
+}

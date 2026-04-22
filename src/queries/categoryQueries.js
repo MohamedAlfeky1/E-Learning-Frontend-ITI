@@ -1,5 +1,5 @@
-import { getAllCategory, getCategoryById } from "@/services/categoryService";
-import { useQuery } from "@tanstack/react-query";
+import { getAllCategories, getCategoryById } from "@/services/categoryService"
+import { useQuery } from "@tanstack/react-query"
 
 /**
  * Fetch all categories using React Query.
@@ -10,11 +10,11 @@ import { useQuery } from "@tanstack/react-query";
  */
 export const useCategories = () => {
   return useQuery({
-    queryKey: ["categories"],
-    queryFn: getAllCategory,
+    queryKey: ['categories'],
+    queryFn: getAllCategories,
     staleTime: 1000 * 60 * 10,
-  });
-};
+  })
+}
 
 /**
  * Fetch a category by ID using React Query.
@@ -26,8 +26,8 @@ export const useCategories = () => {
  */
 export const useGetCategoryById = (id) => {
   return useQuery({
-    queryKey: ["category", id],
+    queryKey: ['category', id],
     queryFn: () => getCategoryById(id),
-    enabled: !!id,
-  });
-};
+    enabled: !!id
+  })
+}
