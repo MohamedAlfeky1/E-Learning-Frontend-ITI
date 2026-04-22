@@ -6,9 +6,11 @@ import { FaStar } from "react-icons/fa6";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoMdPeople } from "react-icons/io";
 import { IoPricetags, IoInfinite, IoFileTrayFullSharp } from "react-icons/io5";
-import { MdPlayLesson, MdOutlineStarBorder } from "react-icons/md";
 import {
+  MdPlayLesson,
+  MdOutlineStarBorder,
   MdOutlineAddShoppingCart,
+  MdOutlineRemoveShoppingCart,
   MdOutlineVerified,
   MdOndemandVideo,
 } from "react-icons/md";
@@ -17,11 +19,18 @@ import { useGetCourseReview } from "@/queries/useReviewQueries";
 import { useUserQuery } from "@/queries/authQueries";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useAddToCart } from "@/mutations/cartMutations";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useGetCartItems } from "@/queries/useCartQueries";
 import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
+import { useAddToCart } from "@/mutations/cartMutations";
 
 
 const CourseDetailsPage = () => {
@@ -183,7 +192,6 @@ const CourseDetailsPage = () => {
 
       {/* Main Content */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
-
         {/* Left Column */}
         <div className="col-span-1 md:col-span-2 flex flex-col gap-5">
 
@@ -427,7 +435,6 @@ const CourseDetailsPage = () => {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

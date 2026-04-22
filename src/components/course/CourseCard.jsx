@@ -1,92 +1,211 @@
-import React from 'react'
-import { Badge } from '@/components/ui/badge'
+import React, { useState } from "react";
 import { FaStar } from "react-icons/fa6";
-import { MdOndemandVideo, MdOutlineAddShoppingCart, MdOutlineOndemandVideo } from "react-icons/md";
-import { IoEyeOutline } from "react-icons/io5";
-import { Link, useNavigate } from 'react-router-dom';
-
+import {
+  MdOutlineAddShoppingCart,
+  MdOutlineRemoveShoppingCart,
+} from "react-icons/md";
+import { IoHeart, IoHeartOutline } from "react-icons/io5";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
+import { useUserQuery } from "@/queries/authQueries";
+import { useFavorites } from "@/queries/favoritesQueries";
+import { useAddFavoriteMutation } from "@/mutations/useAddFavoriteMutation";
+import { useDeleteFavoriteMutation } from "@/mutations/useDeleteFavoriteMutation";
+import { useGetCartItems } from "@/queries/useCartQueries";
+import { useAddToCart } from "@/mutations/cartMutations";
+import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
+import placeholderImg from "@/assets/placeholder.jpg";
+import { Spinner } from "../ui/spinner";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 function CourseCard({ course }) {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [openLoginDialog, setOpenLoginDialog] = useState(false);
 
-    return (
-        <>
-            <Link to={`/courses/${course._id}`} className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
+  const { data: userData, isLoading: userLoading } = useUserQuery();
+  const { data: favoritesData, isLoading: favoritesLoading, error: favoritesError } = useFavorites();
+  const { data: cartData } = useGetCartItems();
+  const { mutateAsync: addFavorite, isPending: isAddingFavorite } = useAddFavoriteMutation();
+  const { mutateAsync: removeFavorite, isPending: isRemovingFavorite } = useDeleteFavoriteMutation();
+  const addToCartMutation = useAddToCart();
+  const { data: enrollmentData } = useEnrollmentDetailsQuery(course._id);
 
-                {/* Thumbnail */}
-                <div className="relative w-full h-[192px] overflow-hidden">
-                    {course.thumbnail ? (
-                        <img
-                            src={course.thumbnail}
-                            alt="Course Thumbnail"
-                            className="w-full h-[192px] object-cover"
-                        />
-                    ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex flex-col items-center justify-center gap-2">
-                            <MdOutlineOndemandVideo size={40} color="white" />
-                            <p className="text-white text-sm font-medium">No Thumbnail</p>
-                        </div>
-                    )}
-                </div>
+  const isLoggedIn = !!userData?._id;
+  const favorites = favoritesData?.data || [];
+  const favorite = !favoritesLoading && !favoritesError
+    ? favorites.find((fav) => fav?.courseId?._id === course?._id)
+    : null;
 
-                {/* Content */}
-                <div className="flex flex-col gap-3 p-5 flex-1">
+  const isInCart = cartData?.data?.cart?.items?.some(
+    (item) => item.courseId === course._id || item.courseId?._id === course._id
+  );
+  const isAlreadyEnrolled = !!enrollmentData;
 
-                    {/* Badge + Rating */}
-                    <div className="flex items-center justify-between ">
+  const handleCartClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-                        <p className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                            {course.language === 'none' ? "" : course.language}
-                        </p>
-                        <div className='flex items-center gap-1 text-sm font-medium text-gray-700'>
-                            <FaStar color='#005523' />
-                            {course.totalReviews ?? "4.9"}
-                            <span className="text-[#005523] font-normal">({course.ratingCount ?? course.totalReviews})</span>
-                        </div>
-                    </div>
+    if (!isLoggedIn) {
+      setOpenLoginDialog(true);
+      return;
+    }
 
-                    {/* Title */}
-                    <h2 className="text-xl font-bold text-gray-900 leading-snug">
-                        {course.title}
-                    </h2>
+    if (isAlreadyEnrolled) {
+      toast.info("You are already enrolled in this course.");
+      return;
+    }
 
-                    {/* Instructor */}
-                    <div className="flex items-center gap-2">
-                        <span className="text-sm font-light text-[#464555] rounded-md">
-                            Instructor: {course.teacherId?.firstName} {course.teacherId?.lastName}
-                        </span>
-                    </div>
+    if (isInCart) {
+      toast.info("Course is already in your cart.");
+      return;
+    }
 
-                    {/* Price + Enroll */}
-                    <div className="flex flex-col md:flex-row items-center gap-5 mt-auto pt-2">
-                        {course.type === 'paid' ?
-                            <div className='flex flex-row items-center justify-between gap-3 w-full'>
-                                <p className="text-2xl font-bold text-[#3525CD]">
-                                    ${course.price}
-                                </p>
-                                <Badge onClick={(e) => {
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                    navigate('/cart')
-                                }} variant='lightPruple' className='cursor-pointer rounded-md py-3 px-3'>
-                                    <MdOutlineAddShoppingCart color='#3525CD' />
-                                </Badge>
-                            </div> :
-                            <Badge onClick={() => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                navigate('/cart')
-                            }} variant='lightPruple' className='cursor-pointer rounded-md py-3 px-3'>
-                                <MdOutlineAddShoppingCart color='#3525CD' />
-                            </Badge>
-                        }
+    addToCartMutation.mutate(
+      { courseId: course._id },
+      {
+        onSuccess: () => toast.success("Course added to cart!"),
+        onError: () => toast.error("Failed to add course to cart."),
+      }
+    );
+  };
 
-                    </div>
+  return (
+    <>
+      <Link
+        to={`/courses/${course._id}`}
+        className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl"
+      >
+        {/* Thumbnail */}
+        <div className="relative w-full h-32 overflow-hidden">
+          <img
+            src={course.thumbnail || placeholderImg}
+            alt="Course Thumbnail"
+            className="w-full h-full object-cover"
+          />
+          {userData?.role === "student" && !favoritesLoading && (
+            <Button
+              variant="primary"
+              size="icon-sm"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                favorite ? removeFavorite(favorite._id) : addFavorite(course._id);
+              }}
+              className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full"
+            >
+              {isAddingFavorite || isRemovingFavorite ? (
+                <Spinner className="text-red-500 size-4" />
+              ) : favorite ? (
+                <IoHeart color="red" />
+              ) : (
+                <IoHeartOutline color="red" />
+              )}
+            </Button>
+          )}
+        </div>
 
-                </div>
-            </Link >
-        </>
-    )
+        {/* Content */}
+        <div className="flex flex-col gap-3 p-5 flex-1">
+          {/* Language + Rating */}
+          <div className="flex items-center justify-between">
+            <p className="flex items-center gap-1 text-sm font-medium text-gray-700">
+              {course.language === "none" ? "" : course.language}
+            </p>
+            <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
+              <FaStar color="#005523" />
+              {course.totalReviews ?? "4.9"}
+              <span className="text-[#005523] font-normal">
+                ({course.ratingCount ?? course.totalReviews})
+              </span>
+            </div>
+          </div>
+
+          {/* Title */}
+          <h2 className="text-xl font-bold text-gray-900 leading-snug">
+            {course.title}
+          </h2>
+
+          {/* Instructor */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-light text-[#464555] rounded-md">
+              Instructor: {course.teacherId?.firstName} {course.teacherId?.lastName}
+            </span>
+          </div>
+
+          {/* Price + Cart */}
+          <div className="flex flex-col md:flex-row items-center gap-5 mt-auto pt-2">
+            {isAlreadyEnrolled ? (
+              <p className="text-sm font-semibold text-green-600">Already Enrolled ✓</p>
+            ) : course.type === "paid" ? (
+              <div className="flex flex-row items-center justify-between gap-3 w-full">
+                <p className="text-2xl font-bold text-[#3525CD]">${course.price}</p>
+                <Button
+                  size="icon-sm"
+                  variant="secondary"
+                  className="cursor-pointer rounded-full py-3 px-3"
+                  onClick={handleCartClick}
+                  disabled={addToCartMutation.isPending}
+                >
+                  {addToCartMutation.isPending ? (
+                    <Spinner className="size-4" />
+                  ) : isInCart ? (
+                    <MdOutlineRemoveShoppingCart color="#3525CD" />
+                  ) : (
+                    <MdOutlineAddShoppingCart color="#3525CD" />
+                  )}
+                </Button>
+              </div>
+            ) : (
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                className="cursor-pointer rounded-full py-3 px-3"
+                onClick={handleCartClick}
+                disabled={addToCartMutation.isPending}
+              >
+                {addToCartMutation.isPending ? (
+                  <Spinner className="size-4" />
+                ) : isInCart ? (
+                  <MdOutlineRemoveShoppingCart color="#3525CD" />
+                ) : (
+                  <MdOutlineAddShoppingCart color="#3525CD" />
+                )}
+              </Button>
+            )}
+          </div>
+        </div>
+      </Link>
+
+      {/* Login Dialog */}
+      <Dialog open={openLoginDialog} onOpenChange={setOpenLoginDialog}>
+        <DialogContent showCloseButton={true}>
+          <DialogHeader>
+            <DialogTitle>Login Required</DialogTitle>
+            <DialogDescription>
+              You need to be logged in to enroll in this course.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="purpleBtnDefault"
+              className="w-full"
+              onClick={() => navigate("/login")}
+            >
+              Go to Login
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 }
 
-export default CourseCard
+export default CourseCard;

@@ -27,6 +27,14 @@ export const ENDPOINTS = {
   // ─── Lessons ─────────────────────────────────────────────────────────────────
   LESSONS_LIST: (courseId) => `/lessons/${courseId}`,
   LESSONS_GET: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
+  LESSONS_CREATE: (courseId) => `/lessons/${courseId}`,
+  LESSONS_UPDATE: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
+  LESSONS_DELETE: (courseId, lessonId) => `/lessons/${courseId}/${lessonId}`,
+  LESSONS_REORDER: (courseId) => `/lessons/${courseId}/reorder`,
+  LESSONS_UPLOAD_VIDEO: (lessonId) => `/lessons/${lessonId}/videos`,
+  LESSONS_VIDEO_DELETE: (lessonId, videoId) => `/lessons/${lessonId}/videos/${videoId}`,
+  LESSONS_UPLOAD_MATERIAL: (lessonId) => `/lessons/${lessonId}/materials`,
+  LESSONS_MATERIAL_DELETE: (lessonId, materialId) => `/lessons/${lessonId}/materials/${materialId}`,
 
   // ─── Categories ─────────────────────────────────────────────────────────────
   CATEGORIES_LIST: "/categories",
@@ -41,6 +49,7 @@ export const ENDPOINTS = {
   COURSES_MY: "/courses/my-courses",
   COURSES_GET: (id) => `/courses/${id}`,
   COURSES_CREATE: "/courses",
+  COURSES_UPDATE: (id) => `/courses/${id}`,
   COURSES_STATUS: (id) => `/courses/${id}/status`,
   COURSES_SET_STREAK_REQUIREMENT: (id) =>
     `/admin/courses/${id}/streak-requirement`,
@@ -90,7 +99,7 @@ export const ENDPOINTS = {
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
   CART_ADD: "/cart/add",
-  CART_REMOVE: (id) => `/cart/remove/${id}`,
+  CART_REMOVE: "/cart/remove",
   CART_CLEAR: "/cart/clear",
   CART_APPLY_VOUCHER: "/cart/apply-voucher",
   CART_REMOVE_VOUCHER: "/cart/remove-voucher",
@@ -98,6 +107,7 @@ export const ENDPOINTS = {
   // ─── Vouchers ─────────────────────────────────────────────────────────────────
   ADMIN_VOUCHERS_LIST: "/vouchers",
   ADMIN_VOUCHERS_CREATE: "/vouchers",
+  ADMIN_VOUCHERS_APPLY: "/vouchers/apply",
   ADMIN_VOUCHERS_UPDATE: (id) => `/vouchers/${id}`,
   ADMIN_VOUCHERS_DELETE: (id) => `/vouchers/${id}`,
 
@@ -115,7 +125,7 @@ export const ENDPOINTS = {
 
   // ─── Favorites ────────────────────────────────────────────────────────────────
   FAVORITES_LIST: "/favorites",
-  FAVORITES_ADD: (courseId) => `/favorites/${courseId}`,
+  FAVORITES_ADD: "/favorites",
   FAVORITES_REMOVE: (courseId) => `/favorites/${courseId}`,
 
   // ─── Chat ─────────────────────────────────────────────────────────────────────
@@ -142,18 +152,18 @@ export const ENDPOINTS = {
   ADMIN_PLATFORM_STATS: "/finance/admin/platform-stats",
   ADMIN_WITHDRAWALS_PROCESS: (id) => `/finance/admin/withdrawals/${id}`,
 
-
   // ─── Admin Dashboard ──────────────────────────────────────────────────────────
   ADMIN_STATS_OVERVIEW: "/admin/stats",
   ADMIN_STATS_REVENUE: "/admin/stats/revenue",
   ADMIN_STATS_ENROLLMENTS: "/admin/stats/enrollments",
 
   // ─── Sliders ──────────────────────────────────────────────────────────────────
-  SLIDERS_LIST: "/sliders",
-  ADMIN_SLIDERS_CREATE: "/admin/sliders",
-  ADMIN_SLIDERS_UPDATE: (id) => `/admin/sliders/${id}`,
-  ADMIN_SLIDERS_DELETE: (id) => `/admin/sliders/${id}`,
-  ADMIN_SLIDERS_REORDER: "/admin/sliders/reorder",
+  SLIDERS_LIST: "/slider/sliders",
+  ADMIN_SLIDERS_LIST: "/slider/admin/sliders",
+  ADMIN_SLIDERS_CREATE: "/slider/admin/sliders",
+  ADMIN_SLIDERS_UPDATE: (id) => `/slider/admin/sliders/${id}`,
+  ADMIN_SLIDERS_DELETE: (id) => `/slider/admin/sliders/${id}`,
+  ADMIN_SLIDERS_REORDER: "/slider/admin/sliders/reorder",
 
   // ─── Teacher Verification ─────────────────────────────────────────────────────
   TEACHER_VERIFICATION_SUBMIT: (id) => `/teacher/verification/${id}`,
@@ -176,17 +186,14 @@ export const ENDPOINTS = {
   SESSIONS_AVAILABILITY: "/sessions/availability",
   SESSIONS_AVAILABILITY_UPDATE: (id) => `/sessions/availability/${id}`,
   SESSIONS_TEACHERS: "/sessions/teachers",
-  SESSIONS_TEACHER_AVAILABILITY: (id) => `/sessions/teachers/${id}/availability`,
+  SESSIONS_TEACHER_AVAILABILITY: (id) =>
+    `/sessions/teachers/${id}/availability`,
   SESSIONS_BOOK: "/sessions/book",
   SESSIONS_MY_BOOKINGS: "/sessions/my-bookings",
   SESSIONS_TEACHER_BOOKINGS: "/sessions/teacher-bookings",
   SESSIONS_CANCEL: (id) => `/sessions/bookings/${id}/cancel`,
   SESSIONS_JOIN: (id) => `/sessions/bookings/${id}/join`,
   SESSIONS_END: (id) => `/sessions/bookings/${id}/end`,
-
-
-
-
 
   // ─── Mobile — Question Bank ───────────────────────────────────────────────────
   QUESTION_BANK_LIST: (courseId) => `/courses/${courseId}/question-bank`,
