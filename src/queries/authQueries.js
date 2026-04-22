@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMe } from "../services/authService";
+import { getMe, getTeachers, getStudents } from "../services/authService";
 
 export const useUserQuery = () => {
   const token = localStorage.getItem("token");
@@ -9,5 +9,19 @@ export const useUserQuery = () => {
     queryFn: getMe,
     enabled: !!token, 
     retry: false,   
+  });
+};
+
+export const useTeachersQuery = () => {
+  return useQuery({
+    queryKey: ["auth", "teachers"],
+    queryFn: getTeachers,
+  });
+};
+
+export const useStudentsQuery = () => {
+  return useQuery({
+    queryKey: ["auth", "students"],
+    queryFn: getStudents,
   });
 };
