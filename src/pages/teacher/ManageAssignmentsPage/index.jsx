@@ -28,7 +28,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ClipboardList, Plus, BookOpen } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { ClipboardList, Plus, BookOpen, CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 import AssignmentStatsCard from "@/components/teacher/assignments/AssignmentStatsCard";
 import AssignmentList from "@/components/teacher/assignments/AssignmentList";
 import { useTeacherCourses } from "@/queries/teacherCoursesQueries";
@@ -50,7 +57,7 @@ const ManageAssignmentsPage = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    dueDate: "",
+    dueDate: null,
     maxScore: "100",
   });
   const [attachments, setAttachments] = useState(null);
@@ -77,7 +84,7 @@ const ManageAssignmentsPage = () => {
 
   // Handlers
   const resetForm = () => {
-    setFormData({ title: "", description: "", dueDate: "", maxScore: "100" });
+    setFormData({ title: "", description: "", dueDate: null, maxScore: "100" });
     setAttachments(null);
     setEditingAssignment(null);
   };
@@ -96,9 +103,7 @@ const ManageAssignmentsPage = () => {
     setFormData({
       title: assignment.title,
       description: assignment.description,
-      dueDate: assignment.dueDate
-        ? new Date(assignment.dueDate).toISOString().slice(0, 16)
-        : "",
+      dueDate: assignment.dueDate ? new Date(assignment.dueDate) : null,
       maxScore: String(assignment.maxScore || 100),
     });
     setIsCreateOpen(true);
@@ -112,6 +117,8 @@ const ManageAssignmentsPage = () => {
       return;
     }
 
+    const dueDateISO = formData.dueDate.toISOString();
+
     if (editingAssignment) {
       updateMutation.mutate(
         {
@@ -119,7 +126,7 @@ const ManageAssignmentsPage = () => {
           data: {
             title: formData.title,
             description: formData.description,
-            dueDate: formData.dueDate,
+            dueDate: dueDateISO,
             maxScore: Number(formData.maxScore),
           },
         },
@@ -137,7 +144,7 @@ const ManageAssignmentsPage = () => {
           data: {
             title: formData.title,
             description: formData.description,
-            dueDate: formData.dueDate,
+            dueDate: dueDateISO,
             maxScore: Number(formData.maxScore),
             attachments: attachments ? Array.from(attachments) : [],
           },
@@ -295,18 +302,36 @@ const ManageAssignmentsPage = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="dueDate">Due Date *</Label>
-                <Input
-                  id="dueDate"
-                  type="datetime-local"
-                  value={formData.dueDate}
-                  onChange={(e) =>
-                    setFormData({ ...formData, dueDate: e.target.value })
-                  }
-                  className="mt-1"
-                />
+              <div className="flex flex-col">
+                <Label>Due Date *</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={`mt-1 w-full justify-start text-left font-normal ${
+                        !formData.dueDate ? "text-muted-foreground" : ""
+                      }`}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formData.dueDate
+                        ? format(formData.dueDate, "PPP")
+                        : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={formData.dueDate}
+                      onSelect={(date) =>
+                        setFormData({ ...formData, dueDate: date })
+                      }
+                      disabled={{ before: new Date() }}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
+
               <div>
                 <Label htmlFor="maxScore">Max Score</Label>
                 <Input
