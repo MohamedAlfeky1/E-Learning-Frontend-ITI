@@ -67,9 +67,23 @@ export const gradeSubmission = async (assignmentId, sid, data) => {
 
 /** Submit an assignment */
 export const submitAssignment = async (assignmentId, data) => {
+  let payload = data;
+  let headers = {};
+
+  if (data.attachments && data.attachments.length > 0) {
+    payload = new FormData();
+    if (data.submissionUrl) payload.append("submissionUrl", data.submissionUrl);
+    if (data.submissionText) payload.append("submissionText", data.submissionText);
+    for (const file of data.attachments) {
+      payload.append("attachments", file);
+    }
+    headers = { "Content-Type": "multipart/form-data" };
+  }
+
   const response = await axiosInstance.post(
     ENDPOINTS.ASSIGNMENTS_SUBMIT(assignmentId),
-    data
+    payload,
+    { headers }
   );
   return response.data;
 };
