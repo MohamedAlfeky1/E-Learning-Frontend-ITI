@@ -73,8 +73,7 @@ import WithdrawalRequestPage from "@/pages/teacher/WithdrawalRequestPage";
 import TeacherVerificationPage from "@/pages/teacher/TeacherVerificationPage";
 import TeacherChatPage from "@/pages/teacher/TeacherChatPage";
 import TeacherTicketPage from "@/pages/teacher/TeacherTicketPage";
-import MyBookings from './../pages/teacher/TeacherBookingPage/index';
-
+import MyBookings from "./../pages/teacher/TeacherBookingPage/index";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ADMIN PAGES  (role: admin)
@@ -175,7 +174,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  
+
   {
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
@@ -214,12 +213,10 @@ const router = createBrowserRouter([
       { path: "quizzes", element: <StudentQuizzesPage /> }, // /quizzes
       { path: "quizzes/:quizId/take", element: <QuizTakePage /> }, // /quizzes/:quizId/take
       { path: "quizzes/:quizId/result", element: <QuizResultPage /> }, // /quizzes/:quizId/result
-       {
-    path: "teachers",
-    element: (
-        <TeachersPage />
-    ),
-  },
+      {
+        path: "teachers",
+        element: <TeachersPage />,
+      },
 
       // AI Report
       {
@@ -303,9 +300,9 @@ const router = createBrowserRouter([
 
       // Assignments
       {
-        path: "courses/:courseId/assignments",
+        path: "assignments",
         element: <ManageAssignmentsPage />,
-      }, // /teacher/courses/:courseId/assignments
+      }, // /teacher/assignments
       {
         path: "assignments/:assignmentId/grade",
         element: <GradeAssignmentPage />,
@@ -321,7 +318,7 @@ const router = createBrowserRouter([
       { path: "availability", element: <TeacherAvailabilityPage /> }, // /teacher/availability
       { path: "availableSlotsPage", element: <AvailableSlotsPage /> }, // /teacher/availability
 
-      { path: "mybookings", element: <MyBookings/> }, // /teacher/sessions
+      { path: "mybookings", element: <MyBookings /> }, // /teacher/sessions
       { path: "tickets", element: <TeacherTicketPage /> }, // /teacher/tickets
 
       // video call
