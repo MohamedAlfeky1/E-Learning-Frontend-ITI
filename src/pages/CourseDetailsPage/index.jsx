@@ -41,6 +41,8 @@ const CourseDetailsPage = () => {
     (item) => item.courseId === id || item.courseId?._id === id
   );
 
+
+
   console.log("cartData", cartData);
   console.log("isInCart", isInCart);
 
@@ -134,7 +136,9 @@ const CourseDetailsPage = () => {
               </p>
             )}
 
-            <p className="text-md text-[var(--muted-foreground)]">{course.description}</p>
+            <p className="text-md text-[var(--muted-foreground)] break-words">
+              {course.description}
+            </p>
 
             <div className="flex gap-3 items-center">
               <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">

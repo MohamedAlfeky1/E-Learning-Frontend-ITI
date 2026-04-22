@@ -7,6 +7,15 @@ import { Link, useNavigate } from 'react-router-dom';
 
 function NewCourseCard({ course }) {
     const navigate = useNavigate();
+    const truncateDescription = (text, wordLimit = 8, charLimit = 50) => {
+        if (!text) return "";
+
+        if (text.includes(" ")) {
+            return text.split(/\s+/).slice(0, wordLimit).join(" ");
+        }
+
+        return text.slice(0, charLimit);
+    };
 
     return (
         <Link to={`/courses/${course._id}`} className="relative h-80 flex flex-col md:flex-row overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl">
@@ -49,7 +58,7 @@ function NewCourseCard({ course }) {
 
                 {/* Description */}
                 <p className="text-sm text-gray-500 leading-relaxed">
-                    {course.description?.split(" ").slice(0, 8).join(" ")}...
+                    {truncateDescription(course.description)}...
                 </p>
 
                 {/* Instructor */}
