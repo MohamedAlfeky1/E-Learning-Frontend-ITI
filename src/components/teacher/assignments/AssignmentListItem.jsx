@@ -13,17 +13,15 @@ import {
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
-const AssignmentListItem = ({ assignment, onDelete, onEdit, submissionCounts }) => {
+const AssignmentListItem = ({
+  assignment,
+  onDelete,
+  onEdit,
+  submissionCounts,
+}) => {
   const navigate = useNavigate();
 
-  const {
-    _id,
-    title,
-    description,
-    dueDate,
-    maxScore,
-    courseId,
-  } = assignment;
+  const { _id, title, description, dueDate, maxScore, courseId } = assignment;
 
   // Calculate due date status
   const now = new Date();
@@ -99,8 +97,8 @@ const AssignmentListItem = ({ assignment, onDelete, onEdit, submissionCounts }) 
             statusColor === "red"
               ? "text-red-600"
               : statusColor === "green"
-              ? "text-emerald-600"
-              : "text-gray-500"
+                ? "text-emerald-600"
+                : "text-gray-500",
           )}
         >
           {relativeDueDate}
@@ -114,7 +112,7 @@ const AssignmentListItem = ({ assignment, onDelete, onEdit, submissionCounts }) 
             <span
               className={cn(
                 "text-xs font-bold block",
-                pendingReview > 0 ? "text-indigo-600" : "text-emerald-600"
+                pendingReview > 0 ? "text-indigo-600" : "text-emerald-600",
               )}
             >
               {pendingReview} Pending
@@ -132,7 +130,7 @@ const AssignmentListItem = ({ assignment, onDelete, onEdit, submissionCounts }) 
             "h-1.5",
             isCompleted
               ? "[&>div]:bg-emerald-600 bg-emerald-100"
-              : "[&>div]:bg-indigo-600 bg-indigo-50"
+              : "[&>div]:bg-indigo-600 bg-indigo-50",
           )}
         />
       </div>
@@ -143,9 +141,7 @@ const AssignmentListItem = ({ assignment, onDelete, onEdit, submissionCounts }) 
           <Button
             variant="secondary"
             className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg h-9 text-sm font-medium px-4"
-            onClick={() =>
-              navigate(`/teacher/assignments/${_id}/grade`)
-            }
+            onClick={() => navigate(`/teacher/assignments/${_id}/grade`)}
           >
             <Eye className="w-4 h-4 mr-1.5" />
             {isCompleted ? "View" : "Grade"}
@@ -154,11 +150,9 @@ const AssignmentListItem = ({ assignment, onDelete, onEdit, submissionCounts }) 
           <Button
             variant="secondary"
             className="bg-gray-100 text-gray-500 rounded-lg h-9 text-sm font-medium px-4"
-            onClick={() =>
-              navigate(`/teacher/assignments/${_id}/grade`)
-            }
+            onClick={() => navigate(`/teacher/assignments/${_id}/grade`)}
           >
-            No Submissions
+            View Submissions
           </Button>
         )}
         <Button
