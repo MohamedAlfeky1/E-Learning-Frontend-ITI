@@ -10,7 +10,7 @@ import { TbClockHour10 } from "react-icons/tb";
 import { Button } from "../../../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { sessionService } from "@/services/sessionService";
-
+import Loader from "@/components/ui/loader";
 
 const StudentDashboardPage = () => {
   const [assignmetData, setAssignmentData] = useState([])

@@ -7,14 +7,13 @@ import {
   GraduationCap,
   FileQuestion,
 } from "lucide-react";
+import Loader from "@/components/ui/loader";
 
 import StudentCourseList from "@/components/student/StudentCourseList";
 
 const QuizSkeleton = () => (
-  <div className="flex flex-col gap-3">
-    {[1, 2, 3].map((i) => (
-      <Skeleton key={i} className="h-20 w-full rounded-xl" />
-    ))}
+  <div className="flex justify-center items-center py-10">
+    <Loader />
   </div>
 );
 

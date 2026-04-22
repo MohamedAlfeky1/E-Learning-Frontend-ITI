@@ -10,6 +10,7 @@ import { formatTime } from "@/data/data-utils"
 import { sessionService } from "@/services/sessionService"
 import { TimeSlotPicker } from "@/components/booking/TimeslotPiker"
 import { BookingSidebar } from "@/components/booking/BookingSidebar"
+import Loader from "@/components/ui/loader"
 
 export default function BookingPage() {
   const { teacherId } = useParams()
@@ -90,7 +91,7 @@ export default function BookingPage() {
   if (!teacher) {
     return (
       <div className="flex justify-center items-center h-[60vh]">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#6332E3]"></div>
+        <Loader />
       </div>
     )
   }

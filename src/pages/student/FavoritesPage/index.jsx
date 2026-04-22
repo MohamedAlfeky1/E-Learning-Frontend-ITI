@@ -11,6 +11,7 @@ import { useFavorites } from "@/queries/favoritesQueries";
 import CourseCard from "@/components/student/favorites/CourseCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import Loader from "@/components/ui/loader";
 
 const FavoritesPage = () => {
   const { data, isLoading, isRefetching, isError, refetch } = useFavorites();
@@ -52,11 +53,8 @@ const FavoritesPage = () => {
       {/* Favorites Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-8">
         {isLoading || isRefetching ? (
-          <div className="col-span-full py-20 bg-white rounded-3xl border border-dashed border-gray-200 flex flex-col justify-center items-center gap-4">
-            <Spinner className="text-[#3525CD] size-10" />
-            <p className="text-[#464555] font-bold animate-pulse">
-              Loading favorites...
-            </p>
+          <div className="col-span-full py-20 flex justify-center items-center h-[60vh]">
+            <Loader />
           </div>
         ) : isError ? (
           <div className="col-span-full">

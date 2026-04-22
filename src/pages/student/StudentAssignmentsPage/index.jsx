@@ -40,6 +40,7 @@ import { useAssignments } from "@/queries/assignmentQueries";
 import { useMyCourseGrades } from "@/queries/assignmentQueries";
 import { useSubmitAssignment } from "@/mutations/assignmentMutations";
 import { toast } from "sonner";
+import Loader from "@/components/ui/loader";
 
 const statusConfig = {
   pending: {
@@ -194,10 +195,8 @@ const StudentAssignmentsPage = () => {
           </p>
         </div>
       ) : assignmentsLoading ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-32 w-full rounded-xl" />
-          ))}
+        <div className="flex justify-center items-center h-[60vh]">
+          <Loader />
         </div>
       ) : assignments.length === 0 ? (
         <Card className="p-12 text-center border-0 shadow-sm">

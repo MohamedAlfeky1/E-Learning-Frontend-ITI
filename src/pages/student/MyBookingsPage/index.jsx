@@ -3,6 +3,7 @@ import { sessionService } from "@/services/sessionService"
 import { toast } from "sonner"
 import { BookingRow } from "@/components/booking/BookingRow"
 import { useNavigate } from "react-router-dom";
+import Loader from "@/components/ui/loader";
 
 export default function StudentBookings() {
   const [bookings, setBookings] = useState([])
@@ -36,8 +37,8 @@ export default function StudentBookings() {
       </header>
 
       {loading ? (
-        <div className="space-y-4">
-          {[1, 2].map(i => <div key={i} className="h-32 bg-slate-100 animate-pulse rounded-[2.5rem]" />)}
+        <div className="flex justify-center items-center h-[60vh]">
+          <Loader />
         </div>
       ) : bookings.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-[3rem] border-2 border-dashed border-slate-100 text-slate-400">

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/empty";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import Loader from "@/components/ui/loader";
 
 const CartPage = () => {
   const {
@@ -42,8 +43,8 @@ const CartPage = () => {
       </header>
 
       {cartLoading ? (
-        <div className="flex justify-center items-center gap-3">
-          <Spinner className="size-8" /> Loading cart...
+        <div className="flex justify-center items-center h-[60vh]">
+          <Loader />
         </div>
       ) : cartError ? (
         <Empty className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200 shadow-sm">

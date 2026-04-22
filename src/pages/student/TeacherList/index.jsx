@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react"
 import { sessionService } from "@/services/sessionService"
 import { TeacherCard } from "@/components/booking/TeacherCard"
+import Loader from "@/components/ui/loader"
 
 export default function TeachersPage() {
   const [teachers, setTeachers] = useState([])
@@ -24,10 +25,8 @@ export default function TeachersPage() {
   }, [])
 
   if (loading) return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-10">
-      {[1, 2, 3].map(i => (
-        <div key={i} className="h-80 bg-slate-100 animate-pulse rounded-[2rem]" />
-      ))}
+    <div className="flex justify-center items-center h-[60vh]">
+      <Loader />
     </div>
   )
 

@@ -10,6 +10,7 @@ import {
   RotateCcw,
   LayoutList,
 } from "lucide-react";
+import Loader from "@/components/ui/loader";
 
 const QuizResultPage = () => {
   const { quizId } = useParams();
@@ -31,11 +32,8 @@ const QuizResultPage = () => {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-md px-4 py-16 space-y-4">
-        <Skeleton className="h-24 w-24 rounded-full mx-auto" />
-        <Skeleton className="h-6 w-48 mx-auto" />
-        <Skeleton className="h-4 w-64 mx-auto" />
-        <Skeleton className="h-10 w-full rounded-xl" />
+      <div className="flex justify-center items-center h-[60vh]">
+        <Loader />
       </div>
     );
   }
