@@ -55,15 +55,14 @@ const StudentDashboardPage = () => {
 
   const fetchAssignments = async () => {
     try {
-      const response = await axiosInstance.get(ENDPOINTS.ASSIGNMENTS_MY)
-      setAssignmentData(response?.data?.data)
-      console.log(response?.data);
+      const endpoint = ENDPOINTS.ASSIGNMENTS_MY || "/assignment/my-submissions";
+      const response = await axiosInstance.get(endpoint);
+      setAssignmentData(response?.data?.data);
+    } catch (error) {
+      console.error("Failed to load assignments", error);
+      // Suppress the toast error to avoid annoying the user if the endpoint isn't implemented yet
     }
-    catch (error) {
-      toast.error("Failed to load your Assignments")
-      console.error(error)
-    }
-  }
+  };
 
   useEffect(() => {
     fetchBookings()
@@ -159,7 +158,7 @@ const StudentDashboardPage = () => {
                     {/* Badge + Module */}
                     <div className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
                       <span className="bg-[var(--primary)]/10 text-[var(--primary)] font-semibold px-2 py-1 rounded-full">
-                        {course.courseId?.categoryId.name || "COURSE"}
+                        {course.courseId?.categoryId?.name || "COURSE"}
                       </span>
                       <span>•</span>
                       <span>
@@ -173,7 +172,7 @@ const StudentDashboardPage = () => {
                       {course.courseId?.title}
                     </h2>
                     <p className="text-sm font-light text-[var(--muted-foreground)] line-clamp-2">
-                      {course.courseId.description}
+                      {course.courseId?.description}
                     </p>
 
                     {/* Progress Bar */}
@@ -233,7 +232,7 @@ const StudentDashboardPage = () => {
                       <p className="font-light text-xs text-[var(--muted-foreground)]">
                         {course.completed == 'true'
                           ? 'All Lessons Completed'
-                          : course?.completedVideos.length + ' Lessons Completed'
+                          : (course?.completedVideos?.length || 0) + ' Lessons Completed'
                         }
                       </p>
                     </div>
