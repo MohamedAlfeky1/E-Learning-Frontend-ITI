@@ -34,7 +34,7 @@ function AdminCharts({ icon, title, number, chartData=[] , growth  }) {
 
             {coloredData.length > 0 && (
                 <ChartContainer config={chartConfig} className="h-[60px] w-full">
-                    <BarChart data={coloredData} barSize={28} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                    <BarChart data={coloredData} barSize={15} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                         <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                             {coloredData.map((entry, index) => (
                                 <Cell key={index} fill={entry.fill} />
