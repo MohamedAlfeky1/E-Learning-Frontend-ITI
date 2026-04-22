@@ -1,4 +1,5 @@
 import { getCart } from '@/services/cartService'
+import { useQuery } from '@tanstack/react-query'
 
 /**
  * Fetch a All student cart items using React Query.
