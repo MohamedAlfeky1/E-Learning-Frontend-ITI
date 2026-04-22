@@ -300,9 +300,9 @@ const router = createBrowserRouter([
 
       // Assignments
       {
-        path: "courses/ssignments",
+        path: "assignments",
         element: <ManageAssignmentsPage />,
-      }, // /teacher/courses/:courseId/assignments
+      }, // /teacher/assignments
       {
         path: "assignments/:assignmentId/grade",
         element: <GradeAssignmentPage />,
