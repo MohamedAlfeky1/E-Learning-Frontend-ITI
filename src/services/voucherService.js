@@ -39,4 +39,12 @@ export const voucherService = {
     });
     return response.data.data;
   },
+  previewVoucher: async ({ code, bookingId = null }) => {
+  const response = await axiosInstance.post("/vouchers/preview", {
+    code,
+    bookingId,
+  });
+  return response.data.data;
+}
 };
+
