@@ -14,31 +14,45 @@ import { useVoucherMutations } from "@/mutations/useVoucherMutations";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { useNavigate } from "react-router-dom";
 
 const OrderSummary = ({ cart }) => {
+  const navigate = useNavigate();
   const [voucherCode, setVoucherCode] = useState("");
-  const [discountValue, setDiscountValue] = useState(0);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [newTotal, setNewTotal] = useState(0);
-  const { applyVoucher } = useVoucherMutations();
-  const {
-    mutateAsync: applyVoucherMutation,
-    isPending: isApplyingVoucher,
-    error: applyVoucherError,
-  } = applyVoucher;
+ const { previewVoucher } = useVoucherMutations();
 
-  const handleApply = async () => {
-    if (!voucherCode) {
-      toast.error("Please enter a voucher code");
-      return;
-    }
-    const data = await applyVoucherMutation({ code: voucherCode });
-    if (data) {
-      setDiscountValue(data.discountValue);
-      setDiscountAmount(data.discountAmount);
-      setNewTotal(data.newTotal);
-    }
-  };
+const {
+  mutateAsync: previewVoucherMutation,
+  isPending: isApplyingVoucher,
+} = previewVoucher;
+const handleProceedToCheckout = () => {
+  console.log("clicked");
+  navigate("/checkout-page", {
+  state: {
+    voucherCode: null,
+  },
+});
+};
+ const handleApply = async () => {
+  if (!voucherCode) {
+    toast.error("Please enter a voucher code");
+    return;
+  }
+
+  const data = await previewVoucherMutation({
+    code: voucherCode,
+    bookingId: null,
+  });
+
+  if (data) {
+    setDiscountAmount(data.discountAmount);
+    setNewTotal(data.finalAmount);
+
+    toast.success("Voucher preview applied");
+  }
+};
 
   return (
     <div className="xl:flex-1 h-min sticky top-4 p-8 flex flex-col gap-8 rounded-3xl bg-white border border-gray-100 shadow-sm">
@@ -60,7 +74,7 @@ const OrderSummary = ({ cart }) => {
             ${cart.total}
           </p>
         </div>
-        {discountValue > 0 && (
+        {discountAmount > 0 &&  (
           <div className="flex justify-between items-center bg-green-200 p-4 rounded-2xl border border-gray-50">
             <p className="text-sm font-bold text-[#464555] uppercase tracking-wider">
               Discount
@@ -83,7 +97,7 @@ const OrderSummary = ({ cart }) => {
               className="bg-[#F9F9FF] text-[#141B2B] rounded-xl font-medium border-gray-100 focus:border-[#3525CD] transition-colors"
               placeholder="GIVEMEXO"
               value={voucherCode}
-              onChange={(e) => setVoucherCode(e.target.value)}
+              onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
             />
             <Button
               onClick={handleApply}
@@ -113,8 +127,10 @@ const OrderSummary = ({ cart }) => {
         </div>
       </div>
 
-      <Button className="w-full h-16 bg-[#3525CD] hover:bg-[#2a1da6] text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-100 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 group">
+      <Button  onClick={handleProceedToCheckout}
+      className=" relative z-50 w-full h-16 bg-[#3525CD] hover:bg-[#2a1da6] text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-100 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 group">
         Proceed to Checkout
+
         <ArrowRight className="group-hover:translate-x-1 transition-transform" />
       </Button>
 
