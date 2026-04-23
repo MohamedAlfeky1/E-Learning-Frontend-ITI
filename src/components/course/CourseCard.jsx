@@ -1,56 +1,81 @@
-import React from "react";
-import { Badge } from "@/components/ui/badge";
+import React, { useState } from "react";
 import { FaStar } from "react-icons/fa6";
 import {
   MdOutlineAddShoppingCart,
   MdOutlineRemoveShoppingCart,
 } from "react-icons/md";
-import { IoEyeOutline, IoHeart, IoHeartOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { IoHeart, IoHeartOutline } from "react-icons/io5";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useUserQuery } from "@/queries/authQueries";
 import { useFavorites } from "@/queries/favoritesQueries";
 import { useAddFavoriteMutation } from "@/mutations/useAddFavoriteMutation";
 import { useDeleteFavoriteMutation } from "@/mutations/useDeleteFavoriteMutation";
-import { useCart } from "@/queries/cartQueries";
-import { useAddCartMutation } from "@/mutations/useAddCartMutation";
-import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
+import { useGetCartItems } from "@/queries/useCartQueries";
+import { useAddToCart } from "@/mutations/cartMutations";
+import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
 import placeholderImg from "@/assets/placeholder.jpg";
 import { Spinner } from "../ui/spinner";
-import { MdOndemandVideo, MdOutlineOndemandVideo } from "react-icons/md";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 function CourseCard({ course }) {
-  const { data: user } = useUserQuery();
-  const {
-    data: favoritesData,
-    isLoading: favoritesLoading,
-    error: favoritesError,
-  } = useFavorites();
-  const {
-    data: cartData,
-    isLoading: cartLoading,
-    error: cartError,
-  } = useCart();
-  const { mutateAsync: addFavorite, isPending: isAddingFavorite } =
-    useAddFavoriteMutation();
-  const { mutateAsync: removeFavorite, isPending: isRemovingFavorite } =
-    useDeleteFavoriteMutation();
-  const { mutateAsync: addToCart, isPending: isAddingToCart } =
-    useAddCartMutation();
-  const { mutateAsync: removeFromCart, isPending: isRemovingFromCart } =
-    useDeleteCartMutation();
+  const navigate = useNavigate();
+  const [openLoginDialog, setOpenLoginDialog] = useState(false);
+
+  const { data: userData, isLoading: userLoading } = useUserQuery();
+  const { data: favoritesData, isLoading: favoritesLoading, error: favoritesError } = useFavorites();
+  const { data: cartData } = useGetCartItems();
+  const { mutateAsync: addFavorite, isPending: isAddingFavorite } = useAddFavoriteMutation();
+  const { mutateAsync: removeFavorite, isPending: isRemovingFavorite } = useDeleteFavoriteMutation();
+  const addToCartMutation = useAddToCart();
+  const { data: enrollmentData } = useEnrollmentDetailsQuery(course._id);
+
+  const isLoggedIn = !!userData?._id;
   const favorites = favoritesData?.data || [];
-  const cartItems = cartData?.data?.cart?.items || [];
-  let favorite = null;
-  let cartItem = null;
+  const favorite = !favoritesLoading && !favoritesError
+    ? favorites.find((fav) => fav?.courseId?._id === course?._id)
+    : null;
 
-  if (!favoritesLoading && !favoritesError) {
-    favorite = favorites?.find((fav) => fav?.courseId?._id === course?._id);
-  }
+  const isInCart = cartData?.data?.cart?.items?.some(
+    (item) => item.courseId === course._id || item.courseId?._id === course._id
+  );
+  const isAlreadyEnrolled = !!enrollmentData;
 
-  if (!cartLoading && !cartError) {
-    cartItem = cartItems?.find((item) => item?.courseId?._id === course?._id);
-  }
+  const handleCartClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isLoggedIn) {
+      setOpenLoginDialog(true);
+      return;
+    }
+
+    if (isAlreadyEnrolled) {
+      toast.info("You are already enrolled in this course.");
+      return;
+    }
+
+    if (isInCart) {
+      toast.info("Course is already in your cart.");
+      return;
+    }
+
+    addToCartMutation.mutate(
+      { courseId: course._id },
+      {
+        onSuccess: () => toast.success("Course added to cart!"),
+        onError: () => toast.error("Failed to add course to cart."),
+      }
+    );
+  };
 
   return (
     <>
@@ -59,21 +84,21 @@ function CourseCard({ course }) {
         className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl"
       >
         {/* Thumbnail */}
-        <div className="relative w-full h-32 overflow-hidden ">
+        <div className="relative w-full h-32 overflow-hidden">
           <img
             src={course.thumbnail || placeholderImg}
             alt="Course Thumbnail"
             className="w-full h-full object-cover"
           />
-          {user?.role === "student" && !favoritesLoading && (
+          {userData?.role === "student" && !favoritesLoading && (
             <Button
               variant="primary"
               size="icon-sm"
-              onClick={() =>
-                favorite
-                  ? removeFavorite(favorite._id)
-                  : addFavorite(course._id)
-              }
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                favorite ? removeFavorite(favorite._id) : addFavorite(course._id);
+              }}
               className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full"
             >
               {isAddingFavorite || isRemovingFavorite ? (
@@ -85,21 +110,12 @@ function CourseCard({ course }) {
               )}
             </Button>
           )}
-          {/* <Link to={`/courses/${course._id}`}>
-            <Button
-              size="icon-sm"
-              variant="primary"
-              className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full"
-            >
-              <IoEyeOutline color="#3525CD" />
-            </Button>
-          </Link> */}
         </div>
 
         {/* Content */}
         <div className="flex flex-col gap-3 p-5 flex-1">
-          {/* Badge + Rating */}
-          <div className="flex items-center justify-between ">
+          {/* Language + Rating */}
+          <div className="flex items-center justify-between">
             <p className="flex items-center gap-1 text-sm font-medium text-gray-700">
               {course.language === "none" ? "" : course.language}
             </p>
@@ -120,31 +136,27 @@ function CourseCard({ course }) {
           {/* Instructor */}
           <div className="flex items-center gap-2">
             <span className="text-sm font-light text-[#464555] rounded-md">
-              Instructor: {course.teacherId?.firstName}{" "}
-              {course.teacherId?.lastName}
+              Instructor: {course.teacherId?.firstName} {course.teacherId?.lastName}
             </span>
           </div>
 
-          {/* Price + Enroll */}
+          {/* Price + Cart */}
           <div className="flex flex-col md:flex-row items-center gap-5 mt-auto pt-2">
-            {course.type === "paid" ? (
+            {isAlreadyEnrolled ? (
+              <p className="text-sm font-semibold text-green-600">Already Enrolled ✓</p>
+            ) : course.type === "paid" ? (
               <div className="flex flex-row items-center justify-between gap-3 w-full">
-                <p className="text-2xl font-bold text-[#3525CD]">
-                  ${course.price}
-                </p>
+                <p className="text-2xl font-bold text-[#3525CD]">${course.price}</p>
                 <Button
                   size="icon-sm"
                   variant="secondary"
                   className="cursor-pointer rounded-full py-3 px-3"
-                  onClick={() =>
-                    cartItem
-                      ? removeFromCart(course._id)
-                      : addToCart(course._id)
-                  }
+                  onClick={handleCartClick}
+                  disabled={addToCartMutation.isPending}
                 >
-                  {isAddingToCart || isRemovingFromCart ? (
+                  {addToCartMutation.isPending ? (
                     <Spinner className="size-4" />
-                  ) : cartItem ? (
+                  ) : isInCart ? (
                     <MdOutlineRemoveShoppingCart color="#3525CD" />
                   ) : (
                     <MdOutlineAddShoppingCart color="#3525CD" />
@@ -156,13 +168,12 @@ function CourseCard({ course }) {
                 size="icon-sm"
                 variant="secondary"
                 className="cursor-pointer rounded-full py-3 px-3"
-                onClick={() =>
-                  cartItem ? removeFromCart(course._id) : addToCart(course._id)
-                }
+                onClick={handleCartClick}
+                disabled={addToCartMutation.isPending}
               >
-                {isAddingToCart || isRemovingFromCart ? (
+                {addToCartMutation.isPending ? (
                   <Spinner className="size-4" />
-                ) : cartItem ? (
+                ) : isInCart ? (
                   <MdOutlineRemoveShoppingCart color="#3525CD" />
                 ) : (
                   <MdOutlineAddShoppingCart color="#3525CD" />
@@ -172,6 +183,27 @@ function CourseCard({ course }) {
           </div>
         </div>
       </Link>
+
+      {/* Login Dialog */}
+      <Dialog open={openLoginDialog} onOpenChange={setOpenLoginDialog}>
+        <DialogContent showCloseButton={true}>
+          <DialogHeader>
+            <DialogTitle>Login Required</DialogTitle>
+            <DialogDescription>
+              You need to be logged in to enroll in this course.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="purpleBtnDefault"
+              className="w-full"
+              onClick={() => navigate("/login")}
+            >
+              Go to Login
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

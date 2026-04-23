@@ -22,6 +22,7 @@ export const useVoucherMutations = () => {
     onError: (error) => {
       toast.error(error.response?.data?.message || "Failed to create voucher");
     },
+    
   });
 
   const deleteVoucher = useMutation({
@@ -33,6 +34,7 @@ export const useVoucherMutations = () => {
     onError: (error) => {
       toast.error(error.response?.data?.message || "Failed to delete voucher");
     },
+    
   });
 
   const updateVoucher = useMutation({
@@ -53,11 +55,17 @@ export const useVoucherMutations = () => {
       toast.error(error?.response?.data?.message || "Failed to apply voucher");
     },
   });
+  const previewVoucher = useMutation({
+  mutationFn: voucherService.previewVoucher,
+  onError: (error) => {
+    toast.error(error?.response?.data?.message || "Failed to preview voucher");
+  },
+});
 
   return {
     createVoucher,
     deleteVoucher,
     updateVoucher,
     applyVoucher,
-  };
-};
+    previewVoucher,
+  };};

@@ -26,38 +26,58 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
+
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const bookingId = params.get("bookingId");
+const voucherCode = location.state?.voucherCode;
 
   const { mutate, isPending } = useCheckoutMutation();
   const [checkoutDetails, setCheckoutDetails] = useState(null);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+  
 
-  useEffect(() => {
-    if (bookingId) {
-      mutate(
-        {
-          voucherCode: null,
-          bookingId: bookingId,
+useEffect(() => {
+  if (isFirstLoad) {
+    console.log("Sending checkout request with:", { voucherCode, bookingId }); 
+
+    mutate(
+      { voucherCode: voucherCode || null, bookingId: bookingId || null },
+      {
+        onSuccess: (data) => {
+          console.log("Success! Received checkout data:", data);
+          setCheckoutDetails(data);
+          setIsFirstLoad(false);
         },
-        {
-          onSuccess: (data) => {
-            setCheckoutDetails(data);
-            setIsFirstLoad(false);
-          },
-          onError: (err) => {
-            console.error("Checkout Error:", err);
-            toast.error("Failed to load checkout details");
-            setIsFirstLoad(false);
-          },
+        onError: (error) => {
+          console.error("Checkout Mutation Error:", error.response?.data || error);
+          toast.error(error.response?.data?.message || "Failed to initialize payment");
+          setIsFirstLoad(false);
         },
-      );
+      }
+    );
+  }
+}, [bookingId, voucherCode, mutate, isFirstLoad]);
+const handleApplyVoucher = (code) => {
+  mutate(
+    { 
+      voucherCode: code, 
+      bookingId: bookingId || null,
+      isRecalculate: true   
+    },
+    {
+      onSuccess: (newData) => {
+        setCheckoutDetails(newData);
+        toast.success("Voucher applied and total updated!");
+      },
+      onError: (error) => {
+        toast.error(error?.response?.data?.message || "Invalid voucher code");
+      },
     }
-  }, [bookingId, mutate]);
-
+  );
+};
   if (isFirstLoad && !checkoutDetails) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background space-y-6 px-4">
@@ -76,7 +96,6 @@ const CheckoutPage = () => {
       </div>
     );
   }
-
   return (
     <div className="bg-background min-h-screen pb-16">
       <div className="container max-w-6xl mx-auto py-8 px-4">
@@ -140,26 +159,7 @@ const CheckoutPage = () => {
 
                 <VoucherSection
                   isLoading={isPending}
-                  onApply={(code) =>
-                    mutate(
-                      {
-                        voucherCode: code,
-                        bookingId: bookingId || null,
-                      },
-                      {
-                        onSuccess: (newData) => {
-                          setCheckoutDetails(newData);
-                          toast.success("Voucher applied successfully!");
-                        },
-                        onError: (error) => {
-                          toast.error(
-                            error?.response?.data?.message ||
-                              "Invalid voucher code",
-                          );
-                        },
-                      },
-                    )
-                  }
+                 onApply={handleApplyVoucher}
                 />
 
                 <div className="p-4 bg-accent rounded-xl border border-border text-center">
