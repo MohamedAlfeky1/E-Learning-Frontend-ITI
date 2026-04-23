@@ -6,6 +6,8 @@ import { useLogout } from "@/hooks/useLogout";
 import Logo from "@/components/common/Logo";
 import NavLink from "@/components/common/NavLink";
 import SearchBar from "@/components/common/SearchBar";
+import { useCart } from "@/queries/cartQueries";
+import { Badge } from "../ui/badge";
 
 const NAV_LINKS = [
   { to: "/", label: "Home", end: true },
@@ -23,6 +25,12 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data: user } = useUserQuery();
   const handleLogout = useLogout();
+  const {
+    data: cartData,
+    isLoading: cartLoading,
+    error: cartError,
+  } = useCart();
+  const cartItems = cartData?.data?.cart?.items || [];
 
   const dashboardPath = user ? ROLE_DASHBOARD[user.role] || "/" : "/";
 
@@ -54,7 +62,15 @@ const Navbar = () => {
               title="Cart"
               className="inline-flex items-center justify-center w-9 h-9 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-200"
             >
-              <ShoppingCart size={18} />
+              <button className="relative p-2">
+                <ShoppingCart size={18} />
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
+                >
+                  {cartItems.length}
+                </Badge>
+              </button>
             </Link>
           )}
 

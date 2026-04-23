@@ -21,7 +21,8 @@ export const useVoucherMutations = () => {
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Failed to create voucher");
-    }
+    },
+    
   });
 
   const deleteVoucher = useMutation({
@@ -32,20 +33,39 @@ export const useVoucherMutations = () => {
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Failed to delete voucher");
-    }
+    },
+    
   });
 
   const updateVoucher = useMutation({
     mutationFn: voucherService.updateVoucher,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vouchers"] });
-      toast.success("Voucher updated successfully!");
-    }
+    },
   });
+
+  const applyVoucher = useMutation({
+    mutationFn: voucherService.applyVoucher,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["vouchers"] });
+      toast.success("Voucher Applied Successfully!");
+      return data;
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Failed to apply voucher");
+    },
+  });
+  const previewVoucher = useMutation({
+  mutationFn: voucherService.previewVoucher,
+  onError: (error) => {
+    toast.error(error?.response?.data?.message || "Failed to preview voucher");
+  },
+});
 
   return {
     createVoucher,
     deleteVoucher,
-    updateVoucher
-  };
-};
+    updateVoucher,
+    applyVoucher,
+    previewVoucher,
+  };};
