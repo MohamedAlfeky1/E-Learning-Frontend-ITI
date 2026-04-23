@@ -10,7 +10,7 @@ import {
   UserCircle,
   Megaphone,
   LogOut,
-  Headset,
+  MessageSquare,
 } from "lucide-react";
 
 export const teacherSidebarLinks = [
@@ -18,6 +18,11 @@ export const teacherSidebarLinks = [
     title: "Dashboard",
     href: "/teacher/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Chats",
+    href: "/teacher/chats",
+    icon: MessageSquare,
   },
   {
     title: "Create Course",
@@ -41,12 +46,27 @@ export const teacherSidebarLinks = [
   },
   {
     title: "Quizzes",
-    href: "courses/quizzes/create",// Ensure this route is correct in actual router
+    href: "courses/quizzes/create", // Ensure this route is correct in actual router
     icon: HelpCircle,
   },
   {
     title: "Students",
     href: "/teacher/students", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
+    icon: Users,
+  },
+  {
+    title: "Add Avalabilty",
+    href: "/teacher/availability", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
+    icon: Users,
+  },
+  {
+    title: "My Bookings",
+    href: "/teacher/myBookings", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
+    icon: Users,
+  },
+  {
+    title: "My Availabilits",
+    href: "/teacher/availableSlotsPage", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
     icon: Users,
   },
   {
@@ -59,11 +79,6 @@ export const teacherSidebarLinks = [
     href: "/teacher/profile",
     icon: UserCircle,
   },
-  {
-  title: "Support Tickets",
-  href: "/teacher/tickets",
-  icon: Headset,
-},
 ];
 
 export const teacherBottomLinks = [
@@ -75,7 +90,7 @@ export const teacherBottomLinks = [
   // },
   {
     title: "Help Center",
-    href: "/teacher/help",
+    href: "/teacher/tickets",
     icon: HelpCircle,
   },
   {

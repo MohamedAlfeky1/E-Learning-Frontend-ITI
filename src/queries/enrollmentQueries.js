@@ -15,6 +15,20 @@ export const useMyCoursesQuery = () => {
     queryFn: enrollmentService.getMyCourses,
   });
 };
+
+/**
+ * Fetches the list of courses the current user is enrolled in.
+ *
+ * @function
+ * @returns {import('@tanstack/react-query').UseQueryResult} 
+ *  React Query result object containing courses data, loading, and error states.
+ */
+export const useTeacherCoursesQuery = () => {
+  return useQuery({
+    queryKey: ["my-enrollments"],
+    queryFn: enrollmentService.getTeacherCourses,
+  });
+};
 /**
  * Fetches enrollment details for a specific course.
  *
@@ -30,6 +44,22 @@ export const useEnrollmentDetailsQuery = (courseId) => {
     enabled: !!courseId,
   });
 };
+/**
+ * Fetches enrollment details for a specific course for teacher courses.
+ *
+ * @function
+ * @param {string | number} courseId - The ID of the course for which to fetch enrollment details.
+ * @returns {import('@tanstack/react-query').UseQueryResult} 
+ *  React Query result object containing enrollment details, loading, and error states.
+ */
+export const useTeacherEnrollmentDetailsQuery = (courseId) => {
+  return useQuery({
+    queryKey: ["enrollment", courseId],
+    queryFn: () => enrollmentService.getTeacherEnrollmentByCourseId(courseId),
+    enabled: !!courseId,
+  });
+};
+  
 /**
  * Returns a mutation hook to update the progress of a video within a course enrollment.
  *
