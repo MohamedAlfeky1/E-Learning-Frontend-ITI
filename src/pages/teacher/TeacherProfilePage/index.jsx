@@ -164,7 +164,7 @@ const TeacherProfilePage = () => {
 
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="absolute -bottom-2 -right-2 z-10 overflow-visible bg-white rounded-full p-1 hover:bg-gray-200 transition-all duration-75">
+              className="absolute -bottom-2 -right-2  overflow-visible bg-white rounded-full p-1 hover:bg-gray-200 transition-all duration-75">
               <LuPencilLine size={14} color={'#3525CD'} />
             </div>
 
