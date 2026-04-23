@@ -20,15 +20,23 @@ import { PiBank } from "react-icons/pi";
 import { MdAlternateEmail } from "react-icons/md";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Textarea } from "@/components/ui/textarea";
+import { useGetAllCourses } from "@/queries/useCourses";
 
 const TeacherProfilePage = () => {
   const fileInputRef = useRef();
   const { data, isLoading, error } = useUserQuery();
   const { data: myCourses, isLoading: coursesLoading, error: coursesError } = useTeacherCourses();
+  const { data: courseData } = useGetAllCourses()
   console.log("myCourses", myCourses);
   const profileUrl = `${window.location.origin}/teacher/profile/${data?._id}`;
+  const totalReviews = courseData?.data
+    .reduce((sum, course) => sum + (course.totalReviews ?? 0), 0);
+  const totalStudents = courseData?.data
+    .reduce((sum, course) => sum + (course.totalStudents ?? 0), 0);
 
-  console.log("data", data);
+
+  console.log("totalReviews", totalReviews);
+
 
   const updateProfileMutation = useUpdateProfileMutation();
   const changePasswordMutation = useUpdatePasswordMutation()
@@ -43,6 +51,8 @@ const TeacherProfilePage = () => {
     api: ""
   });
 
+
+  console.log("courseData", courseData);
 
   const handleProfileUpdate = (values) => {
     const formData = new FormData();
@@ -124,9 +134,7 @@ const TeacherProfilePage = () => {
 
   })
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(profileUrl);
-  };
+
 
 
   if (isLoading) return <div className="min-h-full min-w-full flex justify-center items-center"><Loader /></div>
@@ -134,11 +142,11 @@ const TeacherProfilePage = () => {
 
   return (
     <form onSubmit={profileFormik.handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      <div className="md:col-span-2 col-span-4 bg-gradient-to-r from-[#F5F6FA] via-[#EDEBFF] to-[#D9D4FF] shadow-md shadow-[#000000]/10 px-10 py-5 rounded-md">
-        <div className="flex flex-col md:flex-row flex-wrap gap-6 md:gap-10 justify-center md:justify-start items-center">
+      <div className="md:col-span-2 col-span-4 gap-4 ">
+        <div className="flex flex-col md:flex-row flex-wrap gap-6 md:gap-10 justify-center md:justify-start items-center bg-gradient-to-r from-[#F5F6FA] via-[#EDEBFF] to-[#D9D4FF] shadow-md shadow-[#000000]/10  px-10 py-5 rounded-md">
 
           {/* Avatar */}
-          <div className=" relative flex justify-center items-center bg-black rounded-md w-40 h-30 shadow-lg shadow-gray-500/50">
+          <div className=" relative flex justify-center items-center bg-black rounded-md w-50 h-40 shadow-lg shadow-gray-500/50">
             {profileFormik.values.avatar ? (
               <div className="w-full h-full overflow-hidden">
 
@@ -188,129 +196,111 @@ const TeacherProfilePage = () => {
             })} */}
             </div>
 
-            <div className="flex gap-4 ">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <MdAlternateEmail color="#464555" size={22} />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{data.email}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <MdAlternateEmail color="#464555" size={22} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{data.email}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span>
-                      <MdOutlineShare color="#464555" size={22} />
-                    </span>
-                  </TooltipTrigger>
-
-                  <TooltipContent className="flex items-center gap-2">
-                    <span className="text-xs truncate max-w-[150px]">
-                      {profileUrl}
-                    </span>
-
-                    <button
-                      onClick={handleCopy}
-                      className="text-xs text-gray-500 bg-[#F1F3FF] px-2 py-1 rounded hover:bg-gray-300"
-                    >
-                      Copy
-                    </button>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
-              <form onSubmit={profileFormik.handleSubmit} >
-
-                <Dialog >
-                  <DialogTrigger asChilds>
-                    <LuPencilLine color="#464555" size={22} />
-                  </DialogTrigger>
-
-                  <DialogContent className='p-6'>
-                    <DialogHeader>
-                      <DialogTitle className='font-semibold'>Update Your Profile Data</DialogTitle>
-
-                    </DialogHeader>
-
-                    {/* الفورم هنا */}
-                    <form className="flex flex-col gap-2 mt-2">
-                      <div className="flex flex-row gap-3">
-                         <Input
-                        type="text"
-                        name="firstName"
-                        value={profileFormik.values.firstName}
-                        onChange={profileFormik.handleChange} onBlur={profileFormik.handleBlur} />
-                      <Input
-                        type="text"
-                        name="lastName"
-                        value={profileFormik.values.lastName}
-                        onChange={profileFormik.handleChange} onBlur={profileFormik.handleBlur} />
-                      </div>
-                     
-                      <Input
-                        type="email"
-                        name="email"
-                        value={profileFormik.values.email}
-                        onChange={profileFormik.handleChange} onBlur={profileFormik.handleBlur} />
-                      <Input
-                        type="text"
-                        name="phone"
-                        value={profileFormik.values.phone}
-                        onChange={profileFormik.handleChange} onBlur={profileFormik.handleBlur} />
-                      <Input
-                        readOnly
-                        type="text"
-                        name="status"
-                        placeholder={data.status}
-                      />
-                      <Textarea
-                        className='border border-transparent bg-secondary'
-                        rows='100'
-                        name='bio'
-                        placeholder='Enter You Bio / About'
-                        value={profileFormik.values.bio}
-                        onChange={profileFormik.handleChange} onBlur={profileFormik.handleBlur} />
-                      <Button type="submit" >
-                        Save
-                      </Button>
-                    </form>
-
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                      </DialogClose>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </form>
-
-
-            </div>
           </div>
 
-
-
-
         </div>
+
+        <div className="col-span-1 gap-4 bg-[#F1F3FF] px-2 py-5 mt-5 rounded-md">
+          <div className="flex gap-3 items-center pb-3">
+            <Badge className='py-4 rounded-md' variant="lightPruple">
+              <LuPencilLine size={17} color="#25005A" />
+            </Badge>
+            <h1 className="font-bold text-md">Edit Profile</h1>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-3 text-black">
+              <Input
+                className='text-black'
+                variant='white'
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                value={profileFormik.values.firstName}
+                onChange={profileFormik.handleChange}
+                onBlur={profileFormik.handleBlur}
+              />
+              <Input
+                className='text-black'
+                variant='white'
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                value={profileFormik.values.lastName}
+                onChange={profileFormik.handleChange}
+                onBlur={profileFormik.handleBlur}
+              />
+            </div>
+
+            <Input
+              className='text-black'
+              variant='white'
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={profileFormik.values.email}
+              onChange={profileFormik.handleChange}
+              onBlur={profileFormik.handleBlur}
+            />
+            <Input
+              className='text-black'
+              variant='white'
+              type="text"
+              name="phone"
+              placeholder="Phone"
+              value={profileFormik.values.phone}
+              onChange={profileFormik.handleChange}
+              onBlur={profileFormik.handleBlur}
+            />
+            <Input
+              className='text-black'
+              variant='white'
+              readOnly
+              type="text"
+              name="status"
+              placeholder={data.status}
+            />
+            <Textarea
+              className='border border-transparent bg-white'
+              name='bio'
+              placeholder='Enter Your Bio / About'
+              value={profileFormik.values.bio}
+              onChange={profileFormik.handleChange}
+              onBlur={profileFormik.handleBlur}
+            />
+
+            {errors.api && (
+              <p className="text-red-500 text-xs">{errors.api}</p>
+            )}
+          </div>
+        </div>
+
+
       </div>
 
-      <div className="col-span-4 md:col-span-1 bg-gradient-to-r from-[#3525CD]  to-[#712AE2] shadow-md shadow-[#000000]/10 px-3 py-5 rounded-md">
-        <div className="flex flex-col items-center gap-3 mb-3">
+      <div className="col-span-4 md:col-span-1  rounded-md">
+        <div className="flex flex-col px-3 py-5 rounded-md items-center gap-3 mb-3 shadow-md shadow-[#000000]/10 bg-gradient-to-r from-[#3525CD]  to-[#712AE2]">
           <div className="flex justify-between items-center w-full">
             <span className="text-[#F6EFEF] text-sm">Student View Preview</span>
-            <IoEyeOutline color="white" />
           </div>
 
           <div className="bg-[#d6bdfe] gap-2 rounded-md w-full p-2 shadow-lg shadow-gray-500/50">
             <div className="flex gap-2 items-center">
               <Badge variant="lightPruple" className='rounded-full py-2'><MdOutlineStarOutline size={13} color="white" /></Badge>
-              <h3 className="text-white text-md font-light">Total Review</h3>
+              <h3 className="text-white text-md font-light">Total Review Across Courses</h3>
             </div>
-            <p className="ms-10 text-white font-cold">{myCourses?.totalReviews || 0}/{myCourses?.totalStudents || 0}</p>
+            <p className="ms-10 text-white font-cold">{totalReviews || 0}/{totalStudents || 0}</p>
           </div>
 
           <div className="bg-[#d6bdfe] gap-2 rounded-md w-full p-2 shadow-lg shadow-gray-500/50">
@@ -318,48 +308,14 @@ const TeacherProfilePage = () => {
               <Badge variant="lightPruple" className='rounded-full py-2'><IoPeople size={13} color="white" /></Badge>
               <h3 className="text-white text-md font-light">Total Student</h3>
             </div>
-            <p className="ms-10 text-white font-cold">{myCourses?.totalStudents || 0}+</p>
+            <p className="ms-10 text-white font-cold">{totalStudents || 0}</p>
           </div>
+
+          <Button variant="white" className='w-full rounded-md'>
+            View Full Public Profile
+          </Button>
         </div>
 
-        <Button variant="white" className='w-full rounded-md'>
-          View Full Public Profile
-        </Button>
-
-
-
-      </div>
-
-      <div className="col-span-1 gap-4 bg-[#F1F3FF] px-2 py-5 rounded-md">
-        <div className="flex gap-3 items-center pb-3 ">
-          <Badge className='py-4 rounded-md' variant="lightPruple">
-            <MdOutlineNotificationsActive size={17} color="#25005A" />
-          </Badge>
-          <h1 className="font-bold text-md">Notifications</h1>
-        </div>
-
-        <div className="flex flex-col min-w-full gap-5 items-center">
-          <div className="flex justify-between items-center w-full">
-            <Label className='text-[#464555]'>Course Enrollments</Label>
-            <Switch />
-          </div>
-
-          <div className="flex justify-between items-center w-full">
-            <Label className='text-[#464555]'>Student Comments</Label>
-            <Switch />
-          </div>
-
-          <div className="flex justify-between items-center w-full">
-            <Label className='text-[#464555]'>System Updates</Label>
-            <Switch />
-          </div>
-
-        </div>
-
-
-      </div>
-
-      <div className="col-span-1 flex flex-col gap-5">
         <div className="flex flex-col gap-3 px-2 py-5 rounded-md bg-[#F1F3FF]">
 
           <div className="flex gap-3 items-center ">
@@ -423,9 +379,11 @@ const TeacherProfilePage = () => {
         </div>
 
 
-
-
       </div>
+
+
+
+
 
       <div className="col-span-4 md:col-span-3 border-t pt-5 flex flex-col md:flex-row justify-between items-center gap-4 w-full">
         <div>

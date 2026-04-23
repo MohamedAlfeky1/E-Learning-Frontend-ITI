@@ -37,7 +37,7 @@ import { TbCertificate } from "react-icons/tb";
 import { GrUserExpert } from "react-icons/gr";
 
 const CategoryBadge = ({ categoryId }) => {
-  const { data: categoryData, isLoading } = useGetGategoryById(categoryId);
+  const { data: categoryData, isLoading } = useGetCategoryById(categoryId);
   console.log(categoryData);
 
   if (isLoading)
