@@ -73,8 +73,7 @@ import WithdrawalRequestPage from "@/pages/teacher/WithdrawalRequestPage";
 import TeacherVerificationPage from "@/pages/teacher/TeacherVerificationPage";
 import TeacherChatPage from "@/pages/teacher/TeacherChatPage";
 import TeacherTicketPage from "@/pages/teacher/TeacherTicketPage";
-import MyBookings from './../pages/teacher/TeacherBookingPage/index';
-
+import MyBookings from "./../pages/teacher/TeacherBookingPage/index";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ADMIN PAGES  (role: admin)
@@ -102,6 +101,7 @@ import StudentProfilePageA from "@/pages/admin/StudentProfilePage";
 // ERROR / FALLBACK
 // ─────────────────────────────────────────────────────────────────────────────
 import NotFoundPage from "@/pages/NotFoundPage";
+import ErrorPage from "@/pages/ErrorPage";
 import BookingPage from "@/pages/student/BookSessionPage";
 import TeachersPage from "@/pages/student/TeacherList";
 import TeacherAvailabilityPage from "@/pages/teacher/TeacherAvailabilityPage";
@@ -121,6 +121,7 @@ const router = createBrowserRouter([
   // ───────────────────────────────────────────────────────────────────────────
   {
     element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> }, // /
       { path: "about", element: <AboutPage /> }, // /about
@@ -145,6 +146,7 @@ const router = createBrowserRouter([
   // ───────────────────────────────────────────────────────────────────────────
   {
     element: <AuthLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { path: "login", element: <LoginPage /> }, // /login
       { path: "register", element: <RegisterPage /> }, // /register
@@ -175,13 +177,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  
+
   {
     element: (
       <ProtectedRoute allowedRoles={["student"]}>
         <StudentLayout />
       </ProtectedRoute>
     ),
+    errorElement: <ErrorPage />,
     children: [
       // Dashboard & profile
       { path: "dashboard", element: <StudentDashboardPage /> }, // /dashboard
@@ -214,12 +217,10 @@ const router = createBrowserRouter([
       { path: "quizzes", element: <StudentQuizzesPage /> }, // /quizzes
       { path: "quizzes/:quizId/take", element: <QuizTakePage /> }, // /quizzes/:quizId/take
       { path: "quizzes/:quizId/result", element: <QuizResultPage /> }, // /quizzes/:quizId/result
-       {
-    path: "teachers",
-    element: (
-        <TeachersPage />
-    ),
-  },
+      {
+        path: "teachers",
+        element: <TeachersPage />,
+      },
 
       // AI Report
       {
@@ -268,6 +269,7 @@ const router = createBrowserRouter([
         <TeacherLayout />
       </ProtectedRoute>
     ),
+    errorElement: <ErrorPage />,
     children: [
       // Index redirect
       { index: true, element: <Navigate to="dashboard" replace /> },
@@ -303,9 +305,9 @@ const router = createBrowserRouter([
 
       // Assignments
       {
-        path: "courses/:courseId/assignments",
+        path: "assignments",
         element: <ManageAssignmentsPage />,
-      }, // /teacher/courses/:courseId/assignments
+      }, // /teacher/assignments
       {
         path: "assignments/:assignmentId/grade",
         element: <GradeAssignmentPage />,
@@ -321,7 +323,7 @@ const router = createBrowserRouter([
       { path: "availability", element: <TeacherAvailabilityPage /> }, // /teacher/availability
       { path: "availableSlotsPage", element: <AvailableSlotsPage /> }, // /teacher/availability
 
-      { path: "mybookings", element: <MyBookings/> }, // /teacher/sessions
+      { path: "mybookings", element: <MyBookings /> }, // /teacher/sessions
       { path: "tickets", element: <TeacherTicketPage /> }, // /teacher/tickets
 
       // video call
@@ -348,6 +350,7 @@ const router = createBrowserRouter([
         <AdminLayout />
       </ProtectedRoute>
     ),
+    errorElement: <ErrorPage />,
     children: [
       // Index redirect
       { index: true, element: <Navigate to="dashboard" replace /> },
@@ -391,6 +394,9 @@ const router = createBrowserRouter([
   // ───────────────────────────────────────────────────────────────────────────
   // CATCH-ALL  — 404
   // ───────────────────────────────────────────────────────────────────────────
+  // Standalone error route
+  { path: "error", element: <ErrorPage /> },
+
   { path: "*", element: <NotFoundPage /> },
 ]);
 

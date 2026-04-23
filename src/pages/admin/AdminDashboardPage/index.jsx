@@ -137,9 +137,14 @@ const AdminDashboardPage = () => {
       </div>
       <div className="col-span-4 grid grid-cols-1 md:grid-cols-[2.5fr_1.5fr] gap-3">
 
-        <div className=" bg-white rounded-xl p-4 ">
+        <div className=" bg-white rounded-xl p-4  flex flex-col gap-7">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <h2 className="text-md font-bold">Monthly Growth</h2>
+            <div>
+              <h2 className="text-md font-bold">Monthly Growth</h2>
+              <h3 className="text-[var(--chart-3)] text-sm">User registration vs. course enrollments</h3>
+
+            </div>
+
             <div className="flex gap-3">
               <div className="flex items-center gap-2"><div className="bg-[var(--ring)] w-2 h-2 rounded-full"></div>
                 Student
@@ -149,7 +154,6 @@ const AdminDashboardPage = () => {
               </div>
             </div>
           </div>
-          <h3 className="text-[var(--chart-3)] text-sm">User registration vs. course enrollments</h3>
 
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={mergedData} barSize={16} barGap={4}>

@@ -1,4 +1,3 @@
-
 import axiosInstance from "../api/axiosInstance";
 import { ENDPOINTS } from "../api/endpoints";
 
@@ -60,6 +59,26 @@ export const postCourseStatus = async (id, statusData) => {
   } catch (error) {
     console.error("Error posting course status:", error);
     throw error;
+  }
+};
+
+export const publishCourse = async (id) => {
+  try {
+    const response = await axiosInstance.patch(ENDPOINTS.COURSES_PUBLISH(id));
+    return response.data;
+  } catch (error) {
+    console.error("Error publishing course:", error);
+    throw error.response.data;
+  }
+};
+
+export const archiveCourse = async (id) => {
+  try {
+    const response = await axiosInstance.patch(ENDPOINTS.COURSES_ARCHIVE(id));
+    return response.data;
+  } catch (error) {
+    console.error("Error archiving course:", error);
+    throw error.response.data;
   }
 };
 
