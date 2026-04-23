@@ -477,11 +477,9 @@ const TeacherDashboardPage = () => {
   const { data: teacherErollemnts } = useTeacherCoursesQuery()
   const { data: teacherCourses } = useGetAllTeacherCourses()
   const { data: verificationData } = useTeacherVerification()
-  const { data: enrollmentDetails } = useEnrollmentDetailsQuery()
   // const {}
 
   const [period, setPeriod] = useState(7);
-  const [open, setOpen] = useState(false);
   const [bookings, setBookings] = useState([])
 
   const fetchBookings = async () => {
