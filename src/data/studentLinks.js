@@ -49,11 +49,6 @@ export const studentSidebarLinks = [
     icon: ClipboardList,
   },
   {
-    title: "Chats",
-    href: "/chats",
-    icon: MessagesSquare,
-  },
-  {
     title: "Quizzes",
     href: "/quizzes",
     icon: HelpCircle,
@@ -61,7 +56,7 @@ export const studentSidebarLinks = [
   {
     title: "Get Mentor",
     href: "/teachers",
-    icon: HelpCircle,
+    icon: Headset,
   },
   {
     title: "Sessions",
@@ -73,11 +68,6 @@ export const studentSidebarLinks = [
     href: "/payment-history",
     icon: Receipt,
   },
-  {
-    title: "Profile",
-    href: "/profile",
-    icon: UserCircle,
-  },
 ];
 
 export const studentBottomLinks = [
@@ -85,11 +75,5 @@ export const studentBottomLinks = [
     title: "Help Center",
     href: "/tickets",
     icon: HelpCircle,
-  },
-  {
-    title: "Sign Out",
-    onClick: () => userLogout(),
-    icon: LogOut,
-    isAction: true,
   },
 ];
