@@ -313,7 +313,7 @@ const TeacherProfilePage = () => {
             <p className="ms-10 text-white font-cold">{totalStudents || 0}</p>
           </div>
 
-          <Button  type="button"  onClick={()=>{navigate(`/teachers/${data?._id}`)}} variant="white" className='w-full rounded-md'>
+          <Button type="button" onClick={()=>{navigate(`/teachers/${data?._id}`)}} variant="white" className='w-full rounded-md'>
             View Full Public Profile
           </Button>
         </div>
