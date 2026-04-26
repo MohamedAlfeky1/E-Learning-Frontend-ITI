@@ -10,8 +10,9 @@ export const enrollmentService = {
   getMyCourses: async () => {
     try {
       const { data } = await axiosInstance.get(ENDPOINTS.ENROLLMENTS_MY);
-      return data.data;
+      return data.data ?? [];
     } catch (error) {
+      if (error.response?.status === 401) return [];
       console.error("Error Get Enrollments:", error);
       throw error;
     }
@@ -39,7 +40,7 @@ export const enrollmentService = {
     }
   },
 
-   getTeacherEnrollmentByCourseId: async (courseId) => {
+  getTeacherEnrollmentByCourseId: async (courseId) => {
     try {
       const { data } = await axiosInstance.get(ENDPOINTS.ENROLLMENT_TEACHER_GET(courseId));
       return data.data;

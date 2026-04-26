@@ -29,19 +29,16 @@ const CoursesPage = () => {
     .filter(course => course.status === "published")
     .sort((a, b) => {
       // Try updatedAt first, fall back to createdAt, then _id
-      const dateA = new Date(b.updatedAt || b.createdAt || 0);
-      const dateB = new Date(a.updatedAt || a.createdAt || 0);
+      const dateA = new Date(a.createdAt || 0);
+      const dateB = new Date(b.createdAt || 0);
 
       // Last resort: compare MongoDB _id (contains timestamp)
       if (!b.updatedAt && !b.createdAt) {
         return b._id > a._id ? 1 : -1;
       }
 
-      return dateA - dateB;
+      return dateB - dateA;
     });
-
-  // const searchCourses = results?.data?.courses ?? [];
-  // const publishedSearchCourses = searchCourses.filter(course => course.status === "published");
 
 
   const {
@@ -54,6 +51,7 @@ const CoursesPage = () => {
     data: results,
     isPending,
   } = useSearchCourses();
+
 
   console.log(categoriesData?.data);
   console.log(data);

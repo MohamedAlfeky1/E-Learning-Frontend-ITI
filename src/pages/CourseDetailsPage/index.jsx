@@ -36,6 +36,8 @@ import { useAddToCart } from "@/mutations/cartMutations";
 const CourseDetailsPage = () => {
   const { id } = useParams();
   const [openPopover, setOpenPopover] = useState(false);
+  const [openAppointmentDialog, setOpenAppointmentDialog] = useState(false);
+
 
   const { data: userData, isLoading: useLoading, error: useError } = useUserQuery();
   const { data: cartData } = useGetCartItems();
@@ -46,6 +48,7 @@ const CourseDetailsPage = () => {
 
   const addToCartMutation = useAddToCart();
 
+  const userRole = userData?.role
   const isInCart = cartData?.data?.cart?.items?.some(
     (item) => item.courseId === id || item.courseId?._id === id
   );
@@ -342,16 +345,18 @@ const CourseDetailsPage = () => {
                   </p>
                 )}
 
+                {userRole === 'student' ? (
+                  <Button
+                    variant="default"
+                    onClick={handleEnroll}
+                    disabled={useLoading || isInCart}
+                    className={isInCart ? "bg-[var(--muted-foreground)]" : ""}
+                  >
+                    <MdOutlineAddShoppingCart color="white" />
+                    {useLoading ? "Loading..." : isInCart ? "Added to Cart ✓" : "Enroll Now"}
+                  </Button>
+                ) : ''}
 
-                <Button
-                  variant="default"
-                  onClick={handleEnroll}
-                  disabled={useLoading || isInCart}
-                  className={isInCart ? "bg-[var(--muted-foreground)]" : ""}
-                >
-                  <MdOutlineAddShoppingCart color="white" />
-                  {useLoading ? "Loading..." : isInCart ? "Added to Cart ✓" : "Enroll Now"}
-                </Button>
 
                 <Dialog open={openPopover} onOpenChange={setOpenPopover}>
                   <DialogContent showCloseButton={true}>
@@ -426,10 +431,44 @@ const CourseDetailsPage = () => {
             <div className="flex flex-col gap-1 items-center justify-center">
               <p className="text-[var(--muted-foreground)] text-xs">{course.teacherId?.bio}</p>
               <div className="w-full flex flex-col md:flex-row gap-3">
-                <Button variant="secondary" className="rounded-md text-[var(--primary)] flex-1 py-2">
-                  Book Appointment
-                </Button>
-                <Button variant="outline" className="rounded-md text-[var(--muted-foreground)] flex-1 py-2">
+
+                {userRole === 'student' ?
+                  (<Button
+                    variant="secondary"
+                    className="rounded-md text-[var(--primary)] flex-1 py-2"
+                    onClick={() => {
+                      if (!isLoggedIn) {
+                        setOpenAppointmentDialog(true);
+                      } else {
+                        navigate(`/teachers/${course.teacherId?._id}/book`);
+                      }
+                    }}
+                  >
+                    Book Appointment
+                  </Button>
+                  ) : ''}
+
+                <Dialog open={openAppointmentDialog} onOpenChange={setOpenAppointmentDialog}>
+                  <DialogContent showCloseButton={true}>
+                    <DialogHeader>
+                      <DialogTitle>Login Required</DialogTitle>
+                      <DialogDescription>
+                        You need to be logged in to book an appointment.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <Button
+                        variant="purpleBtnDefault"
+                        className="w-full"
+                        onClick={() => navigate("/login")}
+                      >
+                        Go to Login
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+
+                <Button onClick={()=>navigate(`/teachers/${course.teacherId?._id}`)} variant="outline" className="rounded-md text-[var(--muted-foreground)] flex-1 py-2">
                   Profile
                 </Button>
               </div>

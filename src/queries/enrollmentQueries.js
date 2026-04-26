@@ -17,6 +17,21 @@ export const useMyCoursesQuery = () => {
 };
 
 /**
+ * Fetches the list of courses the current user is enrolled in  returns enrolled course IDs as a Set.
+ *
+ * @function
+ * @returns {import('@tanstack/react-query').UseQueryResult} 
+ *  React Query result object containing courses IDs, loading, and error states.
+ */
+export const useMyEnrolledCourseIds = () => {
+  return useQuery({
+    queryKey: ["my-courses"],
+    queryFn: enrollmentService.getMyCourses,
+    select: (data) => new Set(data?.map((e) => e.courseId?._id ?? e.courseId) ?? []),
+    enabled: true, // always fetch; returns empty set if not logged in
+  });
+};
+/**
  * Fetches the list of courses the current user is enrolled in.
  *
  * @function
