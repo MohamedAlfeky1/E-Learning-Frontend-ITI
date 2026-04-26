@@ -79,11 +79,6 @@ export const teacherSidebarLinks = [
     href: "/teacher/earnings",
     icon: BadgeDollarSign,
   },
-  {
-    title: "Profile",
-    href: "/teacher/profile",
-    icon: UserCircle,
-  },
 ];
 
 export const teacherBottomLinks = [
