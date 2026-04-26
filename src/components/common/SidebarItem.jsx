@@ -1,59 +1,122 @@
 import { NavLink } from "react-router-dom";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-const SidebarItem = ({ item, variant = "primary" }) => {
+const SidebarItem = ({ item, variant = "primary", isCollapsed, onClick }) => {
   const Icon = item.icon;
 
-  if (item.isAction) {
+  // Shared icon renderer
+  const renderIcon = (isActive = false) => (
+    <Icon 
+      className={`shrink-0 transition-colors duration-200 ${
+        isCollapsed ? "w-[20px] h-[20px]" : "w-[18px] h-[18px]"
+      } ${
+        isActive || item.isActive 
+          ? "text-indigo-600" 
+          : "text-slate-400 group-hover/item:text-indigo-500"
+      }`} 
+    />
+  );
+
+  // Shared label renderer
+  const renderLabel = () => {
+    if (isCollapsed) return null;
     return (
-      <button
-        onClick={item.onClick}
-        className={`flex items-center gap-3 py-2.5 px-4 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all w-full text-left`}
-      >
-        <Icon className="w-5 h-5 text-slate-400 group-hover:text-slate-600" />
+      <span className="truncate text-[13px] leading-none">
         {item.title}
+      </span>
+    );
+  };
+
+  // Shared class builder
+  const baseClasses = `group/item flex items-center transition-all duration-200 rounded-lg ${
+    isCollapsed 
+      ? "w-10 h-10 mx-auto justify-center" 
+      : "w-full gap-3 px-3 py-2.5"
+  }`;
+
+  let element;
+
+  if (item.isAction) {
+    // ── Action button (Sign Out, etc.) ──
+    element = (
+      <button
+        onClick={(e) => {
+          item.onClick?.(e);
+          onClick?.(e);
+        }}
+        className={`${baseClasses} font-medium text-slate-500 hover:text-red-600 hover:bg-red-50`}
+      >
+        {renderIcon()}
+        {renderLabel()}
       </button>
     );
-  }
-
-  if (variant === "primary") {
-    return (
+  } else if (variant === "primary") {
+    // ── Primary nav link ──
+    element = (
       <NavLink
         to={item.href}
+        end={item.exact}
+        onClick={onClick}
         className={({ isActive }) =>
-          `group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+          `${baseClasses} font-medium ${
             isActive || item.isActive
-              ? "bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100"
-              : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-indigo-50 text-indigo-700 shadow-[inset_3px_0_0_0_theme(colors.indigo.500)]"
+              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
           }`
         }
       >
         {({ isActive }) => (
           <>
-            <Icon className={`w-5 h-5 transition-colors ${isActive || item.isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-indigo-500"}`} />
-            {item.title}
+            {renderIcon(isActive)}
+            {renderLabel()}
+          </>
+        )}
+      </NavLink>
+    );
+  } else {
+    // ── Secondary nav link ──
+    element = (
+      <NavLink
+        to={item.href}
+        end={item.exact}
+        onClick={onClick}
+        className={({ isActive }) =>
+          `${baseClasses} font-medium ${
+            isActive || item.isActive 
+              ? "bg-indigo-50 text-indigo-700" 
+              : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+          }`
+        }
+      >
+        {({ isActive }) => (
+          <>
+            {renderIcon(isActive)}
+            {renderLabel()}
           </>
         )}
       </NavLink>
     );
   }
 
-  return (
-    <NavLink
-      to={item.href}
-      className={({ isActive }) =>
-        `group flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
-          isActive || item.isActive ? "text-indigo-700 bg-indigo-50" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-        }`
-      }
-    >
-      {({ isActive }) => (
-        <>
-          <Icon className={`w-5 h-5 transition-colors ${isActive || item.isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600"}`} />
+  // ── Wrap with tooltip when collapsed ──
+  if (isCollapsed) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {element}
+        </TooltipTrigger>
+        <TooltipContent 
+          side="right" 
+          sideOffset={12}
+          className="font-medium text-xs"
+        >
           {item.title}
-        </>
-      )}
-    </NavLink>
-  );
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return element;
 };
 
 export default SidebarItem;
