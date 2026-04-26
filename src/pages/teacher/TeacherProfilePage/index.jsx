@@ -21,8 +21,10 @@ import { MdAlternateEmail } from "react-icons/md";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Textarea } from "@/components/ui/textarea";
 import { useGetAllCourses } from "@/queries/useCourses";
+import { useNavigate } from "react-router-dom";
 
 const TeacherProfilePage = () => {
+  const navigate = useNavigate();
   const fileInputRef = useRef();
   const { data, isLoading, error } = useUserQuery();
   const { data: myCourses, isLoading: coursesLoading, error: coursesError } = useTeacherCourses();
@@ -311,7 +313,7 @@ const TeacherProfilePage = () => {
             <p className="ms-10 text-white font-cold">{totalStudents || 0}</p>
           </div>
 
-          <Button variant="white" className='w-full rounded-md'>
+          <Button  type="button"  onClick={()=>{navigate(`/teachers/${data?._id}`)}} variant="white" className='w-full rounded-md'>
             View Full Public Profile
           </Button>
         </div>
