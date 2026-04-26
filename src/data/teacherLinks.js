@@ -11,6 +11,10 @@ import {
   Megaphone,
   LogOut,
   MessageSquare,
+  FileQuestion,
+  CalendarPlus,
+  CalendarCheck,
+  CalendarDays,
 } from "lucide-react";
 
 export const teacherSidebarLinks = [
@@ -33,51 +37,47 @@ export const teacherSidebarLinks = [
     title: "Manage Courses",
     href: "/teacher/courses",
     icon: Library,
+    exact: true,
   },
   {
     title: "Upload Videos",
-    href: "/teacher/materials/upload", // Generic or specific
+    href: "/teacher/materials/upload", 
     icon: Video,
   },
   {
     title: "Assignments",
-    href: "/teacher/assignments", // Ensure this route is correct in actual router
+    href: "/teacher/assignments",
     icon: ClipboardList,
   },
   {
     title: "Quizzes",
-    href: "courses/quizzes/create", // Ensure this route is correct in actual router
-    icon: HelpCircle,
+    href: "courses/quizzes/create", 
+    icon: FileQuestion,
   },
   {
     title: "Students",
-    href: "/teacher/students", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
+    href: "/teacher/students", 
     icon: Users,
   },
   {
-    title: "Add Avalabilty",
-    href: "/teacher/availability", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
-    icon: Users,
+    title: "Add Availability",
+    href: "/teacher/availability", 
+    icon: CalendarPlus,
   },
   {
-    title: "My Bookings",
-    href: "/teacher/myBookings", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
-    icon: Users,
+    title: "Bookings",
+    href: "/teacher/myBookings", 
+    icon: CalendarCheck,
   },
   {
-    title: "My Availabilits",
-    href: "/teacher/availableSlotsPage", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
-    icon: Users,
+    title: "Availabilities",
+    href: "/teacher/availableSlotsPage", 
+    icon: CalendarDays,
   },
   {
     title: "Earnings",
     href: "/teacher/earnings",
     icon: BadgeDollarSign,
-  },
-  {
-    title: "Profile",
-    href: "/teacher/profile",
-    icon: UserCircle,
   },
 ];
 
@@ -93,10 +93,10 @@ export const teacherBottomLinks = [
     href: "/teacher/tickets",
     icon: HelpCircle,
   },
-  {
-    title: "Sign Out",
-    onClick: () => console.log("Sign Out clicked"),
-    icon: LogOut,
-    isAction: true,
-  },
+  // {
+  //   title: "Sign Out",
+  //   onClick: () => console.log("Sign Out clicked"),
+  //   icon: LogOut,
+  //   isAction: true,
+  // },
 ];

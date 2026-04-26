@@ -35,8 +35,8 @@ const Navbar = () => {
   const dashboardPath = user ? ROLE_DASHBOARD[user.role] || "/" : "/";
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/60 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between gap-4">
         {/* ── Left: Logo + Nav ── */}
         <div className="flex items-center gap-8">
           <Logo />
@@ -52,7 +52,9 @@ const Navbar = () => {
         </div>
 
         {/* ── Center: Search ── */}
-        <SearchBar className="hidden sm:flex w-full max-w-xs" />
+        <div className="hidden sm:flex flex-1 max-w-md lg:max-w-lg xl:max-w-xl px-4 transition-all duration-300">
+          <SearchBar className="w-full" />
+        </div>
 
         {/* ── Right: Actions ── */}
         <div className="flex items-center gap-1">
@@ -85,8 +87,8 @@ const Navbar = () => {
                 {user.name?.[0]?.toUpperCase() || "U"}
               </Link>
               <button
-                onClick={handleLogout}
-                className="px-4 py-1.5 text-sm font-medium rounded-full border border-border text-foreground hover:bg-accent transition-colors duration-200 cursor-pointer"
+                onClick={() => handleLogout("/")}
+                className="px-4 py-1.5 text-sm font-medium rounded-full border border-border text-foreground hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors duration-200 cursor-pointer"
               >
                 Logout
               </button>
@@ -155,10 +157,10 @@ const Navbar = () => {
                   </Link>
                   <button
                     onClick={() => {
-                      handleLogout();
+                      handleLogout("/");
                       setMobileOpen(false);
                     }}
-                    className="w-full px-4 py-2.5 text-sm font-medium rounded-lg border border-border text-foreground hover:bg-accent transition-colors cursor-pointer"
+                    className="w-full px-4 py-2.5 text-sm font-medium rounded-lg border border-border text-foreground hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors cursor-pointer"
                   >
                     Logout
                   </button>

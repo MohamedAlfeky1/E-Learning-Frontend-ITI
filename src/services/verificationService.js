@@ -12,28 +12,40 @@ import { ENDPOINTS } from "../api/endpoints";
  * * @returns {Promise<Object>} The server response data.
  * @throws {Error} If the API request fails.
  */
+
+
 export const submitVerification = async (payload) => {
-  const { teacherId, certificates, experiences, targetCategories } = payload;
+  let formData;
+  let teacherId;
 
-  const formData = new FormData();
+  if (payload instanceof FormData) {
+    formData = payload;
+    teacherId = formData.get("teacherId");
+  } else {
+    teacherId = payload.teacherId;
 
-  formData.append("targetCategories", JSON.stringify(targetCategories));
-  formData.append("experiences", JSON.stringify(experiences));
+    formData = new FormData();
 
-  const certificateMetadata = certificates
-    .filter(cert => cert.file !== null) 
-    .map(cert => ({
-      issuedBy: cert.issuedBy || "Not Specified",
-      year: cert.year || "N/A"
+    formData.append("targetCategories", JSON.stringify(payload.targetCategories || []));
+    formData.append("experiences", JSON.stringify(payload.experiences || []));
+
+    const certificateData = (payload.certificates || []).map((c) => ({
+      issuedBy: c.issuedBy,
+      year: c.year,
     }));
 
-  formData.append("certificateData", JSON.stringify(certificateMetadata));
+    formData.append("certificateData", JSON.stringify(certificateData));
 
-  certificates.forEach(cert => {
-    if (cert.file) {
-      formData.append("certificates", cert.file);
-    }
-  });
+    (payload.certificates || []).forEach((cert) => {
+      if (cert.file) {
+        formData.append("certificates", cert.file);
+      }
+    });
+  }
+
+  if (!teacherId) {
+    throw new Error("Teacher ID is missing");
+  }
 
   const response = await axiosInstance.post(
     ENDPOINTS.TEACHER_VERIFICATION_SUBMIT(teacherId),
@@ -47,7 +59,6 @@ export const submitVerification = async (payload) => {
 
   return response.data;
 };
-
 export const getAllVerifications = async ()=>{
     try{
     const response = await axiosInstance.get(ENDPOINTS.ADMIN_VERIFICATIONS_LIST);
