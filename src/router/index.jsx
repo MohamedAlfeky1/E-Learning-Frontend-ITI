@@ -193,6 +193,7 @@ const router = createBrowserRouter([
 
       // Courses
       { path: "my-courses", element: <MyCoursesPage /> }, // /my-courses
+      { path: "browse-courses", element: <CoursesPage /> }, // /browse-courses
       { path: "my-courses/:courseId/learn", element: <CoursePlayerPage /> }, // /my-courses/:courseId/learn
       // {path: "course-viewer/:courseId", element: <CourseViewerPage /> }, // /my-courses/:courseId/view
 
