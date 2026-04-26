@@ -3,7 +3,7 @@ import { useUserQuery } from "@/queries/authQueries";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageSquare } from "lucide-react";
 
-export default function ConversitionsList({ onSelectConversation }) {
+export default function ConversitionsList({ onSelectConversation, selectedConversationId }) {
   const { data, isLoading, error } = useGetConversations();
   const { data: user } = useUserQuery();
 
@@ -59,7 +59,11 @@ export default function ConversitionsList({ onSelectConversation }) {
               <div
                 key={conversation._id}
                 onClick={() => onSelectConversation(conversation)}
-                className="group flex items-start gap-3 p-3 bg-transparent rounded-xl border border-transparent cursor-pointer hover:bg-accent hover:border-border/50 transition-all duration-200"
+                className={`group flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all duration-200 ${
+                  selectedConversationId === conversation._id
+                    ? "bg-accent border-border shadow-sm"
+                    : "bg-transparent border-transparent hover:bg-accent/50 hover:border-border/50"
+                }`}
               >
                 {/* Avatar */}
                 <div className="relative shrink-0 mt-0.5">
