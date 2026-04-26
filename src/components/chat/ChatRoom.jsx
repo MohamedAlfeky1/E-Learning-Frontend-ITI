@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const BACKEND_URL = "http://localhost:5000";
 
-const ChatRoom = ({ courseId, receiverId }) => {
+const ChatRoom = ({ courseId, receiverId, receiverName }) => {
   console.log("courseId", courseId);
   console.log("receiverId", receiverId);
   const [messages, setMessages] = useState([]);
@@ -21,14 +21,16 @@ const ChatRoom = ({ courseId, receiverId }) => {
   const currentUserId = user?._id;
   const queryClient = useQueryClient();
 
-  const reciver = data?.data?.map((conversation) => {
-    // Get the participant who is not the current user (the receiver)
-    return conversation.participants.find(
-      (participant) => participant._id !== currentUserId,
-    );
-  });
-
-  console.log("reciver", reciver[0]);
+  const currentConversation = data?.data?.find(
+    (c) => c.courseId?._id === courseId || c.courseId === courseId
+  );
+  
+  const matchedReceiver = currentConversation?.participants?.find(
+    (participant) => participant._id !== currentUserId
+  );
+  
+  const displayReceiverName = receiverName || 
+    (matchedReceiver ? `${matchedReceiver.firstName || ''} ${matchedReceiver.lastName || ''}`.trim() : "Chat");
 
   const messagesContainerRef = useRef(null);
 
@@ -183,7 +185,7 @@ const ChatRoom = ({ courseId, receiverId }) => {
       <div className="p-4 px-6 border-b border-border bg-card/95 backdrop-blur shrink-0 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h3 className="font-semibold text-lg tracking-tight text-foreground">
-            {`${reciver[0]?.firstName} ${reciver[0]?.lastName}`}
+            {displayReceiverName}
           </h3>
         </div>
       </div>

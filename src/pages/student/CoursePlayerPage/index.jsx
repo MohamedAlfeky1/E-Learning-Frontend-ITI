@@ -1,7 +1,7 @@
 import Loader from "@/components/ui/loader";
 import { useGetCoursesById } from "@/queries/useCourses";
 import { useGetAllLessonsByCourse } from "@/queries/useLessonQueries";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { IoPlay } from "react-icons/io5";
 import { MdLockOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
@@ -23,6 +23,7 @@ import { RATING_RANGE } from "@/data/reviewData";
 import { useGetMyCourseReview } from "@/queries/useReviewQueries";
 import { useUserQuery } from "@/queries/authQueries";
 import { FaStar } from "react-icons/fa";
+import { MessageSquare } from "lucide-react";
 
 
 const CoursePlayerPage = () => {
@@ -33,6 +34,7 @@ const CoursePlayerPage = () => {
   const [courseProgress, setCourseProgress] = useState(0);
 
   const { courseId } = useParams();
+  const navigate = useNavigate();
   const { data: studentData } = useUserQuery();
   const studentId = studentData?._id;
   const { data: course, isLoading, error } = useGetCoursesById(courseId);
@@ -44,6 +46,10 @@ const CoursePlayerPage = () => {
   const addReviewMutation = useAddReview();
   const enrollmentId = enrollmentsDetails?._id;
   const myReview = reviewsData?.data;
+  
+  const teacherObj = course?.data?.teacherId || course?.data?.createdBy;
+  const teacherId = teacherObj?._id || teacherObj;
+  const teacherName = teacherObj?.firstName ? `${teacherObj.firstName} ${teacherObj.lastName || ''}`.trim() : "Teacher";
 
   const handleSubmitReview = (formData) => {
     addReviewMutation.mutate(
@@ -146,9 +152,18 @@ const CoursePlayerPage = () => {
           <h2 className="font-bold text-2xl text-[var(--foreground)]">
             {selectedVideo?.lesson?.orderIndex}.{selectedVideo?.orderIndex} {selectedVideo?.title}
           </h2>
-          <Button onClick={() => handleProgressUpdate(enrollmentId, selectedVideo?._id)}>
-            <IoMdCheckmark color="white" /> Record progress
-          </Button>
+          <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white"
+                onClick={() => navigate('/chats', { state: { courseId, teacherId, teacherName } })}
+              >
+                <MessageSquare className="w-4 h-4" /> Chat with Teacher
+              </Button>
+            <Button onClick={() => handleProgressUpdate(enrollmentId, selectedVideo?._id)}>
+              <IoMdCheckmark color="white" /> Record progress
+            </Button>
+          </div>
         </div>
 
         <p className="flex items-center gap-1 text-xs text-[var(--muted-foreground)] mt-2">
