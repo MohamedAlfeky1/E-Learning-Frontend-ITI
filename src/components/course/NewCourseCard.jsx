@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { useUserQuery } from "@/queries/authQueries";
 import { useGetCartItems } from "@/queries/useCartQueries";
 import { useAddToCart } from "@/mutations/cartMutations";
-import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
+import { useEnrollmentDetailsQuery, useMyEnrolledCourseIds } from "@/queries/enrollmentQueries";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -24,13 +24,14 @@ function NewCourseCard({ course }) {
   const { data: userData, isLoading: userLoading } = useUserQuery();
   const { data: cartData } = useGetCartItems();
   const addToCartMutation = useAddToCart();
-  const { data: enrollmentData } = useEnrollmentDetailsQuery(course._id);
+  const { data: enrolledIds } = useMyEnrolledCourseIds();
 
+  const userRole = userData?.role
   const isLoggedIn = !!userData?._id;
   const isInCart = cartData?.data?.cart?.items?.some(
     (item) => item.courseId === course._id || item.courseId?._id === course._id
   );
-  const isAlreadyEnrolled = !!enrollmentData;
+  const isAlreadyEnrolled = enrolledIds?.has(course._id) ?? false;
 
   const truncateDescription = (text, wordLimit = 8, charLimit = 50) => {
     if (!text) return "";
@@ -147,27 +148,29 @@ function NewCourseCard({ course }) {
                 <span className="text-2xl font-bold text-[#3525CD]">
                   ${course.price ?? "129.99"}
                 </span>
-                <button
-                  onClick={handleEnroll}
-                  disabled={addToCartMutation.isPending || isAlreadyEnrolled}
-                  className={`text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200 ${
-                    isAlreadyEnrolled
+
+                {userRole === 'student' ? (
+                  <button
+                    onClick={handleEnroll}
+                    disabled={addToCartMutation.isPending || isAlreadyEnrolled}
+                    className={`text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200 ${isAlreadyEnrolled
                       ? "bg-green-600 cursor-default"
                       : "bg-indigo-600 hover:bg-[#3525CD]"
-                  }`}
-                >
-                  {enrollLabel()}
-                </button>
+                      }`}
+                  >
+                    {enrollLabel()}
+                  </button>
+                ) : ''}
+
               </div>
             ) : (
               <button
                 onClick={handleEnroll}
                 disabled={addToCartMutation.isPending || isAlreadyEnrolled}
-                className={`text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200 ${
-                  isAlreadyEnrolled
-                    ? "bg-green-600 cursor-default"
-                    : "bg-green-600 hover:bg-green-700"
-                }`}
+                className={`text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200 ${isAlreadyEnrolled
+                  ? "bg-green-600 cursor-default"
+                  : "bg-green-600 hover:bg-green-700"
+                  }`}
               >
                 {enrollLabel()}
               </button>
