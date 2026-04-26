@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import PlayIcon from "../../assets/homepage/hero/play-icon.svg";
 import HeroImage from "../../assets/homepage/hero/hero-image.png";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 // Categories section imports
 import { ArrowRight } from "lucide-react";
@@ -49,7 +49,6 @@ const HomePage = () => {
     error: userError,
   } = useUserQuery();
   const isAdmin = userData?.role === "admin";
-  console.log(userData);
 
   const {
     data: publicSlidersData,
@@ -112,6 +111,11 @@ const HomePage = () => {
       coursesApi.off("select", onSelect);
     };
   }, [coursesApi]);
+
+  if (userData && (userData.role === "teacher" || userData.role === "student")) {
+    const dashboardPath = userData.role === "teacher" ? "/teacher/dashboard" : "/dashboard";
+    return <Navigate to={dashboardPath} replace />;
+  }
 
   return (
     <main className="flex flex-col gap-20 bg-[#F9F9FF]">
