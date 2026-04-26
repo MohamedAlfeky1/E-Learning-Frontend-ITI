@@ -76,10 +76,4 @@ export const studentBottomLinks = [
     href: "/tickets",
     icon: HelpCircle,
   },
-  {
-    title: "Sign Out",
-    onClick: () => userLogout(),
-    icon: LogOut,
-    isAction: true,
-  },
 ];

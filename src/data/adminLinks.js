@@ -89,13 +89,6 @@ export const adminSidebarLinks = [
     href: "/admin/reports",
     icon: BarChart3,
   },
-  {
-    title: "Profile",
-    href: "/admin/profile",
-    icon: UserCircle,
-  },
-  
-  
 ];
 
 export const adminBottomLinks = [
@@ -108,11 +101,5 @@ export const adminBottomLinks = [
     title: "Help Center",
     href: "/admin/tickets",
     icon: HelpCircle,
-  },
-  {
-    title: "Sign Out",
-    onClick: () => console.log("Sign Out clicked"),
-    icon: LogOut,
-    isAction: true,
   },
 ];
