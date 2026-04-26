@@ -1,35 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import StudentSidebar from "@/components/student/StudentSidebar";
 import StudentHeader from "@/components/student/StudentHeader";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const StudentLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const saved = localStorage.getItem("studentSidebarCollapsed");
+    return saved ? JSON.parse(saved) : false;
+  });
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("studentSidebarCollapsed", JSON.stringify(isCollapsed));
+  }, [isCollapsed]);
 
   return (
-    <div className="min-h-screen bg-slate-50/50 flex">
-      {/* Mobile Sidebar Overlay */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm lg:hidden transition-opacity"
-          onClick={() => setIsSidebarOpen(false)}
+    <TooltipProvider delayDuration={150}>
+      <div className="min-h-screen bg-slate-50 flex relative">
+        <StudentSidebar 
+          isCollapsed={isCollapsed} 
+          setIsCollapsed={setIsCollapsed} 
+          isMobileOpen={isMobileOpen}
+          setIsMobileOpen={setIsMobileOpen}
         />
-      )}
 
-      {/* Sidebar - responsive behavior */}
-      <StudentSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+        {/* Main Content wrapper */}
+        <div className={`flex-1 flex flex-col transition-all duration-300 w-full min-w-0 ${isCollapsed ? 'md:ml-[72px]' : 'md:ml-[260px]'}`}>
+          <StudentHeader onMenuClick={() => setIsMobileOpen(true)} />
 
-      {/* Main Content wrapper */}
-      <div className="flex-1 flex flex-col min-w-0 transition-all duration-300 lg:pl-64">
-        {/* Header - sticky top */}
-        <StudentHeader setIsSidebarOpen={setIsSidebarOpen} />
-        
-        {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full max-w-7xl mx-auto">
-          <Outlet />
-        </main>
+          <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
+            <Outlet />
+          </main>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 

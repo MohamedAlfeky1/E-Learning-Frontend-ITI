@@ -93,10 +93,10 @@ export const teacherBottomLinks = [
     href: "/teacher/tickets",
     icon: HelpCircle,
   },
-  {
-    title: "Sign Out",
-    onClick: () => console.log("Sign Out clicked"),
-    icon: LogOut,
-    isAction: true,
-  },
+  // {
+  //   title: "Sign Out",
+  //   onClick: () => console.log("Sign Out clicked"),
+  //   icon: LogOut,
+  //   isAction: true,
+  // },
 ];
