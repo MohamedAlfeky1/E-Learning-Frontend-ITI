@@ -15,6 +15,7 @@ import {
   LogOut,
   Headset,
   MessagesSquare,
+  Compass,
 } from "lucide-react";
 
 export const studentSidebarLinks = [
@@ -27,6 +28,11 @@ export const studentSidebarLinks = [
     title: "My Courses",
     href: "/my-courses",
     icon: BookOpen,
+  },
+  {
+    title: "Browse Courses",
+    href: "/browse-courses",
+    icon: Compass,
   },
   {
     title: "Chats",
