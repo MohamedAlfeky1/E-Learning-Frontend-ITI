@@ -1,68 +1,130 @@
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { studentSidebarLinks, studentBottomLinks } from "@/data/studentLinks";
 import SidebarItem from "@/components/common/SidebarItem";
-import { X, GraduationCap } from "lucide-react";
+import { ChevronsLeft, ChevronsRight, X } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-const StudentSidebar = ({ isOpen, setIsOpen }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // Close sidebar on path change (mobile)
-  const handleLinkClick = () => {
-    if (window.innerWidth < 1024) {
-      setIsOpen(false);
-    }
-  };
+const StudentSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) => {
+  // On mobile, always show expanded
+  const isMobile = isMobileOpen;
+  const effectiveCollapsed = isMobile ? false : isCollapsed;
 
   return (
-    <aside
-      className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 flex flex-col justify-between py-6 overflow-y-auto transform transition-transform duration-300 ease-in-out z-50 shadow-xl lg:shadow-none lg:translate-x-0 ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      }`}
-    >
-      {/* Brand & Top Links */}
-      <div>
-        <div className="px-6 mb-8 flex items-center justify-between">
-          <NavLink to="/" className="flex flex-col group">
-            <span className="text-2xl font-black text-indigo-600 flex items-center gap-2 tracking-tight group-hover:text-indigo-700 transition-colors">
+    <>
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-40 md:hidden animate-in fade-in duration-200"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside 
+        className={`fixed top-0 left-0 h-screen bg-white border-r border-slate-200/80 flex flex-col z-50 transition-all duration-300 ease-in-out overflow-hidden
+          ${isCollapsed ? "md:w-[72px]" : "md:w-[260px]"}
+          ${isMobileOpen ? "translate-x-0 w-[260px] shadow-2xl" : "-translate-x-full md:translate-x-0"}
+        `}
+      >
+        {/* ─── Brand ─── */}
+        <div className={`flex items-center shrink-0 h-16 border-b border-slate-100 transition-all duration-300 ${effectiveCollapsed ? "justify-center px-0" : "justify-between px-5"}`}>
+          <NavLink 
+            to="/" 
+            className={`flex flex-col overflow-hidden whitespace-nowrap transition-all duration-300 ${effectiveCollapsed ? "items-center" : ""}`}
+          >
+            <span className={`font-black text-indigo-600 tracking-tight transition-all duration-300 ${effectiveCollapsed ? "text-[13px] uppercase" : "text-2xl"}`}>
               Nexora
             </span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 ">
-              Student Portal
-            </span>
+            {!effectiveCollapsed && (
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mt-0.5">
+                Student Portal
+              </span>
+            )}
           </NavLink>
-          <button
-            className="lg:hidden text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full transition-colors"
-            onClick={() => setIsOpen(false)}
+
+          {/* Mobile Close */}
+          <button 
+            className="md:hidden p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            onClick={() => setIsMobileOpen(false)}
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        <nav className="flex flex-col space-y-1.5 px-3">
-          {studentSidebarLinks.map((link, index) => {
-            const isActive =
-              (location.pathname.startsWith(link.href) &&
-                link.href !== "/dashboard") ||
-              location.pathname === link.href;
-            return (
-              <div onClick={handleLinkClick} key={index}>
-                <SidebarItem item={{ ...link, isActive }} variant="primary" />
-              </div>
-            );
-          })}
-        </nav>
-      </div>
+        {/* ─── Navigation ─── */}
+        <div className="flex-1 flex flex-col min-h-0 pt-4">
+          {!effectiveCollapsed && (
+            <p className="px-5 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">
+              Menu
+            </p>
+          )}
 
-      {/* Bottom Actions */}
-      <div className="px-3 mt-8 flex flex-col gap-2 border-t border-slate-100 pt-6">
-        {studentBottomLinks.map((link, index) => (
-          <div onClick={handleLinkClick} key={index}>
-            <SidebarItem item={link} variant="secondary" />
-          </div>
-        ))}
-      </div>
-    </aside>
+          <nav className={`flex-1 flex flex-col overflow-y-auto overflow-x-hidden scrollbar-thin ${effectiveCollapsed ? "px-2 items-center gap-5" : "px-3 gap-0.5"}`}>
+            {studentSidebarLinks.map((link, index) => (
+              <SidebarItem 
+                key={index} 
+                item={link} 
+                variant="primary" 
+                isCollapsed={effectiveCollapsed} 
+                onClick={() => {
+                  if (window.innerWidth < 768) {
+                    setIsMobileOpen(false);
+                  }
+                }}
+              />
+            ))}
+          </nav>
+        </div>
+
+        {/* ─── Bottom Section ─── */}
+        <div className={`shrink-0 border-t border-slate-100 pt-3 pb-4 flex flex-col ${effectiveCollapsed ? "px-2 items-center gap-1.5" : "px-3 gap-0.5"}`}>
+          {!effectiveCollapsed && (
+            <p className="px-2 mb-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">
+              Support
+            </p>
+          )}
+
+          {studentBottomLinks.map((link, index) => (
+            <SidebarItem 
+              key={index} 
+              item={link} 
+              variant="secondary" 
+              isCollapsed={effectiveCollapsed} 
+              onClick={() => {
+                if (window.innerWidth < 768) {
+                  setIsMobileOpen(false);
+                }
+              }}
+            />
+          ))}
+
+          {/* Collapse Toggle */}
+          {effectiveCollapsed ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setIsCollapsed(false)}
+                  className="mt-2 w-10 h-10 mx-auto flex items-center justify-center rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
+                >
+                  <ChevronsRight size={18} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="ml-2 font-semibold">
+                Expand sidebar
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <button
+              onClick={() => setIsCollapsed(true)}
+              className="hidden md:flex mt-2 mx-2 items-center gap-2 justify-center h-9 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 border border-slate-200 transition-all duration-200"
+            >
+              <ChevronsLeft size={16} />
+              <span className="text-xs font-semibold">Collapse</span>
+            </button>
+          )}
+        </div>
+      </aside>
+    </>
   );
 };
 

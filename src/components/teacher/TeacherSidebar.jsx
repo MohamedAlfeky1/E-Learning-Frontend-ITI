@@ -5,6 +5,10 @@ import { ChevronsLeft, ChevronsRight, X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const TeacherSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) => {
+  // On mobile, always show expanded
+  const isMobile = isMobileOpen;
+  const effectiveCollapsed = isMobile ? false : isCollapsed;
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -23,16 +27,16 @@ const TeacherSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
         `}
       >
         {/* ─── Brand ─── */}
-        <div className={`flex items-center shrink-0 h-16 border-b border-slate-100 transition-all duration-300 ${isCollapsed ? "justify-center px-0" : "justify-between px-5"}`}>
+        <div className={`flex items-center shrink-0 h-16 border-b border-slate-100 transition-all duration-300 ${effectiveCollapsed ? "justify-center px-0" : "justify-between px-5"}`}>
           <NavLink 
             to="/" 
-            className={`flex flex-col overflow-hidden whitespace-nowrap transition-all duration-300 ${isCollapsed ? "items-center" : ""}`}
+            className={`flex flex-col overflow-hidden whitespace-nowrap transition-all duration-300 ${effectiveCollapsed ? "items-center" : ""}`}
           >
             {/* Logo mark */}
-            <span className={`font-black text-indigo-600 tracking-tight transition-all duration-300 ${isCollapsed ? "text-[13px] uppercase" : "text-2xl"}`}>
+            <span className={`font-black text-indigo-600 tracking-tight transition-all duration-300 ${effectiveCollapsed ? "text-[13px] uppercase" : "text-2xl"}`}>
               Nexora
             </span>
-            {!isCollapsed && (
+            {!effectiveCollapsed && (
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mt-0.5">
                 Teacher Portal
               </span>
@@ -50,19 +54,19 @@ const TeacherSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
 
         {/* ─── Navigation ─── */}
         <div className="flex-1 flex flex-col min-h-0 pt-4">
-          {!isCollapsed && (
+          {!effectiveCollapsed && (
             <p className="px-5 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">
               Menu
             </p>
           )}
 
-          <nav className={`flex-1 flex flex-col overflow-y-auto overflow-x-hidden scrollbar-thin ${isCollapsed ? "px-2 items-center gap-5" : "px-3 gap-0.5"}`}>
+          <nav className={`flex-1 flex flex-col overflow-y-auto overflow-x-hidden scrollbar-thin ${effectiveCollapsed ? "px-2 items-center gap-5" : "px-3 gap-0.5"}`}>
             {teacherSidebarLinks.map((link, index) => (
               <SidebarItem 
                 key={index} 
                 item={link} 
                 variant="primary" 
-                isCollapsed={isCollapsed} 
+                isCollapsed={effectiveCollapsed} 
                 onClick={() => {
                   if (window.innerWidth < 768) {
                     setIsMobileOpen(false);
@@ -74,8 +78,8 @@ const TeacherSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
         </div>
 
         {/* ─── Bottom Section ─── */}
-        <div className={`shrink-0 border-t border-slate-100 pt-3 pb-4 flex flex-col ${isCollapsed ? "px-2 items-center gap-1.5" : "px-3 gap-0.5"}`}>
-          {!isCollapsed && (
+        <div className={`shrink-0 border-t border-slate-100 pt-3 pb-4 flex flex-col ${effectiveCollapsed ? "px-2 items-center gap-1.5" : "px-3 gap-0.5"}`}>
+          {!effectiveCollapsed && (
             <p className="px-2 mb-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">
               Support
             </p>
@@ -86,7 +90,7 @@ const TeacherSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
               key={index} 
               item={link} 
               variant="secondary" 
-              isCollapsed={isCollapsed} 
+              isCollapsed={effectiveCollapsed} 
               onClick={() => {
                 if (window.innerWidth < 768) {
                   setIsMobileOpen(false);
@@ -96,7 +100,7 @@ const TeacherSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
           ))}
 
           {/* Collapse Toggle */}
-          {isCollapsed ? (
+          {effectiveCollapsed ? (
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
