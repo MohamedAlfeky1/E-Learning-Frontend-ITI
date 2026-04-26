@@ -1,10 +1,20 @@
-import { Bell, Settings } from "lucide-react";
+import { Bell, Settings, Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const TeacherHeader = () => {
+const TeacherHeader = ({ onMenuClick }) => {
   return (
-    <header className="h-16 border-b bg-white flex items-center justify-end px-6 sticky top-0 z-10">
-      <div className="flex items-center gap-6">
+    <header className="h-16 border-b bg-white flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10">
+      {/* Mobile Menu Toggle */}
+      <div className="flex items-center md:hidden">
+        <button
+          onClick={onMenuClick}
+          className="p-2 -ml-2 mr-2 text-slate-500 hover:text-indigo-600 hover:bg-slate-100 rounded-lg transition-colors"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      </div>
+
+      <div className="flex items-center gap-6 ml-auto">
         
         {/* Notifications & Settings */}
         <div className="flex items-center gap-4 text-slate-500">
