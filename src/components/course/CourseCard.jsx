@@ -13,7 +13,7 @@ import { useAddFavoriteMutation } from "@/mutations/useAddFavoriteMutation";
 import { useDeleteFavoriteMutation } from "@/mutations/useDeleteFavoriteMutation";
 import { useGetCartItems } from "@/queries/useCartQueries";
 import { useAddToCart } from "@/mutations/cartMutations";
-import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
+import { useEnrollmentDetailsQuery, useMyEnrolledCourseIds } from "@/queries/enrollmentQueries";
 import placeholderImg from "@/assets/placeholder.jpg";
 import { Spinner } from "../ui/spinner";
 import { toast } from "sonner";
@@ -36,8 +36,9 @@ function CourseCard({ course }) {
   const { mutateAsync: addFavorite, isPending: isAddingFavorite } = useAddFavoriteMutation();
   const { mutateAsync: removeFavorite, isPending: isRemovingFavorite } = useDeleteFavoriteMutation();
   const addToCartMutation = useAddToCart();
-  const { data: enrollmentData } = useEnrollmentDetailsQuery(course._id);
+  const { data: enrolledIds } = useMyEnrolledCourseIds();
 
+  const userRole= userData?.role
   const isLoggedIn = !!userData?._id;
   const favorites = favoritesData?.data || [];
   const favorite = !favoritesLoading && !favoritesError
@@ -47,7 +48,7 @@ function CourseCard({ course }) {
   const isInCart = cartData?.data?.cart?.items?.some(
     (item) => item.courseId === course._id || item.courseId?._id === course._id
   );
-  const isAlreadyEnrolled = !!enrollmentData;
+const isAlreadyEnrolled = enrolledIds?.has(course._id) ?? false;
 
   const handleCartClick = (e) => {
     e.preventDefault();
@@ -76,6 +77,8 @@ function CourseCard({ course }) {
       }
     );
   };
+  console.log("userData",userData);
+  
 
   return (
     <>
@@ -147,7 +150,9 @@ function CourseCard({ course }) {
             ) : course.type === "paid" ? (
               <div className="flex flex-row items-center justify-between gap-3 w-full">
                 <p className="text-2xl font-bold text-[#3525CD]">${course.price}</p>
-                <Button
+
+                {userRole ==='student'?(
+                  <Button
                   size="icon-sm"
                   variant="secondary"
                   className="cursor-pointer rounded-full py-3 px-3"
@@ -162,6 +167,8 @@ function CourseCard({ course }) {
                     <MdOutlineAddShoppingCart color="#3525CD" />
                   )}
                 </Button>
+                ):''}
+                
               </div>
             ) : (
               <Button
