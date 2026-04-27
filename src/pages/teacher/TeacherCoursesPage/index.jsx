@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTeacherCourses } from "@/queries/teacherCoursesQueries";
+import { useGetCategoryById } from "@/queries/categoryQueries";
 import { useDeleteCourse } from "@/mutations/useDeleteCourse";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,15 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import placeholderImg from "@/assets/placeholder.jpg";
+
+const CategoryName = ({ id }) => {
+  const { data: response, isLoading } = useGetCategoryById(id);
+  const category = response?.data;
+
+  if (!id) return <span>General</span>;
+  if (isLoading) return <span className="animate-pulse">Loading...</span>;
+  return <span className="truncate">{category?.name || "General"}</span>;
+};
 
 const TeacherCoursesPage = () => {
   const navigate = useNavigate();
@@ -205,8 +215,8 @@ const TeacherCoursesPage = () => {
 
               {/* Content Area */}
               <div className="p-6 flex-1 flex flex-col">
-                <div className="flex items-center justify-between mb-3 text-xs font-bold text-gray-400 uppercase tracking-widest">
-                  <span>{course.categoryId?.name || "General"}</span>
+                <div className="flex items-center justify-between gap-4 mb-3 text-xs font-bold text-gray-400 uppercase tracking-widest">
+                  <CategoryName id={course.categoryId} />
                   <span className="flex items-center gap-1.5 text-indigo-600 font-black">
                     <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
                     {course.status || "Published"}
