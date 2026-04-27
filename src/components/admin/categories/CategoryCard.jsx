@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-const CategoryCard = ({ category, isAdmin }) => {
+const CategoryCard = ({ category }) => {
   const navigate = useNavigate();
 
   return (
@@ -23,53 +23,51 @@ const CategoryCard = ({ category, isAdmin }) => {
           <h3 className="text-[#141B2B] font-['Plus Jakarta Sans'] font-extrabold text-xl leading-snug truncate">
             {category.name}
           </h3>
-          {isAdmin && (
-            <div
-              className="z-20 -mt-1 -mr-2"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 rounded-full hover:bg-gray-100 text-gray-500"
-                  >
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-40 rounded-xl p-1 shadow-lg border-gray-100"
+          <div
+            className="z-20 -mt-1 -mr-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-full hover:bg-gray-100 text-gray-500"
                 >
-                  <EditCategoryDialog
-                    category={category}
-                    trigger={
-                      <DropdownMenuItem
-                        onSelect={(e) => e.preventDefault()}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer font-medium text-sm"
-                      >
-                        <Pencil className="h-4 w-4 text-indigo-600" />
-                        <span>Edit Category</span>
-                      </DropdownMenuItem>
-                    }
-                  />
-                  <DeleteCategoryDialog
-                    category={category}
-                    trigger={
-                      <DropdownMenuItem
-                        onSelect={(e) => e.preventDefault()}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer font-medium text-sm text-red-600 focus:text-red-600 focus:bg-red-50"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        <span>Delete</span>
-                      </DropdownMenuItem>
-                    }
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          )}
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="w-40 rounded-xl p-1 shadow-lg border-gray-100"
+              >
+                <EditCategoryDialog
+                  category={category}
+                  trigger={
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer font-medium text-sm"
+                    >
+                      <Pencil className="h-4 w-4 text-indigo-600" />
+                      <span>Edit Category</span>
+                    </DropdownMenuItem>
+                  }
+                />
+                <DeleteCategoryDialog
+                  category={category}
+                  trigger={
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer font-medium text-sm text-red-600 focus:text-red-600 focus:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span>Delete</span>
+                    </DropdownMenuItem>
+                  }
+                />
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
         <p className="text-[#464555] font-['Inter'] text-sm leading-relaxed opacity-70 truncate">
           {category.description}
