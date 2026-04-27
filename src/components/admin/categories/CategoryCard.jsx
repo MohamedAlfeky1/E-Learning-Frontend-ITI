@@ -14,7 +14,7 @@ const CategoryCard = ({ category, isAdmin }) => {
     <div className="group flex flex-col w-full max-w-[400px] flex-shrink-0 p-8 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-[#3525CD]/5 transition-all duration-300 transform hover:-translate-y-1 mx-auto">
       <div className="space-y-3 flex-1">
         <div className="flex justify-between items-start gap-4">
-          <h3 className="text-[#141B2B] font-['Plus Jakarta Sans'] font-extrabold text-xl leading-snug">
+          <h3 className="text-[#141B2B] font-['Plus Jakarta Sans'] font-extrabold text-xl leading-snug truncate">
             {category.name}
           </h3>
           {isAdmin && (
@@ -62,7 +62,7 @@ const CategoryCard = ({ category, isAdmin }) => {
             </div>
           )}
         </div>
-        <p className="text-[#464555] font-['Inter'] text-sm leading-relaxed opacity-70 line-clamp-3">
+        <p className="text-[#464555] font-['Inter'] text-sm leading-relaxed opacity-70 truncate">
           {category.description}
         </p>
       </div>
