@@ -8,17 +8,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const CategoryCard = ({ category, isAdmin }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="group flex flex-col w-full max-w-[400px] flex-shrink-0 p-8 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-[#3525CD]/5 transition-all duration-300 transform hover:-translate-y-1 mx-auto">
+    <div
+      onClick={() => navigate(`/admin/categories/${category._id}`)}
+      className="group flex flex-col w-full max-w-[400px] flex-shrink-0 p-8 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-[#3525CD]/5 transition-all duration-300 transform hover:-translate-y-1 mx-auto cursor-pointer"
+    >
       <div className="space-y-3 flex-1">
         <div className="flex justify-between items-start gap-4">
           <h3 className="text-[#141B2B] font-['Plus Jakarta Sans'] font-extrabold text-xl leading-snug truncate">
             {category.name}
           </h3>
           {isAdmin && (
-            <div className="z-20 -mt-1 -mr-2">
+            <div
+              className="z-20 -mt-1 -mr-2"
+              onClick={(e) => e.stopPropagation()}
+            >
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
