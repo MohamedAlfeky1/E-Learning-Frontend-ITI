@@ -8,7 +8,7 @@ import { Link, Navigate } from "react-router-dom";
 // Categories section imports
 import { ArrowRight } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import CategoryCard from "@/components/admin/categories/CategoryCard";
+import CategoryCard from "@/components/homepage/CategoryCard";
 import { useCategories } from "@/queries/categoryQueries";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -261,7 +261,7 @@ const HomePage = () => {
                       key={category._id ?? category.id ?? category.name}
                       className="w-[320px] flex-shrink-0"
                     >
-                      <CategoryCard category={category} isAdmin={isAdmin} />
+                      <CategoryCard category={category} />
                     </div>
                   ))}
                 </div>
