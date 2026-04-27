@@ -1,25 +1,67 @@
 import EditCategoryDialog from "./EditCategoryDialog";
 import DeleteCategoryDialog from "./DeleteCategoryDialog";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 const CategoryCard = ({ category, isAdmin }) => {
   return (
     <div className="group flex flex-col w-full max-w-[400px] flex-shrink-0 p-8 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-[#3525CD]/5 transition-all duration-300 transform hover:-translate-y-1 mx-auto">
-      <div className="flex justify-between items-start mb-6">
-        <div className="w-14 h-14 bg-[#F1F3FF] flex justify-center items-center rounded-2xl text-[#3525CD] transition-colors group-hover:bg-[#3525CD] group-hover:text-white">
-          <span className="text-2xl">{category.icon || "📚"}</span>
+      <div className="space-y-3 flex-1">
+        <div className="flex justify-between items-start gap-4">
+          <h3 className="text-[#141B2B] font-['Plus Jakarta Sans'] font-extrabold text-xl leading-snug">
+            {category.name}
+          </h3>
+          {isAdmin && (
+            <div className="z-20 -mt-1 -mr-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-full hover:bg-gray-100 text-gray-500"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-40 rounded-xl p-1 shadow-lg border-gray-100"
+                >
+                  <EditCategoryDialog
+                    category={category}
+                    trigger={
+                      <DropdownMenuItem
+                        onSelect={(e) => e.preventDefault()}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer font-medium text-sm"
+                      >
+                        <Pencil className="h-4 w-4 text-indigo-600" />
+                        <span>Edit Category</span>
+                      </DropdownMenuItem>
+                    }
+                  />
+                  <DeleteCategoryDialog
+                    category={category}
+                    trigger={
+                      <DropdownMenuItem
+                        onSelect={(e) => e.preventDefault()}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer font-medium text-sm text-red-600 focus:text-red-600 focus:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span>Delete</span>
+                      </DropdownMenuItem>
+                    }
+                  />
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
         </div>
-        {isAdmin && (
-          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <EditCategoryDialog category={category} />
-            <DeleteCategoryDialog category={category} />
-          </div>
-        )}
-      </div>
-
-      <div className="space-y-2 flex-1">
-        <h3 className="text-[#141B2B] font-['Plus Jakarta Sans'] font-extrabold text-xl leading-snug">
-          {category.name}
-        </h3>
         <p className="text-[#464555] font-['Inter'] text-sm leading-relaxed opacity-70 line-clamp-3">
           {category.description}
         </p>
