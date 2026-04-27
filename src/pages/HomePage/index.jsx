@@ -75,7 +75,9 @@ const HomePage = () => {
     isLoading: coursesLoading,
     isError: coursesError,
   } = useGetAllCourses();
-  const courses = coursesData?.data ?? [];
+  const courses = (coursesData?.data ?? [])
+    .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+    .slice(0, 10);
 
   // Hero carousel listener
   useEffect(() => {
@@ -112,8 +114,12 @@ const HomePage = () => {
     };
   }, [coursesApi]);
 
-  if (userData && (userData.role === "teacher" || userData.role === "student")) {
-    const dashboardPath = userData.role === "teacher" ? "/teacher/dashboard" : "/dashboard";
+  if (
+    userData &&
+    (userData.role === "teacher" || userData.role === "student")
+  ) {
+    const dashboardPath =
+      userData.role === "teacher" ? "/teacher/dashboard" : "/dashboard";
     return <Navigate to={dashboardPath} replace />;
   }
 
