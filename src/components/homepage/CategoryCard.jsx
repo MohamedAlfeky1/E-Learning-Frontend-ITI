@@ -10,6 +10,7 @@ const CategoryCard = ({ category }) => {
     }
   };
 
+  
   return (
     <div 
       onClick={handleCategoryClick}
