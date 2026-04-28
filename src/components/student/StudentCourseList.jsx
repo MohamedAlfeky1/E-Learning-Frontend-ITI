@@ -82,13 +82,13 @@ const StudentCourseList = ({ onCourseChange }) => {
         <SelectContent className="rounded-xl shadow-2xl border-slate-100 p-1">
           {courses.map((course) => (
             <SelectItem 
-              key={course.courseId._id} 
-              value={course.courseId._id} 
+              key={course?.courseId?._id} 
+              value={course?.courseId?._id} 
               className="rounded-lg py-3 focus:bg-indigo-50 focus:text-indigo-700 cursor-pointer transition-colors"
             >
               <div className="flex items-center gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
-                <span className="font-medium text-slate-700">{course.courseId.title}</span>
+                <span className="font-medium text-slate-700">{course?.courseId?.title}</span>
               </div>
             </SelectItem>
           ))}
