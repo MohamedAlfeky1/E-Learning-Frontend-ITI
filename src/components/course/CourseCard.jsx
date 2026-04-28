@@ -50,7 +50,7 @@ function CourseCard({ course }) {
   const removeFromCartMutation = useDeleteCartMutation();
   const { data: enrolledIds } = useMyEnrolledCourseIds();
 
-  const userRole = userData?.role;
+  const userRole = userData?.role
   const isLoggedIn = !!userData?._id;
   const favorites = favoritesData?.data || [];
   const favorite =
@@ -97,9 +97,7 @@ function CourseCard({ course }) {
     }
 
     if (course.type === "free") {
-      navigate(`/checkout-page?courseId=${course._id}`, {
-        state: { isFreeCourse: true },
-      });
+      navigate(`/checkout-page?courseId=${course._id}`, { state: { isFreeCourse: true } })
       return;
     }
 
@@ -112,7 +110,7 @@ function CourseCard({ course }) {
     );
   };
   console.log("userData", userData);
-
+  
   return (
     <>
       <Link
@@ -167,11 +165,9 @@ function CourseCard({ course }) {
             </div>
           </div>
 
-          {course.type === "paid" ? (
-            ""
-          ) : (
-            <Badge variant="lightPruple">Free</Badge>
-          )}
+          {course.type === "paid" ?
+            ''
+            : <Badge variant="lightPruple">Free</Badge>}
           {/* Title */}
           <h2 className="text-xl font-bold text-gray-900 leading-snug">
             {course.title}
@@ -197,19 +193,15 @@ function CourseCard({ course }) {
                   ${course.price}
                 </p>
 
-                {userRole === "student" ? (
+                {userRole === 'student' ? (
                   <Button
                     size="icon-sm"
                     variant="secondary"
                     className="cursor-pointer rounded-full py-3 px-3"
                     onClick={handleCartClick}
-                    disabled={
-                      addToCartMutation.isPending ||
-                      removeFromCartMutation.isPending
-                    }
+                    disabled={addToCartMutation.isPending || removeFromCartMutation.isPending}
                   >
-                    {addToCartMutation.isPending ||
-                    removeFromCartMutation.isPending ? (
+                    {addToCartMutation.isPending || removeFromCartMutation.isPending ? (
                       <Spinner className="size-4" />
                     ) : isInCart ? (
                       <MdOutlineRemoveShoppingCart color="#3525CD" />
@@ -217,11 +209,11 @@ function CourseCard({ course }) {
                       <MdOutlineAddShoppingCart color="#3525CD" />
                     )}
                   </Button>
-                ) : (
-                  ""
-                )}
+                ) : ''}
+
               </div>
             ) : (
+
               <Button
                 variant="secondary"
                 className="text-sm cursor-pointer py-2 px-3"

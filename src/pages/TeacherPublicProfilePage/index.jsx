@@ -1,5 +1,4 @@
 import { Button } from "../../components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import Loader from "@/components/ui/loader";
 import { useGetUser } from "@/queries/useUserQueries";
 import { useNavigate, useParams } from "react-router-dom";
