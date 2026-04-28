@@ -15,14 +15,16 @@ import { useUpdatePasswordMutation, useUpdateProfileMutation } from "@/mutations
 import { useRef, useState } from "react";
 import { useFormik } from "formik";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
 
 
 const StudentProfilePage = () => {
+  const navigate= useNavigate();
   const fileInputRef = useRef();
   const { data, isLoading, error } = useUserQuery();
   const updateProfileMutation = useUpdateProfileMutation();
   const changePasswordMutation = useUpdatePasswordMutation()
-  console.log(data);
+  console.log("data",data);
 
   const [errors, setErrors] = useState({
     email: "",
@@ -174,7 +176,7 @@ const StudentProfilePage = () => {
           {/* Buttons */}
           {/* Buttons */}
           <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-            <Button className="w-full sm:w-auto px-4 py-2 text-center" variant="white">
+            <Button onClick={()=>navigate(`/students/${data?._id}`)} type='button' className="w-full sm:w-auto px-4 py-2 text-center" variant="white">
               Preview Public Profile
             </Button>
             <Button type="submit" className="w-full sm:w-auto px-4 py-2 text-center" variant="purpleBtnDefault">
@@ -331,39 +333,6 @@ const StudentProfilePage = () => {
           </form>
 
           {/* <Button variant='destructiveOutline'>Deactive Account</Button> */}
-        </div>
-
-        <div className="flex flex-col gap-3 py-5 px-2 justify-center items-center rounded-md bg-white">
-
-          <div className="flex gap-3 items-center ">
-            <Badge className='py-3' variant="lightBrown">
-              <MdOutlineNotificationsActive size={17} />
-            </Badge>
-            <h1 className="font-bold text-md">Notifications</h1>
-          </div>
-
-          <div className="flex flex-col min-w-full px-2 gap-3 items-center">
-            <div className="flex justify-between items-center w-full">
-              <Label className='text-[#464555]'>Course Announcements</Label>
-              <div><Input className='h-4 w-4' type='checkbox' /></div>
-            </div>
-
-            <div className="flex justify-between items-center w-full">
-              <Label className='text-[#464555]'>Assignment Deadlines</Label>
-              <div><Input className='h-4 w-4' type='checkbox' /></div>
-            </div>
-
-            <div className="flex justify-between items-center w-full">
-              <Label className='text-[#464555]'>Grade Updates</Label>
-              <div><Input className='h-4 w-4' type='checkbox' /></div>
-            </div>
-
-            <div className="flex justify-between items-center w-full">
-              <Label className='text-[#464555]'>Social Mentions</Label>
-              <div><Input className='h-4 w-4' type='checkbox' /></div>
-            </div>
-          </div>
-
         </div>
 
 

@@ -17,13 +17,14 @@ import { useEnrollmentDetailsQuery, useMyCoursesQuery, useUpdateProgressMutation
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
-import { useAddReview } from "@/mutations/useReviewMutations";
+import { useAddReview, useDeleteReview } from "@/mutations/useReviewMutations";
 import { useFormik } from "formik";
 import { RATING_RANGE } from "@/data/reviewData";
 import { useGetMyCourseReview } from "@/queries/useReviewQueries";
 import { useUserQuery } from "@/queries/authQueries";
 import { FaStar } from "react-icons/fa";
 import { MessageSquare } from "lucide-react";
+import { FaDeleteLeft } from "react-icons/fa6";
 
 
 const CoursePlayerPage = () => {
@@ -43,17 +44,30 @@ const CoursePlayerPage = () => {
   const { data: reviewsData, isLoading: loadingReviews, error: errorReviews } = useGetMyCourseReview(courseId, studentId);
   const { data: enrollmentsDetails } = useEnrollmentDetailsQuery(courseId);
   const { mutate: updateProgress } = useUpdateProgressMutation();
+  const deleteReviewMutation = useDeleteReview()
   const addReviewMutation = useAddReview();
   const enrollmentId = enrollmentsDetails?._id;
   const myReview = reviewsData?.data;
-  
+  const hasReview = myReview?.length > 0;
+
   const teacherObj = course?.data?.teacherId || course?.data?.createdBy;
   const teacherId = teacherObj?._id || teacherObj;
   const teacherName = teacherObj?.firstName ? `${teacherObj.firstName} ${teacherObj.lastName || ''}`.trim() : "Teacher";
 
   const handleSubmitReview = (formData) => {
     addReviewMutation.mutate(
-      { courseId, rating: formData.rating, comment: formData.comment },
+      {
+        courseId,
+        rating: formData.rating,
+        comment: formData.comment
+      },
+
+    );
+  };
+
+  const handleDeleteReview = (reviewId) => {
+    deleteReviewMutation.mutate(
+      reviewId,
       {
         onError: (err) => {
           setReviewError((prev) => ({
@@ -148,18 +162,18 @@ const CoursePlayerPage = () => {
           </div>
         </div>
 
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex flex-col md:flex-row gap-2  justify-between items-center md:items-start mt-4">
           <h2 className="font-bold text-2xl text-[var(--foreground)]">
             {selectedVideo?.lesson?.orderIndex}.{selectedVideo?.orderIndex} {selectedVideo?.title}
           </h2>
-          <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white"
-                onClick={() => navigate('/chats', { state: { courseId, teacherId, teacherName } })}
-              >
-                <MessageSquare className="w-4 h-4" /> Chat with Teacher
-              </Button>
+          <div className="flex flex-row md:flex-col justify-center items-center gap-3">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white"
+              onClick={() => navigate('/chats', { state: { courseId, teacherId, teacherName } })}
+            >
+              <MessageSquare className="w-4 h-4" /> Chat with Teacher
+            </Button>
             <Button onClick={() => handleProgressUpdate(enrollmentId, selectedVideo?._id)}>
               <IoMdCheckmark color="white" /> Record progress
             </Button>
@@ -258,8 +272,22 @@ const CoursePlayerPage = () => {
                     key={item._id}
                     className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm hover:shadow-md transition"
                   >
+
                     <div className="flex justify-between items-center mb-2">
-                      <p className="text-sm text-[var(--muted-foreground)] leading-relaxed">{item.comment}</p>
+                      <div className="flex items-center gap-3">
+                        <Button
+                          type='button'
+                          onClick={() => { handleDeleteReview(item._id) }}
+                          className="group px-2 py-1 rounded-xl bg-red-50 hover:bg-red-100 border border-red-100 hover:border-red-300 transition-all duration-200 cursor-pointer"
+                        >
+                          <FaDeleteLeft className="text-red-400 group-hover:text-red-600 w-4 h-4 transition-colors duration-200" />
+                        </Button>
+
+                        <p className="text-sm text-black leading-relaxed">
+                          {item.comment}
+                        </p>
+                      </div>
+
                       <div className="flex items-center gap-1 text-yellow-500 font-semibold">
                         {item.rating}
                         <FaStar />
@@ -276,8 +304,9 @@ const CoursePlayerPage = () => {
                 <Input
                   variant="white"
                   className="text-[var(--foreground)] border border-[var(--border)] bg-[var(--card)]"
-                  placeholder="Add Your Comment"
+                  placeholder={`${hasReview?'You Already Reviewd This Course':'Add Your Comment'}`}
                   name="comment"
+                  disabled={hasReview}
                   value={formik.values.comment}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -287,10 +316,11 @@ const CoursePlayerPage = () => {
                 <select
                   id="rating"
                   name="rating"
+                  disabled={hasReview}
                   value={formik.values.rating}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  className="border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] rounded-md px-3 py-2 text-sm"
+                  className="border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] rounded-md px-4 py-2 text-sm"
                 >
                   <option value="">Select rating</option>
                   {RATING_RANGE.map((value) => (
@@ -299,7 +329,7 @@ const CoursePlayerPage = () => {
                 </select>
 
                 <p className="text-red-500">{reviewError.api || reviewError.review}</p>
-                <Button variant="purpleBtnXl">Submit</Button>
+                <Button variant="purpleBtnXl" disabled={hasReview}>Submit</Button>
               </form>
             </TabsContent>
           </Tabs>
