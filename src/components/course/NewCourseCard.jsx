@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
 
 function NewCourseCard({ course }) {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ function NewCourseCard({ course }) {
   const { data: userData, isLoading: userLoading } = useUserQuery();
   const { data: cartData } = useGetCartItems();
   const addToCartMutation = useAddToCart();
+  const removeFromCartMutation = useDeleteCartMutation();
   const { data: enrolledIds } = useMyEnrolledCourseIds();
 
   const userRole = userData?.role
@@ -41,6 +43,33 @@ function NewCourseCard({ course }) {
     return text.slice(0, charLimit);
   };
 
+  const handleCartDelete = () => {
+    removeFromCartMutation.mutate(
+      course._id
+    )
+  }
+
+  const handleProceedToCheckout = () => {
+    console.log("clicked");
+    navigate("/checkout-page", {
+      state: {
+        voucherCode: null,
+      },
+    });
+  };
+
+  const handleAddToCart = () => {
+    addToCartMutation.mutate(
+      { courseId: course._id },
+      {
+        onSuccess: () => {
+          navigate("/cart");
+        },
+
+      }
+    );
+  }
+
   const handleEnroll = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -55,32 +84,25 @@ function NewCourseCard({ course }) {
       return;
     }
 
-    if (course.type === "free") {
-      navigate("/my-courses");
-      return;
-    }
-
     if (isInCart) {
-      navigate("/cart");
+      handleCartDelete();
+      return; 
+    }
+
+    if (course.type === "free") {
+      navigate(`/checkout-page?courseId=${course._id}`, { state: { isFreeCourse: true } })
       return;
     }
 
-    addToCartMutation.mutate(
-      { courseId: course._id },
-      {
-        onSuccess: () => {
-          toast.success("Course added to cart!");
-          navigate("/cart");
-        },
-        onError: () => toast.error("Failed to add course to cart."),
-      }
-    );
+    handleAddToCart()
+
+
   };
 
   const enrollLabel = () => {
     if (userLoading) return "Loading...";
     if (isAlreadyEnrolled) return "Already Enrolled ✓";
-    if (isInCart) return "Go to Cart";
+    if (isInCart) return "Remove From Cart";
     return "Enroll Now";
   };
 
@@ -164,16 +186,20 @@ function NewCourseCard({ course }) {
 
               </div>
             ) : (
-              <button
-                onClick={handleEnroll}
-                disabled={addToCartMutation.isPending || isAlreadyEnrolled}
-                className={`text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200 ${isAlreadyEnrolled
-                  ? "bg-green-600 cursor-default"
-                  : "bg-green-600 hover:bg-green-700"
-                  }`}
-              >
-                {enrollLabel()}
-              </button>
+              <div className="flex justify-between items-center w-full">
+                <Badge variant="lightPruple">Free</Badge>
+                <button
+                  onClick={handleEnroll}
+                  disabled={addToCartMutation.isPending || isAlreadyEnrolled}
+                  className={`text-white text-sm font-semibold px-5 py-2 rounded-md transition-colors duration-200 ${isAlreadyEnrolled
+                    ? "bg-green-600 cursor-default"
+                    : "bg-green-600 hover:bg-green-700"
+                    }`}
+                >
+                  {enrollLabel()}
+                </button>
+              </div>
+
             )}
           </div>
         </div>
