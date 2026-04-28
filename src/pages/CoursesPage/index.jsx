@@ -2,15 +2,12 @@ import { Input } from "@/components/ui/input";
 import { useGetAllCourses } from "@/queries/useCourses";
 import { IoSearchSharp } from "react-icons/io5";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { SlidersHorizontal, ChevronDown } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useCategories } from "@/queries/categoryQueries";
