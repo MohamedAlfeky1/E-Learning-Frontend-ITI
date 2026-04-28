@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useDeleteCategoryMutation } from "@/mutations/useDeleteCategoryMutation";
 
-const DeleteCategoryDialog = ({ category }) => {
+const DeleteCategoryDialog = ({ category, trigger }) => {
   const [open, setOpen] = useState(false);
   const { mutateAsync, isPending, isError } = useDeleteCategoryMutation();
 
@@ -32,9 +32,11 @@ const DeleteCategoryDialog = ({ category }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive" size="icon">
-          <Trash2 size={22} />
-        </Button>
+        {trigger || (
+          <Button variant="destructive" size="icon">
+            <Trash2 size={22} />
+          </Button>
+        )}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-sm">

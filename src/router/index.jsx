@@ -85,6 +85,7 @@ import AdminTeachersPage from "@/pages/admin/AdminTeachersPage";
 import AdminStudentsPage from "@/pages/admin/AdminStudentsPage";
 import AdminCoursesPage from "@/pages/admin/AdminCoursesPage";
 import AdminCategoriesPage from "@/pages/admin/AdminCategoriesPage";
+import AdminCategoryDetailsPage from "@/pages/admin/AdminCategoryDetailsPage";
 import AdminVouchersPage from "@/pages/admin/AdminVouchersPage";
 import AdminSlidersPage from "@/pages/admin/AdminSlidersPage";
 import AdminReportsPage from "@/pages/admin/AdminReportsPage";
@@ -374,6 +375,7 @@ const router = createBrowserRouter([
       // Courses & Categories
       { path: "courses", element: <AdminCoursesPage /> }, // /admin/courses
       { path: "categories", element: <AdminCategoriesPage /> }, // /admin/categories
+      { path: "categories/:id", element: <AdminCategoryDetailsPage /> }, // /admin/categories/:id
 
       // Enrollment
       { path: "enroll", element: <AdminEnrollStudentPage /> }, // /admin/enroll

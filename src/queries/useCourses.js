@@ -1,5 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllCourses, getAllCoursesOfLoggedInTeacher, getCourseById } from '../services/courseService';
+import {
+  getAllCourses,
+  getAllCoursesOfLoggedInTeacher,
+  getCourseById,
+  browseCourses,
+} from "../services/courseService";
 
 // Example TanStack Query hook for fetching courses
 // export const useCourses = () => {
@@ -42,10 +47,25 @@ export const useGetAllCourses = () => {
 }
 
 
-export const useGetAllTeacherCourses = () =>{
+export const useGetAllTeacherCourses = () => {
   return useQuery({
-    queryKey:['allCourses'],
-    queryFn:getAllCoursesOfLoggedInTeacher,
-  })
-}
+    queryKey: ["allCourses"],
+    queryFn: getAllCoursesOfLoggedInTeacher,
+  });
+};
+
+/**
+ * Fetch courses by category ID using React Query.
+ *
+ * @function useGetCoursesByCategory
+ * @param {string} categoryId - The category ID to filter by.
+ * @returns {import('@tanstack/react-query').UseQueryResult}
+ */
+export const useGetCoursesByCategory = (categoryId) => {
+  return useQuery({
+    queryKey: ["courses", "category", categoryId],
+    queryFn: () => browseCourses({ filters: { categoryId } }),
+    enabled: !!categoryId,
+  });
+};
 
