@@ -16,6 +16,7 @@ const StudentCourseList = ({ onCourseChange }) => {
   console.log(courses);
   console.log(selectedCourseId);
   
+
   
 
   useEffect(() => {
