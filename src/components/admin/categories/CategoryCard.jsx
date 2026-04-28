@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 const CategoryCard = ({ category }) => {
   const navigate = useNavigate();
 
+  
   return (
     <div
       onClick={() => navigate(`/admin/categories/${category._id}`)}
