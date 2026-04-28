@@ -7,6 +7,7 @@ import PaymentSummary from "@/components/payment/PaymentSummary";
 import VoucherSection from "@/components/payment/VoucherSection";
 import visa from "../../../assets/visa.png";
 import mastercard from "../../../assets/mastercard.png";
+import Loader from "@/components/ui/loader";
 import { toast } from "sonner";
 import {
   Card,
@@ -30,8 +31,10 @@ import {
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const isFreeCourse = location.state?.isFreeCourse;
   const params = new URLSearchParams(location.search);
   const bookingId = params.get("bookingId");
+  const courseId = params.get("courseId");
 const voucherCode = location.state?.voucherCode;
 
   const { mutate, isPending } = useCheckoutMutation();
@@ -41,16 +44,19 @@ const voucherCode = location.state?.voucherCode;
 
 useEffect(() => {
   if (isFirstLoad) {
-    console.log("Sending checkout request with:", { voucherCode, bookingId }); 
 
     mutate(
-      { voucherCode: voucherCode || null, bookingId: bookingId || null },
-      {
-        onSuccess: (data) => {
-          console.log("Success! Received checkout data:", data);
-          setCheckoutDetails(data);
-          setIsFirstLoad(false);
-        },
+  { voucherCode: voucherCode || null, bookingId: bookingId || null, courseId: courseId || null }, 
+  {
+    onSuccess: (data) => {
+      if (data.isFree) {
+        toast.success("Enrolled successfully!");
+        navigate("/my-courses"); 
+        return;
+      }
+      setCheckoutDetails(data);
+      setIsFirstLoad(false);
+    },
         onError: (error) => {
           console.error("Checkout Mutation Error:", error.response?.data || error);
           toast.error(error.response?.data?.message || "Failed to initialize payment");
@@ -79,6 +85,13 @@ const handleApplyVoucher = (code) => {
   );
 };
   if (isFirstLoad && !checkoutDetails) {
+    if (isFreeCourse) {
+      return (
+        <div className="flex items-center justify-center min-h-screen">
+          <Loader /> 
+        </div>
+      );
+    }
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background space-y-6 px-4">
         <div className="relative flex items-center justify-center">
@@ -159,7 +172,7 @@ const handleApplyVoucher = (code) => {
 
                 <VoucherSection
                   isLoading={isPending}
-                 onApply={handleApplyVoucher}
+                  onApply={handleApplyVoucher}
                 />
 
                 <div className="p-4 bg-accent rounded-xl border border-border text-center">
