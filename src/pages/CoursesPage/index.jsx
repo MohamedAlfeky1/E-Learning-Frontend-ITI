@@ -2,16 +2,14 @@ import { Input } from "@/components/ui/input";
 import { useGetAllCourses } from "@/queries/useCourses";
 import { IoSearchSharp } from "react-icons/io5";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { SlidersHorizontal, ChevronDown } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useCategories } from "@/queries/categoryQueries";
 import { useSearchCourses } from "@/mutations/useSearchMutations";
 import Loader from "@/components/ui/loader";
@@ -57,16 +55,25 @@ const CoursesPage = () => {
   console.log(data);
 
   /*States */
+  const [searchParams] = useSearchParams();
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
     keyword: "",
-    categoryId: null,
+    categoryId: searchParams.get("categoryId") || null,
     level: null,
     type: null,
     minPrice: null,
     maxPrice: null,
   });
+
+  // Sync categoryId from URL if it changes
+  useEffect(() => {
+    const categoryId = searchParams.get("categoryId");
+    if (categoryId) {
+      setFilters((prev) => ({ ...prev, categoryId }));
+    }
+  }, [searchParams]);
 
   {
     /**functions */
@@ -279,7 +286,7 @@ const CoursesPage = () => {
 
 
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
-        {isLoading ? (
+        {isLoading || isPending ? (
           <div className="col-span-4 flex justify-center items-center min-h-40">
             <Loader />
           </div>

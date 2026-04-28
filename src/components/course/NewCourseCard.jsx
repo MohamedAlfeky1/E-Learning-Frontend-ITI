@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { useUserQuery } from "@/queries/authQueries";
 import { useGetCartItems } from "@/queries/useCartQueries";
 import { useAddToCart } from "@/mutations/cartMutations";
-import { useEnrollmentDetailsQuery, useMyEnrolledCourseIds } from "@/queries/enrollmentQueries";
+import { useMyEnrolledCourseIds } from "@/queries/enrollmentQueries";
 import { toast } from "sonner";
 import {
   Dialog,

@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { useGetCoursesById } from '@/queries/useCourses';
 import CourseTitle from '@/components/teacher/students/CourseTitle';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 function TeacherStudentsPage() {
     const { data: teacherCourses, isLoading, error } = useTeacherCoursesQuery()
@@ -69,6 +70,9 @@ function TeacherStudentsPage() {
                             <TableHead className="text-xs font-semibold text-gray-400 tracking-widest uppercase text-right px-6">
                                 STATUS
                             </TableHead>
+                            <TableHead className="text-xs font-semibold text-gray-400 tracking-widest uppercase text-right px-6">
+                                ACTION
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
 
@@ -104,9 +108,21 @@ function TeacherStudentsPage() {
                                             <p className="font-semibold text-gray-900">
                                                 {enrollment.studentId?.firstName + " " + enrollment.studentId?.lastName}
                                             </p>
-                                            <p className="text-sm text-blue-500">
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <p className="text-sm text-blue-500 hover:cursor-pointer">
+                                                            Email
+                                                        </p>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>{enrollment.studentId?.email}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                            {/* <p className="text-sm text-blue-500">
                                                 {enrollment.studentId?.email}
-                                            </p>
+                                            </p> */}
                                         </div>
                                     </div>
                                 </TableCell>
