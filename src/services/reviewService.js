@@ -12,6 +12,16 @@ export const getCourseReviews = async (courseId) => {
     }
 }
 
+export const deleteCourseReviews = async (courseId) => {
+    try {
+        const response = await axiosInstance.delete(ENDPOINTS.REVIEWS_DELETE(courseId));
+        return response.data;
+    } catch (error) {
+        console.error("Error Deleting course reviews:", error);
+        throw error;
+    }
+}
+
 export const getMyCourseReviews = async (courseId , studentId) => {
     try {
         const response = await axiosInstance.get(ENDPOINTS.MY_REVIEW_COURSE_BY_ID(courseId , studentId));
