@@ -67,6 +67,7 @@ function CourseCard({ course }) {
     removeFromCartMutation.mutate(course._id);
   };
 
+  
   const handleProceedToCheckout = () => {
     console.log("clicked");
     navigate("/checkout-page", {
