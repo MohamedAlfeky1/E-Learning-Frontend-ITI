@@ -16,6 +16,7 @@ const StudentCourseList = ({ onCourseChange }) => {
   console.log(courses);
   console.log(selectedCourseId);
   
+
   
 
   useEffect(() => {
@@ -88,7 +89,7 @@ const StudentCourseList = ({ onCourseChange }) => {
             >
               <div className="flex items-center gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
-                <span className="font-medium text-slate-700">{course.courseId.title}</span>
+                <span className="font-medium text-slate-700">{course?.courseId?.title}</span>
               </div>
             </SelectItem>
           ))}
