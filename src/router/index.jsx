@@ -115,6 +115,7 @@ import AvailableSlotsPage from "@/pages/teacher/AvailableSlotsPage";
 // ─────────────────────────────────────────────────────────────────────────────
 import ChatPage from "@/pages/chatPage";
 import TeacherStudentsPage from "@/pages/teacher/TeacherStudentsPage";
+import StudentPublicProfilePage from "@/pages/student/StudentPublicProfilePage";
 
 // =============================================================================
 const router = createBrowserRouter([
@@ -192,6 +193,11 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <StudentDashboardPage /> }, // /dashboard
       { path: "profile", element: <StudentProfilePage /> }, // /profile
       { path: "chats", element: <ChatPage /> }, // /chat
+      {
+        // /students/:id
+        path: "students/:id",
+        element: <StudentPublicProfilePage />,
+      },
 
       // Courses
       { path: "my-courses", element: <MyCoursesPage /> }, // /my-courses
