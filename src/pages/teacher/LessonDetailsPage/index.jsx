@@ -41,6 +41,8 @@ const LessonDetailsPage = () => {
   const { mutate: deleteMaterial, isPending: isDeletingMaterial } =
     useDeleteLessonMaterialMutation(courseId, lessonId);
 
+  const [deletingVideoId, setDeletingVideoId] = useState(null);
+  const [deletingMaterialId, setDeletingMaterialId] = useState(null);
   const [videoFiles, setVideoFiles] = useState([]);
   const [materialFiles, setMaterialFiles] = useState([]);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -232,13 +234,19 @@ const LessonDetailsPage = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() =>
-                        deleteVideo({ lessonId, videoId: vid._id })
-                      }
+                      onClick={() => {
+                        setDeletingVideoId(vid._id);
+                        deleteVideo(
+                          { lessonId, videoId: vid._id },
+                          {
+                            onSettled: () => setDeletingVideoId(null),
+                          },
+                        );
+                      }}
                       disabled={isDeletingVideo}
                       className="text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded-xl"
                     >
-                      {isDeletingVideo ? (
+                      {isDeletingVideo && deletingVideoId === vid._id ? (
                         <Spinner className="w-4 h-4 border-white" />
                       ) : (
                         <Trash2 className="w-5 h-5" />
@@ -345,13 +353,19 @@ const LessonDetailsPage = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() =>
-                        deleteMaterial({ lessonId, materialId: mat._id })
-                      }
+                      onClick={() => {
+                        setDeletingMaterialId(mat._id);
+                        deleteMaterial(
+                          { lessonId, materialId: mat._id },
+                          {
+                            onSettled: () => setDeletingMaterialId(null),
+                          },
+                        );
+                      }}
                       disabled={isDeletingMaterial}
                       className="text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded-xl"
                     >
-                      {isDeletingMaterial ? (
+                      {isDeletingMaterial && deletingMaterialId === mat._id ? (
                         <Spinner className="w-4 h-4 border-white" />
                       ) : (
                         <Trash2 className="w-5 h-5" />
