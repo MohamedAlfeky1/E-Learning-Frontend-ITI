@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLesson } from "@/queries/lessonsQueries";
 import { useUploadVideosMutation } from "@/mutations/useUploadVideosMutation";
@@ -7,6 +7,7 @@ import { useDeleteLessonVideoMutation } from "@/mutations/useDeleteLessonVideoMu
 import { useDeleteLessonMaterialMutation } from "@/mutations/useDeleteLessonMaterialMutation";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import {
   ChevronLeft,
   Video,
@@ -30,8 +31,6 @@ const LessonDetailsPage = () => {
   } = useLesson(courseId, lessonId);
   const lesson = lessonResponse?.data;
 
-  console.log(lesson);
-
   const { mutate: uploadVideos, isPending: isUploadingVideos } =
     useUploadVideosMutation(courseId);
   const { mutate: uploadMaterials, isPending: isUploadingMaterials } =
@@ -43,25 +42,86 @@ const LessonDetailsPage = () => {
 
   const [videoFiles, setVideoFiles] = useState([]);
   const [materialFiles, setMaterialFiles] = useState([]);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [materialProgress, setMaterialProgress] = useState(0);
+
+  const videoAbortController = useRef(null);
+  const materialAbortController = useRef(null);
 
   const handleVideoUpload = () => {
     if (videoFiles.length === 0) return;
+    setVideoProgress(0);
+    videoAbortController.current = new AbortController();
     uploadVideos(
-      { lessonId, files: videoFiles },
       {
-        onSuccess: () => setVideoFiles([]),
+        lessonId,
+        files: videoFiles,
+        signal: videoAbortController.current.signal,
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
+          setVideoProgress(percentCompleted);
+        },
+      },
+      {
+        onSuccess: () => {
+          setVideoFiles([]);
+          setVideoProgress(0);
+          videoAbortController.current = null;
+        },
+        onError: () => {
+          setVideoProgress(0);
+          videoAbortController.current = null;
+        },
       },
     );
   };
 
+  const handleCancelVideoUpload = () => {
+    if (videoAbortController.current) {
+      videoAbortController.current.abort();
+      videoAbortController.current = null;
+      setVideoProgress(0);
+    }
+  };
+
   const handleMaterialUpload = () => {
     if (materialFiles.length === 0) return;
+    setMaterialProgress(0);
+    materialAbortController.current = new AbortController();
     uploadMaterials(
-      { lessonId, files: materialFiles },
       {
-        onSuccess: () => setMaterialFiles([]),
+        lessonId,
+        files: materialFiles,
+        signal: materialAbortController.current.signal,
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
+          setMaterialProgress(percentCompleted);
+        },
+      },
+      {
+        onSuccess: () => {
+          setMaterialFiles([]);
+          setMaterialProgress(0);
+          materialAbortController.current = null;
+        },
+        onError: () => {
+          setMaterialProgress(0);
+          materialAbortController.current = null;
+        },
       },
     );
+  };
+
+  const handleCancelMaterialUpload = () => {
+    if (materialAbortController.current) {
+      materialAbortController.current.abort();
+      materialAbortController.current = null;
+      setMaterialProgress(0);
+    }
   };
 
   if (isLoading) {
@@ -170,17 +230,37 @@ const LessonDetailsPage = () => {
                       : "Browse Files"}
                   </label>
                   {videoFiles.length > 0 && (
-                    <Button
-                      onClick={handleVideoUpload}
-                      disabled={isUploadingVideos}
-                      className="h-12 rounded-2xl bg-indigo-700 text-white font-black shadow-lg shadow-blue-100"
-                    >
-                      {isUploadingVideos ? (
-                        <Spinner className="w-4 h-4 border-white" />
-                      ) : (
-                        "Start Upload"
+                    <div className="flex flex-col w-full gap-3">
+                      <Button
+                        onClick={handleVideoUpload}
+                        disabled={isUploadingVideos}
+                        className="h-12 rounded-2xl bg-indigo-700 text-white font-black shadow-lg shadow-blue-100 w-full"
+                      >
+                        {isUploadingVideos ? (
+                          <div className="flex flex-col w-full gap-1 px-4">
+                            <div className="flex justify-between text-[10px] uppercase tracking-widest">
+                              <span>Uploading...</span>
+                              <span>{videoProgress}%</span>
+                            </div>
+                            <Progress
+                              value={videoProgress}
+                              className="h-1 bg-white/20"
+                            />
+                          </div>
+                        ) : (
+                          "Start Upload"
+                        )}
+                      </Button>
+                      {isUploadingVideos && (
+                        <Button
+                          variant="ghost"
+                          onClick={handleCancelVideoUpload}
+                          className="h-10 text-red-500 font-bold hover:bg-red-50 rounded-xl"
+                        >
+                          Cancel Upload
+                        </Button>
                       )}
-                    </Button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -289,17 +369,37 @@ const LessonDetailsPage = () => {
                       : "Browse Files"}
                   </label>
                   {materialFiles.length > 0 && (
-                    <Button
-                      onClick={handleMaterialUpload}
-                      disabled={isUploadingMaterials}
-                      className="h-12 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-black shadow-lg shadow-orange-100"
-                    >
-                      {isUploadingMaterials ? (
-                        <Spinner className="w-4 h-4 border-white" />
-                      ) : (
-                        "Start Upload"
+                    <div className="flex flex-col w-full gap-3">
+                      <Button
+                        onClick={handleMaterialUpload}
+                        disabled={isUploadingMaterials}
+                        className="h-12 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-black shadow-lg shadow-orange-100 w-full"
+                      >
+                        {isUploadingMaterials ? (
+                          <div className="flex flex-col w-full gap-1 px-4">
+                            <div className="flex justify-between text-[10px] uppercase tracking-widest">
+                              <span>Uploading...</span>
+                              <span>{materialProgress}%</span>
+                            </div>
+                            <Progress
+                              value={materialProgress}
+                              className="h-1 bg-white/20"
+                            />
+                          </div>
+                        ) : (
+                          "Start Upload"
+                        )}
+                      </Button>
+                      {isUploadingMaterials && (
+                        <Button
+                          variant="ghost"
+                          onClick={handleCancelMaterialUpload}
+                          className="h-10 text-red-500 font-bold hover:bg-red-50 rounded-xl"
+                        >
+                          Cancel Upload
+                        </Button>
                       )}
-                    </Button>
+                    </div>
                   )}
                 </div>
               </div>
