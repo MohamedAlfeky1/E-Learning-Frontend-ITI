@@ -59,6 +59,7 @@ const TeacherLessonsPage = () => {
     useDeleteLessonMutation(courseId);
   const { mutate: reorderLessons } = useReorderLessonsMutation(courseId);
   const [lessonToDelete, setLessonToDelete] = useState(null);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   useEffect(() => {
     if (lessons.length > 0) {
@@ -95,7 +96,7 @@ const TeacherLessonsPage = () => {
     <div className="bg-[#F8F9FD] min-h-screen p-4 md:p-8 font-['Plus Jakarta Sans']">
       {/* Header */}
       <header className="max-w-6xl mx-auto mb-10 flex flex-col md:flex-row gap-6 justify-between md:items-center bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
-        <div className="space-y-4">
+        <div className="space-y-4 flex-1 min-w-0">
           <Button
             variant="ghost"
             onClick={() => navigate("/teacher/courses")}
@@ -104,16 +105,25 @@ const TeacherLessonsPage = () => {
             <ChevronLeft className="w-5 h-5" /> Back to My Courses
           </Button>
           <div className="space-y-1">
-            <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight break-words">
               {course.title}
             </h1>
-            <p className="text-gray-500 font-medium flex items-center gap-2">
-              {/* <span className="w-2 h-2 rounded-full bg-indigo-500"></span> */}
+            <p
+              className={`text-gray-500 font-medium leading-relaxed break-words ${!isDescriptionExpanded ? "line-clamp-2" : ""}`}
+            >
               {course.description}
             </p>
+            {course.description?.length > 150 && (
+              <button
+                onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                className="text-indigo-600 font-bold text-xs uppercase tracking-widest hover:text-indigo-700 transition-colors"
+              >
+                {isDescriptionExpanded ? "Show Less" : "Read More"}
+              </button>
+            )}
           </div>
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 shrink-0">
           <AddLessonDialog
             courseId={courseId}
             nextOrderIndex={nextOrderIndex}
@@ -313,7 +323,7 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
         <h3 className="text-xl font-extrabold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors truncate">
           {lesson.title}
         </h3>
-        <p className="text-gray-500 line-clamp-1 mb-4 font-medium max-w-lg">
+        <p className="text-gray-500 line-clamp-1 mb-4 font-medium max-w-lg truncate">
           {lesson.description}
         </p>
 
