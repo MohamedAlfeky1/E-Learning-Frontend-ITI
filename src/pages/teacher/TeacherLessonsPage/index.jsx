@@ -295,10 +295,7 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
         boxShadow:
           "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
       }}
-      onClick={() =>
-        navigate(`/teacher/courses/${courseId}/lessons/${lesson._id}`)
-      }
-      className="bg-white p-6 rounded-[2.5rem] border border-gray-100 flex flex-col md:flex-row items-center gap-8 transition-shadow duration-300 group relative z-0 hover:z-10 hover:border-indigo-100 cursor-pointer"
+      className="bg-white p-6 rounded-[2.5rem] border border-gray-100 flex flex-col md:flex-row items-center gap-8 transition-shadow duration-300 group relative z-0 hover:z-10 hover:border-indigo-100"
     >
       {/* Drag Handle */}
       <div
@@ -311,41 +308,49 @@ const LessonItem = ({ lesson, courseId, onDelete }) => {
         <GripVertical className="size-6" />
       </div>
 
-      {/* Index Badge */}
-      <div className="w-16 h-16 rounded-3xl bg-gray-50 flex flex-col items-center justify-center border border-gray-100 group-hover:bg-indigo-600 group-hover:border-indigo-600 transition-colors duration-300 flex-shrink-0 shadow-inner">
-        <span className="text-xl font-black text-gray-900 group-hover:text-white">
-          {lesson.orderIndex + 1}
-        </span>
-      </div>
+      {/* Clickable Content Wrapper */}
+      <div
+        onClick={() =>
+          navigate(`/teacher/courses/${courseId}/lessons/${lesson._id}`)
+        }
+        className="flex-1 flex flex-col md:flex-row items-center gap-8 cursor-pointer"
+      >
+        {/* Index Badge */}
+        <div className="w-16 h-16 rounded-3xl bg-gray-50 flex flex-col items-center justify-center border border-gray-100 group-hover:bg-indigo-600 group-hover:border-indigo-600 transition-colors duration-300 flex-shrink-0 shadow-inner">
+          <span className="text-xl font-black text-gray-900 group-hover:text-white">
+            {lesson.orderIndex + 1}
+          </span>
+        </div>
 
-      {/* Info */}
-      <div className="flex-1 text-center md:text-left min-w-0">
-        <h3 className="text-xl font-extrabold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors truncate">
-          {lesson.title}
-        </h3>
-        <p className="text-gray-500 line-clamp-1 mb-4 font-medium max-w-lg truncate">
-          {lesson.description}
-        </p>
+        {/* Info */}
+        <div className="flex-1 text-center md:text-left min-w-0">
+          <h3 className="text-xl font-extrabold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors truncate">
+            {lesson.title}
+          </h3>
+          <p className="text-gray-500 line-clamp-1 mb-4 font-medium max-w-lg truncate">
+            {lesson.description}
+          </p>
 
-        {/* Stats */}
-        <div className="flex flex-wrap items-center justify-center md:justify-start gap-y-2 gap-x-6">
-          <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 group-hover:bg-indigo-50 group-hover:text-indigo-400 group-hover:border-indigo-100 transition-colors">
-            <Video className="w-3.5 h-3.5" />
-            <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
-              {lesson.videos?.length || 0} Videos
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 group-hover:bg-indigo-50 group-hover:text-indigo-400 group-hover:border-indigo-100 transition-colors">
-            <FileText className="w-3.5 h-3.5" />
-            <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
-              {lesson.materials?.length || 0} Materials
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-gray-400 ml-auto md:ml-0">
-            <Calendar className="w-3.5 h-3.5" />
-            <span className="text-[10px] font-black uppercase tracking-widest">
-              {new Date(lesson.createdAt).toLocaleDateString()}
-            </span>
+          {/* Stats */}
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-y-2 gap-x-6">
+            <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 group-hover:bg-indigo-50 group-hover:text-indigo-400 group-hover:border-indigo-100 transition-colors">
+              <Video className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
+                {lesson.videos?.length || 0} Videos
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 group-hover:bg-indigo-50 group-hover:text-indigo-400 group-hover:border-indigo-100 transition-colors">
+              <FileText className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
+                {lesson.materials?.length || 0} Materials
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-400 ml-auto md:ml-0">
+              <Calendar className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-black uppercase tracking-widest">
+                {new Date(lesson.createdAt).toLocaleDateString()}
+              </span>
+            </div>
           </div>
         </div>
       </div>
