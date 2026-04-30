@@ -12,7 +12,6 @@ import { useUserQuery } from "@/queries/authQueries";
 import { LuClock4 } from "react-icons/lu";
 import { BiCheckShield } from "react-icons/bi";
 import { BsGraphUpArrow } from "react-icons/bs";
-import { useGetCategoryById } from "@/queries/categoryQueries";
 import { ImSpinner10 } from "react-icons/im";
 import {
   Pagination,

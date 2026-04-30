@@ -99,7 +99,7 @@ const CourseDetailsPage = () => {
       else if (course.type == 'paid') {
         handleAddToCart()
       } else if (course.type == 'free') {
-        navigate('/my-courses')
+      navigate(`/checkout-page?courseId=${course._id}`, { state: { isFreeCourse: true } })
       }
     } catch (error) {
       toast.error(error)

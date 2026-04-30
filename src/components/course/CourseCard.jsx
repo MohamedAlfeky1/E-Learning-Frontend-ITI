@@ -13,7 +13,10 @@ import { useAddFavoriteMutation } from "@/mutations/useAddFavoriteMutation";
 import { useDeleteFavoriteMutation } from "@/mutations/useDeleteFavoriteMutation";
 import { useGetCartItems } from "@/queries/useCartQueries";
 import { useAddToCart } from "@/mutations/cartMutations";
-import { useEnrollmentDetailsQuery, useMyEnrolledCourseIds } from "@/queries/enrollmentQueries";
+import {
+  useEnrollmentDetailsQuery,
+  useMyEnrolledCourseIds,
+} from "@/queries/enrollmentQueries";
 import placeholderImg from "@/assets/placeholder.jpg";
 import { Spinner } from "../ui/spinner";
 import { toast } from "sonner";
@@ -25,30 +28,54 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useDeleteCartMutation } from "@/mutations/useDeleteCartMutation";
+import { Badge } from "../ui/badge";
 
 function CourseCard({ course }) {
   const navigate = useNavigate();
   const [openLoginDialog, setOpenLoginDialog] = useState(false);
 
   const { data: userData, isLoading: userLoading } = useUserQuery();
-  const { data: favoritesData, isLoading: favoritesLoading, error: favoritesError } = useFavorites();
+  const {
+    data: favoritesData,
+    isLoading: favoritesLoading,
+    error: favoritesError,
+  } = useFavorites();
   const { data: cartData } = useGetCartItems();
-  const { mutateAsync: addFavorite, isPending: isAddingFavorite } = useAddFavoriteMutation();
-  const { mutateAsync: removeFavorite, isPending: isRemovingFavorite } = useDeleteFavoriteMutation();
+  const { mutateAsync: addFavorite, isPending: isAddingFavorite } =
+    useAddFavoriteMutation();
+  const { mutateAsync: removeFavorite, isPending: isRemovingFavorite } =
+    useDeleteFavoriteMutation();
   const addToCartMutation = useAddToCart();
+  const removeFromCartMutation = useDeleteCartMutation();
   const { data: enrolledIds } = useMyEnrolledCourseIds();
 
-  const userRole= userData?.role
+  const userRole = userData?.role
   const isLoggedIn = !!userData?._id;
   const favorites = favoritesData?.data || [];
-  const favorite = !favoritesLoading && !favoritesError
-    ? favorites.find((fav) => fav?.courseId?._id === course?._id)
-    : null;
+  const favorite =
+    !favoritesLoading && !favoritesError
+      ? favorites.find((fav) => fav?.courseId?._id === course?._id)
+      : null;
 
   const isInCart = cartData?.data?.cart?.items?.some(
-    (item) => item.courseId === course._id || item.courseId?._id === course._id
+    (item) => item.courseId === course._id || item.courseId?._id === course._id,
   );
-const isAlreadyEnrolled = enrolledIds?.has(course._id) ?? false;
+  const isAlreadyEnrolled = enrolledIds?.has(course._id) ?? false;
+
+  const handleCartDelete = () => {
+    removeFromCartMutation.mutate(course._id);
+  };
+
+  
+  const handleProceedToCheckout = () => {
+    console.log("clicked");
+    navigate("/checkout-page", {
+      state: {
+        voucherCode: null,
+      },
+    });
+  };
 
   const handleCartClick = (e) => {
     e.preventDefault();
@@ -65,7 +92,12 @@ const isAlreadyEnrolled = enrolledIds?.has(course._id) ?? false;
     }
 
     if (isInCart) {
-      toast.info("Course is already in your cart.");
+      handleCartDelete();
+      return;
+    }
+
+    if (course.type === "free") {
+      navigate(`/checkout-page?courseId=${course._id}`, { state: { isFreeCourse: true } })
       return;
     }
 
@@ -74,12 +106,11 @@ const isAlreadyEnrolled = enrolledIds?.has(course._id) ?? false;
       {
         onSuccess: () => toast.success("Course added to cart!"),
         onError: () => toast.error("Failed to add course to cart."),
-      }
+      },
     );
   };
-  console.log("userData",userData);
+  console.log("userData", userData);
   
-
   return (
     <>
       <Link
@@ -93,23 +124,26 @@ const isAlreadyEnrolled = enrolledIds?.has(course._id) ?? false;
             alt="Course Thumbnail"
             className="w-full h-full object-cover"
           />
+
           {userData?.role === "student" && !favoritesLoading && (
             <Button
-              variant="primary"
-              size="icon-sm"
+              variant="secondary"
+              size="icon"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                favorite ? removeFavorite(favorite._id) : addFavorite(course._id);
+                favorite
+                  ? removeFavorite(favorite._id)
+                  : addFavorite(course._id);
               }}
-              className="absolute top-3 right-3 bg-gray-300 text-gray-200 p-1 rounded-full"
+              className="absolute top-3 right-3 bg-white/80 backdrop-blur-md hover:bg-white text-primary p-1 rounded-xl shadow-sm transition-all active:scale-90 group/heart"
             >
               {isAddingFavorite || isRemovingFavorite ? (
-                <Spinner className="text-red-500 size-4" />
+                <Spinner className="text-primary size-4" />
               ) : favorite ? (
-                <IoHeart color="red" />
+                <IoHeart className="size-5 text-primary fill-primary transition-colors group-hover/heart:text-destructive group-hover/heart:fill-destructive" />
               ) : (
-                <IoHeartOutline color="red" />
+                <IoHeartOutline className="size-5 text-primary transition-colors group-hover/heart:text-primary" />
               )}
             </Button>
           )}
@@ -131,6 +165,9 @@ const isAlreadyEnrolled = enrolledIds?.has(course._id) ?? false;
             </div>
           </div>
 
+          {course.type === "paid" ?
+            ''
+            : <Badge variant="lightPruple">Free</Badge>}
           {/* Title */}
           <h2 className="text-xl font-bold text-gray-900 leading-snug">
             {course.title}
@@ -139,51 +176,54 @@ const isAlreadyEnrolled = enrolledIds?.has(course._id) ?? false;
           {/* Instructor */}
           <div className="flex items-center gap-2">
             <span className="text-sm font-light text-[#464555] rounded-md">
-              Instructor: {course.teacherId?.firstName} {course.teacherId?.lastName}
+              Instructor: {course.teacherId?.firstName}{" "}
+              {course.teacherId?.lastName}
             </span>
           </div>
 
           {/* Price + Cart */}
           <div className="flex flex-col md:flex-row items-center gap-5 mt-auto pt-2">
             {isAlreadyEnrolled ? (
-              <p className="text-sm font-semibold text-green-600">Already Enrolled ✓</p>
+              <p className="text-sm font-semibold text-green-600">
+                Already Enrolled ✓
+              </p>
             ) : course.type === "paid" ? (
               <div className="flex flex-row items-center justify-between gap-3 w-full">
-                <p className="text-2xl font-bold text-[#3525CD]">${course.price}</p>
+                <p className="text-2xl font-bold text-[#3525CD]">
+                  ${course.price}
+                </p>
 
-                {userRole ==='student'?(
+                {userRole === 'student' ? (
                   <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  className="cursor-pointer rounded-full py-3 px-3"
-                  onClick={handleCartClick}
-                  disabled={addToCartMutation.isPending}
-                >
-                  {addToCartMutation.isPending ? (
-                    <Spinner className="size-4" />
-                  ) : isInCart ? (
-                    <MdOutlineRemoveShoppingCart color="#3525CD" />
-                  ) : (
-                    <MdOutlineAddShoppingCart color="#3525CD" />
-                  )}
-                </Button>
-                ):''}
-                
+                    size="icon-sm"
+                    variant="secondary"
+                    className="cursor-pointer rounded-full py-3 px-3"
+                    onClick={handleCartClick}
+                    disabled={addToCartMutation.isPending || removeFromCartMutation.isPending}
+                  >
+                    {addToCartMutation.isPending || removeFromCartMutation.isPending ? (
+                      <Spinner className="size-4" />
+                    ) : isInCart ? (
+                      <MdOutlineRemoveShoppingCart color="#3525CD" />
+                    ) : (
+                      <MdOutlineAddShoppingCart color="#3525CD" />
+                    )}
+                  </Button>
+                ) : ''}
+
               </div>
             ) : (
+
               <Button
-                size="icon-sm"
                 variant="secondary"
-                className="cursor-pointer rounded-full py-3 px-3"
+                className="text-sm cursor-pointer py-2 px-3"
                 onClick={handleCartClick}
                 disabled={addToCartMutation.isPending}
               >
                 {addToCartMutation.isPending ? (
                   <Spinner className="size-4" />
-                ) : isInCart ? (
-                  <MdOutlineRemoveShoppingCart color="#3525CD" />
                 ) : (
-                  <MdOutlineAddShoppingCart color="#3525CD" />
+                  <span className="text-sm">Enroll For Free</span>
                 )}
               </Button>
             )}

@@ -8,7 +8,7 @@ import { Link, Navigate } from "react-router-dom";
 // Categories section imports
 import { ArrowRight } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import CategoryCard from "@/components/admin/categories/CategoryCard";
+import CategoryCard from "@/components/homepage/CategoryCard";
 import { useCategories } from "@/queries/categoryQueries";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -75,7 +75,9 @@ const HomePage = () => {
     isLoading: coursesLoading,
     isError: coursesError,
   } = useGetAllCourses();
-  const courses = coursesData?.data ?? [];
+  const courses = (coursesData?.data ?? [])
+    .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+    .slice(0, 10);
 
   // Hero carousel listener
   useEffect(() => {
@@ -112,8 +114,12 @@ const HomePage = () => {
     };
   }, [coursesApi]);
 
-  if (userData && (userData.role === "teacher" || userData.role === "student")) {
-    const dashboardPath = userData.role === "teacher" ? "/teacher/dashboard" : "/dashboard";
+  if (
+    userData &&
+    (userData.role === "teacher" || userData.role === "student")
+  ) {
+    const dashboardPath =
+      userData.role === "teacher" ? "/teacher/dashboard" : "/dashboard";
     return <Navigate to={dashboardPath} replace />;
   }
 
@@ -255,7 +261,7 @@ const HomePage = () => {
                       key={category._id ?? category.id ?? category.name}
                       className="w-[320px] flex-shrink-0"
                     >
-                      <CategoryCard category={category} isAdmin={isAdmin} />
+                      <CategoryCard category={category} />
                     </div>
                   ))}
                 </div>
