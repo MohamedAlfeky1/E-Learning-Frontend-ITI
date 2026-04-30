@@ -43,6 +43,7 @@ const CategoryName = ({ id }) => {
   return <span className="truncate">{category?.name || "General"}</span>;
 };
 
+
 const TeacherCoursesPage = () => {
   const navigate = useNavigate();
   const { data: response, isLoading, isError } = useTeacherCourses();
