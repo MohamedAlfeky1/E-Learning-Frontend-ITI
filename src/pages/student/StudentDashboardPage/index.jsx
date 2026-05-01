@@ -1,6 +1,7 @@
 import axiosInstance from "@/api/axiosInstance";
 import { ENDPOINTS } from "@/api/endpoints";
 import StudentDashboardCart from "@/components/student/StudentDashboardCart";
+import AiReportSection from "@/components/student/AiReportSection";
 import { useUserQuery } from "@/queries/authQueries";
 import { useMyCoursesQuery } from "@/queries/enrollmentQueries";
 import { useEffect, useState } from "react";
@@ -113,6 +114,10 @@ const StudentDashboardPage = () => {
           />
         </div>
 
+      </div>
+
+      <div className="col-span-4">
+        <AiReportSection enrollments={enrollments} />
       </div>
 
       <div className="col-span-4 grid grid-cols-1 md:grid-cols-[2.5fr_1.5fr] gap-3">
