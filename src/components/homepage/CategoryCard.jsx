@@ -10,9 +10,8 @@ const CategoryCard = ({ category }) => {
     }
   };
 
-  
   return (
-    <div 
+    <div
       onClick={handleCategoryClick}
       className="group flex flex-col w-full max-w-[400px] flex-shrink-0 p-8 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-[#3525CD]/5 transition-all duration-300 transform hover:-translate-y-1 mx-auto cursor-pointer"
     >
@@ -36,18 +35,19 @@ const CategoryCard = ({ category }) => {
               <span className="text-xs font-bold opacity-60">Courses</span>
             </span>
             <div className="h-8 w-8 rounded-full bg-[#F1F3FF] flex items-center justify-center text-[#3525CD] opacity-0 group-hover:opacity-100 transition-opacity">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="16" 
-                height="16" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="3" 
-                strokeLinecap="round" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
               </svg>
             </div>
           </div>
