@@ -48,7 +48,11 @@ const EditCoursePage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { data: teacherData, isError: teacherError } = useUserQuery();
-  const { mutate: updateCourse, isPending } = useUpdateCourse();
+  const {
+    mutateAsync: updateCourse,
+    isPending: updatingCourse,
+    error: errorUpdatingCourse,
+  } = useUpdateCourse();
   const { data: categoriesData, isLoading: categoriesLoading } =
     useCategories();
   const categories = categoriesData?.data ?? [];
@@ -155,7 +159,7 @@ const EditCoursePage = () => {
     return valid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -174,23 +178,21 @@ const EditCoursePage = () => {
     requirements.forEach((r) => payload.append("requirements[]", r));
     whatYouWillLearn.forEach((w) => payload.append("whatYouWillLearn[]", w));
 
-    updateCourse(
-      { id: courseId, courseData: payload },
-      {
-        onSuccess: () => {
-          toast.success("Course updated successfully!");
-          navigate("/teacher/courses");
-        },
-        onError: (err) => {
-          setErrors((prev) => ({
-            ...prev,
-            api:
-              err.response?.data?.message ||
-              "Failed to update course. Please try again.",
-          }));
-        },
-      },
-    );
+    const course = await updateCourse({
+      id: courseId,
+      courseData: payload,
+    }).then((res) => res.data);
+
+    if (errorUpdatingCourse) {
+      setErrors((prev) => ({
+        ...prev,
+        api:
+          errorUpdatingCourse.response?.data?.message ||
+          "Failed to update course. Please try again.",
+      }));
+    } else {
+      navigate("/teacher/courses");
+    }
   };
 
   if (courseLoading) {
@@ -636,10 +638,10 @@ const EditCoursePage = () => {
           <div className="flex flex-col gap-4 pb-10">
             <Button
               type="submit"
-              disabled={isPending}
+              disabled={updatingCourse}
               className="flex-1 sm:flex-none sm:min-w-[192px] mt-0"
             >
-              {isPending ? (
+              {updatingCourse ? (
                 <div className="flex items-center gap-2">
                   <Spinner className="w-5 h-5 border-white" /> Updating...
                 </div>
