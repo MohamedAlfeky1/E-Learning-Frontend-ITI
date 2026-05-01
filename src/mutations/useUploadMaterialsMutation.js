@@ -13,7 +13,11 @@ export const useUploadMaterialsMutation = (courseId) => {
       toast.success("Materials uploaded successfully");
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to upload materials");
+      if (error.message === "canceled") {
+        toast.info("Canceled");
+      } else {
+        toast.error(error.message || "Failed to upload materials");
+      }
     },
   });
 };
