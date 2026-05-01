@@ -18,7 +18,8 @@ const MyCoursesPage = () => {
   const { data: enrollments, isLoading } = useMyCoursesQuery();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("All Courses");
-
+  console.log("enrollments",enrollments);
+  
   const filteredEnrollments = enrollments?.filter((enrollment) => {
     if (activeTab === "All Courses") return true;
     if (activeTab === "Completed") return enrollment.completed === true;

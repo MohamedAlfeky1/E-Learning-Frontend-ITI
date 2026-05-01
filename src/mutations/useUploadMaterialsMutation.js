@@ -10,6 +10,8 @@ export const useUploadMaterialsMutation = (courseId) => {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(["lessons", courseId]);
       queryClient.invalidateQueries(["lesson", courseId, variables.lessonId]);
+       queryClient.invalidateQueries(["my-courses"]);
+      queryClient.invalidateQueries(["courses"]);
       toast.success("Materials uploaded successfully");
     },
     onError: (error) => {
