@@ -86,7 +86,7 @@ const MyCoursesPage = () => {
             <p className="text-gray-500 mb-6">
               Explore courses and start learning today
             </p>
-            <Button size="lg" onClick={() => navigate("/courses")}>
+            <Button size="lg" onClick={() => navigate("/browse-courses")}>
               Browse Courses
             </Button>
           </div>
@@ -168,7 +168,7 @@ const MyCoursesPage = () => {
 
             {activeTab === "All Courses" && (
               <div
-                onClick={() => navigate("/courses")}
+                onClick={() => navigate("/browse-courses")}
                 className="flex flex-col items-center justify-center border-2 border-dashed rounded-3xl p-10 hover:bg-indigo-50 cursor-pointer transition-all duration-300"
               >
                 <LayoutGrid className="text-indigo-500 mb-4" size={40} />

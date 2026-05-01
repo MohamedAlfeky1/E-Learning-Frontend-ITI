@@ -7,6 +7,7 @@ export const ENDPOINTS = {
   AUTH_RESET_PASSWORD: (token) => `/auth/reset-password/${token}`,
   AUTH_GOOGLE: "/auth/google",
 
+  
   // ─── Profile ────────────────────────────────────────────────────────────────
   PROFILE_GET: "/auth/me",
   PROFILE_UPDATE: "/auth/me",
@@ -129,7 +130,7 @@ export const ENDPOINTS = {
   MY_REVIEW_COURSE_BY_ID: (courseId, studentId) =>
     `/courseReviews/${courseId}/${studentId}`,
   REVIEWS_CREATE: "/courseReviews",
-  REVIEWS_DELETE: (id) => `/reviews/${id}`,
+  REVIEWS_DELETE: (id) => `/courseReviews/${id}`,
 
   // ─── Favorites ────────────────────────────────────────────────────────────────
   FAVORITES_LIST: "/favorites",

@@ -25,7 +25,7 @@ const formSchema = z.object({
   description: z.string(),
 });
 
-const EditCategoryDialog = ({ category }) => {
+const EditCategoryDialog = ({ category, trigger }) => {
   const { slug } = category;
   const [open, setOpen] = useState(false);
   const { mutateAsync, isPending, isError } = useEditCategoryMutation();
@@ -55,9 +55,11 @@ const EditCategoryDialog = ({ category }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary" size="icon">
-          <Pencil size={22} />
-        </Button>
+        {trigger || (
+          <Button variant="secondary" size="icon">
+            <Pencil size={22} />
+          </Button>
+        )}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-sm">
