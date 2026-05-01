@@ -6,7 +6,7 @@ export const getLessonsByCourse = async (courseId) => {
     const response = await axiosInstance.get(ENDPOINTS.LESSONS_LIST(courseId));
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response?.data || error;
   }
 };
 
@@ -17,7 +17,7 @@ export const getLessonById = async (courseId, lessonId) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response?.data || error;
   }
 };
 
@@ -29,7 +29,7 @@ export const createLesson = async ({ courseId, data }) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response?.data || error;
   }
 };
 
@@ -41,7 +41,7 @@ export const reorderLessons = async ({ courseId, lessons }) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response?.data || error;
   }
 };
 
@@ -53,7 +53,7 @@ export const updateLesson = async ({ courseId, lessonId, data }) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response?.data || error;
   }
 };
 
@@ -64,11 +64,16 @@ export const deleteLesson = async ({ courseId, lessonId }) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response?.data || error;
   }
 };
 
-export const uploadLessonVideos = async ({ lessonId, files }) => {
+export const uploadLessonVideos = async ({
+  lessonId,
+  files,
+  onUploadProgress,
+  signal,
+}) => {
   try {
     const formData = new FormData();
     files.forEach((file) => formData.append("videos", file));
@@ -77,15 +82,22 @@ export const uploadLessonVideos = async ({ lessonId, files }) => {
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress,
+        signal,
       },
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response?.data || error;
   }
 };
 
-export const uploadLessonMaterials = async ({ lessonId, files }) => {
+export const uploadLessonMaterials = async ({
+  lessonId,
+  files,
+  onUploadProgress,
+  signal,
+}) => {
   try {
     const formData = new FormData();
     files.forEach((file) => formData.append("materials", file));
@@ -94,11 +106,13 @@ export const uploadLessonMaterials = async ({ lessonId, files }) => {
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress,
+        signal,
       },
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response?.data || error;
   }
 };
 
@@ -109,7 +123,7 @@ export const deleteLessonVideo = async ({ lessonId, videoId }) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response?.data || error;
   }
 };
 
@@ -120,6 +134,6 @@ export const deleteLessonMaterial = async ({ lessonId, materialId }) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error.response?.data || error;
   }
 };
