@@ -37,7 +37,7 @@ const TeacherProfilePage = () => {
     .reduce((sum, course) => sum + (course.totalStudents ?? 0), 0);
 
 
-  console.log("totalReviews", totalReviews);
+  console.log("data", data);
 
 
   const updateProfileMutation = useUpdateProfileMutation();
@@ -184,18 +184,21 @@ const TeacherProfilePage = () => {
 
           {/* Name + Role */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left gap-2">
+            <Badge className='capitalize' variant="success"><BiSolidBadgeCheck />{data.role}</Badge>
+
             <h1 className="text-[#141B2B] font-extrabold text-xl md:text-2xl">
               {profileFormik.values.firstName + " " + profileFormik.values.lastName}
             </h1>
             <p className="text-sm text-gray-500">{profileFormik.values.bio || 'No BIO Provided'}</p>
-            <Badge className='capitalize' variant="success"><BiSolidBadgeCheck />{data.role}</Badge>
 
-            {/* Buttons */}
-            {/* Buttons */}
+            {/* categories */}
             <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-              {/* {data.teacherData.targetCategories.map((category)=>{
-            <Badge className='capitalize' variant="lightPruple">{category}</Badge>
-            })} */}
+              {data?.teacherData?.targetCategories?.map((category) => {
+                return (
+                  <Badge className='capitalize' variant="lightPruple">{category?.name}</Badge>
+
+                )
+              })}
             </div>
 
             <TooltipProvider>
@@ -313,7 +316,7 @@ const TeacherProfilePage = () => {
             <p className="ms-10 text-white font-cold">{totalStudents || 0}</p>
           </div>
 
-          <Button  type="button"  onClick={()=>{navigate(`/teachers/${data?._id}`)}} variant="white" className='w-full rounded-md'>
+          <Button type="button" onClick={() => { navigate(`/teachers/${data?._id}`) }} variant="white" className='w-full rounded-md'>
             View Full Public Profile
           </Button>
         </div>

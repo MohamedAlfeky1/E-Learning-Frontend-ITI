@@ -41,22 +41,26 @@ const CourseCard = ({ favorite }) => {
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute top-4 left-4">
-          <Badge className="bg-white/90 backdrop-blur-md text-[#141B2B] border-none shadow-sm font-bold uppercase tracking-wider text-[9px] px-2 py-1">
+          <Badge className="bg-white/90 backdrop-blur-md text-primary border-none shadow-sm font-bold uppercase tracking-wider text-[9px] px-2 py-1">
             {category.name || "General"}
           </Badge>
         </div>
         <Button
-          variant="secondary"
-          size="icon"
-          className="bg-white/90 backdrop-blur-md hover:bg-white absolute top-4 right-4 rounded-xl shadow-sm text-red-500 transition-all active:scale-90"
-          onClick={() => removeFromFavorites(favorite._id)}
-        >
-          {isRemoving ? (
-            <Spinner className="size-4" />
-          ) : (
-            <Heart className="size-5 fill-red-500" />
-          )}
-        </Button>
+  variant="secondary"
+  size="icon"
+  className="bg-white/80 backdrop-blur-md hover:bg-white absolute top-4 right-4 rounded-xl shadow-sm transition-all active:scale-90 group/heart"
+  onClick={() => removeFromFavorites(favorite._id)}
+>
+  {isRemoving ? (
+    <Spinner className="size-4" />
+  ) : (
+    <Heart 
+      className={`size-5 transition-colors duration-300 
+        ${isRemoving ? 'text-gray-300' : 'text-[#3525CD] fill-[#3525CD] group-hover/heart:text-primary-500 group-hover/heart:fill-primary-500'}
+      `} 
+    />
+  )}
+</Button>
       </div>
 
       {/* Content Area */}
