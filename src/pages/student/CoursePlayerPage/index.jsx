@@ -25,14 +25,15 @@ import { useUserQuery } from "@/queries/authQueries";
 import { FaStar } from "react-icons/fa";
 import { MessageSquare } from "lucide-react";
 import { FaDeleteLeft } from "react-icons/fa6";
-
+import VideoChatWidget from "./components/VideoChatWidget";
 
 const CoursePlayerPage = () => {
 
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videosProgress, setVideosProgress] = useState({});
   const [reviewError, setReviewError] = useState({ review: "", api: "" });
-  const [courseProgress, setCourseProgress] = useState(0);
+  // const [courseProgress, setCourseProgress] = useState(0);
+
 
   const { courseId } = useParams();
   const navigate = useNavigate();
@@ -49,6 +50,13 @@ const CoursePlayerPage = () => {
   const enrollmentId = enrollmentsDetails?._id;
   const myReview = reviewsData?.data;
   const hasReview = myReview?.length > 0;
+  const courseProgress = enrollmentsDetails?.progress ?? 0;
+
+  console.log(courseProgress);
+
+
+  console.log("selectedVideo", selectedVideo);
+
 
   const teacherObj = course?.data?.teacherId || course?.data?.createdBy;
   const teacherId = teacherObj?._id || teacherObj;
@@ -103,14 +111,18 @@ const CoursePlayerPage = () => {
   };
 
   const handleProgressUpdate = (enrollmentId, videoId) => {
-    updateProgress(
-      { enrollmentId, videoId },
-      {
-        onSuccess: (data) => {
-          setCourseProgress(data.progress);
-        },
-      }
-    );
+    updateProgress({ enrollmentId, videoId });
+  };
+
+  const handleDownload = (url, title) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.download = title || "file";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 
   useEffect(() => {
@@ -122,11 +134,7 @@ const CoursePlayerPage = () => {
     }
   }, [lessons]);
 
-  useEffect(() => {
-    if (enrollmentsDetails?.progress !== undefined) {
-      setCourseProgress(enrollmentsDetails.progress);
-    }
-  }, [enrollmentsDetails]);
+
 
   if (lessonsLoading && isLoading) return (
     <div className="min-h-full min-w-full flex justify-center items-center"><Loader /></div>
@@ -153,6 +161,7 @@ const CoursePlayerPage = () => {
               <video
                 key={selectedVideo._id}
                 src={selectedVideo.url}
+                controlsList="nodownload"
                 controls
                 className="w-full h-full rounded-lg"
               />
@@ -174,7 +183,9 @@ const CoursePlayerPage = () => {
             >
               <MessageSquare className="w-4 h-4" /> Chat with Teacher
             </Button>
-            <Button onClick={() => handleProgressUpdate(enrollmentId, selectedVideo?._id)}>
+            <Button
+              onClick={() => handleProgressUpdate(enrollmentId, selectedVideo?._id)}
+              disabled={completedVideoIds.includes(selectedVideo?._id)}>
               <IoMdCheckmark color="white" /> Record progress
             </Button>
           </div>
@@ -236,8 +247,8 @@ const CoursePlayerPage = () => {
             {/* Course Material */}
             <TabsContent value="notes" className="mt-4">
               <div className="flex flex-col gap-3">
-                {selectedVideo?.materials?.length > 0 ? (
-                  selectedVideo.materials.map((file) => (
+                {selectedVideo?.lesson?.materials?.length > 0 ? (
+                  selectedVideo.lesson?.materials?.map((file) => (
                     <div
                       key={file._id}
                       className="flex items-center justify-between p-3 border border-[var(--border)] rounded-lg hover:bg-[var(--secondary)] transition"
@@ -251,9 +262,12 @@ const CoursePlayerPage = () => {
                           <p className="text-xs text-[var(--muted-foreground)]">PDF Document</p>
                         </div>
                       </div>
-                      <a href={file.url} download className="text-[var(--muted-foreground)] hover:text-green-600">
+                      <button
+                        onClick={() => handleDownload(file.url, file.title)}
+                        className="text-[var(--muted-foreground)] hover:text-green-600"
+                      >
                         <FiDownload size={18} />
-                      </a>
+                      </button>
                     </div>
                   ))
                 ) : (
@@ -304,7 +318,7 @@ const CoursePlayerPage = () => {
                 <Input
                   variant="white"
                   className="text-[var(--foreground)] border border-[var(--border)] bg-[var(--card)]"
-                  placeholder={`${hasReview?'You Already Reviewd This Course':'Add Your Comment'}`}
+                  placeholder={`${hasReview ? 'You Already Reviewd This Course' : 'Add Your Comment'}`}
                   name="comment"
                   disabled={hasReview}
                   value={formik.values.comment}
@@ -431,6 +445,11 @@ const CoursePlayerPage = () => {
         </div>
 
       </div>
+
+      {/* RAG Video Chat Widget */}
+      {selectedVideo?.lesson?._id && (
+        <VideoChatWidget lessonId={selectedVideo.lesson._id} />
+      )}
     </div>
   );
 };

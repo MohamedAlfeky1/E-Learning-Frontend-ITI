@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLesson } from "@/queries/lessonsQueries";
 import { useUploadVideosMutation } from "@/mutations/useUploadVideosMutation";
@@ -18,6 +18,7 @@ import {
   Clock,
   ExternalLink,
 } from "lucide-react";
+import ProcessVideoPanel from "./components/ProcessVideoPanel";
 
 const LessonDetailsPage = () => {
   const { courseId, lessonId } = useParams();
@@ -30,8 +31,6 @@ const LessonDetailsPage = () => {
   } = useLesson(courseId, lessonId);
   const lesson = lessonResponse?.data;
 
-  console.log(lesson);
-
   const { mutate: uploadVideos, isPending: isUploadingVideos } =
     useUploadVideosMutation(courseId);
   const { mutate: uploadMaterials, isPending: isUploadingMaterials } =
@@ -41,27 +40,69 @@ const LessonDetailsPage = () => {
   const { mutate: deleteMaterial, isPending: isDeletingMaterial } =
     useDeleteLessonMaterialMutation(courseId, lessonId);
 
+  const [deletingVideoId, setDeletingVideoId] = useState(null);
+  const [deletingMaterialId, setDeletingMaterialId] = useState(null);
   const [videoFiles, setVideoFiles] = useState([]);
   const [materialFiles, setMaterialFiles] = useState([]);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const videoAbortController = useRef(null);
+  const materialAbortController = useRef(null);
 
   const handleVideoUpload = () => {
     if (videoFiles.length === 0) return;
+    videoAbortController.current = new AbortController();
     uploadVideos(
-      { lessonId, files: videoFiles },
       {
-        onSuccess: () => setVideoFiles([]),
+        lessonId,
+        files: videoFiles,
+        signal: videoAbortController.current.signal,
+      },
+      {
+        onSuccess: () => {
+          setVideoFiles([]);
+          videoAbortController.current = null;
+        },
+        onError: () => {
+          videoAbortController.current = null;
+        },
       },
     );
   };
 
+  const handleCancelVideoUpload = () => {
+    if (videoAbortController.current) {
+      videoAbortController.current.abort();
+      videoAbortController.current = null;
+    }
+  };
+
   const handleMaterialUpload = () => {
     if (materialFiles.length === 0) return;
+    materialAbortController.current = new AbortController();
     uploadMaterials(
-      { lessonId, files: materialFiles },
       {
-        onSuccess: () => setMaterialFiles([]),
+        lessonId,
+        files: materialFiles,
+        signal: materialAbortController.current.signal,
+      },
+      {
+        onSuccess: () => {
+          setMaterialFiles([]);
+          materialAbortController.current = null;
+        },
+        onError: () => {
+          materialAbortController.current = null;
+        },
       },
     );
+  };
+
+  const handleCancelMaterialUpload = () => {
+    if (materialAbortController.current) {
+      materialAbortController.current.abort();
+      materialAbortController.current = null;
+    }
   };
 
   if (isLoading) {
@@ -113,12 +154,24 @@ const LessonDetailsPage = () => {
                   Lesson {lesson.orderIndex + 1}
                 </span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-[1.1]">
+              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-[1.1] break-words">
                 {lesson.title}
               </h1>
-              <p className="text-gray-500 text-lg font-medium max-w-3xl leading-relaxed">
+              <p
+                className={`text-gray-500 text-lg font-medium max-w-3xl leading-relaxed break-words ${!isDescriptionExpanded ? "line-clamp-2" : ""}`}
+              >
                 {lesson.description}
               </p>
+              {lesson.description?.length > 150 && (
+                <button
+                  onClick={() =>
+                    setIsDescriptionExpanded(!isDescriptionExpanded)
+                  }
+                  className="text-indigo-600 font-bold text-xs uppercase tracking-widest hover:text-indigo-700 transition-colors"
+                >
+                  {isDescriptionExpanded ? "Show Less" : "Read More"}
+                </button>
+              )}
             </div>
           </div>
         </header>
@@ -170,17 +223,31 @@ const LessonDetailsPage = () => {
                       : "Browse Files"}
                   </label>
                   {videoFiles.length > 0 && (
-                    <Button
-                      onClick={handleVideoUpload}
-                      disabled={isUploadingVideos}
-                      className="h-12 rounded-2xl bg-indigo-700 text-white font-black shadow-lg shadow-blue-100"
-                    >
-                      {isUploadingVideos ? (
-                        <Spinner className="w-4 h-4 border-white" />
-                      ) : (
-                        "Start Upload"
+                    <div className="flex flex-col w-full gap-3">
+                      <Button
+                        onClick={handleVideoUpload}
+                        disabled={isUploadingVideos}
+                        className="h-12 rounded-2xl bg-indigo-700 text-white font-black shadow-lg shadow-blue-100 w-full"
+                      >
+                        {isUploadingVideos ? (
+                          <div className="flex items-center gap-2">
+                            <Spinner className="w-4 h-4 border-white" />
+                            <span>Uploading...</span>
+                          </div>
+                        ) : (
+                          "Start Upload"
+                        )}
+                      </Button>
+                      {isUploadingVideos && (
+                        <Button
+                          variant="ghost"
+                          onClick={handleCancelVideoUpload}
+                          className="h-10 text-red-500 font-bold hover:bg-red-50 rounded-xl"
+                        >
+                          Cancel Upload
+                        </Button>
                       )}
-                    </Button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -223,13 +290,19 @@ const LessonDetailsPage = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() =>
-                        deleteVideo({ lessonId, videoId: vid._id })
-                      }
+                      onClick={() => {
+                        setDeletingVideoId(vid._id);
+                        deleteVideo(
+                          { lessonId, videoId: vid._id },
+                          {
+                            onSettled: () => setDeletingVideoId(null),
+                          },
+                        );
+                      }}
                       disabled={isDeletingVideo}
                       className="text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded-xl"
                     >
-                      {isDeletingVideo ? (
+                      {isDeletingVideo && deletingVideoId === vid._id ? (
                         <Spinner className="w-4 h-4 border-white" />
                       ) : (
                         <Trash2 className="w-5 h-5" />
@@ -243,6 +316,9 @@ const LessonDetailsPage = () => {
                 </p>
               )}
             </div>
+
+            {/* RAG Processing Panel */}
+            <ProcessVideoPanel lessonId={lessonId} videosCount={lesson.videos?.length} />
           </section>
 
           {/* Materials Section */}
@@ -289,17 +365,31 @@ const LessonDetailsPage = () => {
                       : "Browse Files"}
                   </label>
                   {materialFiles.length > 0 && (
-                    <Button
-                      onClick={handleMaterialUpload}
-                      disabled={isUploadingMaterials}
-                      className="h-12 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-black shadow-lg shadow-orange-100"
-                    >
-                      {isUploadingMaterials ? (
-                        <Spinner className="w-4 h-4 border-white" />
-                      ) : (
-                        "Start Upload"
+                    <div className="flex flex-col w-full gap-3">
+                      <Button
+                        onClick={handleMaterialUpload}
+                        disabled={isUploadingMaterials}
+                        className="h-12 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-black shadow-lg shadow-orange-100 w-full"
+                      >
+                        {isUploadingMaterials ? (
+                          <div className="flex items-center gap-2">
+                            <Spinner className="w-4 h-4 border-white" />
+                            <span>Uploading...</span>
+                          </div>
+                        ) : (
+                          "Start Upload"
+                        )}
+                      </Button>
+                      {isUploadingMaterials && (
+                        <Button
+                          variant="ghost"
+                          onClick={handleCancelMaterialUpload}
+                          className="h-10 text-red-500 font-bold hover:bg-red-50 rounded-xl"
+                        >
+                          Cancel Upload
+                        </Button>
                       )}
-                    </Button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -336,13 +426,19 @@ const LessonDetailsPage = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() =>
-                        deleteMaterial({ lessonId, materialId: mat._id })
-                      }
+                      onClick={() => {
+                        setDeletingMaterialId(mat._id);
+                        deleteMaterial(
+                          { lessonId, materialId: mat._id },
+                          {
+                            onSettled: () => setDeletingMaterialId(null),
+                          },
+                        );
+                      }}
                       disabled={isDeletingMaterial}
                       className="text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded-xl"
                     >
-                      {isDeletingMaterial ? (
+                      {isDeletingMaterial && deletingMaterialId === mat._id ? (
                         <Spinner className="w-4 h-4 border-white" />
                       ) : (
                         <Trash2 className="w-5 h-5" />

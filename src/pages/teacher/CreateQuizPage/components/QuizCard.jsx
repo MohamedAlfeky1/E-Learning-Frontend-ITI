@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,7 @@ import { quizApi } from "../../../../api/quizApi";
 
 export default function QuizCard({ quiz, onEdit, onDelete }) {
   const [deleting, setDeleting] = useState(false);
+  const navigate = useNavigate();
 
   const handleDelete = () => {
     toast(`Delete "${quiz.title}"?`, {
@@ -77,7 +79,7 @@ export default function QuizCard({ quiz, onEdit, onDelete }) {
             <p className="text-lg font-bold text-slate-700">{quiz.passingScore || 60}%</p>
           </div>
           <div className="flex gap-1">
-            <Button variant="ghost" size="icon" onClick={() => window.open(`/quizzes/${quiz._id}/results`, "_blank")}>
+            <Button variant="ghost" size="icon" onClick={() => navigate(`/teacher/quizzes/${quiz._id}/answers`)} title="View Results">
               <BarChart3 className="w-4 h-4" />
             </Button>
             <Button variant="ghost" size="icon" onClick={onEdit}>

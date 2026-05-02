@@ -10,6 +10,8 @@ export const useDeleteLessonVideoMutation = (courseId, lessonId) => {
     onSuccess: () => {
       queryClient.invalidateQueries(["lessons", courseId]);
       queryClient.invalidateQueries(["lesson", courseId, lessonId]);
+       queryClient.invalidateQueries(["my-courses"]);
+      queryClient.invalidateQueries(["courses"]);
       toast.success("Video deleted successfully");
     },
     onError: (error) => {

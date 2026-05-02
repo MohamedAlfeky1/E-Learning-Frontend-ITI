@@ -68,8 +68,8 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
 
       <DialogContent className="sm:max-w-xl rounded-3xl border-none shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-black text-gray-900 flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+          <DialogTitle className="text-2xl font-black text-gray-900 flex items-center gap-3 break-words">
+            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center shrink-0">
               <FiPlus className="text-indigo-600" />
             </div>
             Add New Lesson
@@ -80,23 +80,26 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6 py-4 w-full"
+        >
           <div className="space-y-4">
             {/* Title */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 w-full min-w-0 px-1">
               <Label className="text-sm font-bold text-gray-700 ml-1">
                 Lesson Title
               </Label>
-              <div className="relative group">
-                <FiType className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
+              <div className="relative group w-full">
+                <FiType className="absolute left-4 top-4 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
                 <Controller
                   name="title"
                   control={control}
                   render={({ field }) => (
-                    <Input
+                    <Textarea
                       {...field}
                       placeholder="e.g. Introduction to React"
-                      className={`pl-12 h-14 rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-600/10 transition-all font-medium ${
+                      className={`w-full pl-12 pt-4 min-h-[80px] rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-600/10 transition-all font-medium resize-none break-all ${
                         errors.title ? "ring-2 ring-red-500" : ""
                       }`}
                     />
@@ -111,11 +114,11 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
             </div>
 
             {/* Description */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 w-full min-w-0 px-1">
               <Label className="text-sm font-bold text-gray-700 ml-1">
                 Description
               </Label>
-              <div className="relative group">
+              <div className="relative group w-full">
                 <FiFileText className="absolute left-4 top-4 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
                 <Controller
                   name="description"
@@ -124,7 +127,7 @@ const AddLessonDialog = ({ courseId, nextOrderIndex }) => {
                     <Textarea
                       {...field}
                       placeholder="What will students learn in this lesson?"
-                      className={`pl-12 pt-4 min-h-[120px] rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-600/10 transition-all font-medium resize-none ${
+                      className={`w-full pl-12 pt-4 min-h-[240px] rounded-2xl bg-gray-50 border-none focus:ring-4 focus:ring-indigo-600/10 transition-all font-medium resize-none break-words ${
                         errors.description ? "ring-2 ring-red-500" : ""
                       }`}
                     />

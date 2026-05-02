@@ -9,6 +9,9 @@ export const useCreateLessonMutation = (courseId) => {
     mutationFn: createLesson,
     onSuccess: () => {
       queryClient.invalidateQueries(["lessons", courseId]);
+      queryClient.invalidateQueries(["my-courses"]);
+      queryClient.invalidateQueries(["courses"]);
+       queryClient.invalidateQueries(["enrollment"]); 
       toast.success("Lesson created successfully");
     },
     onError: (error) => {

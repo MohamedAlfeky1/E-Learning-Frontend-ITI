@@ -103,6 +103,7 @@ export const ENDPOINTS = {
   QUIZZES_RESULT: (id) => `/quizzes/${id}/result`,
   QUIZZES_GENERATE_AI: "/quizzes/generate-ai",
   QUIZZES_LIST_FOR_STUDENT: (id) => `/quizzes/courses/${id}/student-quizzes`,
+  QUIZZES_TEACHER_RESULTS: (id) => `/quizzes/${id}/results`,
 
   // ─── Cart ─────────────────────────────────────────────────────────────────────
   CART_GET: "/cart",
