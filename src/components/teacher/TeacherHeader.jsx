@@ -22,10 +22,12 @@ const TeacherHeader = ({ onMenuClick }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const initials = `${user?.firstName?.[0] || ""}${user?.lastName?.[0] || ""}`.toUpperCase() || "T";
+  const initials =
+    `${user?.firstName?.[0] || ""}${user?.lastName?.[0] || ""}`.toUpperCase() ||
+    "T";
 
   return (
-    <header className="h-16 border-b bg-white flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10">
+    <header className="h-16 border-b bg-white flex items-center justify-between px-4 sm:px-6 sticky top-0 z-40">
       {/* Mobile Menu Toggle */}
       <div className="flex items-center md:hidden">
         <button
@@ -40,14 +42,14 @@ const TeacherHeader = ({ onMenuClick }) => {
       <div className="flex items-center gap-4 ml-auto">
         {/* User Profile */}
         <div className="relative" ref={dropdownRef}>
-          <button 
+          <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="flex items-center gap-3 p-1 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
           >
             <div className="text-right hidden sm:block">
               <p className="text-sm font-bold text-slate-800">
-                {user?.firstName && user?.lastName 
-                  ? `${user.firstName} ${user.lastName}` 
+                {user?.firstName && user?.lastName
+                  ? `${user.firstName} ${user.lastName}`
                   : "Teacher"}
               </p>
               <p className="text-[10px] font-semibold text-indigo-600 bg-indigo-50 inline-block px-1.5 py-0.5 rounded tracking-wide uppercase">
@@ -71,11 +73,13 @@ const TeacherHeader = ({ onMenuClick }) => {
               {/* User info */}
               <div className="px-4 py-2.5 border-b border-slate-100">
                 <p className="text-sm font-bold text-slate-800 truncate">
-                  {user?.firstName && user?.lastName 
-                    ? `${user.firstName} ${user.lastName}` 
+                  {user?.firstName && user?.lastName
+                    ? `${user.firstName} ${user.lastName}`
                     : "Teacher"}
                 </p>
-                <p className="text-xs text-slate-400 truncate">{user?.email || ""}</p>
+                <p className="text-xs text-slate-400 truncate">
+                  {user?.email || ""}
+                </p>
               </div>
 
               {/* Actions */}

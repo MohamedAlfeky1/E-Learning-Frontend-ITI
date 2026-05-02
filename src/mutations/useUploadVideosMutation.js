@@ -13,7 +13,11 @@ export const useUploadVideosMutation = (courseId) => {
       toast.success("Videos uploaded successfully");
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to upload videos");
+      if (error.message === "canceled") {
+        toast.info("Canceled");
+      } else {
+        toast.error(error.message || "Failed to upload videos");
+      }
     },
   });
 };
