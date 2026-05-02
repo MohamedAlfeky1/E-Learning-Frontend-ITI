@@ -45,7 +45,9 @@ const StudentQuizzesPage = () => {
   });
 
   const quizzes = quizzesData?.data.quizzes??  [];
-  console.log(quizzes);
+  console.log("quizzes",quizzes);
+  console.log("quizzesData",quizzesData);
+
   
   
 
