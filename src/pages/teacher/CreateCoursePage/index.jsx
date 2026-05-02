@@ -169,7 +169,7 @@ const CreateCoursePage = () => {
       setErrors((prev) => ({
         ...prev,
         api:
-          err.response?.data?.message ||
+          errorCreatingCourse.response?.data?.message ||
           "Failed to create course. Please try again.",
       }));
     } else {

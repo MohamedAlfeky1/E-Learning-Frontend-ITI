@@ -34,6 +34,7 @@ import Loader from "@/components/ui/loader";
 import VerificationDecisionForm from "./VerificationDecisionForm";
 import { TbCertificate } from "react-icons/tb";
 import { GrUserExpert } from "react-icons/gr";
+import { useGetCategoryById } from "@/queries/categoryQueries";
 
 const CategoryBadge = ({ categoryId }) => {
   const { data: categoryData, isLoading } = useGetCategoryById(categoryId);
@@ -185,7 +186,7 @@ const AdminVerificationsPage = () => {
                       <p className="font-semibold text-gray-900">
                         {applicant?.teacherId?.firstName +
                           " " +
-                          applicant.teacherId?.lastName}
+                          applicant?.teacherId?.lastName || 'Teacher Name'}
                       </p>
                       <p className="font-normal text-blue-500">
                         {applicant?.teacherId?.email}
@@ -244,7 +245,7 @@ const AdminVerificationsPage = () => {
                       </button>
                     </DrawerTrigger>
 
-                    <DrawerContent>
+                    <DrawerContent className='w-full'>
                       <DrawerHeader>
                         <DrawerTitle>Review Application</DrawerTitle>
                         <DrawerDescription>
@@ -263,28 +264,31 @@ const AdminVerificationsPage = () => {
                       {/* Applicant details */}
                       <div className="px-4 flex flex-col gap-2">
                         {/* Name & avatar */}
-                        <div className="flex items-center gap-2">
-                          {applicant.avatar ? (
-                            <img
-                              src={applicant.avatar}
-                              className="w-12 h-12 rounded-full object-cover"
-                            />
-                          ) : (
-                            <span className="bg-gray-200 text-gray-500 rounded-full w-12 h-12 flex items-center justify-center font-bold">
-                              {`${applicant?.teacherId?.firstName?.[0] ?? ""}${applicant.teacherId?.lastName?.[0] ?? ""}`}
-                            </span>
-                          )}
+                        <div className="flex justify-between items-center gap-2">
+                          <div className="flex items-center gap-2">
+                            {applicant.avatar ? (
+                              <img
+                                src={applicant.avatar}
+                                className="w-12 h-12 rounded-full object-cover"
+                              />
+                            ) : (
+                              <span className="bg-gray-200 text-gray-500 rounded-full w-12 h-12 flex items-center justify-center font-bold">
+                                {`${applicant?.teacherId?.firstName?.[0] ?? ""}${applicant.teacherId?.lastName?.[0] ?? ""}`}
+                              </span>
+                            )}
+                            <div className="flex flex-col gap-2">
+                              <p>
+                                {applicant?.teacherId?.firstName}{" "}
+                                {applicant.teacherId?.lastName}
+                              </p>
+                              <p className="text-sm font-light text-gray-400">
+                                ID: {applicant.teacherId?._id}
+                              </p>
+                            </div>
+                          </div>
+
                           <div>
-                            <div className="font-semibold text-gray-900 flex justify-between items-start w-full">
-                              <div className="flex flex-col gap-2">
-                                <p>
-                                  {applicant?.teacherId?.firstName}{" "}
-                                  {applicant.teacherId?.lastName}
-                                </p>
-                                <p className="text-sm font-light text-gray-400">
-                                  ID: {applicant.teacherId?._id}
-                                </p>
-                              </div>
+                            <div className="font-semibold text-gray-900 w-full flex justify-between items-start ">
                               <div className="flex items-center justify-start gap-2">
                                 {applicant.status === "pending" && (
                                   <span className="w-2 h-2 rounded-full bg-yellow-400" />
@@ -304,7 +308,7 @@ const AdminVerificationsPage = () => {
                         </div>
 
                         {/* Status */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex justify-between items-center gap-2 ">
                           {/* Categories */}
                           <div>
                             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
@@ -426,14 +430,15 @@ const AdminVerificationsPage = () => {
         </Table>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6  text-sm text-gray-400">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-6 py-2 text-sm text-gray-400">
+
           <span>
             Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
             {Math.min(currentPage * ITEMS_PER_PAGE, allRequests.length)} of{" "}
             {allRequests.length} applications
           </span>
 
-          <Pagination>
+          <Pagination className='flex flex-col md:flex-row'>
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious

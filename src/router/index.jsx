@@ -9,6 +9,7 @@ import TeacherLayout from "@/layouts/TeacherLayout";
 
 // ─── Route Guards ────────────────────────────────────────────────────────────
 import ProtectedRoute from "@/router/ProtectedRoute";
+import TeacherProfileRouteWrapper from "@/router/TeacherProfileRouteWrapper";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PUBLIC PAGES  (Guest + any logged-in user)
@@ -130,17 +131,23 @@ const router = createBrowserRouter([
       { path: "about", element: <AboutPage /> }, // /about
       { path: "courses", element: <CoursesPage /> },
 
-      // /courses
       {
         // /courses/:id
         path: "courses/:id",
         element: <CourseDetailsPage />,
       },
-      {
-        // /teachers/:id
-        path: "teachers/:id",
-        element: <TeacherPublicProfilePage />,
-      },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // DYNAMIC TEACHER PROFILE (MainLayout for guests/students, TeacherLayout for teachers)
+  // ───────────────────────────────────────────────────────────────────────────
+  {
+    path: "/teachers/:id",
+    element: <TeacherProfileRouteWrapper />,
+    errorElement: <ErrorPage />,
+    children: [
+      { index: true, element: <TeacherPublicProfilePage /> },
     ],
   },
 

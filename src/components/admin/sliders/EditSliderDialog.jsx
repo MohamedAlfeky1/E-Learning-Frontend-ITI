@@ -45,7 +45,7 @@ const formSchema = z.object({
     .string()
     .min(1, "Button text is required")
     .default("Learn More"),
-  isActive: z.boolean().default(true),
+
 });
 
 const EditSliderDialog = ({ slider }) => {
@@ -71,7 +71,7 @@ const EditSliderDialog = ({ slider }) => {
       description: slider.description || "",
       linkUrl: slider.linkUrl || "",
       buttonText: slider.buttonText || "Learn More",
-      isActive: slider.isActive ?? true,
+
     },
   });
 
@@ -83,7 +83,7 @@ const EditSliderDialog = ({ slider }) => {
         description: slider.description || "",
         linkUrl: slider.linkUrl || "",
         buttonText: slider.buttonText || "Learn More",
-        isActive: slider.isActive ?? true,
+
       });
       setImagePreview(
         slider.imageUrl.startsWith("http")
@@ -106,7 +106,7 @@ const EditSliderDialog = ({ slider }) => {
     formData.append("description", data.description || "");
     formData.append("linkUrl", data.linkUrl || "");
     formData.append("buttonText", data.buttonText);
-    formData.append("isActive", data.isActive);
+
     if (image) {
       formData.append("image", image);
     }
@@ -267,28 +267,7 @@ const EditSliderDialog = ({ slider }) => {
               </div>
             </div>
 
-            {/* Is Active */}
-            <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-100 mt-2">
-              <Controller
-                name="isActive"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    type="checkbox"
-                    id="isActive_edit"
-                    checked={field.value}
-                    onChange={field.onChange}
-                    className="size-5 rounded border-gray-300 text-[#3525CD] focus:ring-[#3525CD] cursor-pointer"
-                  />
-                )}
-              />
-              <Label
-                htmlFor="isActive_edit"
-                className="text-sm font-semibold text-gray-700 cursor-pointer select-none"
-              >
-                Make this slider active
-              </Label>
-            </div>
+
           </section>
 
           {/* Image Upload */}
