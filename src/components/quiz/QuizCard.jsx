@@ -60,10 +60,17 @@ const QuizCard = ({ quiz }) => {
           id={`start-quiz-${quiz._id}`}
           size="sm"
           className="gap-1.5"
-          onClick={() => navigate(`/quizzes/${quiz._id}/take`)}
+          onClick={() => {
+            const isCompleted = quiz.status === "completed" || quiz.status === "passed" || quiz.isCompleted;
+            if (isCompleted) {
+              navigate(`/quizzes/${quiz._id}/result`);
+            } else {
+              navigate(`/quizzes/${quiz._id}/take`);
+            }
+          }}
         >
           <PlayCircle className="size-4" />
-          Start
+          {quiz.status === "completed" || quiz.status === "passed" || quiz.isCompleted ? "View Result" : "Start"}
           <ChevronRight className="size-3.5 opacity-70" />
         </Button>
       </div>
