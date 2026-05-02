@@ -70,7 +70,9 @@ const TeacherCoursesPage = () => {
     );
   }
 
-  const errorMessage = error.response.data.message;
+  const errorMessage = error?.response?.data?.message;
+  console.log(error);
+  console.log(errorMessage);
 
   if (errorMessage === "Course not found") {
     return (
@@ -90,7 +92,7 @@ const TeacherCoursesPage = () => {
         </div>
       </div>
     );
-  } else {
+  } else if (error) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center p-4">
         <div className="bg-red-50 text-red-700 p-8 rounded-3xl border border-red-100 text-center max-w-md shadow-sm">
