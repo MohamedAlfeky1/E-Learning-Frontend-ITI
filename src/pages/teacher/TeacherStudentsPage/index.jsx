@@ -11,8 +11,12 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { useGetCoursesById } from '@/queries/useCourses';
 import CourseTitle from '@/components/teacher/students/CourseTitle';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useNavigate } from 'react-router-dom';
+import { MdOutlineChat } from 'react-icons/md';
+import { Button } from '@/components/ui/button';
 
 function TeacherStudentsPage() {
+    const navigate = useNavigate();
     const { data: teacherCourses, isLoading, error } = useTeacherCoursesQuery()
     const { data: courseData } = useGetCoursesById()
 
@@ -172,6 +176,27 @@ function TeacherStudentsPage() {
                                                 ? "Active"
                                                 : "Not Started"}
                                     </span>
+                                </TableCell>
+
+                                {/* ACTION */}
+                                <TableCell className="text-right px-6">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                            navigate('/teacher/chats', {
+                                                state: {
+                                                    courseId: enrollment.courseId?._id || enrollment.courseId,
+                                                    teacherId: enrollment.studentId?._id || enrollment.studentId,
+                                                    teacherName: `${enrollment.studentId?.firstName || ""} ${enrollment.studentId?.lastName || ""}`.trim()
+                                                }
+                                            });
+                                        }}
+                                        className="text-[var(--primary)] hover:bg-[var(--primary)]/10"
+                                    >
+                                        <MdOutlineChat size={18} className="mr-2" />
+                                        Chat
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}

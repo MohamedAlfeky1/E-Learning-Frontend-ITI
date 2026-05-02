@@ -13,6 +13,7 @@ export const useCreateCourse = () => {
     mutationFn: createCourse,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
+      queryClient.invalidateQueries({ queryKey: ["teacher-courses"] });
       toast.success("Course created successfully!");
       return data;
     },
