@@ -91,6 +91,8 @@ export const useUpdateProgressMutation = () => {
     onSuccess: () => {
       toast.success("Progress Updated Successfully");
       queryClient.invalidateQueries(["my-courses"]);
+      queryClient.invalidateQueries(["courses"]);
+
       queryClient.invalidateQueries(["enrollment"]);
     },
     onError: (error) => {

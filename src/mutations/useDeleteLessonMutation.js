@@ -9,6 +9,8 @@ export const useDeleteLessonMutation = (courseId) => {
     mutationFn: deleteLesson,
     onSuccess: () => {
       queryClient.invalidateQueries(["lessons", courseId]);
+       queryClient.invalidateQueries(["my-courses"]);
+      queryClient.invalidateQueries(["courses"]);
       toast.success("Lesson deleted successfully");
     },
     onError: (error) => {

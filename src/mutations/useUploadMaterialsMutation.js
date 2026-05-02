@@ -10,10 +10,16 @@ export const useUploadMaterialsMutation = (courseId) => {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(["lessons", courseId]);
       queryClient.invalidateQueries(["lesson", courseId, variables.lessonId]);
+       queryClient.invalidateQueries(["my-courses"]);
+      queryClient.invalidateQueries(["courses"]);
       toast.success("Materials uploaded successfully");
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to upload materials");
+      if (error.message === "canceled") {
+        toast.info("Canceled");
+      } else {
+        toast.error(error.message || "Failed to upload materials");
+      }
     },
   });
 };

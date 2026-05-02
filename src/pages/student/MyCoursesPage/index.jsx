@@ -4,8 +4,8 @@ import Loader from "@/components/ui/loader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { 
-  BookOpen, 
+import {
+  BookOpen,
   LayoutGrid,
   PlayCircle,
   CheckCircle2,
@@ -18,11 +18,12 @@ const MyCoursesPage = () => {
   const { data: enrollments, isLoading } = useMyCoursesQuery();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("All Courses");
+  console.log("enrollments", enrollments);
 
   const filteredEnrollments = enrollments?.filter((enrollment) => {
     if (activeTab === "All Courses") return true;
-    if (activeTab === "Completed") return enrollment.completed === true;
-    if (activeTab === "In Progress") return enrollment.completed === false;
+    if (activeTab === "Completed") return enrollment?.progress == 100;  // ← fix
+    if (activeTab === "In Progress") return enrollment.progress < 100;
     return true;
   });
 
@@ -64,11 +65,10 @@ const MyCoursesPage = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-6 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                  activeTab === tab
+                className={`px-6 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${activeTab === tab
                     ? "bg-indigo-600 text-white shadow-lg"
                     : "text-gray-500 hover:text-black hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 {tab}
               </button>
@@ -140,7 +140,7 @@ const MyCoursesPage = () => {
                       <span className="text-[10px] text-gray-400 font-medium">
                         LAST ACCESS: {new Date(enrollment.lastAccessedAt).toLocaleDateString()}
                       </span>
-                      {enrollment.completed && (
+                      {enrollment.progress === 100 && (
                         <div className="flex items-center gap-1">
                           <span className="text-xs text-green-600 font-bold">COMPLETED</span>
                           <CheckCircle2 className="text-green-500" size={14} />
