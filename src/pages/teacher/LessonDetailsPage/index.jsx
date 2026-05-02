@@ -18,6 +18,7 @@ import {
   Clock,
   ExternalLink,
 } from "lucide-react";
+import ProcessVideoPanel from "./components/ProcessVideoPanel";
 
 const LessonDetailsPage = () => {
   const { courseId, lessonId } = useParams();
@@ -315,6 +316,9 @@ const LessonDetailsPage = () => {
                 </p>
               )}
             </div>
+
+            {/* RAG Processing Panel */}
+            <ProcessVideoPanel lessonId={lessonId} videosCount={lesson.videos?.length} />
           </section>
 
           {/* Materials Section */}
