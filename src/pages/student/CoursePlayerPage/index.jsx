@@ -25,7 +25,7 @@ import { useUserQuery } from "@/queries/authQueries";
 import { FaStar } from "react-icons/fa";
 import { MessageSquare } from "lucide-react";
 import { FaDeleteLeft } from "react-icons/fa6";
-
+import VideoChatWidget from "./components/VideoChatWidget";
 
 const CoursePlayerPage = () => {
 
@@ -445,6 +445,11 @@ const CoursePlayerPage = () => {
         </div>
 
       </div>
+
+      {/* RAG Video Chat Widget */}
+      {selectedVideo?.lesson?._id && (
+        <VideoChatWidget lessonId={selectedVideo.lesson._id} />
+      )}
     </div>
   );
 };
