@@ -63,6 +63,23 @@ export default function ChatPage() {
       return;
     }
 
+    // Transition virtual conversation to real one if it's now available in data
+    if (selectedConversation?._isNew) {
+      const realConversation = data.data.find((conv) => {
+        const convCourseId = conv.courseId?._id || conv.courseId;
+        const otherParticipant = conv.participants?.find((p) => p._id !== userid);
+        return (
+          convCourseId === selectedConversation.courseId &&
+          otherParticipant?._id === selectedConversation.receiverId
+        );
+      });
+
+      if (realConversation) {
+        setSelectedConversation(realConversation);
+        return;
+      }
+    }
+
     // Default: auto-select the first conversation if nothing is selected
     if (!selectedConversation && data.data.length > 0) {
       setSelectedConversation(data.data[0]);
