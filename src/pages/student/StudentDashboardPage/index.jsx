@@ -171,7 +171,7 @@ const StudentDashboardPage = () => {
                     <h2 className="text-2xl font-bold leading-snug text-[var(--foreground)]">
                       {course.courseId?.title}
                     </h2>
-                    <p className="text-sm font-light text-[var(--muted-foreground)] line-clamp-2">
+                    <p className="text-sm font-light text-[var(--muted-foreground)] break-all overflow-hidden">
                       {course.courseId?.description}
                     </p>
 
@@ -181,14 +181,14 @@ const StudentDashboardPage = () => {
                         <h3 className="text-xs font-semibold text-[var(--foreground)]">Course Progress</h3>
                         <h4 className="text-xs font-semibold text-[var(--foreground)]">{course.progress}%</h4>
                       </div>
-                      <div className="w-full bg-[var(--muted)] rounded-full h-2">
+                      <div className="w-full bg-gray-100 rounded-full h-2">
                         {course.progress > 0 ? (
                           <div
                             className="bg-[var(--primary)] h-2 rounded-full transition-all duration-500"
                             style={{ width: `${course.progress}%` }}
                           />
                         ) : (
-                          <div className="bg-[var(--border)] h-2 rounded-full transition-all duration-500 w-full" />
+                          <div className="bg-gray-100 h-2 rounded-full transition-all duration-500 w-full" />
                         )}
                       </div>
                     </div>
@@ -239,14 +239,14 @@ const StudentDashboardPage = () => {
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full bg-[var(--muted)] rounded-full h-2">
+                  <div className="w-full bg-gray-100 rounded-full h-2">
                     {course.progress > 0 ? (
                       <div
                         className={`h-2 rounded-full transition-all duration-500 ${course.completed == 'true' ? 'bg-green-500' : 'bg-[var(--primary)]'}`}
                         style={{ width: `${course.progress}%` }}
                       />
                     ) : (
-                      <div className="bg-[var(--border)] h-2 rounded-full transition-all duration-500 w-full" />
+                      <div className="bg-gray-100 h-2 rounded-full transition-all duration-500 w-full" />
                     )}
                   </div>
                 </Link>

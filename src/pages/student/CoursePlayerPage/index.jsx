@@ -140,11 +140,7 @@ const CoursePlayerPage = () => {
     }
   }, [lessons]);
 
-  // useEffect(() => {
-  //   if (enrollmentsDetails?.progress !== undefined) {
-  //     setCourseProgress(enrollmentsDetails.progress);
-  //   }
-  // }, [enrollmentsDetails]);
+
 
   if (lessonsLoading && isLoading) return (
     <div className="min-h-full min-w-full flex justify-center items-center"><Loader /></div>
