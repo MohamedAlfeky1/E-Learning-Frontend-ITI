@@ -218,7 +218,7 @@ const StudentDashboardPage = () => {
                         <img
                           src={course?.courseId?.thumbnail}
                           alt="Course Thumbnail"
-                          className="w-20 h-20 object-cover rounded-md"
+                          className="w-20 h-20 object-cover rounded-md "
                         />
                       ) : (
                         <div className="w-20 h-20 bg-[var(--primary)] flex flex-col items-center justify-center gap-2 rounded-md">
