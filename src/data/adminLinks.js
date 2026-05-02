@@ -68,11 +68,6 @@ export const adminSidebarLinks = [
 
 export const adminBottomLinks = [
   {
-    title: "Add Admin",
-    href: "/admin/admins/add",
-    icon: UserPlus,
-  },
-  {
     title: "Help Center",
     href: "/admin/tickets",
     icon: HelpCircle,
