@@ -46,7 +46,6 @@ const formSchema = z.object({
     .string()
     .min(1, "Button text is required")
     .default("Learn More"),
-  isActive: z.boolean().default(true),
 });
 
 const AddSliderDialog = () => {
@@ -70,7 +69,6 @@ const AddSliderDialog = () => {
       description: "",
       linkUrl: "",
       buttonText: "Learn More",
-      isActive: true,
     },
   });
 
@@ -97,7 +95,7 @@ const AddSliderDialog = () => {
     formData.append("description", data.description || "");
     formData.append("linkUrl", data.linkUrl || "");
     formData.append("buttonText", data.buttonText);
-    formData.append("isActive", data.isActive ? "1" : "0");
+    formData.append("isActive", "false");
     formData.append("orderIndex", maxOrderIndex + 1);
     formData.append("image", image);
 
@@ -253,28 +251,7 @@ const AddSliderDialog = () => {
               </div>
             </div>
 
-            {/* Is Active */}
-            <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-100 mt-2">
-              <Controller
-                name="isActive"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    type="checkbox"
-                    id="isActive"
-                    checked={!!field.value}
-                    onChange={(e) => field.onChange(e.target.checked)}
-                    className="size-5 rounded border-gray-300 text-[#3525CD] focus:ring-[#3525CD] cursor-pointer"
-                  />
-                )}
-              />
-              <Label
-                htmlFor="isActive"
-                className="text-sm font-semibold text-gray-700 cursor-pointer select-none"
-              >
-                Make this slider active immediately
-              </Label>
-            </div>
+
           </section>
 
           {/* Image Upload */}
