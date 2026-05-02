@@ -49,6 +49,7 @@ function CourseCard({ course }) {
   const addToCartMutation = useAddToCart();
   const removeFromCartMutation = useDeleteCartMutation();
   const { data: enrolledIds } = useMyEnrolledCourseIds();
+console.log("enrolledIds",enrolledIds);
 
   const userRole = userData?.role
   const isLoggedIn = !!userData?._id;
