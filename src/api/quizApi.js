@@ -38,4 +38,8 @@ export const quizApi = {
   // Get all quizzes for a course (student view)
   getForStudent: (courseId) =>
     axiosInstance.get(ENDPOINTS.QUIZZES_LIST_FOR_STUDENT(courseId)),
+
+  // Get quiz results and statistics (teacher view)
+  getTeacherResults: (quizId) =>
+    axiosInstance.get(ENDPOINTS.QUIZZES_TEACHER_RESULTS(quizId)),
 };

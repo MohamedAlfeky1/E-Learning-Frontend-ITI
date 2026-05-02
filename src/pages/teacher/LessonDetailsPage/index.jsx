@@ -19,6 +19,7 @@ import {
   Clock,
   ExternalLink,
 } from "lucide-react";
+import ProcessVideoPanel from "./components/ProcessVideoPanel";
 
 const LessonDetailsPage = () => {
   const { courseId, lessonId } = useParams();
@@ -44,6 +45,10 @@ const LessonDetailsPage = () => {
 
   const [videoFiles, setVideoFiles] = useState([]);
   const [materialFiles, setMaterialFiles] = useState([]);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const videoAbortController = useRef(null);
+  const materialAbortController = useRef(null);
 
   const {
     uploadVideos: startVideoUpload,
@@ -62,6 +67,13 @@ const LessonDetailsPage = () => {
     if (materialFiles.length === 0) return;
     await startMaterialUpload({ courseId, lessonId, files: materialFiles });
     setMaterialFiles([]);
+  };
+
+  const handleCancelMaterialUpload = () => {
+    if (materialAbortController.current) {
+      materialAbortController.current.abort();
+      materialAbortController.current = null;
+    }
   };
 
   if (isLoading) {
@@ -113,12 +125,24 @@ const LessonDetailsPage = () => {
                   Lesson {lesson.orderIndex + 1}
                 </span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-[1.1]">
+              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-[1.1] break-words">
                 {lesson.title}
               </h1>
-              <p className="text-gray-500 text-lg font-medium max-w-3xl leading-relaxed">
+              <p
+                className={`text-gray-500 text-lg font-medium max-w-3xl leading-relaxed break-words ${!isDescriptionExpanded ? "line-clamp-2" : ""}`}
+              >
                 {lesson.description}
               </p>
+              {lesson.description?.length > 150 && (
+                <button
+                  onClick={() =>
+                    setIsDescriptionExpanded(!isDescriptionExpanded)
+                  }
+                  className="text-indigo-600 font-bold text-xs uppercase tracking-widest hover:text-indigo-700 transition-colors"
+                >
+                  {isDescriptionExpanded ? "Show Less" : "Read More"}
+                </button>
+              )}
             </div>
           </div>
         </header>
@@ -246,6 +270,12 @@ const LessonDetailsPage = () => {
                 </p>
               )}
             </div>
+
+            {/* RAG Processing Panel */}
+            <ProcessVideoPanel
+              lessonId={lessonId}
+              videosCount={lesson.videos?.length}
+            />
           </section>
 
           {/* Materials Section */}

@@ -25,11 +25,6 @@ export const adminSidebarLinks = [
     icon: LayoutDashboard,
   },
   {
-    title: "Users",
-    href: "/admin/users",
-    icon: Users,
-  },
-  {
     title: "Teachers",
     href: "/admin/teachers",
     icon: GraduationCap,
@@ -45,29 +40,14 @@ export const adminSidebarLinks = [
     icon: ShieldCheck,
   },
   {
-    title: "Courses",
-    href: "/admin/courses",
-    icon: BookOpen,
-  },
-  {
     title: "Categories",
     href: "/admin/categories",
     icon: FolderTree,
   },
   {
-    title: "Enroll Student",
-    href: "/admin/enroll",
-    icon: UserPlus,
-  },
-  {
     title: "Vouchers",
     href: "/admin/vouchers",
     icon: Ticket,
-  },
-  {
-    title: "Payments",
-    href: "/admin/payments",
-    icon: CreditCard,
   },
   {
     title: "Withdrawals",
@@ -83,11 +63,6 @@ export const adminSidebarLinks = [
     title: "Sliders",
     href: "/admin/sliders",
     icon: Image,
-  },
-  {
-    title: "Reports",
-    href: "/admin/reports",
-    icon: BarChart3,
   },
 ];
 
