@@ -1,14 +1,18 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCourse } from "@/queries/useCourse";
 import placeholderImg from "@/assets/placeholder.jpg";
 import { useGetCategoryById } from "@/queries/categoryQueries";
 import { Spinner } from "@/components/ui/spinner";
 import { useDeleteFavoriteMutation } from "@/mutations/useDeleteFavoriteMutation";
+import { useMyCoursesQuery } from "@/queries/enrollmentQueries";
 
 const CourseCard = ({ favorite }) => {
+  const navigate = useNavigate();
+  const { data: enrollments } = useMyCoursesQuery();
+
   const {
     data: courseData,
     isLoading,
@@ -23,6 +27,18 @@ const CourseCard = ({ favorite }) => {
   const { data: categoryData } = useGetCategoryById(course.categoryId);
   const category = categoryData?.data ?? {};
 
+  const isEnrolled = enrollments?.some(
+    (e) => (e.courseId?._id || e.courseId) === course._id,
+  );
+
+  const handleCardClick = () => {
+    if (isEnrolled) {
+      navigate(`/my-courses/${course._id}/learn`);
+    } else {
+      navigate(`/courses/${course._id}`);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="w-full max-w-[400px] h-[400px] bg-white rounded-3xl border border-gray-100 flex items-center justify-center mx-auto">
@@ -32,7 +48,10 @@ const CourseCard = ({ favorite }) => {
   }
 
   return (
-    <div className="group w-full max-w-[400px] bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col overflow-hidden mx-auto">
+    <div
+      onClick={handleCardClick}
+      className="group w-full max-w-[400px] bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col overflow-hidden mx-auto cursor-pointer"
+    >
       {/* Thumbnail Area */}
       <div className="relative h-44 overflow-hidden">
         <img
@@ -46,21 +65,24 @@ const CourseCard = ({ favorite }) => {
           </Badge>
         </div>
         <Button
-  variant="secondary"
-  size="icon"
-  className="bg-white/80 backdrop-blur-md hover:bg-white absolute top-4 right-4 rounded-xl shadow-sm transition-all active:scale-90 group/heart"
-  onClick={() => removeFromFavorites(favorite._id)}
->
-  {isRemoving ? (
-    <Spinner className="size-4" />
-  ) : (
-    <Heart 
-      className={`size-5 transition-colors duration-300 
-        ${isRemoving ? 'text-gray-300' : 'text-[#3525CD] fill-[#3525CD] group-hover/heart:text-primary-500 group-hover/heart:fill-primary-500'}
-      `} 
-    />
-  )}
-</Button>
+          variant="secondary"
+          size="icon"
+          className="bg-white/80 backdrop-blur-md hover:bg-white absolute top-4 right-4 rounded-xl shadow-sm transition-all active:scale-90 group/heart"
+          onClick={(e) => {
+            e.stopPropagation();
+            removeFromFavorites(favorite._id);
+          }}
+        >
+          {isRemoving ? (
+            <Spinner className="size-4" />
+          ) : (
+            <Heart
+              className={`size-5 transition-colors duration-300 
+        ${isRemoving ? "text-gray-300" : "text-[#3525CD] fill-[#3525CD] group-hover/heart:text-primary-500 group-hover/heart:fill-primary-500"}
+      `}
+            />
+          )}
+        </Button>
       </div>
 
       {/* Content Area */}
@@ -73,19 +95,20 @@ const CourseCard = ({ favorite }) => {
         </p>
 
         <div className="pt-4 border-t border-gray-50 flex justify-between items-center mt-auto">
-          <div className="flex flex-col">
-            <span className="text-[9px] font-black uppercase tracking-tighter text-gray-400">
-              Price
-            </span>
-            <span className="text-xl font-black text-[#3525CD] font-['Plus Jakarta Sans']">
-              {course.type === "free" ? "FREE" : `$${course?.price}`}
-            </span>
-          </div>
-          <Link to={`/courses/${course._id}`}>
+          {isEnrolled ? (
             <Button className="bg-[#141B2B] hover:bg-black text-white rounded-xl px-5 h-10 font-bold text-xs transition-all flex items-center gap-2">
-              Details
+              Continue Learning
             </Button>
-          </Link>
+          ) : (
+            <div className="flex flex-col">
+              <span className="text-[9px] font-black uppercase tracking-tighter text-gray-400">
+                Price
+              </span>
+              <span className="text-xl font-black text-[#3525CD] font-['Plus Jakarta Sans']">
+                {course.type === "free" ? "FREE" : `$${course?.price}`}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
