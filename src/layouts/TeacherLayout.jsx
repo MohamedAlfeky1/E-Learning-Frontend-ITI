@@ -18,15 +18,17 @@ const TeacherLayout = () => {
   return (
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen bg-slate-50 flex relative">
-        <TeacherSidebar 
-          isCollapsed={isCollapsed} 
-          setIsCollapsed={setIsCollapsed} 
+        <TeacherSidebar
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
           isMobileOpen={isMobileOpen}
           setIsMobileOpen={setIsMobileOpen}
         />
 
         {/* Main Content wrapper */}
-        <div className={`flex-1 flex flex-col transition-all duration-300 w-full min-w-0 ${isCollapsed ? 'md:ml-[72px]' : 'md:ml-[260px]'}`}>
+        <div
+          className={`flex-1 flex flex-col transition-all duration-300 w-full min-w-0 ${isCollapsed ? "md:ml-[72px]" : "md:ml-[260px]"}`}
+        >
           <TeacherHeader onMenuClick={() => setIsMobileOpen(true)} />
 
           <main className="flex-1 p-4 md:p-6 overflow-x-hidden">

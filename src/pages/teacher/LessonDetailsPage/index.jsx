@@ -7,6 +7,7 @@ import { useDeleteLessonVideoMutation } from "@/mutations/useDeleteLessonVideoMu
 import { useDeleteLessonMaterialMutation } from "@/mutations/useDeleteLessonMaterialMutation";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { useUpload } from "@/contexts/UploadContext";
 import {
   ChevronLeft,
   Video,
@@ -25,23 +26,23 @@ const LessonDetailsPage = () => {
   const navigate = useNavigate();
 
   const {
+    data: deleteVideo,
+    mutate: deleteVideoMutate,
+    isPending: isDeletingVideo,
+  } = useDeleteLessonVideoMutation(courseId, lessonId);
+  const {
+    data: deleteMaterial,
+    mutate: deleteMaterialMutate,
+    isPending: isDeletingMaterial,
+  } = useDeleteLessonMaterialMutation(courseId, lessonId);
+
+  const {
     data: lessonResponse,
     isLoading,
     isError,
   } = useLesson(courseId, lessonId);
   const lesson = lessonResponse?.data;
 
-  const { mutate: uploadVideos, isPending: isUploadingVideos } =
-    useUploadVideosMutation(courseId);
-  const { mutate: uploadMaterials, isPending: isUploadingMaterials } =
-    useUploadMaterialsMutation(courseId);
-  const { mutate: deleteVideo, isPending: isDeletingVideo } =
-    useDeleteLessonVideoMutation(courseId, lessonId);
-  const { mutate: deleteMaterial, isPending: isDeletingMaterial } =
-    useDeleteLessonMaterialMutation(courseId, lessonId);
-
-  const [deletingVideoId, setDeletingVideoId] = useState(null);
-  const [deletingMaterialId, setDeletingMaterialId] = useState(null);
   const [videoFiles, setVideoFiles] = useState([]);
   const [materialFiles, setMaterialFiles] = useState([]);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -49,53 +50,23 @@ const LessonDetailsPage = () => {
   const videoAbortController = useRef(null);
   const materialAbortController = useRef(null);
 
-  const handleVideoUpload = () => {
+  const {
+    uploadVideos: startVideoUpload,
+    uploadMaterials: startMaterialUpload,
+    isUploadingVideos,
+    isUploadingMaterials,
+  } = useUpload();
+
+  const handleVideoUpload = async () => {
     if (videoFiles.length === 0) return;
-    videoAbortController.current = new AbortController();
-    uploadVideos(
-      {
-        lessonId,
-        files: videoFiles,
-        signal: videoAbortController.current.signal,
-      },
-      {
-        onSuccess: () => {
-          setVideoFiles([]);
-          videoAbortController.current = null;
-        },
-        onError: () => {
-          videoAbortController.current = null;
-        },
-      },
-    );
+    await startVideoUpload({ courseId, lessonId, files: videoFiles });
+    setVideoFiles([]);
   };
 
-  const handleCancelVideoUpload = () => {
-    if (videoAbortController.current) {
-      videoAbortController.current.abort();
-      videoAbortController.current = null;
-    }
-  };
-
-  const handleMaterialUpload = () => {
+  const handleMaterialUpload = async () => {
     if (materialFiles.length === 0) return;
-    materialAbortController.current = new AbortController();
-    uploadMaterials(
-      {
-        lessonId,
-        files: materialFiles,
-        signal: materialAbortController.current.signal,
-      },
-      {
-        onSuccess: () => {
-          setMaterialFiles([]);
-          materialAbortController.current = null;
-        },
-        onError: () => {
-          materialAbortController.current = null;
-        },
-      },
-    );
+    await startMaterialUpload({ courseId, lessonId, files: materialFiles });
+    setMaterialFiles([]);
   };
 
   const handleCancelMaterialUpload = () => {
@@ -223,31 +194,20 @@ const LessonDetailsPage = () => {
                       : "Browse Files"}
                   </label>
                   {videoFiles.length > 0 && (
-                    <div className="flex flex-col w-full gap-3">
-                      <Button
-                        onClick={handleVideoUpload}
-                        disabled={isUploadingVideos}
-                        className="h-12 rounded-2xl bg-indigo-700 text-white font-black shadow-lg shadow-blue-100 w-full"
-                      >
-                        {isUploadingVideos ? (
-                          <div className="flex items-center gap-2">
-                            <Spinner className="w-4 h-4 border-white" />
-                            <span>Uploading...</span>
-                          </div>
-                        ) : (
-                          "Start Upload"
-                        )}
-                      </Button>
-                      {isUploadingVideos && (
-                        <Button
-                          variant="ghost"
-                          onClick={handleCancelVideoUpload}
-                          className="h-10 text-red-500 font-bold hover:bg-red-50 rounded-xl"
-                        >
-                          Cancel Upload
-                        </Button>
+                    <Button
+                      onClick={handleVideoUpload}
+                      disabled={isUploadingVideos}
+                      className="h-12 rounded-2xl bg-indigo-700 text-white font-black shadow-lg shadow-blue-100 w-full"
+                    >
+                      {isUploadingVideos ? (
+                        <div className="flex items-center gap-2">
+                          <Spinner className="w-4 h-4 border-white" />
+                          <span>Uploading...</span>
+                        </div>
+                      ) : (
+                        "Start Upload"
                       )}
-                    </div>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -290,20 +250,14 @@ const LessonDetailsPage = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => {
-                        setDeletingVideoId(vid._id);
-                        deleteVideo(
-                          { lessonId, videoId: vid._id },
-                          {
-                            onSettled: () => setDeletingVideoId(null),
-                          },
-                        );
-                      }}
+                      onClick={() =>
+                        deleteVideoMutate({ lessonId, videoId: vid._id })
+                      }
                       disabled={isDeletingVideo}
                       className="text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded-xl"
                     >
-                      {isDeletingVideo && deletingVideoId === vid._id ? (
-                        <Spinner className="w-4 h-4 border-white" />
+                      {isDeletingVideo ? (
+                        <Spinner className="w-4 h-4" />
                       ) : (
                         <Trash2 className="w-5 h-5" />
                       )}
@@ -318,7 +272,10 @@ const LessonDetailsPage = () => {
             </div>
 
             {/* RAG Processing Panel */}
-            <ProcessVideoPanel lessonId={lessonId} videosCount={lesson.videos?.length} />
+            <ProcessVideoPanel
+              lessonId={lessonId}
+              videosCount={lesson.videos?.length}
+            />
           </section>
 
           {/* Materials Section */}
@@ -365,31 +322,20 @@ const LessonDetailsPage = () => {
                       : "Browse Files"}
                   </label>
                   {materialFiles.length > 0 && (
-                    <div className="flex flex-col w-full gap-3">
-                      <Button
-                        onClick={handleMaterialUpload}
-                        disabled={isUploadingMaterials}
-                        className="h-12 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-black shadow-lg shadow-orange-100 w-full"
-                      >
-                        {isUploadingMaterials ? (
-                          <div className="flex items-center gap-2">
-                            <Spinner className="w-4 h-4 border-white" />
-                            <span>Uploading...</span>
-                          </div>
-                        ) : (
-                          "Start Upload"
-                        )}
-                      </Button>
-                      {isUploadingMaterials && (
-                        <Button
-                          variant="ghost"
-                          onClick={handleCancelMaterialUpload}
-                          className="h-10 text-red-500 font-bold hover:bg-red-50 rounded-xl"
-                        >
-                          Cancel Upload
-                        </Button>
+                    <Button
+                      onClick={handleMaterialUpload}
+                      disabled={isUploadingMaterials}
+                      className="h-12 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-black shadow-lg shadow-orange-100 w-full"
+                    >
+                      {isUploadingMaterials ? (
+                        <div className="flex items-center gap-2">
+                          <Spinner className="w-4 h-4 border-white" />
+                          <span>Uploading...</span>
+                        </div>
+                      ) : (
+                        "Start Upload"
                       )}
-                    </div>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -426,20 +372,14 @@ const LessonDetailsPage = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => {
-                        setDeletingMaterialId(mat._id);
-                        deleteMaterial(
-                          { lessonId, materialId: mat._id },
-                          {
-                            onSettled: () => setDeletingMaterialId(null),
-                          },
-                        );
-                      }}
+                      onClick={() =>
+                        deleteMaterialMutate({ lessonId, materialId: mat._id })
+                      }
                       disabled={isDeletingMaterial}
                       className="text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded-xl"
                     >
-                      {isDeletingMaterial && deletingMaterialId === mat._id ? (
-                        <Spinner className="w-4 h-4 border-white" />
+                      {isDeletingMaterial ? (
+                        <Spinner className="w-4 h-4" />
                       ) : (
                         <Trash2 className="w-5 h-5" />
                       )}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import {
@@ -30,10 +30,11 @@ import AuthSideBar from "@/components/auth/AuthSideBar";
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const RegisterPage = () => {
+  const [searchParams] = useSearchParams();
   const registerMutation = useRegisterMutation();
   const googleMutation = useGoogleMutation();
 
-  const [role, setRole] = useState("student");
+  const [role, setRole] = useState(searchParams.get("role") || "student");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 

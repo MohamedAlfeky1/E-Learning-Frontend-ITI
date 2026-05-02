@@ -43,10 +43,9 @@ const CategoryName = ({ id }) => {
   return <span className="truncate">{category?.name || "General"}</span>;
 };
 
-
 const TeacherCoursesPage = () => {
   const navigate = useNavigate();
-  const { data: response, isLoading, isError } = useTeacherCourses();
+  const { data: response, isLoading, error } = useTeacherCourses();
   const { mutateAsync: deleteCourse, isPending: isDeleting } =
     useDeleteCourse();
   const [courseToDelete, setCourseToDelete] = useState(null);
@@ -71,7 +70,27 @@ const TeacherCoursesPage = () => {
     );
   }
 
-  if (isError) {
+  const errorMessage = error.response.data.message;
+
+  if (errorMessage === "Course not found") {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center p-4">
+        <div className="bg-indigo-50 text-indigo-700 p-8 rounded-3xl border border-indigo-100 text-center max-w-md shadow-sm">
+          <AlertCircle className="text-5xl mx-auto mb-4 text-indigo-400" />
+          <h2 className="text-xl font-bold">No courses found</h2>
+          <p className="text-gray-600 mt-2">
+            You haven't created any courses yet, create one to get started.
+          </p>
+          <Button
+            onClick={() => navigate("/teacher/courses/create")}
+            className="mt-6 w-full rounded-xl py-6"
+          >
+            Create a Course
+          </Button>
+        </div>
+      </div>
+    );
+  } else {
     return (
       <div className="min-h-[60vh] flex items-center justify-center p-4">
         <div className="bg-red-50 text-red-700 p-8 rounded-3xl border border-red-100 text-center max-w-md shadow-sm">
