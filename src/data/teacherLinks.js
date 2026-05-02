@@ -40,11 +40,6 @@ export const teacherSidebarLinks = [
     exact: true,
   },
   {
-    title: "Upload Videos",
-    href: "/teacher/materials/upload", 
-    icon: Video,
-  },
-  {
     title: "Assignments",
     href: "/teacher/assignments",
     icon: ClipboardList,
