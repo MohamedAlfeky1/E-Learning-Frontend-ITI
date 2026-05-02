@@ -4,6 +4,7 @@ import { useDeleteSliderMutation } from "@/mutations/useDeleteSliderMutation";
 import { useReorderSlidersMutation } from "@/mutations/useReorderSlidersMutation";
 import AddSliderDialog from "@/components/admin/sliders/AddSliderDialog";
 import EditSliderDialog from "@/components/admin/sliders/EditSliderDialog";
+import { useUpdateSliderMutation } from "@/mutations/useUpdateSliderMutation";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Empty,
@@ -137,6 +138,8 @@ const AdminSlidersPage = () => {
 
 const SliderItem = ({ slider, onDelete }) => {
   const controls = useDragControls();
+  const { mutate: updateSlider, isPending: isUpdating } =
+    useUpdateSliderMutation();
 
   return (
     <Reorder.Item
@@ -208,6 +211,41 @@ const SliderItem = ({ slider, onDelete }) => {
 
       {/* Actions */}
       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Button
+          variant="outline"
+          size="icon"
+          className={`rounded-xl border-gray-200 transition-all ${
+            slider.isActive
+              ? "text-gray-400 hover:bg-gray-50 hover:border-gray-200"
+              : "text-green-600 hover:bg-green-50 hover:border-green-200"
+          }`}
+          onClick={() => {
+            const formData = new FormData();
+            formData.append("title", slider.title);
+            formData.append("isActive", !slider.isActive);
+            updateSlider(
+              { id: slider._id, data: formData },
+              {
+                onSuccess: () =>
+                  toast.success(
+                    `Slider ${
+                      !slider.isActive ? "activated" : "deactivated"
+                    } successfully`,
+                  ),
+                onError: () => toast.error("Failed to update slider status"),
+              },
+            );
+          }}
+          disabled={isUpdating}
+        >
+          {isUpdating ? (
+            <Spinner className="size-4" />
+          ) : slider.isActive ? (
+            <EyeOff className="size-4" />
+          ) : (
+            <Eye className="size-4" />
+          )}
+        </Button>
         <EditSliderDialog slider={slider} />
         <Button
           variant="outline"
