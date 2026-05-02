@@ -49,7 +49,7 @@ function CourseCard({ course }) {
   const addToCartMutation = useAddToCart();
   const removeFromCartMutation = useDeleteCartMutation();
   const { data: enrolledIds } = useMyEnrolledCourseIds();
-console.log("enrolledIds",enrolledIds);
+  console.log("enrolledIds", enrolledIds);
 
   const userRole = userData?.role
   const isLoggedIn = !!userData?._id;
@@ -68,7 +68,7 @@ console.log("enrolledIds",enrolledIds);
     removeFromCartMutation.mutate(course._id);
   };
 
-  
+
   const handleProceedToCheckout = () => {
     console.log("clicked");
     navigate("/checkout-page", {
@@ -111,19 +111,19 @@ console.log("enrolledIds",enrolledIds);
     );
   };
   console.log("userData", userData);
-  
+
   return (
     <>
       <Link
         to={`/courses/${course._id}`}
-        className="flex flex-col h-80 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl"
+        className="flex flex-col h-90 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl"
       >
         {/* Thumbnail */}
-        <div className="relative w-full h-32 overflow-hidden">
+        <div className="relative w-full h-64 overflow-hidden" style={{ aspectRatio: "16/9" }}>
           <img
             src={course.thumbnail || placeholderImg}
             alt="Course Thumbnail"
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
           />
 
           {userData?.role === "student" && !favoritesLoading && (
@@ -151,7 +151,7 @@ console.log("enrolledIds",enrolledIds);
         </div>
 
         {/* Content */}
-        <div className="flex flex-col gap-3 p-5 flex-1">
+        <div className="flex flex-col gap-2 p-5 flex-1">
           {/* Language + Rating */}
           <div className="flex items-center justify-between">
             <p className="flex items-center gap-1 text-sm font-medium text-gray-700">

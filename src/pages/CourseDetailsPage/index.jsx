@@ -10,14 +10,12 @@ import {
   MdPlayLesson,
   MdOutlineStarBorder,
   MdOutlineAddShoppingCart,
-  MdOutlineRemoveShoppingCart,
   MdOutlineVerified,
   MdOndemandVideo,
 } from "react-icons/md";
 import { Button } from "../../components/ui/button";
 import { useGetCourseReview } from "@/queries/useReviewQueries";
 import { useUserQuery } from "@/queries/authQueries";
-
 import { useState } from "react";
 import {
   Dialog,
@@ -32,38 +30,60 @@ import { useGetCartItems } from "@/queries/useCartQueries";
 import { useEnrollmentDetailsQuery } from "@/queries/enrollmentQueries";
 import { useAddToCart } from "@/mutations/cartMutations";
 
+/* ─── Helpers ──────────────────────────────────────────────── */
+
+const StarRow = ({ rating, max = 5 }) => (
+  <div className="flex gap-0.5">
+    {Array.from({ length: max }).map((_, i) =>
+      i < Math.round(rating)
+        ? <FaStar key={i} size={12} color="var(--primary)" />
+        : <MdOutlineStarBorder key={i} size={14} color="var(--muted-foreground)" />
+    )}
+  </div>
+);
+
+const StatChip = ({ icon, text }) => (
+  <div className="flex items-center gap-1.5 bg-[var(--background)] border border-[var(--border)] rounded-full px-3 py-1.5 text-xs font-medium text-[var(--foreground)]">
+    {icon}{text}
+  </div>
+);
+
+const InstructorAvatar = ({ teacher, size = "md" }) => {
+  const initials = `${teacher?.firstName?.[0] ?? ""}${teacher?.lastName?.[0] ?? ""}`;
+  const cls = size === "lg" ? "w-14 h-14 text-base" : "w-10 h-10 text-sm";
+  return teacher?.avatar
+    ? <img src={teacher.avatar} alt={teacher.firstName} className={`${cls} rounded-full object-cover ring-2 ring-[var(--primary)]/20`} />
+    : <span className={`${cls} rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] flex items-center justify-center font-bold`}>{initials}</span>;
+};
+
+const SectionTitle = ({ children }) => (
+  <h2 className="text-2xl font-bold text-[var(--foreground)] pl-4 relative before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:rounded-full before:bg-[var(--primary)]">
+    {children}
+  </h2>
+);
+
+/* ─── Page ─────────────────────────────────────────────────── */
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
   const [openPopover, setOpenPopover] = useState(false);
   const [openAppointmentDialog, setOpenAppointmentDialog] = useState(false);
 
-
-  const { data: userData, isLoading: useLoading, error: useError } = useUserQuery();
+  const { data: userData, isLoading: useLoading } = useUserQuery();
   const { data: cartData } = useGetCartItems();
   const { data, isLoading, error } = useGetCoursesById(id);
-  const { data: categoriesData, isLoading: loadingCategories, error: errorCategories } = useCategories();
-  const { data: reviewsData, isLoading: loadingReviews, error: errorReviews } = useGetCourseReview(id);
-  const { data: enrollmentData, isLoading: loadingEnrollment, error: errorEnrollment } = useEnrollmentDetailsQuery(id)
-
+  const { data: categoriesData } = useCategories();
+  const { data: reviewsData } = useGetCourseReview(id);
+  const { data: enrollmentData } = useEnrollmentDetailsQuery(id);
   const addToCartMutation = useAddToCart();
 
-  const userRole = userData?.role
+  const userRole = userData?.role;
   const isInCart = cartData?.data?.cart?.items?.some(
     (item) => item.courseId === id || item.courseId?._id === id
   );
 
-
-
-  console.log("cartData", cartData);
-  console.log("isInCart", isInCart);
-
-  console.log("data", data);
-
   const navigate = useNavigate();
   const isLoggedIn = !!userData?._id;
-
-
   const course = data?.data;
 
   const categoryName =
@@ -74,245 +94,182 @@ const CourseDetailsPage = () => {
     course?.lessons.reduce((total, lesson) => total + lesson.materials.length, 0) || 0;
 
   const handleAddToCart = () => {
-    addToCartMutation.mutate(
-      { courseId: course._id }
-      ,
-      {
-        onSuccess: (data) => {
-          toast.success('Course Added To Cart');
-          console.log('Course Added To Cart', data);
-
-        },
-        onError: (err) => {
-          toast.error('Error Add Course To Cart ')
-          console.log('Error Add Course To Cart ', err);
-        }
-      })
-  }
+    addToCartMutation.mutate({ courseId: course._id }, {
+      onSuccess: () => toast.success("Course Added To Cart"),
+      onError: () => toast.error("Error Add Course To Cart"),
+    });
+  };
 
   const handleEnroll = () => {
     try {
-      if (!isLoggedIn) {
-        setOpenPopover(true);
-        return;
-      }
-      else if (course.type == 'paid') {
-        handleAddToCart()
-      } else if (course.type == 'free') {
-      navigate(`/checkout-page?courseId=${course._id}`, { state: { isFreeCourse: true } })
-      }
-    } catch (error) {
-      toast.error(error)
-    }
-
+      if (!isLoggedIn) { setOpenPopover(true); return; }
+      if (course.type === "paid") handleAddToCart();
+      else if (course.type === "free")
+        navigate(`/checkout-page?courseId=${course._id}`, { state: { isFreeCourse: true } });
+    } catch (err) { toast.error(err); }
   };
 
-
-
-  if (isLoading) {
-    return (
-      <div className="col-span-4 flex justify-center items-center min-h-40">
-        <Loader />
-      </div>
-    );
-  }
-
-  if (error) return <div>Error: {error.message}</div>;
-  console.log("reviewsData", reviewsData);
-  console.log("userData", userData);
-  console.log("isLoggedIn", isLoggedIn);
+  if (isLoading) return (
+    <div className="flex justify-center items-center min-h-screen">
+      <Loader />
+    </div>
+  );
+  if (error) return <div className="text-red-500 p-8">Error: {error.message}</div>;
 
   return (
-    <div className="p-6">
+    <div className="min-h-screen bg-[var(--background)]">
 
-      {/* Hero Banner */}
-      <div className="bg-[var(--secondary)] px-5 py-5 md:py-20 grid grid-cols-1 md:grid-cols-3 gap-5 rounded-lg">
-        <div className="col-span-2">
-          <div className="col-span-2 flex flex-col gap-4">
-            <Badge variant="lightPruple">{categoryName}</Badge>
+      {/* ── Hero ── */}
+      <div className="bg-[var(--secondary)] relative overflow-hidden">
+        <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-[var(--primary)]/5 pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-48 h-48 rounded-full bg-[var(--primary)]/4 pointer-events-none" />
 
-            <p className="text-[var(--foreground)] text-5xl font-extrabold">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-20 grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
+          <div className="col-span-2 flex flex-col gap-5">
+            <Badge variant="lightPruple" className="w-fit">{categoryName}</Badge>
+
+            <h1 className="text-[var(--foreground)] text-4xl md:text-5xl font-extrabold leading-tight">
               {course.title}
-            </p>
+            </h1>
 
             {course.createdAt && (
               <p className="text-[var(--foreground)] font-medium text-xs">
                 Created At:{" "}
-                <span className="text-[var(--muted-foreground)] font-light text-xs">
-                  {new Date(course.createdAt).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
+                <span className="text-[var(--muted-foreground)] font-light">
+                  {new Date(course.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
                 </span>
               </p>
             )}
 
-            <p className="text-md text-[var(--muted-foreground)] break-words">
+            <p className="text-[var(--muted-foreground)] text-[15px] leading-relaxed max-w-2xl">
               {course.description}
             </p>
 
-            <div className="flex gap-3 items-center">
-              <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">
-                <FaStar color="var(--primary)" />
-                {course.totalReviews}
-                <span className="text-[var(--foreground)] font-normal">
-                  ({course.totalReviews}) Reviews
-                </span>
-              </div>
-
-              <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">
-                <IoMdPeople color="var(--primary)" />
-                {course.totalStudents}
-                <span className="text-[var(--foreground)] font-normal">
-                  ({course.totalStudents}) Students
-                </span>
-              </div>
-
-              <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">
-                <IoPricetags color="var(--primary)" />
-                {course.type}
-              </div>
+            <div className="flex flex-wrap gap-2 mt-1">
+              <StatChip icon={<FaStar color="var(--primary)" size={12} />} text={`${course.averageRating?.toFixed(1) ?? "–"} (${course.totalReviews} reviews)`} />
+              <StatChip icon={<IoMdPeople color="var(--primary)" size={14} />} text={`${course.totalStudents} students`} />
+              <StatChip icon={<IoPricetags color="var(--primary)" size={12} />} text={course.type === "paid" ? `$${course.price}` : "Free"} />
             </div>
           </div>
-        </div>
 
-        <div className="col-span-1">
-          {course.thumbnail ? (
-            <img
-              src={course.thumbnail}
-              alt="Course Thumbnail"
-              className="w-full h-auto object-cover rounded-lg transform rotate-3 shadow-2xl shadow-[var(--primary)]/20"
-            />
-          ) : (
-            <div className="w-full h-48 bg-[var(--primary)] rounded-lg transform rotate-3 shadow-2xl shadow-[var(--primary)]/30 flex flex-col items-center justify-center gap-2">
-              <MdOndemandVideo size={40} color="white" />
-              <p className="text-[var(--primary-foreground)] text-sm font-medium">{course.title}</p>
-            </div>
-          )}
+          <div className="col-span-1 flex justify-center">
+            {course.thumbnail ? (
+              <img
+                src={course.thumbnail}
+                alt="Course Thumbnail"
+                className="w-full max-w-lg rounded-2xl object-cover shadow-2xl shadow-[var(--primary)]/20 ring-1 ring-[var(--border)] transform rotate-2 hover:rotate-0 transition-transform duration-300"
+              />
+            ) : (
+              <div className="w-full max-w-xs aspect-video bg-[var(--primary)]/10 border border-[var(--border)] rounded-2xl flex flex-col items-center justify-center gap-3 transform rotate-2 shadow-xl">
+                <MdOndemandVideo size={44} color="var(--primary)" />
+                <p className="text-[var(--muted-foreground)] text-sm font-medium px-4 text-center">{course.title}</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
-        {/* Left Column */}
-        <div className="col-span-1 md:col-span-2 flex flex-col gap-5">
+      {/* ── Body ── */}
+      <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        {/* Left */}
+        <div className="col-span-1 md:col-span-2 flex flex-col gap-10">
 
           {/* What you'll learn */}
-          <div>
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4
-              relative before:content-[''] before:absolute before:w-2 before:h-7 before:bg-[var(--primary)] before:rounded-full before:left-0 before:top-1/2 before:-translate-y-1/2 pl-4">
-              What you'll learn
-            </h2>
-            <ul className="list-disc list-inside text-[var(--muted-foreground)] text-md">
-              {course.whatYouWillLearn.map((outcome, index) => (
-                <li key={index} className="font-light">{outcome}</li>
+          <div className="flex flex-col gap-4">
+            <SectionTitle>What You'll Learn</SectionTitle>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {course.whatYouWillLearn.map((item, i) => (
+                <li key={i} className="flex items-start gap-3 bg-[var(--secondary)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm text-[var(--muted-foreground)]">
+                  <span className="text-[var(--primary)] font-bold mt-0.5 flex-shrink-0">✓</span>
+                  {item}
+                </li>
               ))}
             </ul>
           </div>
 
           {/* Feature cards */}
-          <div className="flex flex-col md:flex-row gap-3">
-            <div className="mt-5 bg-[var(--secondary)] rounded-md px-3 py-4 w-64">
-              <MdOutlineVerified color="var(--primary)" size={20} />
-              <p className="text-[var(--foreground)] font-semibold">Certified</p>
-              <p className="text-[var(--muted-foreground)]">Industry recognized certificate</p>
-            </div>
-
-            <div className="mt-5 bg-[var(--secondary)] rounded-md px-3 py-4 w-64">
-              <IoInfinite color="var(--primary)" size={20} />
-              <p className="text-[var(--foreground)] font-semibold">Lifetime Access</p>
-              <p className="text-[var(--muted-foreground)]">Learn at your own pace</p>
-            </div>
+          <div className="flex flex-wrap gap-4">
+            {[
+              { icon: <MdOutlineVerified size={22} color="var(--primary)" />, title: "Certified", sub: "Industry recognized certificate" },
+              { icon: <IoInfinite size={22} color="var(--primary)" />, title: "Lifetime Access", sub: "Learn at your own pace" },
+            ].map(({ icon, title, sub }) => (
+              <div key={title} className="flex items-center gap-4 bg-[var(--secondary)] border border-[var(--border)] rounded-2xl px-5 py-4 min-w-[200px]">
+                <span className="bg-[var(--primary)]/10 rounded-xl p-2.5 flex-shrink-0">{icon}</span>
+                <div>
+                  <p className="font-semibold text-[var(--foreground)] text-sm">{title}</p>
+                  <p className="text-[var(--muted-foreground)] text-xs mt-0.5">{sub}</p>
+                </div>
+              </div>
+            ))}
           </div>
 
-          {/* Course Lessons */}
-          <div className="flex flex-col">
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4
-              relative before:content-[''] before:absolute before:w-2 before:h-7 before:bg-[var(--primary)] before:rounded-full before:left-0 before:top-1/2 before:-translate-y-1/2 pl-4">
-              Course Lessons
-            </h2>
-
+          {/* Lessons */}
+          <div className="flex flex-col gap-4">
+            <SectionTitle>Course Lessons</SectionTitle>
             {course?.lessons?.length > 0 ? (
-              <div className="bg-[var(--secondary)] rounded-xl">
-                {course.lessons.map((lesson, index) => (
-                  <div key={index} className="flex items-center gap-3 p-4">
-                    <div className="bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full p-1 font-semibold">
-                      0{lesson.orderIndex}
-                    </div>
-                    <div className="flex flex-col">
-                      <p className="text-[var(--foreground)] font-medium">{lesson.title}</p>
-                      <p className="text-[var(--muted-foreground)] text-xs">{lesson.videos.length} Videos</p>
+              <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-2xl overflow-hidden">
+                {course.lessons.map((lesson, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-4 px-5 py-4 hover:bg-[var(--primary)]/5 transition-colors"
+                    style={{ borderBottom: i < course.lessons.length - 1 ? "1px solid var(--border)" : "none" }}
+                  >
+                    <span className="bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/20 rounded-lg px-2.5 py-1 text-xs font-bold flex-shrink-0">
+                      {String(lesson.orderIndex).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <p className="text-[var(--foreground)] font-medium text-sm">{lesson.title}</p>
+                      <p className="text-[var(--muted-foreground)] text-xs mt-0.5">{lesson.videos.length} video{lesson.videos.length !== 1 ? "s" : ""}</p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="col-span-2 text-center text-red-500 text-sm">No Lessons Provided</p>
-            )
-            }
-
+              <p className="text-red-500 text-sm">No Lessons Provided</p>
+            )}
           </div>
 
-          {/* Student Reviews */}
+          {/* Reviews */}
           <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-2xl font-bold text-[var(--foreground)]
-                  relative before:content-[''] before:absolute before:w-2 before:h-7 before:bg-[var(--primary)] before:rounded-full before:left-0 before:top-1/2 before:-translate-y-1/2 pl-4">
-                  Student Reviews
-                </h2>
-                <p className="text-[var(--muted-foreground)] text-md">What our global community says</p>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <p className="text-[var(--foreground)]">
-                  {course.averageRating}/{course.totalReviews}
+            <div className="flex justify-between items-start">
+              <SectionTitle>Student Reviews</SectionTitle>
+              <div className="text-right flex-shrink-0 ml-4">
+                <p className="text-3xl font-extrabold text-[var(--foreground)] leading-none">
+                  {course.averageRating?.toFixed(1) ?? "–"}
                 </p>
-                {course.totalMaterials > 0 ? (
-                  <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">
-                    <FaStar color="var(--primary)" />
-                    {course.totalMaterials}
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)]">
-                    <MdOutlineStarBorder color="var(--primary)" />
-                  </div>
-                )}
+                <div className="mt-1"><StarRow rating={course.averageRating ?? 0} /></div>
+                <p className="text-[var(--muted-foreground)] text-xs mt-1">{course.totalReviews} reviews</p>
               </div>
             </div>
+            <p className="text-[var(--muted-foreground)] text-sm -mt-2">What our global community says</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {reviewsData?.data?.length === 0 ? (
                 <p className="col-span-2 text-center text-red-500 text-sm">No Review Provided</p>
               ) : (
-                reviewsData?.data?.map((review, index) => (
-                  <div key={index} className="bg-[var(--secondary)] rounded-md p-3">
-                    <div className="flex gap-2 justify-between items-start w-full">
-                      <div className="flex items-center gap-2">
-                        <div className="w-12 h-12 bg-[var(--muted)] rounded-full flex items-center justify-center">
-                          {review.studentId?.avatar ? (
-                            <img
-                              src={review.studentId.avatar}
-                              alt={review.studentId.name}
-                              className="w-12 h-12 rounded-full"
-                            />
-                          ) : (
-                            <span className="text-[var(--foreground)] text-sm font-medium">
-                              {`${review.studentId.firstName?.[0] || ""}${review.studentId.lastName?.[0] || ""}`}
-                            </span>
-                          )}
+                reviewsData?.data?.map((review, i) => (
+                  <div key={i} className="bg-[var(--secondary)] border border-[var(--border)] rounded-2xl p-4 hover:-translate-y-0.5 transition-transform">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 bg-[var(--muted)] rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                          {review.studentId?.avatar
+                            ? <img src={review.studentId.avatar} alt="" className="w-9 h-9 rounded-full object-cover" />
+                            : <span className="text-[var(--foreground)] text-xs font-semibold">
+                                {`${review.studentId?.firstName?.[0] ?? ""}${review.studentId?.lastName?.[0] ?? ""}`}
+                              </span>
+                          }
                         </div>
-                        <p className="font-semibold text-[var(--foreground)]">
-                          {review.studentId?.firstName + " " + review.studentId?.lastName}
+                        <p className="font-semibold text-[var(--foreground)] text-sm">
+                          {review.studentId?.firstName} {review.studentId?.lastName}
                         </p>
                       </div>
-                      <div className="flex items-center gap-1 text-sm font-medium text-[var(--foreground)] mt-2">
-                        {review.rating}
-                        <FaStar color="var(--primary)" />
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <span className="text-sm font-semibold text-[var(--foreground)]">{review.rating}</span>
+                        <FaStar color="var(--primary)" size={12} />
                       </div>
                     </div>
-                    <p className="text-[var(--muted-foreground)] text-sm italic">"{review.comment}"</p>
+                    <p className="text-[var(--muted-foreground)] text-sm italic leading-relaxed">"{review.comment}"</p>
                   </div>
                 ))
               )}
@@ -320,159 +277,128 @@ const CourseDetailsPage = () => {
           </div>
         </div>
 
-        {/* Right Column */}
-        <div className="col-span-1 flex flex-col gap-4">
+        {/* Right */}
+        <div className="col-span-1 flex flex-col gap-5">
 
           {/* Enroll card */}
-          <div className="bg-[var(--secondary)] py-4 px-6 rounded-xl flex flex-col gap-4">
-            {enrollmentData ?
-              <p>You Already Enrolled In This Course</p> :
+          <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-2xl p-6 flex flex-col gap-5  top-6">
+            {enrollmentData ? (
+              <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+                <p className="text-green-700 font-semibold text-sm">✓ You're enrolled in this course</p>
+              </div>
+            ) : (
               <>
-                {course.type === "paid" ? (
-                  <h1 className="text-[var(--foreground)] font-semibold text-4xl">${course.price}</h1>
-                ) : (
-                  <h1 className="text-[var(--foreground)] font-semibold text-4xl">Free</h1>
-                )}
+                <div>
+                  {course.type === "paid"
+                    ? <p className="text-[var(--foreground)] font-extrabold text-5xl">${course.price}</p>
+                    : <p className="text-[var(--foreground)] font-extrabold text-5xl">Free</p>
+                  }
+                  {course?.updatedAt && (
+                    <p className="text-xs text-[var(--muted-foreground)] mt-2">
+                      Last updated:{" "}
+                      {new Date(course.updatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                    </p>
+                  )}
+                </div>
 
-                {course?.updatedAt && (
-                  <p className="text-xs text-[var(--muted-foreground)]">
-                    Last updated:{" "}
-                    {new Date(course.updatedAt).toLocaleDateString("en-GB", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </p>
-                )}
-
-                {userRole === 'student' ? (
+                {userRole === "student" && (
                   <Button
                     variant="default"
                     onClick={handleEnroll}
                     disabled={useLoading || isInCart}
-                    className={isInCart ? "bg-[var(--muted-foreground)]" : ""}
+                    className={`w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 ${isInCart ? "bg-[var(--muted-foreground)]" : ""}`}
                   >
-                    <MdOutlineAddShoppingCart color="white" />
-                    {useLoading ? "Loading..." : isInCart ? "Added to Cart ✓" : "Enroll Now"}
+                    <MdOutlineAddShoppingCart size={17} />
+                    {useLoading ? "Loading…" : isInCart ? "Added to Cart ✓" : "Enroll Now"}
                   </Button>
-                ) : ''}
+                )}
 
+                <Button variant="secondary" className="w-full py-3 rounded-xl text-[var(--primary)] font-semibold text-sm">
+                  Try Free Preview
+                </Button>
 
                 <Dialog open={openPopover} onOpenChange={setOpenPopover}>
                   <DialogContent showCloseButton={true}>
                     <DialogHeader>
                       <DialogTitle>Login Required</DialogTitle>
-                      <DialogDescription>
-                        You need to be logged in to enroll in this course.
-                      </DialogDescription>
+                      <DialogDescription>You need to be logged in to enroll in this course.</DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                      <Button
-                        variant="purpleBtnDefault"
-                        className="w-full"
-                        onClick={() => navigate("/login")}
-                      >
-                        Go to Login
-                      </Button>
+                      <Button variant="purpleBtnDefault" className="w-full" onClick={() => navigate("/login")}>Go to Login</Button>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
-
-                <Button variant="secondary" className="text-[var(--primary)]">
-                  Try Free Preview
-                </Button>
               </>
-            }
+            )}
 
             <hr className="border-[var(--border)]" />
 
             <div>
-              <p className="text-[var(--foreground)] font-semibold text-lg">This course includes:</p>
-              <ul className="list-none list-inside text-[var(--muted-foreground)] text-sm gap-2 flex flex-col mt-2">
-                <li className="flex gap-2">
-                  <MdPlayLesson color="var(--primary)" /> {course.lessons.length} Lessons
-                </li>
-                <li className="flex gap-2">
-                  <MdOndemandVideo color="var(--primary)" /> {totalVideos} Videos
-                </li>
-                <li className="flex gap-2">
-                  <IoFileTrayFullSharp color="var(--primary)" /> {totalMaterials} Materials
-                </li>
-              </ul>
+              <p className="text-[var(--foreground)] font-semibold text-sm mb-3">This course includes:</p>
+              <div className="flex flex-col gap-2.5">
+                {[
+                  { icon: <MdPlayLesson color="var(--primary)" size={16} />, text: `${course.lessons.length} Lessons` },
+                  { icon: <MdOndemandVideo color="var(--primary)" size={16} />, text: `${totalVideos} Videos` },
+                  { icon: <IoFileTrayFullSharp color="var(--primary)" size={15} />, text: `${totalMaterials} Materials` },
+                ].map(({ icon, text }) => (
+                  <div key={text} className="flex items-center gap-2.5 text-sm text-[var(--muted-foreground)]">
+                    <span className="flex-shrink-0">{icon}</span>{text}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Instructor card */}
-          <div className="bg-[var(--secondary)] py-4 px-6 rounded-xl flex flex-col gap-4">
-            <h1 className="text-[var(--foreground)] font-bold text-md">Meet Your Instructor</h1>
+          <div className="bg-[var(--secondary)] border border-[var(--border)] rounded-2xl p-6 flex flex-col gap-4">
+            <p className="text-xs font-bold text-[var(--muted-foreground)] uppercase tracking-widest">Your Instructor</p>
 
-            <div className="flex gap-2 items-start">
-              <div className="w-12 h-12 bg-[var(--primary)] rounded-full flex items-center justify-center">
-                {course.teacherId?.avatar ? (
-                  <img
-                    src={course.teacherId.avatar}
-                    alt={course.teacherId.name}
-                    className="w-12 h-12 rounded-full"
-                  />
-                ) : (
-                  <span className="text-[var(--primary-foreground)] text-sm font-medium">
-                    {`${course.teacherId.firstName?.[0] || ""}${course.teacherId.lastName?.[0] || ""}`}
-                  </span>
-                )}
-              </div>
+            <div className="flex items-center gap-3">
+              <InstructorAvatar teacher={course.teacherId} size="lg" />
               <div>
-                <p className="font-semibold text-[var(--foreground)]">
-                  {course.teacherId?.firstName + " " + course.teacherId?.lastName}
+                <p className="font-semibold text-[var(--foreground)] text-[15px]">
+                  {course.teacherId?.firstName} {course.teacherId?.lastName}
                 </p>
-                <p className="text-sm text-[var(--muted-foreground)]">{course.teacherId?.email}</p>
+                <p className="text-xs text-[var(--muted-foreground)] mt-0.5">{course.teacherId?.email}</p>
               </div>
             </div>
 
-            <div className="flex flex-col gap-1 items-center justify-center">
-              <p className="text-[var(--muted-foreground)] text-xs">{course.teacherId?.bio}</p>
-              <div className="w-full flex flex-col md:flex-row gap-3">
+            {course.teacherId?.bio && (
+              <p className="text-sm text-[var(--muted-foreground)] leading-relaxed border-l-2 border-[var(--primary)]/40 pl-3">
+                {course.teacherId.bio}
+              </p>
+            )}
 
-                {userRole === 'student' ?
-                  (<Button
-                    variant="secondary"
-                    className="rounded-md text-[var(--primary)] flex-1 py-2"
-                    onClick={() => {
-                      if (!isLoggedIn) {
-                        setOpenAppointmentDialog(true);
-                      } else {
-                        navigate(`/teachers/${course.teacherId?._id}/book`);
-                      }
-                    }}
-                  >
-                    Book Appointment
-                  </Button>
-                  ) : ''}
-
-                <Dialog open={openAppointmentDialog} onOpenChange={setOpenAppointmentDialog}>
-                  <DialogContent showCloseButton={true}>
-                    <DialogHeader>
-                      <DialogTitle>Login Required</DialogTitle>
-                      <DialogDescription>
-                        You need to be logged in to book an appointment.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <Button
-                        variant="purpleBtnDefault"
-                        className="w-full"
-                        onClick={() => navigate("/login")}
-                      >
-                        Go to Login
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-
-                <Button onClick={()=>navigate(`/teachers/${course.teacherId?._id}`)} variant="outline" className="rounded-md text-[var(--muted-foreground)] flex-1 py-2">
-                  Profile
+            <div className="flex gap-2.5 mt-1">
+              {userRole === "student" && (
+                <Button
+                  variant="secondary"
+                  className="rounded-xl text-[var(--primary)] flex-1 py-2 text-sm font-semibold"
+                  onClick={() => { if (!isLoggedIn) setOpenAppointmentDialog(true); else navigate(`/teachers/${course.teacherId?._id}/book`); }}
+                >
+                  Book Appointment
                 </Button>
-              </div>
+              )}
+              <Button
+                onClick={() => navigate(`/teachers/${course.teacherId?._id}`)}
+                variant="outline"
+                className="rounded-xl text-[var(--muted-foreground)] flex-1 py-2 text-sm"
+              >
+                View Profile
+              </Button>
             </div>
+
+            <Dialog open={openAppointmentDialog} onOpenChange={setOpenAppointmentDialog}>
+              <DialogContent showCloseButton={true}>
+                <DialogHeader>
+                  <DialogTitle>Login Required</DialogTitle>
+                  <DialogDescription>You need to be logged in to book an appointment.</DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button variant="purpleBtnDefault" className="w-full" onClick={() => navigate("/login")}>Go to Login</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>

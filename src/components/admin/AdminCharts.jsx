@@ -1,52 +1,96 @@
-import React from 'react'
-import { ChartContainer } from "@/components/ui/chart"
-import { BarChart, Bar, Cell } from "recharts"
-import { FaArrowTrendUp } from "react-icons/fa6";
-import { FaArrowTrendDown } from "react-icons/fa6";
+// src/components/admin/AdminCharts.jsx
+
+import { ChartContainer } from "@/components/ui/chart";
+import { AreaChart, Area } from "recharts";
+import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6";
 
 const chartConfig = {
-    value: { color: "#7C3AED" }
-}
-function AdminCharts({ icon, title, number, chartData=[] , growth  }) {
-    
+  value: { color: "var(--primary)" }
+};
 
-    const coloredData = chartData.map((item, index) => ({
-        ...item,
-        fill: index === chartData.length - 1 ? "#7C3AED" : "#DDD6FE"
-    }))
-    return (
-        <div className="bg-white rounded-xl p-4 flex flex-col justify-center gap-3">
+const GrowthBadge = ({ value }) => {
+  const isUp = value >= 0;
+  return (
+    <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+      isUp ? "bg-[#EAF3DE] text-[#3B6D11]" : "bg-[#FCEBEB] text-[#A32D2D]"
+    }`}>
+      {isUp ? <FaArrowTrendUp size={10} /> : <FaArrowTrendDown size={10} />}
+      {Math.abs(value)}%
+    </span>
+  );
+};
 
-            <div className="flex justify-between items-start">
-                <div className="w-10 flex justify-center bg-[var(--ring)]/20 p-2 rounded-md text-[var(--primary)]">
-                    {icon}
-                </div>
-                {growth !== undefined && (
-                    <span className={`text-xs font-semibold ${growth >= 0 ? 'text-green-500' : 'text-red-400'}`}>
-                        {growth >= 0 ? <FaArrowTrendUp/> : <FaArrowTrendDown/>} {Math.abs(growth)}%
-                    </span>
-                )}
-            </div>
+const AdminCharts = ({ icon, title, number = 0, chartData, growth = 0 }) => {
+  const safeData = Array.isArray(chartData) ? chartData : [];
 
-            <h3 className="text-[var(--chart-3)] text-sm">{title}</h3>
-            <h3 className="text-2xl font-extrabold">{number}</h3>
+  // Need at least 2 points to draw a line; pad with zeros if needed
+  const chartPoints =
+    safeData.length >= 2
+      ? safeData
+      : safeData.length === 1
+      ? [{ value: 0 }, ...safeData]
+      : [{ value: 0 }, { value: 0 }];
 
+  // Safe gradient id — no spaces or special chars
+  const gradId = `grad-${title.replace(/\s+/g, "-").toLowerCase()}`;
 
-            {coloredData.length > 0 && (
-                <ChartContainer config={chartConfig} className="h-[60px] w-full">
-                    <BarChart data={coloredData} barSize={15} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                        <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                            {coloredData.map((entry, index) => (
-                                <Cell key={index} fill={entry.fill} />
-                            ))}
-                        </Bar>
-                    </BarChart>
-                </ChartContainer>
-            )}
+  return (
+    <div className="bg-[var(--card)] rounded-2xl overflow-hidden flex flex-col relative">
 
+      {/* Top accent strip */}
+      <div className="absolute top-0 left-0 right-0 h-[3px] " />
 
+      {/* Content */}
+      <div className="flex flex-col gap-3 p-4 pt-5">
+
+        {/* Icon + Badge */}
+        <div className="flex items-start justify-between">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[var(--primary)]/10 text-[var(--primary)]">
+            {icon}
+          </div>
+          <GrowthBadge value={growth} />
         </div>
-    )
-}
 
-export default AdminCharts
+        {/* Number + Label */}
+        <div>
+          <p className="text-[28px] font-bold tracking-tight text-[var(--foreground)] leading-none">
+            {Number(number).toLocaleString()}
+          </p>
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--muted-foreground)] mt-1.5">
+            {title}
+          </p>
+        </div>
+      </div>
+
+      {/* Sparkline — flush to bottom */}
+      {/* <div className="mt-auto">
+        <ChartContainer config={chartConfig} className="h-[70px] w-full">
+          <AreaChart
+            data={chartPoints}
+            margin={{ top: 8, right: 0, left: 0, bottom: 0 }}
+          >
+            <defs>
+              <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.25} />
+                <stop offset="100%" stopColor="var(--primary)" stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+            <Area
+              type="monotone"
+              dataKey="value"
+              stroke="var(--primary)"
+              strokeWidth={2}
+              fill={`url(#${gradId})`}
+              dot={false}
+              activeDot={{ r: 3, fill: "var(--primary)", strokeWidth: 0 }}
+              isAnimationActive={false}
+            />
+          </AreaChart>
+        </ChartContainer>
+      </div> */}
+
+    </div>
+  );
+};
+
+export default AdminCharts;
