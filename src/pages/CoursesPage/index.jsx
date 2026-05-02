@@ -291,36 +291,17 @@ const CoursesPage = () => {
             <Loader />
           </div>
         ) : coursesToShow?.length > 0 ? (
-          <>
-            {hasFilters ? (
-              coursesToShow.map((course) => (
-                <div key={course._id} className="col-span-1">
-                  <CourseCard course={course} />
-                </div>
-              ))
-            ) : (
-              <>
-                <div key={coursesToShow[0]._id} className="col-span-2">
-                  <NewCourseCard course={coursesToShow[0]} />
-                </div>
-                {coursesToShow.slice(1).map((course) => (
-                  <div
-                    key={course._id}
-                    className="col-span-2 sm:col-span-2 md:col-span-1"
-                  >
-                    <CourseCard course={course} />
-                  </div>
-                ))}
-              </>
-            )}
-          </>
+          coursesToShow.map((course) => (
+            <div key={course._id} className="col-span-2 sm:col-span-2 md:col-span-1">
+              <CourseCard course={course} />
+            </div>
+          ))
         ) : (
           <div className="col-span-4 text-center text-gray-400 py-10">
             No courses found.
           </div>
         )}
       </div>
-
       {
         hasFilters && results?.data?.totalPages > 1 && (
           <div className="flex gap-2 justify-center mt-4">
