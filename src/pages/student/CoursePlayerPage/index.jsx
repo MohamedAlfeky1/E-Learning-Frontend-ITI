@@ -115,8 +115,15 @@ const CoursePlayerPage = () => {
   };
 
   const handleDownload = (url, title) => {
+    if (!url) {
+      console.error("No URL provided for download");
+      return;
+    }
+    const separator = url.includes("?") ? "&" : "?";
+    const downloadUrl = `${url}${separator}dl=1`;
+
     const link = document.createElement("a");
-    link.href = url;
+    link.href = downloadUrl;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.download = title || "file";
@@ -263,7 +270,7 @@ const CoursePlayerPage = () => {
                         </div>
                       </div>
                       <button
-                        onClick={() => handleDownload(file.url, file.title)}
+                        onClick={() => handleDownload(file.fileUrl || file.url, file.title)}
                         className="text-[var(--muted-foreground)] hover:text-green-600"
                       >
                         <FiDownload size={18} />
