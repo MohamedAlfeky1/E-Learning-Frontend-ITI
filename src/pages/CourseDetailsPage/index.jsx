@@ -314,10 +314,6 @@ const CourseDetailsPage = () => {
                   </Button>
                 )}
 
-                <Button variant="secondary" className="w-full py-3 rounded-xl text-[var(--primary)] font-semibold text-sm">
-                  Try Free Preview
-                </Button>
-
                 <Dialog open={openPopover} onOpenChange={setOpenPopover}>
                   <DialogContent showCloseButton={true}>
                     <DialogHeader>
@@ -370,7 +366,7 @@ const CourseDetailsPage = () => {
               </p>
             )}
 
-            <div className="flex gap-2.5 mt-1">
+            <div className="flex justify-center items-center gap-2 mt-1">
               {userRole === "student" && (
                 <Button
                   variant="secondary"
