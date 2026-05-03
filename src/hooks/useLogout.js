@@ -11,10 +11,11 @@ export const useLogout = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const handleLogout = () => {
-    logoutService(); 
-    queryClient.clear(); 
-    navigate("/login", { replace: true }); 
+  const handleLogout = (redirectPath = "/login") => {
+    logoutService();
+    queryClient.clear();
+    const target = typeof redirectPath === "string" ? redirectPath : "/login";
+    navigate(target, { replace: true });
   };
 
   return handleLogout;

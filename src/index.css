@@ -55,18 +55,18 @@
     --card-foreground: oklch(0.15 0.02 280);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.15 0.02 280);
-    --primary: oklch(0.45 0.25 280);
+    --primary: rgb(74, 31, 217);
     --primary-foreground: oklch(1 0 0);
     --secondary: oklch(0.96 0.03 280);
     --secondary-foreground: oklch(0.15 0.02 280);
     --muted: oklch(0.96 0.01 280);
-    --muted-foreground: oklch(0.55 0.02 280);
+    --muted-foreground: rgb(111, 113, 125);
     --accent: oklch(0.96 0.03 280);
     --accent-foreground: oklch(0.15 0.02 280);
     --destructive: oklch(0.577 0.245 27.325);
     --border: oklch(0.9 0.02 280);
     --input: oklch(0.9 0.02 280);
-    --ring: oklch(0.45 0.25 280);
+    --ring: #4a1fd9;
     --chart-1: oklch(0.87 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
@@ -111,7 +111,7 @@
     --sidebar-foreground: oklch(0.98 0.01 280);
     --sidebar-primary: oklch(0.6 0.2 280);
     --sidebar-primary-foreground: oklch(0.15 0.02 280);
-    --sidebar-accent: oklch(0.25 0.03 280);
+    --sidebar-accent: #1f2030;
     --sidebar-accent-foreground: oklch(0.98 0.01 280);
     --sidebar-border: oklch(0.3 0.02 280);
     --sidebar-ring: oklch(0.6 0.2 280);
@@ -127,4 +127,12 @@
   html {
     @apply font-sans;
     }
+}
+
+/* Apply cursor: pointer when hovering on buttons */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
