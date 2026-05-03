@@ -114,21 +114,13 @@ const HomePage = () => {
     };
   }, [coursesApi]);
 
-  if (
-    userData &&
-    (userData.role === "teacher" || userData.role === "student")
-  ) {
-    const dashboardPath =
-      userData.role === "teacher" ? "/teacher/dashboard" : "/dashboard";
-    return <Navigate to={dashboardPath} replace />;
-  }
-
   return (
     <main className="flex flex-col gap-20 bg-[#F9F9FF]">
       {/* Dynamic Hero Section */}
-      <section className="mt-6 mx-6 rounded-[40px] overflow-hidden relative group shadow-2xl">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div className="rounded-[40px] overflow-hidden relative group shadow-2xl">
         {publicSlidersLoading ? (
-          <div className="w-full h-[600px] flex flex-col justify-center items-center gap-4 bg-[#F1F3FF]">
+          <div className="w-full h-[350px] sm:h-[450px] lg:h-[500px] flex flex-col justify-center items-center gap-4 bg-[#F1F3FF]">
             <Spinner className="size-12 border-[#3525CD]" />
             <p className="text-gray-400 font-bold animate-pulse uppercase tracking-[2px]">
               Initializing Experience...
@@ -144,7 +136,7 @@ const HomePage = () => {
               {sliders.map((slider) => (
                 <CarouselItem
                   key={slider._id}
-                  className="relative h-[550px] sm:h-[650px] lg:h-[750px]"
+                  className="relative h-[350px] sm:h-[450px] lg:h-[500px]"
                 >
                   {/* Slider Background with Parallax-like effect */}
                   <div
@@ -164,10 +156,10 @@ const HomePage = () => {
                     </Badge>
 
                     <div className="space-y-4 animate-in fade-in slide-in-from-left-8 duration-1000 delay-100">
-                      <h2 className="text-4xl sm:text-7xl lg:text-8xl font-black text-white tracking-tight leading-[1.1] max-w-3xl">
+                      <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] max-w-3xl">
                         {slider.title}
                       </h2>
-                      <p className="text-lg sm:text-2xl text-white/70 leading-relaxed font-medium max-w-2xl">
+                      <p className="text-base sm:text-xl text-white/70 leading-relaxed font-medium max-w-2xl">
                         {slider.description}
                       </p>
                     </div>
@@ -209,16 +201,17 @@ const HomePage = () => {
           </Carousel>
         ) : (
           /* Empty State Fallback */
-          <div className="w-full h-[600px] bg-[#F1F3FF] flex items-center justify-center">
+          <div className="w-full h-[350px] sm:h-[450px] lg:h-[500px] bg-[#F1F3FF] flex items-center justify-center">
             <p className="text-gray-400 font-medium italic">
               Preparing your digital campus journey...
             </p>
           </div>
         )}
+        </div>
       </section>
 
       {/* Categories section */}
-      <section className="mx-6 flex flex-col gap-10">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-10">
         {categoriesLoading ? (
           <div className="flex justify-center items-center gap-3">
             <Spinner className="size-8" />
@@ -273,7 +266,8 @@ const HomePage = () => {
       </section>
 
       {/* Courses section */}
-      <section className="px-6 py-16 rounded-t-[2rem] bg-[#F1F3FF]">
+      <section className="py-16 rounded-t-[2rem] bg-[#F1F3FF]">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {coursesLoading ? (
           <div className="flex justify-center items-center gap-3">
             <Spinner className="size-8" />
@@ -297,7 +291,7 @@ const HomePage = () => {
             >
               <div className="flex justify-between items-center">
                 <h2 className="text-[28px] sm:text-[36px] text-[#141B2B] font-extrabold leading-tight">
-                  Top Rated Courses
+                  Start Learning
                 </h2>
                 <div className="flex gap-2">
                   <CarouselPrevious className="static translate-y-0" />
@@ -338,6 +332,7 @@ const HomePage = () => {
             </Carousel>
           </>
         )}
+        </div>
       </section>
     </main>
   );
