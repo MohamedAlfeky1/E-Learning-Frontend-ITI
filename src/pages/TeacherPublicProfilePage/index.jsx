@@ -4,6 +4,7 @@ import { useGetUser } from "@/queries/useUserQueries";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdArrowBack } from "react-icons/md";
 import { useGetAllTeacherCourses } from "@/queries/useCourses";
+import { IoFileTrayFullSharp } from "react-icons/io5";
 
 const TeacherPublicProfilePage = () => {
   const { id } = useParams();
@@ -16,6 +17,8 @@ const TeacherPublicProfilePage = () => {
   const publishedCourses = teacherCourses?.data.filter(
     (course) => course.status === "published"
   );
+
+  console.log("userData", userData);
 
   if (isLoading)
     return (
@@ -82,12 +85,14 @@ const TeacherPublicProfilePage = () => {
                 {userData.email}
               </span>
             </p>
-            <Button
+            {(userData?.role === 'student') ? (<Button
               onClick={() => navigate(`teachers/${id}/book`)}
               className="w-64 mt-1"
             >
               Book 1:1 Appointment
-            </Button>
+            </Button>) : ''
+            }
+
           </div>
 
           {/* Stat chips */}
@@ -109,6 +114,7 @@ const TeacherPublicProfilePage = () => {
       </div>
 
       {/* Courses section */}
+      {/* Courses section */}
       <div className="flex flex-col gap-6 py-6 px-10 rounded-xl border border-[var(--border)] bg-white shadow-sm">
         <h2 className="font-medium text-[var(--primary)] flex items-center gap-2 text-lg">
           Published Courses
@@ -117,56 +123,59 @@ const TeacherPublicProfilePage = () => {
           </span>
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {publishedCourses?.map((item) => (
-            <div
-              key={item._id}
-              className="relative group border border-[var(--border)] rounded-2xl overflow-hidden transition-colors duration-200 cursor-pointer "
-            >
-              {/* Top accent line on hover */}
-              <div className="absolute top-0 inset-x-0 h-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-t-2xl" />
+        {publishedCourses?.length === 0 || !publishedCourses ? (
+          // ✅ Empty state box
+          <div className="flex flex-col items-center justify-center gap-3 py-12 rounded-xl border border-dashed border-[var(--border)] bg-[var(--secondary)]">
+            <div className="w-14 h-14 rounded-full bg-white border border-[var(--border)] flex items-center justify-center text-2xl">
+              <IoFileTrayFullSharp className="text-[var(--primary)]/20"/>
 
-              {/* Thumbnail */}
-              <div className="h-36 sm:h-40 w-full bg-[var(--secondary)]">
-                {item.thumbnail ? (
-                  <img
-                    src={item.thumbnail}
-                    alt={item.title}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="h-full w-full flex items-center justify-center text-[var(--muted-foreground)] text-sm">
-                    No Image
+            </div>
+            <p className="font-medium text-[var(--foreground)] text-sm">No Published Courses Yet</p>
+            <p className="text-xs text-[var(--muted-foreground)] text-center max-w-xs">
+              This teacher hasn't published any courses yet. Check back later!
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {publishedCourses.map((item) => (
+              <div
+                key={item._id}
+                className="relative group border border-[var(--border)] rounded-2xl overflow-hidden transition-colors duration-200 cursor-pointer"
+              >
+                <div className="absolute top-0 inset-x-0 h-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-t-2xl" />
+                <div className="h-36 sm:h-40 w-full bg-[var(--secondary)]">
+                  {item.thumbnail ? (
+                    <img
+                      src={item.thumbnail}
+                      alt={item.title}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center text-[var(--muted-foreground)] text-sm">
+                      No Image
+                    </div>
+                  )}
+                </div>
+                <div className="p-3 md:p-4 space-y-2">
+                  <h4 className="font-medium text-base md:text-[15px] text-[var(--foreground)]">
+                    {item.title}
+                  </h4>
+                  <p className="text-xs md:text-sm text-[var(--muted-foreground)] leading-relaxed">
+                    {item.description?.slice(0, 90)}...
+                  </p>
+                  <div className="flex justify-between items-center pt-1">
+                    <span className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-[var(--secondary)] text-[var(--primary)] border border-[var(--border)]">
+                      {item.level || "Beginner"}
+                    </span>
+                    <span className={`text-sm font-semibold ${item.price === 0 ? "text-green-600" : "text-[var(--primary)]"}`}>
+                      {item.price === 0 ? "Free" : `$${item.price}`}
+                    </span>
                   </div>
-                )}
-              </div>
-
-              {/* Body */}
-              <div className="p-3 md:p-4 space-y-2">
-                <h4 className="font-medium text-base md:text-[15px] text-[var(--foreground)]">
-                  {item.title}
-                </h4>
-                <p className="text-xs md:text-sm text-[var(--muted-foreground)] leading-relaxed">
-                  {item.description?.slice(0, 90)}...
-                </p>
-
-                <div className="flex justify-between items-center pt-1">
-                  <span className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-[var(--secondary)] text-[var(--primary)] border border-[var(--border)]">
-                    {item.level || "Beginner"}
-                  </span>
-                  <span
-                    className={`text-sm font-semibold ${item.price === 0
-                        ? "text-green-600"
-                        : "text-[var(--primary)]"
-                      }`}
-                  >
-                    {item.price === 0 ? "Free" : `$${item.price}`}
-                  </span>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
