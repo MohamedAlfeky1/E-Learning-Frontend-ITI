@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://e-learning-platform-api-production.up.railway.app/api",
 });
 axiosInstance.interceptors.request.use(
   (config) => {
