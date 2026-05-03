@@ -33,22 +33,29 @@ const AdminSlidersPage = () => {
 
   const handleReorder = (newItems) => {
     setItems(newItems);
-    // Prepare data for backend: an array of { id, orderIndex }
     const updatedOrder = newItems.map((item, index) => ({
       id: item._id,
       orderIndex: index,
     }));
-
     reorderSliders({ sliders: updatedOrder });
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this slider?")) {
-      deleteSlider(id, {
-        onSuccess: () => toast.success("Slider deleted successfully"),
-        onError: () => toast.error("Failed to delete slider"),
-      });
-    }
+    toast("Are you sure you want to delete this slider?", {
+      description: "This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: () =>
+          deleteSlider(id, {
+            onSuccess: () => toast.success("Slider deleted successfully"),
+            onError: () => toast.error("Failed to delete slider"),
+          }),
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {},
+      },
+    });
   };
 
   return (
