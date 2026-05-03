@@ -116,14 +116,14 @@ function CourseCard({ course }) {
     <>
       <Link
         to={`/courses/${course._id}`}
-        className="flex flex-col h-90 overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl"
+        className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-shadow duration-300 max-w-2xl"
       >
-        {/* Thumbnail */}
-        <div className="relative w-full h-64 overflow-hidden" style={{ aspectRatio: "16/9" }}>
+        {/* Thumbnail — fixed height, full width, never distorts */}
+        <div className="relative w-full h-48 flex-shrink-0 overflow-hidden">
           <img
             src={course.thumbnail || placeholderImg}
             alt="Course Thumbnail"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="w-full h-full object-cover"
           />
 
           {userData?.role === "student" && !favoritesLoading && (
@@ -150,8 +150,8 @@ function CourseCard({ course }) {
           )}
         </div>
 
-        {/* Content */}
-        <div className="flex flex-col gap-2 p-5 flex-1">
+        {/* Content — fixed height so all cards align uniformly */}
+        <div className="flex flex-col gap-2 p-5 h-52 overflow-hidden">
           {/* Language + Rating */}
           <div className="flex items-center justify-between">
             <p className="flex items-center gap-1 text-sm font-medium text-gray-700">
@@ -169,20 +169,21 @@ function CourseCard({ course }) {
           {course.type === "paid" ?
             ''
             : <Badge variant="lightPruple">Free</Badge>}
-          {/* Title */}
-          <h2 className="text-xl font-bold text-gray-900 leading-snug">
+
+          {/* Title — clamp to 2 lines so it doesn't push content down */}
+          <h2 className="text-xl font-bold text-gray-900 leading-snug line-clamp-2">
             {course.title}
           </h2>
 
           {/* Instructor */}
           <div className="flex items-center gap-2">
-            <span className="text-sm font-light text-[#464555] rounded-md">
+            <span className="text-sm font-light text-[#464555] rounded-md truncate">
               Instructor: {course.teacherId?.firstName}{" "}
               {course.teacherId?.lastName}
             </span>
           </div>
 
-          {/* Price + Cart */}
+          {/* Price + Cart — pinned to bottom */}
           <div className="flex flex-col md:flex-row items-center gap-5 mt-auto pt-2">
             {isAlreadyEnrolled ? (
               <p className="text-sm font-semibold text-green-600">

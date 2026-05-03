@@ -59,7 +59,7 @@ const CoursesPage = () => {
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
-    keyword: "",
+    keyword: searchParams.get("keyword") || "",
     categoryId: searchParams.get("categoryId") || null,
     level: null,
     type: null,
@@ -67,12 +67,16 @@ const CoursesPage = () => {
     maxPrice: null,
   });
 
-  // Sync categoryId from URL if it changes
+  // Sync categoryId and keyword from URL if it changes
   useEffect(() => {
     const categoryId = searchParams.get("categoryId");
-    if (categoryId) {
-      setFilters((prev) => ({ ...prev, categoryId }));
-    }
+    const keyword = searchParams.get("keyword");
+    
+    setFilters((prev) => ({
+      ...prev,
+      categoryId: categoryId || prev.categoryId,
+      keyword: keyword !== null ? keyword : prev.keyword,
+    }));
   }, [searchParams]);
 
   {
@@ -101,7 +105,7 @@ const CoursesPage = () => {
   }, [filters, sort, page]);
 
   return (
-    <div className="p-6">
+    <div className="w-full max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6 py-6">
 
       {/* Hero */}
       <div className="flex flex-col gap-3">
@@ -125,6 +129,7 @@ const CoursesPage = () => {
             type="search"
             className="pl-9 text-black flex-1 w-full"
             placeholder="Search for courses, subjects, or skills..."
+            value={filters.keyword || ""}
             onChange={(e) => handleFilters("keyword", e.target.value)}
           />
         </div>
@@ -285,7 +290,7 @@ const CoursesPage = () => {
 
 
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
         {isLoading || isPending ? (
           <div className="col-span-4 flex justify-center items-center min-h-40">
             <Loader />
