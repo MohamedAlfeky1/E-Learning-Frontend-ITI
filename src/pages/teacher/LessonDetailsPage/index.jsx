@@ -242,7 +242,7 @@ const LessonDetailsPage = () => {
                     <a
                       href={vid.url}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
                     >
                       <ExternalLink className="w-5 h-5" />
@@ -362,9 +362,8 @@ const LessonDetailsPage = () => {
                     </div>
                     <a
                       href={mat.fileUrl}
-                      download={mat.title}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="p-2 text-gray-400 hover:text-orange-600 transition-colors"
                     >
                       <ExternalLink className="w-5 h-5" />
