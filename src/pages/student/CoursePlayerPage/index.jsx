@@ -32,6 +32,7 @@ const CoursePlayerPage = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videosProgress, setVideosProgress] = useState({});
   const [reviewError, setReviewError] = useState({ review: "", api: "" });
+  const [hoverRating, setHoverRating] = useState(0);
   // const [courseProgress, setCourseProgress] = useState(0);
 
 
@@ -325,7 +326,7 @@ const CoursePlayerPage = () => {
                 <Input
                   variant="white"
                   className="text-[var(--foreground)] border border-[var(--border)] bg-[var(--card)]"
-                  placeholder={`${hasReview ? 'You Already Reviewd This Course' : 'Add Your Comment'}`}
+                  placeholder={`${hasReview ? 'You Already Reviewed This Course' : 'Add Your Comment'}`}
                   name="comment"
                   disabled={hasReview}
                   value={formik.values.comment}
@@ -333,24 +334,27 @@ const CoursePlayerPage = () => {
                   onBlur={formik.handleBlur}
                 />
 
-                <label htmlFor="rating" className="text-sm text-[var(--foreground)]">Rate This Course:</label>
-                <select
-                  id="rating"
-                  name="rating"
-                  disabled={hasReview}
-                  value={formik.values.rating}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className="border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] rounded-md px-4 py-2 text-sm"
-                >
-                  <option value="">Select rating</option>
-                  {RATING_RANGE.map((value) => (
-                    <option key={value} value={value}>{value}</option>
+                <label className="text-sm font-medium text-[var(--foreground)]">Rate This Course:</label>
+                <div className="flex gap-2 items-center mb-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FaStar
+                      key={star}
+                      className={cn(
+                        "w-8 h-8 transition-all duration-200",
+                        hasReview ? "cursor-not-allowed opacity-70" : "cursor-pointer",
+                        (hoverRating || formik.values.rating) >= star
+                          ? "text-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.5)] scale-110"
+                          : "text-[var(--muted-foreground)] hover:text-yellow-200"
+                      )}
+                      onMouseEnter={() => !hasReview && setHoverRating(star)}
+                      onMouseLeave={() => !hasReview && setHoverRating(0)}
+                      onClick={() => !hasReview && formik.setFieldValue("rating", star)}
+                    />
                   ))}
-                </select>
+                </div>
 
                 <p className="text-red-500">{reviewError.api || reviewError.review}</p>
-                <Button variant="purpleBtnXl" disabled={hasReview}>Submit</Button>
+                <Button variant="purpleBtnXl" disabled={hasReview || !formik.values.rating || !formik.values.comment.trim()}>Submit</Button>
               </form>
             </TabsContent>
           </Tabs>
