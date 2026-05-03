@@ -63,7 +63,7 @@ const getFileUrl = (path) => {
   if (!path) return "";
   if (path.startsWith("http")) return path;
   let normalizedPath = path.replace(/\\/g, "/");
-  return `http://localhost:5000/${normalizedPath}`;
+  return `https://e-learning-platform-api-production.up.railway.app/${normalizedPath}`;
 };
 
 const StudentAssignmentsPage = () => {

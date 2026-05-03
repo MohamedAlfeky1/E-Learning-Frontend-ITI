@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, ArrowRight, PlayCircle, FileText, CalendarCheck } from "lucide-react"; 
 import confetti from "canvas-confetti";
 import { useEffect, useState } from "react";
-import Loader from "@/components/ui/Loader"; 
+import Loader from "@/components/ui/loader"; 
 
 const PaymentSuccessPage = () => {
   const [loading, setLoading] = useState(true);

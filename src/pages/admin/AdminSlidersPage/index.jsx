@@ -169,7 +169,7 @@ const SliderItem = ({ slider, onDelete }) => {
           src={
             slider.imageUrl.startsWith("http")
               ? slider.imageUrl
-              : `http://localhost:5000${slider.imageUrl}`
+              : `https://e-learning-platform-api-production.up.railway.app${slider.imageUrl}`
           }
           alt={slider.title}
           className="w-full h-full object-cover"
