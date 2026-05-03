@@ -13,6 +13,7 @@ import {
   MdOutlineVerified,
   MdOndemandVideo,
 } from "react-icons/md";
+import { MessageSquare } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { useGetCourseReview } from "@/queries/useReviewQueries";
 import { useUserQuery } from "@/queries/authQueries";
@@ -400,6 +401,31 @@ const CourseDetailsPage = () => {
               </DialogContent>
             </Dialog>
           </div>
+
+          {/* Chat with Teacher Card (Enrolled Only) */}
+          {userRole === "student" && enrollmentData && (
+            <div className="bg-[var(--primary)]/5 border border-[var(--primary)]/20 rounded-2xl p-6 flex flex-col gap-4 items-center text-center">
+              <div className="bg-[var(--primary)]/10 p-3 rounded-full">
+                <MessageSquare className="w-6 h-6 text-[var(--primary)]" />
+              </div>
+              <div>
+                <h3 className="font-bold text-[var(--foreground)] text-[15px]">Have Questions?</h3>
+                <p className="text-xs text-[var(--muted-foreground)] mt-1">Chat directly with {course.teacherId?.firstName} for help</p>
+              </div>
+              <Button
+                onClick={() => navigate(`/chats`, {
+                  state: {
+                    courseId: course._id,
+                    teacherId: course.teacherId?._id,
+                    teacherName: `${course.teacherId?.firstName || ""} ${course.teacherId?.lastName || ""}`.trim(),
+                  },
+                })}
+                className="w-full mt-2 rounded-xl py-3 text-sm font-semibold shadow-md bg-[var(--primary)] text-white hover:bg-[var(--primary)]/90"
+              >
+                Chat with Teacher
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
