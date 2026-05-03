@@ -24,7 +24,15 @@ import {
   FileText,
   ExternalLink,
   Star,
+  Download,
 } from "lucide-react";
+
+const getFileUrl = (path) => {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  let normalizedPath = path.replace(/\\/g, "/");
+  return `https://e-learning-platform-api-production.up.railway.app/${normalizedPath}`;
+};
 import { useSubmissions } from "@/queries/assignmentQueries";
 import { useGradeSubmission } from "@/mutations/assignmentMutations";
 import { toast } from "sonner";
@@ -218,6 +226,12 @@ const GradeAssignmentPage = () => {
                           Text
                         </Badge>
                       )}
+                      {submission.attachments && submission.attachments.length > 0 && (
+                        <Badge variant="secondary" className="text-xs">
+                          <Download className="w-3 h-3 mr-1" />
+                          {submission.attachments.length} {submission.attachments.length === 1 ? 'File' : 'Files'}
+                        </Badge>
+                      )}
                     </div>
 
                     {/* Status */}
@@ -258,10 +272,35 @@ const GradeAssignmentPage = () => {
                   </Button>
                 </div>
 
-                {/* Submission Text Preview */}
-                {submission.submissionText && (
-                  <div className="mt-3 p-3 bg-gray-50 rounded-lg text-sm text-gray-700 max-h-24 overflow-y-auto">
-                    {submission.submissionText}
+                {/* Submission Text & Attachments Preview */}
+                {(submission.submissionText || (submission.attachments && submission.attachments.length > 0)) && (
+                  <div className="mt-3 p-3 bg-gray-50 rounded-lg space-y-2">
+                    {submission.attachments && submission.attachments.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {submission.attachments.map((attachment, idx) => {
+                          const url = getFileUrl(attachment);
+                          const filename = attachment.split(/[\/\\]/).pop();
+                          return (
+                            <a
+                              key={idx}
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1 bg-white hover:bg-gray-100 text-gray-700 text-xs font-medium rounded-md border border-gray-200 transition-colors"
+                              download
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                              <span className="max-w-[150px] truncate">{filename}</span>
+                            </a>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {submission.submissionText && (
+                      <div className="text-sm text-gray-700 max-h-24 overflow-y-auto">
+                        {submission.submissionText}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -290,6 +329,61 @@ const GradeAssignmentPage = () => {
               </span>.
             </DialogDescription>
           </DialogHeader>
+
+          {/* Submission Preview in Dialog */}
+          {gradeDialog && (
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-100 space-y-3">
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Student's Submission
+              </h4>
+              
+              {gradeDialog.submissionUrl && (
+                <div>
+                  <a
+                    href={gradeDialog.submissionUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    {gradeDialog.submissionUrl}
+                  </a>
+                </div>
+              )}
+
+              {gradeDialog.attachments && gradeDialog.attachments.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {gradeDialog.attachments.map((attachment, idx) => {
+                    const url = getFileUrl(attachment);
+                    const filename = attachment.split(/[\/\\]/).pop();
+                    return (
+                      <a
+                        key={idx}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-700 text-xs font-medium rounded-md border border-gray-200 transition-colors"
+                        download
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span className="max-w-[150px] truncate">{filename}</span>
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
+
+              {gradeDialog.submissionText && (
+                <div className="text-sm text-gray-700 bg-white p-3 rounded-md border border-gray-200 max-h-32 overflow-y-auto">
+                  {gradeDialog.submissionText}
+                </div>
+              )}
+
+              {!gradeDialog.submissionUrl && !gradeDialog.submissionText && (!gradeDialog.attachments || gradeDialog.attachments.length === 0) && (
+                <p className="text-sm text-gray-500 italic">No submission content provided.</p>
+              )}
+            </div>
+          )}
 
           <form onSubmit={handleSubmitGrade} className="space-y-4 mt-2">
             <div>
