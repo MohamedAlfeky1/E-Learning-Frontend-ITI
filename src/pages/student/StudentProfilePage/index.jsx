@@ -262,7 +262,7 @@ const StudentProfilePage = () => {
             <Label className='ps-5 flex-1 text-gray-500 '>BIO /ABOUT ME</Label>
             <Textarea
               className='border border-transparent bg-secondary'
-              rows='100'
+              rows='5'
               name='bio'
               placeholder='Enter You Bio / About'
               value={profileFormik.values.bio}
