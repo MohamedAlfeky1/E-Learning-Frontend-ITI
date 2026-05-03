@@ -228,16 +228,6 @@ const LessonDetailsPage = () => {
                       <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
                         {vid.title}
                       </h4>
-                      <div className="flex items-center gap-3 text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" /> {vid.duration || 0}m
-                        </span>
-                        {vid.isPreview && (
-                          <span className="bg-green-50 text-green-600 px-2 py-0.5 rounded-md border border-green-100">
-                            Preview
-                          </span>
-                        )}
-                      </div>
                     </div>
                     <a
                       href={vid.url}
@@ -356,9 +346,6 @@ const LessonDetailsPage = () => {
                       <h4 className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors truncate">
                         {mat.title}
                       </h4>
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1 block">
-                        {mat.fileType || "Document"}
-                      </span>
                     </div>
                     <a
                       href={mat.fileUrl}
