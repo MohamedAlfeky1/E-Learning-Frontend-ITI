@@ -290,7 +290,7 @@ const CoursesPage = () => {
 
 
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
         {isLoading || isPending ? (
           <div className="col-span-4 flex justify-center items-center min-h-40">
             <Loader />
