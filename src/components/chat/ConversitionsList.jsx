@@ -89,7 +89,7 @@ export default function ConversitionsList({ onSelectConversation, selectedConver
                   {/* Course Title Badge */}
                   <div className="flex">
                     <p className="text-[10px] font-medium text-primary bg-primary/10 px-2 py-0.5 mt-0.5 rounded-full truncate max-w-[90%]">
-                      {conversation.courseId.title}
+                      {conversation.courseId?.title || "Unknown Course"}
                     </p>
                   </div>
 

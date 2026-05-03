@@ -18,6 +18,7 @@ import {
   Trash2,
   Clock,
   ExternalLink,
+  Download,
 } from "lucide-react";
 import ProcessVideoPanel from "./components/ProcessVideoPanel";
 
@@ -74,6 +75,10 @@ const LessonDetailsPage = () => {
       materialAbortController.current.abort();
       materialAbortController.current = null;
     }
+  };
+
+  const handleDownloadFile = (url) => {
+    window.location.href = url;
   };
 
   if (isLoading) {
@@ -360,14 +365,13 @@ const LessonDetailsPage = () => {
                         {mat.fileType || "Document"}
                       </span>
                     </div>
-                    <a
-                      href={mat.fileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-gray-400 hover:text-orange-600 transition-colors"
+                    <button
+                      onClick={() => handleDownloadFile(mat.fileUrl)}
+                      className="p-2 text-gray-400 hover:text-orange-600 transition-colors cursor-pointer"
+                      title="Download file"
                     >
-                      <ExternalLink className="w-5 h-5" />
-                    </a>
+                      <Download className="w-5 h-5" />
+                    </button>
                     <Button
                       variant="ghost"
                       size="icon"
