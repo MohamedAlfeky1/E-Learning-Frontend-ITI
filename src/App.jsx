@@ -1,7 +1,16 @@
-import "./App.css";
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
+
+import { UploadProvider } from "./contexts/UploadContext";
+import GlobalUploadProgress from "./components/common/GlobalUploadProgress";
 
 function App() {
-  return <h1 className="text-green-500 text-4xl">Hello World</h1>;
+  return (
+    <UploadProvider>
+      <RouterProvider router={router} />
+      <GlobalUploadProgress />
+    </UploadProvider>
+  );
 }
 
 export default App;
