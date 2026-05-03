@@ -114,15 +114,6 @@ const HomePage = () => {
     };
   }, [coursesApi]);
 
-  if (
-    userData &&
-    (userData.role === "teacher" || userData.role === "student")
-  ) {
-    const dashboardPath =
-      userData.role === "teacher" ? "/teacher/dashboard" : "/dashboard";
-    return <Navigate to={dashboardPath} replace />;
-  }
-
   return (
     <main className="flex flex-col gap-20 bg-[#F9F9FF]">
       {/* Dynamic Hero Section */}

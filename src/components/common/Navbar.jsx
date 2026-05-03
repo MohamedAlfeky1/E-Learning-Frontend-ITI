@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Settings, Menu, X } from "lucide-react";
+import { ShoppingCart, Settings, Menu, X, UserPen, LogOut, LayoutDashboard } from "lucide-react";
 import { useUserQuery } from "@/queries/authQueries";
 import { useLogout } from "@/hooks/useLogout";
 import Logo from "@/components/common/Logo";
@@ -23,7 +23,19 @@ const ROLE_DASHBOARD = {
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const { data: user } = useUserQuery();
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   const handleLogout = useLogout();
   const {
     data: cartData,
@@ -78,20 +90,68 @@ const Navbar = () => {
 
           {/* Auth Area */}
           {user ? (
-            <div className="hidden md:flex items-center gap-2 ml-2">
-              <Link
-                to={dashboardPath}
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
-                title="Go to Dashboard"
-              >
-                {user.name?.[0]?.toUpperCase() || "U"}
-              </Link>
+            <div className="hidden md:flex items-center ml-2 relative" ref={dropdownRef}>
               <button
-                onClick={() => handleLogout("/")}
-                className="px-4 py-1.5 text-sm font-medium rounded-full border border-border text-foreground hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors duration-200 cursor-pointer"
+                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                className="flex items-center gap-2 group hover:bg-accent px-2 py-1.5 rounded-lg transition-colors cursor-pointer"
               >
-                Logout
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-semibold overflow-hidden border border-border">
+                  {user.avatar ? (
+                    <img src={user.avatar} alt="User" className="w-full h-full object-cover" />
+                  ) : (
+                    (user.firstName?.[0] || user.name?.[0] || "U").toUpperCase()
+                  )}
+                </div>
+                <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                  {user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : (user.name || "User")}
+                </span>
               </button>
+
+              {/* Dropdown */}
+              {profileDropdownOpen && (
+                <div className="absolute top-full right-0 mt-2 w-56 bg-background rounded-xl shadow-lg border border-border py-2 animate-in fade-in slide-in-from-top-2 duration-150 z-50">
+                  <div className="px-4 py-2.5 border-b border-border">
+                    <p className="text-sm font-bold text-foreground truncate">
+                      {user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : (user.name || "User")}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email || ""}</p>
+                  </div>
+                  <div className="py-1">
+                    <Link
+                      to={dashboardPath}
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Dashboard
+                    </Link>
+                    <Link
+                      to={
+                        user.role === "admin"
+                          ? "/admin/profile"
+                          : user.role === "teacher"
+                          ? "/teacher/profile"
+                          : "/profile"
+                      }
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                    >
+                      <UserPen className="w-4 h-4" />
+                      Edit Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setProfileDropdownOpen(false);
+                        handleLogout("/");
+                      }}
+                      className="flex items-center gap-2.5 px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors w-full"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-2 ml-2">
@@ -151,17 +211,46 @@ const Navbar = () => {
                   <Link
                     to={dashboardPath}
                     onClick={() => setMobileOpen(false)}
-                    className="w-full text-center px-4 py-2.5 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-accent transition-colors"
                   >
-                    Dashboard
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground text-sm font-semibold overflow-hidden border border-border">
+                      {user.avatar ? (
+                        <img src={user.avatar} alt="User" className="w-full h-full object-cover" />
+                      ) : (
+                        (user.firstName?.[0] || user.name?.[0] || "U").toUpperCase()
+                      )}
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span className="text-sm font-semibold text-foreground">
+                        {user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : (user.name || "User")}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        Go to Dashboard
+                      </span>
+                    </div>
+                  </Link>
+                  <Link
+                    to={
+                      user.role === "admin"
+                        ? "/admin/profile"
+                        : user.role === "teacher"
+                        ? "/teacher/profile"
+                        : "/profile"
+                    }
+                    onClick={() => setMobileOpen(false)}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border border-border text-foreground hover:bg-accent transition-colors cursor-pointer"
+                  >
+                    <UserPen className="w-4 h-4" />
+                    Edit Profile
                   </Link>
                   <button
                     onClick={() => {
                       handleLogout("/");
                       setMobileOpen(false);
                     }}
-                    className="w-full px-4 py-2.5 text-sm font-medium rounded-lg border border-border text-foreground hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border border-border text-foreground hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors cursor-pointer"
                   >
+                    <LogOut className="w-4 h-4" />
                     Logout
                   </button>
                 </>
