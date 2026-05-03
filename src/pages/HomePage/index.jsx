@@ -7,7 +7,6 @@ import { Link, Navigate } from "react-router-dom";
 
 // Categories section imports
 import { ArrowRight } from "lucide-react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import CategoryCard from "@/components/homepage/CategoryCard";
 import { useCategories } from "@/queries/categoryQueries";
 import { Spinner } from "@/components/ui/spinner";
@@ -70,6 +69,10 @@ const HomePage = () => {
   const [coursesCurrent, setCoursesCurrent] = useState(0);
   const [coursesSlides, setCoursesSlides] = useState(0);
 
+  const [categoriesApi, setCategoriesApi] = useState();
+  const [categoriesCurrent, setCategoriesCurrent] = useState(0);
+  const [categoriesSlides, setCategoriesSlides] = useState(0);
+
   const {
     data: coursesData,
     isLoading: coursesLoading,
@@ -113,6 +116,26 @@ const HomePage = () => {
       coursesApi.off("select", onSelect);
     };
   }, [coursesApi]);
+
+  // Categories carousel listener
+  useEffect(() => {
+    if (!categoriesApi) return;
+
+    setCategoriesSlides(categoriesApi.scrollSnapList().length);
+
+    const onSelect = () => {
+      setCategoriesCurrent(categoriesApi.selectedScrollSnap());
+    };
+
+    categoriesApi.on("select", onSelect);
+    categoriesApi.on("reInit", () => {
+      setCategoriesSlides(categoriesApi.scrollSnapList().length);
+    });
+
+    return () => {
+      categoriesApi.off("select", onSelect);
+    };
+  }, [categoriesApi]);
 
   return (
     <main className="flex flex-col gap-20 bg-[#F9F9FF]">
@@ -229,37 +252,67 @@ const HomePage = () => {
         ) : (
           categories.length && (
             <>
-              <div className="flex justify-between items-end">
-                <div className="max-w-xl">
-                  <p className="text-[10px] sm:text-[12px] text-[#712AE2] font-semibold tracking-[1.2px] uppercase mb-2">
-                    DISCOVER DISCIPLINES
-                  </p>
-                  <h2 className="text-[28px] sm:text-[36px] text-[#141B2B] font-extrabold leading-tight">
-                    Curated Study Domains
-                  </h2>
+              <Carousel
+                setApi={setCategoriesApi}
+                className="flex flex-col gap-10"
+                plugins={[Autoplay({ delay: 3000 })]}
+              >
+                <div className="flex justify-between items-end">
+                  <div className="max-w-xl">
+                    <p className="text-[10px] sm:text-[12px] text-[#712AE2] font-semibold tracking-[1.2px] uppercase mb-2">
+                      DISCOVER DISCIPLINES
+                    </p>
+                    <h2 className="text-[28px] sm:text-[36px] text-[#141B2B] font-extrabold leading-tight">
+                      Curated Study Domains
+                    </h2>
+                  </div>
+                  <div className="flex flex-col items-end gap-3">
+                    <div className="flex gap-2">
+                      <CarouselPrevious className="static translate-y-0" />
+                      <CarouselNext className="static translate-y-0" />
+                    </div>
+                    {isAdmin && (
+                      <Link
+                        to="/admin/categories"
+                        className="flex items-center gap-2 text-[12px] sm:text-[16px] text-[#3525CD] font-semibold cursor-pointer hover:underline"
+                      >
+                        View All Categories <ArrowRight size={16} />
+                      </Link>
+                    )}
+                  </div>
                 </div>
-                {isAdmin && (
-                  <Link
-                    to="/admin/categories"
-                    className="flex items-center gap-2 text-[12px] sm:text-[16px] text-[#3525CD] font-semibold cursor-pointer hover:underline"
-                  >
-                    View All Categories <ArrowRight size={16} />
-                  </Link>
-                )}
-              </div>
-              <ScrollArea className="whitespace-nowrap">
-                <div className="pb-4 flex gap-4">
-                  {categories.map((category) => (
-                    <div
-                      key={category._id ?? category.id ?? category.name}
-                      className="w-[320px] flex-shrink-0"
+
+                <CarouselContent className="gap-8">
+                  {categories.map((category, index) => (
+                    <CarouselItem
+                      key={category._id ?? category.id ?? category.name ?? index}
+                      className="sm:basis-1/2 lg:basis-2/5 xl:basis-1/3"
                     >
                       <CategoryCard category={category} />
-                    </div>
+                    </CarouselItem>
                   ))}
-                </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
+                </CarouselContent>
+                <Pagination>
+                  <PaginationContent className="flex gap-2">
+                    {Array.from({ length: categoriesSlides }).map((_, index) => (
+                      <PaginationItem key={index}>
+                        <PaginationLink
+                          href="#"
+                          className={`inline-block h-2 rounded-full transition-all duration-300 ${
+                            categoriesCurrent === index
+                              ? "w-8 bg-[#3525CD]"
+                              : "w-2 bg-[#c7c4d8] hover:bg-[#3525CD]"
+                          }`}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            categoriesApi?.scrollTo(index);
+                          }}
+                        ></PaginationLink>
+                      </PaginationItem>
+                    ))}
+                  </PaginationContent>
+                </Pagination>
+              </Carousel>
             </>
           )
         )}
