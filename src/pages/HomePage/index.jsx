@@ -117,7 +117,7 @@ const HomePage = () => {
   return (
     <main className="flex flex-col gap-20 bg-[#F9F9FF]">
       {/* Dynamic Hero Section */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+      <section className="w-full max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6 mt-6">
         <div className="rounded-[40px] overflow-hidden relative group shadow-2xl">
         {publicSlidersLoading ? (
           <div className="w-full h-[350px] sm:h-[450px] lg:h-[500px] flex flex-col justify-center items-center gap-4 bg-[#F1F3FF]">
@@ -211,7 +211,7 @@ const HomePage = () => {
       </section>
 
       {/* Categories section */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-10">
+      <section className="w-full max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6 flex flex-col gap-10">
         {categoriesLoading ? (
           <div className="flex justify-center items-center gap-3">
             <Spinner className="size-8" />
@@ -267,7 +267,7 @@ const HomePage = () => {
 
       {/* Courses section */}
       <section className="py-16 rounded-t-[2rem] bg-[#F1F3FF]">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6">
         {coursesLoading ? (
           <div className="flex justify-center items-center gap-3">
             <Spinner className="size-8" />

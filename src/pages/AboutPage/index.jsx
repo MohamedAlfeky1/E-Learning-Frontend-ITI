@@ -53,7 +53,7 @@ export default function AboutPage() {
   return (
     <div className="w-full flex flex-col items-center overflow-x-hidden font-sans text-slate-800">
       {/* Hero Section */}
-      <section className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 flex flex-col-reverse lg:grid lg:grid-cols-2 gap-12 items-center">
+      <section className="relative w-full max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6 py-20 lg:py-32 flex flex-col-reverse lg:grid lg:grid-cols-2 gap-12 items-center">
         <div className="flex flex-col items-start gap-6 w-full">
           <p className="text-primary font-bold text-sm tracking-widest uppercase">
             Our Journey
@@ -98,7 +98,7 @@ export default function AboutPage() {
         id="mission-section"
         className="w-full bg-slate-50 py-20 lg:py-32"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-16">
+        <div className="max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6 flex flex-col items-center gap-16">
           <div className="text-center max-w-2xl flex flex-col gap-4">
             <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900">
               Core Principles
@@ -167,7 +167,7 @@ export default function AboutPage() {
       </section>
 
       {/* Teacher Showcase */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+      <section className="w-full max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6 py-20 lg:py-32">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
           <div className="max-w-xl">
             <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-4">
@@ -211,7 +211,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+      <section className="w-full max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6 py-20 lg:py-32">
         <div className="max-w-5xl mx-auto bg-gradient-to-br from-primary to-purple-600 rounded-[3rem] p-12 lg:p-20 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+')] opacity-20" />
 

@@ -33,7 +33,7 @@ const Footer = () => {
 
   return (
     <footer className="border-t border-border bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6 py-16">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-8 mb-12 justify-between">
           {/* ── Brand Section ── */}
           <div className="lg:max-w-md space-y-5">
