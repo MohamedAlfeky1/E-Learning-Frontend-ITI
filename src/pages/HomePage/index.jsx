@@ -142,7 +142,7 @@ const HomePage = () => {
                   <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[2000ms] group-hover:scale-110"
                     style={{
-                      backgroundImage: `url(${slider.imageUrl.startsWith("http") ? slider.imageUrl : `http://localhost:5000${slider.imageUrl}`})`,
+                      backgroundImage: `url(${slider.imageUrl.startsWith("http") ? slider.imageUrl : `https://e-learning-platform-api-production.up.railway.app${slider.imageUrl}`})`,
                     }}
                   />
                   {/* Premium Gradient Overlay */}
