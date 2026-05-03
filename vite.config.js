@@ -16,7 +16,9 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
 
-    allowedHosts: "all",
+      allowedHosts: [
+    "overheat-cornbread-undated.ngrok-free.dev"
+  ],
 
     hmr: {
       protocol: "ws",
