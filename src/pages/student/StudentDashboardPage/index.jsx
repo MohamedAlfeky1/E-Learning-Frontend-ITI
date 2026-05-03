@@ -11,6 +11,8 @@ import { TbClockHour10 } from "react-icons/tb";
 import { Button } from "../../../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { sessionService } from "@/services/sessionService";
+import EmptyCourseCard from "@/components/course/EmptyCourseCard";
+
 
 
 const StudentDashboardPage = () => {
@@ -182,141 +184,144 @@ const StudentDashboardPage = () => {
           </div>
 
           {/* Featured course card */}
-          {enrollments?.slice(0, 1).map((course) => (
-            <div
-              key={course._id}
-              className="flex flex-col md:flex-row gap-0 rounded-2xl overflow-hidden items-stretch"
-              style={{
-                background: "var(--card)",
-                border: "1.5px solid var(--border)",
-                boxShadow: "0 2px 16px rgba(53,37,205,0.07)",
-              }}
-            >
-              {/* Thumbnail */}
-              <div className="w-full md:w-2/5 min-h-48 shrink-0 relative overflow-hidden">
-                {course.courseId?.thumbnail ? (
-                  <>
-                    <img
-                      src={course?.courseId?.thumbnail}
-                      alt="Course Thumbnail"
-                      className="w-full h-full object-cover"
-                      style={{ transition: "transform 0.4s ease" }}
-                    />
-                    <div style={{
-                      position: "absolute", inset: 0,
-                      background: "linear-gradient(90deg, transparent 70%, var(--card) 100%)",
-                      pointerEvents: "none",
-                    }} />
-                  </>
-                ) : (
-                  <div
-                    className="w-full h-full flex flex-col items-center justify-center gap-2"
-                    style={{ background: "linear-gradient(135deg, #3525CD, #712AE2)" }}
-                  >
-                    <MdOutlineOndemandVideo size={40} color="white" />
-                    <p className="text-white text-sm font-medium">No Thumbnail</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="flex flex-col gap-3 p-5 w-full">
-                <div className="flex items-center gap-2 text-xs" style={{ color: "var(--muted-foreground)" }}>
-                  <span
-                    style={{
-                      background: "rgba(53,37,205,0.09)",
-                      color: "var(--primary)",
-                      fontWeight: 700,
-                      fontSize: "10px",
-                      letterSpacing: "0.06em",
-                      textTransform: "uppercase",
-                      padding: "3px 10px",
-                      borderRadius: "999px",
-                      border: "1px solid rgba(53,37,205,0.15)",
-                    }}
-                  >
-                    {course.courseId?.categoryId?.name || "COURSE"}
-                  </span>
-                  <span style={{ color: "var(--border)" }}>•</span>
-                  <span>
-                    Module {course.completedVideos?.length + 1 || 1} of{" "}
-                    {course.courseId?.videos?.length || "?"}
-                  </span>
-                </div>
-
-                <h2
-                  className="text-xl font-bold leading-snug"
-                  style={{ color: "var(--foreground)", letterSpacing: "-0.015em" }}
-                >
-                  {course.courseId?.title}
-                </h2>
-                <p
-                  className="text-sm font-light break-all overflow-hidden"
-                  style={{
-                    color: "var(--muted-foreground)",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {course.courseId?.description}
-                </p>
-
-                <div className="w-4/5 flex flex-col gap-2 mt-1">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xs font-semibold" style={{ color: "var(--foreground)" }}>
-                      Course Progress
-                    </h3>
-                    <h4 className="text-xs font-bold" style={{ color: "var(--primary)" }}>
-                      {course.progress}%
-                    </h4>
-                  </div>
-                  <div className="w-full rounded-full h-2" style={{ background: "var(--muted)" }}>
+          {!enrollments || enrollments.length === 0 ? (
+            <EmptyCourseCard />
+          ) : (
+            enrollments.slice(0, 1).map((course) => (
+              <div
+                key={course._id}
+                className="flex flex-col md:flex-row gap-0 rounded-2xl overflow-hidden items-stretch"
+                style={{
+                  background: "var(--card)",
+                  border: "1.5px solid var(--border)",
+                  boxShadow: "0 2px 16px rgba(53,37,205,0.07)",
+                }}
+              >
+                {/* Thumbnail */}
+                <div className="w-full md:w-2/5 min-h-48 shrink-0 relative overflow-hidden">
+                  {course.courseId?.thumbnail ? (
+                    <>
+                      <img
+                        src={course?.courseId?.thumbnail}
+                        alt="Course Thumbnail"
+                        className="w-full h-full object-cover"
+                        style={{ transition: "transform 0.4s ease" }}
+                      />
+                      <div style={{
+                        position: "absolute", inset: 0,
+                        background: "linear-gradient(90deg, transparent 70%, var(--card) 100%)",
+                        pointerEvents: "none",
+                      }} />
+                    </>
+                  ) : (
                     <div
-                      className="h-2 rounded-full transition-all duration-700"
-                      style={{
-                        width: `${course.progress}%`,
-                        background: course.progress > 0
-                          ? "linear-gradient(90deg, #3525CD 0%, #712AE2 100%)"
-                          : "transparent",
-                        boxShadow: course.progress > 0 ? "0 0 8px rgba(53,37,205,0.4)" : "none",
-                      }}
-                    />
-                  </div>
+                      className="w-full h-full flex flex-col items-center justify-center gap-2"
+                      style={{ background: "linear-gradient(135deg, #3525CD, #712AE2)" }}
+                    >
+                      <MdOutlineOndemandVideo size={40} color="white" />
+                      <p className="text-white text-sm font-medium">No Thumbnail</p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex gap-3 mt-auto pt-1">
-                  <button
-                    onClick={() => navigate(`/my-courses/${course?.courseId?._id}/learn`)}
+                {/* Content */}
+                <div className="flex flex-col gap-3 p-5 w-full">
+                  <div className="flex items-center gap-2 text-xs" style={{ color: "var(--muted-foreground)" }}>
+                    <span
+                      style={{
+                        background: "rgba(53,37,205,0.09)",
+                        color: "var(--primary)",
+                        fontWeight: 700,
+                        fontSize: "10px",
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
+                        padding: "3px 10px",
+                        borderRadius: "999px",
+                        border: "1px solid rgba(53,37,205,0.15)",
+                      }}
+                    >
+                      {course.courseId?.categoryId?.name || "COURSE"}
+                    </span>
+                    <span style={{ color: "var(--border)" }}>•</span>
+                    <span>
+                      Module {course.completedVideos?.length + 1 || 1} of{" "}
+                      {course.courseId?.videos?.length || "?"}
+                    </span>
+                  </div>
+
+                  <h2
+                    className="text-xl font-bold leading-snug"
+                    style={{ color: "var(--foreground)", letterSpacing: "-0.015em" }}
+                  >
+                    {course.courseId?.title}
+                  </h2>
+                  <p
+                    className="text-sm font-light break-all overflow-hidden"
                     style={{
-                      background: "linear-gradient(135deg, #3525CD 0%, #6246ea 100%)",
-                      color: "#fff",
-                      fontWeight: 700,
-                      fontSize: "13px",
-                      padding: "9px 22px",
-                      borderRadius: "10px",
-                      border: "none",
-                      cursor: "pointer",
-                      boxShadow: "0 2px 12px rgba(53,37,205,0.35)",
-                      transition: "all 0.2s ease",
-                      letterSpacing: "0.01em",
-                    }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.boxShadow = "0 4px 20px rgba(53,37,205,0.5)";
-                      e.currentTarget.style.transform = "translateY(-1px)";
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.boxShadow = "0 2px 12px rgba(53,37,205,0.35)";
-                      e.currentTarget.style.transform = "translateY(0)";
+                      color: "var(--muted-foreground)",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
                     }}
                   >
-                    ▶ Resume Lesson
-                  </button>
+                    {course.courseId?.description}
+                  </p>
+
+                  <div className="w-4/5 flex flex-col gap-2 mt-1">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xs font-semibold" style={{ color: "var(--foreground)" }}>
+                        Course Progress
+                      </h3>
+                      <h4 className="text-xs font-bold" style={{ color: "var(--primary)" }}>
+                        {course.progress}%
+                      </h4>
+                    </div>
+                    <div className="w-full rounded-full h-2" style={{ background: "var(--muted)" }}>
+                      <div
+                        className="h-2 rounded-full transition-all duration-700"
+                        style={{
+                          width: `${course.progress}%`,
+                          background: course.progress > 0
+                            ? "linear-gradient(90deg, #3525CD 0%, #712AE2 100%)"
+                            : "transparent",
+                          boxShadow: course.progress > 0 ? "0 0 8px rgba(53,37,205,0.4)" : "none",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 mt-auto pt-1">
+                    <button
+                      onClick={() => navigate(`/my-courses/${course?.courseId?._id}/learn`)}
+                      style={{
+                        background: "linear-gradient(135deg, #3525CD 0%, #6246ea 100%)",
+                        color: "#fff",
+                        fontWeight: 700,
+                        fontSize: "13px",
+                        padding: "9px 22px",
+                        borderRadius: "10px",
+                        border: "none",
+                        cursor: "pointer",
+                        boxShadow: "0 2px 12px rgba(53,37,205,0.35)",
+                        transition: "all 0.2s ease",
+                        letterSpacing: "0.01em",
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.boxShadow = "0 4px 20px rgba(53,37,205,0.5)";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.boxShadow = "0 2px 12px rgba(53,37,205,0.35)";
+                        e.currentTarget.style.transform = "translateY(0)";
+                      }}
+                    >
+                      ▶ Resume Lesson
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )))}
 
           {/* Secondary course cards */}
           <div className="flex flex-col md:flex-row gap-3 flex-1">
@@ -380,7 +385,7 @@ const StudentDashboardPage = () => {
                         ? '✓ All Lessons Completed'
                         : `${course?.completedVideos?.length || 0} Lessons Completed`}
                     </p>
-                    
+
                   </div>
                 </div>
 
@@ -473,10 +478,10 @@ const StudentDashboardPage = () => {
                   const endFormatted = format(endDate.getHours(), endDate.getMinutes());
 
                   const statusStyles = {
-                    pending:   { dot: "#eab308", text: "#ca8a04",  bg: "rgba(234,179,8,0.08)",   border: "rgba(234,179,8,0.2)" },
-                    confirmed: { dot: "#22c55e", text: "#16a34a",  bg: "rgba(34,197,94,0.08)",   border: "rgba(34,197,94,0.2)" },
-                    cancelled: { dot: "#ef4444", text: "#dc2626",  bg: "rgba(239,68,68,0.08)",   border: "rgba(239,68,68,0.2)" },
-                    completed: { dot: "#94a3b8", text: "#64748b",  bg: "rgba(148,163,184,0.08)", border: "rgba(148,163,184,0.2)" },
+                    pending: { dot: "#eab308", text: "#ca8a04", bg: "rgba(234,179,8,0.08)", border: "rgba(234,179,8,0.2)" },
+                    confirmed: { dot: "#22c55e", text: "#16a34a", bg: "rgba(34,197,94,0.08)", border: "rgba(34,197,94,0.2)" },
+                    cancelled: { dot: "#ef4444", text: "#dc2626", bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.2)" },
+                    completed: { dot: "#94a3b8", text: "#64748b", bg: "rgba(148,163,184,0.08)", border: "rgba(148,163,184,0.2)" },
                   };
                   const s = statusStyles[booking.status] || statusStyles.pending;
 
