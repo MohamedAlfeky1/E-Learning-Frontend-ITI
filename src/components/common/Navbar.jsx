@@ -48,7 +48,7 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/60 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between gap-4">
+      <div className="max-w-[1500px] mx-auto px-3 sm:px-4 lg:px-6 h-[72px] flex items-center justify-between gap-4">
         {/* ── Left: Logo + Nav ── */}
         <div className="flex items-center gap-8">
           <Logo />
@@ -185,7 +185,7 @@ const Navbar = () => {
       {/* ── Mobile Dropdown ── */}
       {mobileOpen && (
         <div className="md:hidden border-t border-border bg-background animate-in slide-in-from-top-2 duration-200">
-          <div className="max-w-7xl mx-auto px-4 py-4 space-y-4">
+          <div className="max-w-[1500px] mx-auto px-3 py-4 space-y-4">
             {/* Mobile search */}
             <SearchBar className="sm:hidden flex" />
 
