@@ -10,6 +10,11 @@ import {
   UserCircle,
   Megaphone,
   LogOut,
+  MessageSquare,
+  FileQuestion,
+  CalendarPlus,
+  CalendarCheck,
+  CalendarDays,
 } from "lucide-react";
 
 export const teacherSidebarLinks = [
@@ -17,6 +22,11 @@ export const teacherSidebarLinks = [
     title: "Dashboard",
     href: "/teacher/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Chats",
+    href: "/teacher/chats",
+    icon: MessageSquare,
   },
   {
     title: "Create Course",
@@ -27,36 +37,42 @@ export const teacherSidebarLinks = [
     title: "Manage Courses",
     href: "/teacher/courses",
     icon: Library,
-  },
-  {
-    title: "Upload Videos",
-    href: "/teacher/materials/upload", // Generic or specific
-    icon: Video,
+    exact: true,
   },
   {
     title: "Assignments",
-    href: "/teacher/assignments", // Ensure this route is correct in actual router
+    href: "/teacher/assignments",
     icon: ClipboardList,
   },
   {
     title: "Quizzes",
-    href: "/teacher/quizzes", // Ensure this route is correct in actual router
-    icon: HelpCircle,
+    href: "courses/quizzes/create", 
+    icon: FileQuestion,
   },
   {
     title: "Students",
-    href: "/teacher/students", // Doesn't exist uniquely yet, maybe they wanted something else, router has nothing like this inside teacher yet
+    href: "/teacher/students", 
     icon: Users,
+  },
+  {
+    title: "Add Availability",
+    href: "/teacher/availability", 
+    icon: CalendarPlus,
+  },
+  {
+    title: "Bookings",
+    href: "/teacher/myBookings", 
+    icon: CalendarCheck,
+  },
+  {
+    title: "Availabilities",
+    href: "/teacher/availableSlotsPage", 
+    icon: CalendarDays,
   },
   {
     title: "Earnings",
     href: "/teacher/earnings",
     icon: BadgeDollarSign,
-  },
-  {
-    title: "Profile",
-    href: "/teacher/profile",
-    icon: UserCircle,
   },
 ];
 
@@ -69,13 +85,13 @@ export const teacherBottomLinks = [
   // },
   {
     title: "Help Center",
-    href: "/teacher/help",
+    href: "/teacher/tickets",
     icon: HelpCircle,
   },
-  {
-    title: "Sign Out",
-    onClick: () => console.log("Sign Out clicked"),
-    icon: LogOut,
-    isAction: true,
-  },
+  // {
+  //   title: "Sign Out",
+  //   onClick: () => console.log("Sign Out clicked"),
+  //   icon: LogOut,
+  //   isAction: true,
+  // },
 ];

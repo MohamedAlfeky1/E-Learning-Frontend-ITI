@@ -1,13 +1,71 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchCourses } from '../services/courseService';
+import {
+  getAllCourses,
+  getAllCoursesOfLoggedInTeacher,
+  getCourseById,
+  browseCourses,
+} from "../services/courseService";
 
 // Example TanStack Query hook for fetching courses
-export const useCourses = () => {
+// export const useCourses = () => {
+//   return useQuery({
+//     queryKey: ['courses'],
+//     queryFn: fetchCourses,
+//     // Optional configuration:
+//     // staleTime: 1000 * 60 * 5, // 5 minutes
+//     // retry: 1,
+//   });
+// };
+
+/**
+ * Fetch a single course by ID using React Query.
+ *
+ * @function useGetCoursesById
+ * @param {string} id - Course ID
+ * @returns {import('@tanstack/react-query').UseQueryResult}
+ * React Query result with course data, loading, and error states.
+ */
+export const useGetCoursesById = (id) => {
   return useQuery({
-    queryKey: ['courses'],
-    queryFn: fetchCourses,
-    // Optional configuration:
-    // staleTime: 1000 * 60 * 5, // 5 minutes
-    // retry: 1,
+    queryKey: ["course", id],
+    queryFn: () => getCourseById(id),
   });
 };
+
+/**
+ * Fetch all courses using React Query.
+ *
+ * @function useGetAllCourses
+ * @returns {import('@tanstack/react-query').UseQueryResult}
+ * React Query result with courses data, loading, and error states.
+ */
+export const useGetAllCourses = () => {
+  return useQuery({
+    queryKey:['allCourses'],
+    queryFn:getAllCourses,
+  })
+}
+
+
+export const useGetAllTeacherCourses = () => {
+  return useQuery({
+    queryKey: ["allCourses"],
+    queryFn: getAllCoursesOfLoggedInTeacher,
+  });
+};
+
+/**
+ * Fetch courses by category ID using React Query.
+ *
+ * @function useGetCoursesByCategory
+ * @param {string} categoryId - The category ID to filter by.
+ * @returns {import('@tanstack/react-query').UseQueryResult}
+ */
+export const useGetCoursesByCategory = (categoryId) => {
+  return useQuery({
+    queryKey: ["courses", "category", categoryId],
+    queryFn: () => browseCourses({ filters: { categoryId } }),
+    enabled: !!categoryId,
+  });
+};
+

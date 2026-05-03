@@ -18,8 +18,10 @@ export const useSubmitVerification = () => {
       toast.success("Verification Request Sent", {
         description: "Admin will review your documents. You'll be notified soon.",
       });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
 
       queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+      queryClient.refetchQueries({ queryKey: ["auth", "me"] });
 
       
     },
