@@ -71,8 +71,6 @@ const TeacherCoursesPage = () => {
   }
 
   const errorMessage = error?.response?.data?.message;
-  console.log(error);
-  console.log(errorMessage);
 
   if (errorMessage === "Course not found") {
     return (
