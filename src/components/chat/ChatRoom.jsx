@@ -6,7 +6,7 @@ import { Send, Loader2, MessageCircle, Check, CheckCheck } from "lucide-react";
 import { useGetConversations } from "@/queries/chatQueries";
 import { useQueryClient } from "@tanstack/react-query";
 
-const BACKEND_URL = "https://e-learning-platform-api-production.up.railway.app";
+const BACKEND_URL = "http://localhost:5000"; // Fixed: 5000 is typically the backend port, 5173 is the Vite frontend.
 
 const ChatRoom = ({ courseId, receiverId, receiverName }) => {
   console.log("courseId", courseId);
@@ -149,6 +149,7 @@ const ChatRoom = ({ courseId, receiverId, receiverName }) => {
 
     const payload = {
       to: receiverId,
+      receiverId: receiverId,
       courseId: courseId,
       message: inputText,
     };
@@ -158,7 +159,10 @@ const ChatRoom = ({ courseId, receiverId, receiverName }) => {
 
     socket.emit("send_message", payload, (response) => {
       if (response && response.success) {
-        setMessages((prev) => [...prev, response.message]);
+        const newMessage = response.data || response.message;
+        if (newMessage) {
+          setMessages((prev) => [...prev, newMessage]);
+        }
 
         // Update the conversations list instantly
         queryClient.invalidateQueries({ queryKey: ["conversations"] });

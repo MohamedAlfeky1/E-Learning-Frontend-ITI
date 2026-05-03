@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://e-learning-platform-api-production.up.railway.app/api",
+  baseURL: "http://localhost:5000/api", // Fixed to point to local backend
 });
 axiosInstance.interceptors.request.use(
   (config) => {
