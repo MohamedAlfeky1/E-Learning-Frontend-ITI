@@ -55,7 +55,7 @@ const EditSliderDialog = ({ slider }) => {
   const [imagePreview, setImagePreview] = useState(
     slider.imageUrl.startsWith("http")
       ? slider.imageUrl
-      : `http://localhost:5000${slider.imageUrl}`,
+      : `https://e-learning-platform-api-production.up.railway.app${slider.imageUrl}`,
   );
   const fileInputRef = useRef(null);
 
@@ -88,7 +88,7 @@ const EditSliderDialog = ({ slider }) => {
       setImagePreview(
         slider.imageUrl.startsWith("http")
           ? slider.imageUrl
-          : `http://localhost:5000${slider.imageUrl}`,
+          : `https://e-learning-platform-api-production.up.railway.app${slider.imageUrl}`,
       );
     }
   }, [slider, open, reset]);
