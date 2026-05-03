@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   FiBook,
   FiDollarSign,
-  FiGlobe,
   FiImage,
   FiPlus,
   FiTrash2,
@@ -28,7 +27,7 @@ const INITIAL_FORM = {
   category: "",
   price: "",
   level: "",
-  language: "",
+  language: "English",
   requirements: [""],
   whatYouWillLearn: [""],
 };
@@ -39,7 +38,6 @@ const INITIAL_ERRORS = {
   category: "",
   price: "",
   level: "",
-  language: "",
   thumbnail: "",
   api: "",
 };
@@ -79,7 +77,7 @@ const EditCoursePage = () => {
         category: course.categoryId || "",
         price: course.price || "",
         level: course.level || "",
-        language: course.language || "",
+        language: "English",
         requirements: course.requirements?.length ? course.requirements : [""],
         whatYouWillLearn: course.whatYouWillLearn?.length
           ? course.whatYouWillLearn
@@ -170,7 +168,7 @@ const EditCoursePage = () => {
     payload.append("categoryId", formData.category);
     payload.append("price", Number(formData.price));
     payload.append("level", formData.level);
-    payload.append("language", formData.language.trim());
+    payload.append("language", "English");
     payload.append("thumbnail", thumbnail);
 
     const requirements = formData.requirements.filter((r) => r.trim());
@@ -398,7 +396,7 @@ const EditCoursePage = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1">
               {/* Price */}
               <div className="flex flex-col gap-1.5 group">
                 <label
@@ -437,46 +435,6 @@ const EditCoursePage = () => {
                 {errors.price && (
                   <p className="flex items-center gap-1.5 text-xs text-red-600 font-medium mt-1 ml-1">
                     <FiAlertCircle /> {errors.price}
-                  </p>
-                )}
-              </div>
-
-              {/* Language */}
-              <div className="flex flex-col gap-1.5 group">
-                <label
-                  className={`text-sm font-600 transition-colors ${
-                    errors.language
-                      ? "text-red-600"
-                      : "text-gray-700 group-focus-within:text-indigo-600"
-                  }`}
-                >
-                  Language
-                </label>
-                <div className="relative">
-                  <FiGlobe
-                    className={`absolute left-4 top-1/2 -translate-y-1/2 text-lg transition-colors ${
-                      errors.language
-                        ? "text-red-400"
-                        : "text-gray-400 group-focus-within:text-indigo-500"
-                    }`}
-                  />
-                  <Input
-                    type="text"
-                    name="language"
-                    variant="iconFieldMd"
-                    value={formData.language}
-                    onChange={handleChange}
-                    placeholder="e.g. English"
-                    className={
-                      errors.language
-                        ? "border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-400"
-                        : "border-gray-200 bg-gray-50/50 focus:ring-indigo-50 focus:border-indigo-500"
-                    }
-                  />
-                </div>
-                {errors.language && (
-                  <p className="flex items-center gap-1.5 text-xs text-red-600 font-medium mt-1 ml-1">
-                    <FiAlertCircle /> {errors.language}
                   </p>
                 )}
               </div>
