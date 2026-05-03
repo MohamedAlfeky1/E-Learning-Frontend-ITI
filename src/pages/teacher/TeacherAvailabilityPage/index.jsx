@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { CalendarDays } from "lucide-react"
 import { DayInfoCard } from "@/components/booking/DayInfoCard"
 import { AddSlotForm } from "@/components/booking/AddSlotForm"
-import { SlotSummaryList } from "@/components/booking/SlotSummaryList"
+import { SlotSummaryList } from "@/components/booking/slotSummaryList"
 
 export default function TeacherAvailabilityPage() {
   const [selectedDate, setSelectedDate] = useState(new Date())
