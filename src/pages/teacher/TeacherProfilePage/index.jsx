@@ -22,6 +22,24 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import { Textarea } from "@/components/ui/textarea";
 import { useGetAllCourses } from "@/queries/useCourses";
 import { useNavigate } from "react-router-dom";
+import { useGetCategoryById } from "@/queries/categoryQueries";
+import { ImSpinner10 } from "react-icons/im";
+
+
+const CategoryBadge = ({ categoryId }) => {
+  const { data: categoryData, isLoading } = useGetCategoryById(categoryId);
+  console.log('====================================');
+  console.log("categoryData",categoryData);
+  console.log('====================================');
+  if (isLoading) return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-slate-400 text-xs"><ImSpinner10 className="animate-spin" /></span>;
+  return (
+    <Badge variant="lightPruple">
+      {categoryData?.data?.name ?? 'Category Not Found'}
+    </Badge>
+
+  );
+};
+
 
 const TeacherProfilePage = () => {
   const navigate = useNavigate();
@@ -193,9 +211,9 @@ const TeacherProfilePage = () => {
 
             {/* categories */}
             <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-              {data?.teacherData?.targetCategories?.map((category) => {
+              {data?.teacherData?.targetCategories?.map((cateId) => {
                 return (
-                  <Badge className='capitalize' variant="lightPruple">{category?.name}</Badge>
+                  <CategoryBadge key={cateId} categoryId={cateId} />
 
                 )
               })}
