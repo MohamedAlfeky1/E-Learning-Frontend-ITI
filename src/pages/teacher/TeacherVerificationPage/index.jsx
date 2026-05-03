@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserQuery } from "@/queries/authQueries";
 import { useSubmitVerification } from "@/mutations/verificationMutations";
 import { useCategories } from "@/queries/categoryQueries";
+import { useLogout } from "@/hooks/useLogout";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +25,7 @@ import {
 } from "lucide-react";
 
 import { toast } from "sonner";
-import { useLogout } from "@/hooks/useLogout";
+import { useQueryClient } from '@tanstack/react-query';
 
 const PendingView = () => {
   const logout = useLogout();

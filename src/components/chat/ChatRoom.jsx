@@ -6,7 +6,7 @@ import { Send, Loader2, MessageCircle, Check, CheckCheck } from "lucide-react";
 import { useGetConversations } from "@/queries/chatQueries";
 import { useQueryClient } from "@tanstack/react-query";
 
-const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = "https://e-learning-platform-api-production.up.railway.app";
 
 const ChatRoom = ({ courseId, receiverId, receiverName }) => {
   console.log("courseId", courseId);
