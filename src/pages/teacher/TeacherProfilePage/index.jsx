@@ -425,6 +425,3 @@ const TeacherProfilePage = () => {
 };
 
 export default TeacherProfilePage;
-
-// "email":"hadeer.abdelgawad44@gmail.com",
-//  "password":"Ha-123456",
