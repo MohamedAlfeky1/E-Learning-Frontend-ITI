@@ -24,18 +24,7 @@ import {
 } from "lucide-react";
 
 import { toast } from "sonner";
-import { useQueryClient } from '@tanstack/react-query';
-
-const PendingView = () => (
-  <div className="min-h-[80vh] flex items-center justify-center p-6 animate-in fade-in duration-500">
-    <Card className="max-w-lg w-full border-none shadow-2xl shadow-purple-100/50 rounded-3xl overflow-hidden">
-      <CardContent className="p-12 text-center space-y-6">
-        <div className="relative mx-auto w-24 h-24">
-          <div className="absolute inset-0 bg-yellow-100 rounded-full animate-ping opacity-25"></div>
-          <div className="relative flex items-center justify-center w-24 h-24 bg-yellow-50 text-yellow-600 rounded-full">
-            <Clock size={48} className="animate-pulse" />
-          </div>
-        </div>
+import { useLogout } from "@/hooks/useLogout";
 
 const PendingView = () => {
   const logout = useLogout();
