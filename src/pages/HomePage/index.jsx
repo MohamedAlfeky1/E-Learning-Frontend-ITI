@@ -291,7 +291,7 @@ const HomePage = () => {
             >
               <div className="flex justify-between items-center">
                 <h2 className="text-[28px] sm:text-[36px] text-[#141B2B] font-extrabold leading-tight">
-                  Top Rated Courses
+                  Start Learning
                 </h2>
                 <div className="flex gap-2">
                   <CarouselPrevious className="static translate-y-0" />
