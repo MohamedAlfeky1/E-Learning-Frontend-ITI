@@ -65,10 +65,13 @@ const Avatar = ({ applicant, size = "md" }) => {
 
 const CategoryBadge = ({ categoryId }) => {
   const { data: categoryData, isLoading } = useGetCategoryById(categoryId);
+  console.log('====================================');
+  console.log("categoryData",categoryData);
+  console.log('====================================');
   if (isLoading) return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-slate-400 text-xs"><ImSpinner10 className="animate-spin" /></span>;
   return (
     <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-indigo-700 text-xs font-medium ring-1 ring-indigo-100 m-0.5">
-      {categoryData?.data?.name ?? categoryId}
+      {categoryData?.data?.name ?? 'Category Not Found'}
     </span>
   );
 };
@@ -93,6 +96,8 @@ const AdminVerificationsPage = () => {
 
   useEffect(() => { setCurrentPage(1); }, [data]);
 
+  console.log("paginatedRequests",paginatedRequests);
+  
   if (teacherDataLoading || !teacherData || isLoading) {
     return (
       <div className="min-h-full min-w-full flex justify-center items-center">
