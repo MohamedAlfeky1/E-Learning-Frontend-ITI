@@ -71,11 +71,11 @@ const CourseDetailsPage = () => {
   const [openAppointmentDialog, setOpenAppointmentDialog] = useState(false);
 
   const { data: userData, isLoading: useLoading } = useUserQuery();
-  const { data: cartData } = useGetCartItems();
+  const { data: cartData } = useGetCartItems({ enabled: userData?.role === "student" });
   const { data, isLoading, error } = useGetCoursesById(id);
   const { data: categoriesData } = useCategories();
   const { data: reviewsData } = useGetCourseReview(id);
-  const { data: enrollmentData } = useEnrollmentDetailsQuery(id);
+  const { data: enrollmentData } = useEnrollmentDetailsQuery(id, { enabled: !!id && userData?.role === "student" });
   const addToCartMutation = useAddToCart();
 
   const userRole = userData?.role;

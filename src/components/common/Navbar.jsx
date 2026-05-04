@@ -41,7 +41,7 @@ const Navbar = () => {
     data: cartData,
     isLoading: cartLoading,
     error: cartError,
-  } = useCart();
+  } = useCart({ enabled: user?.role === "student" });
   const cartItems = cartData?.data?.cart?.items || [];
 
   const dashboardPath = user ? ROLE_DASHBOARD[user.role] || "/" : "/";
@@ -70,7 +70,7 @@ const Navbar = () => {
 
         {/* ── Right: Actions ── */}
         <div className="flex items-center gap-1">
-          {user && (
+          {user && user.role === "student" && (
             <Link
               to="/cart"
               title="Cart"

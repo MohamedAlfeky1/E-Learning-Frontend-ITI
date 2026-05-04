@@ -40,15 +40,15 @@ function CourseCard({ course }) {
     data: favoritesData,
     isLoading: favoritesLoading,
     error: favoritesError,
-  } = useFavorites();
-  const { data: cartData } = useGetCartItems();
+  } = useFavorites({ enabled: userData?.role === "student" });
+  const { data: cartData } = useGetCartItems({ enabled: userData?.role === "student" });
   const { mutateAsync: addFavorite, isPending: isAddingFavorite } =
     useAddFavoriteMutation();
   const { mutateAsync: removeFavorite, isPending: isRemovingFavorite } =
     useDeleteFavoriteMutation();
   const addToCartMutation = useAddToCart();
   const removeFromCartMutation = useDeleteCartMutation();
-  const { data: enrolledIds } = useMyEnrolledCourseIds();
+  const { data: enrolledIds } = useMyEnrolledCourseIds({ enabled: userData?.role === "student" });
   console.log("enrolledIds", enrolledIds);
 
   const userRole = userData?.role

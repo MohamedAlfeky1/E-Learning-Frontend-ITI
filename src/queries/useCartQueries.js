@@ -8,9 +8,10 @@ import { useQuery } from '@tanstack/react-query'
  * @returns {import('@tanstack/react-query').UseQueryResult}
  * React Query result with course data, loading, and error states.
  */
-export const useGetCartItems = () =>{
+export const useGetCartItems = (options = {}) =>{
   return useQuery({
     queryKey:['cart'],
     queryFn:() => getCart(),
+    ...options
   })
 }

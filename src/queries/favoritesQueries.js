@@ -1,6 +1,6 @@
 import { getFavorites } from "@/services/favoritesService";
 import { useQuery } from "@tanstack/react-query";
 
-export const useFavorites = () => {
-  return useQuery({ queryKey: ["favorites"], queryFn: getFavorites });
+export const useFavorites = (options = {}) => {
+  return useQuery({ queryKey: ["favorites"], queryFn: getFavorites, ...options });
 };

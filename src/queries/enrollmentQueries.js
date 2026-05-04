@@ -23,12 +23,12 @@ export const useMyCoursesQuery = () => {
  * @returns {import('@tanstack/react-query').UseQueryResult} 
  *  React Query result object containing courses IDs, loading, and error states.
  */
-export const useMyEnrolledCourseIds = () => {
+export const useMyEnrolledCourseIds = (options = {}) => {
   return useQuery({
     queryKey: ["my-courses"],
     queryFn: enrollmentService.getMyCourses,
     select: (data) => new Set(data?.map((e) => e.courseId?._id ?? e.courseId) ?? []),
-    enabled: true, // always fetch; returns empty set if not logged in
+    ...options,
   });
 };
 /**
@@ -52,11 +52,12 @@ export const useTeacherCoursesQuery = () => {
  * @returns {import('@tanstack/react-query').UseQueryResult} 
  *  React Query result object containing enrollment details, loading, and error states.
  */
-export const useEnrollmentDetailsQuery = (courseId) => {
+export const useEnrollmentDetailsQuery = (courseId, options = {}) => {
   return useQuery({
     queryKey: ["enrollment", courseId],
     queryFn: () => enrollmentService.getEnrollmentByCourseId(courseId),
     enabled: !!courseId,
+    ...options,
   });
 };
 /**
